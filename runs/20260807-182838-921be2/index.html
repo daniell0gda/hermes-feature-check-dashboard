@@ -1,0 +1,157 @@
+<!doctype html>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>map-swap-leaks-underground-enemies · feature-check</title>
+<style>body{font:16px system-ui;max-width:1100px;margin:2rem auto;padding:0 1rem;background:#10141c;color:#e7edf5}a{color:#7dd3fc}pre,td{white-space:pre-wrap}pre{background:#18202d;padding:1rem;overflow:auto}table{width:100%;border-collapse:collapse}td,th{padding:.5rem;border-bottom:1px solid #344054;text-align:left}.error{color:#fca5a5}.pill{font-weight:700}</style>
+<h1>map-swap-leaks-underground-enemies</h1>
+<p>Run <code>20260807-182838-921be2</code> · <span class='pill'>running</span></p>
+<p>Started: 2026-08-07T18:28:38.723Z<br>Ended: —</p>
+
+<h2>Workflow graph</h2>
+<div><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1100 500' role='img' aria-label='Workflow graph'><defs><marker id='arrow' markerWidth='10' markerHeight='10' refX='8' refY='3' orient='auto'><path d='M0,0 L0,6 L9,3 z' fill='#7dd3fc'/></marker></defs><line x1='80' y1='70' x2='320' y2='70' stroke='#7dd3fc' marker-end='url(#arrow)'/><line x1='80' y1='70' x2='560' y2='70' stroke='#7dd3fc' marker-end='url(#arrow)'/><line x1='80' y1='180' x2='800' y2='70' stroke='#7dd3fc' marker-end='url(#arrow)'/><line x1='80' y1='180' x2='560' y2='180' stroke='#7dd3fc' marker-end='url(#arrow)'/><line x1='80' y1='180' x2='320' y2='180' stroke='#7dd3fc' marker-end='url(#arrow)'/><line x1='800' y1='70' x2='80' y2='180' stroke='#7dd3fc' marker-end='url(#arrow)'/><line x1='800' y1='70' x2='800' y2='70' stroke='#7dd3fc' marker-end='url(#arrow)'/><line x1='320' y1='70' x2='560' y2='70' stroke='#7dd3fc' marker-end='url(#arrow)'/><line x1='560' y1='70' x2='800' y2='70' stroke='#7dd3fc' marker-end='url(#arrow)'/><line x1='320' y1='180' x2='800' y2='70' stroke='#7dd3fc' marker-end='url(#arrow)'/><line x1='320' y1='180' x2='560' y2='180' stroke='#7dd3fc' marker-end='url(#arrow)'/><line x1='560' y1='180' x2='800' y2='180' stroke='#7dd3fc' marker-end='url(#arrow)'/><rect x='5' y='46' width='150' height='48' rx='8' fill='#18202d' stroke='#a78bfa'/><text x='80' y='75' text-anchor='middle' fill='#e7edf5' font-size='13'>__start__</text><rect x='245' y='46' width='150' height='48' rx='8' fill='#18202d' stroke='#a78bfa'/><text x='320' y='75' text-anchor='middle' fill='#e7edf5' font-size='13'>orientation</text><rect x='485' y='46' width='150' height='48' rx='8' fill='#18202d' stroke='#a78bfa'/><text x='560' y='75' text-anchor='middle' fill='#e7edf5' font-size='13'>planner</text><rect x='725' y='46' width='150' height='48' rx='8' fill='#18202d' stroke='#a78bfa'/><text x='800' y='75' text-anchor='middle' fill='#e7edf5' font-size='13'>implementor</text><rect x='5' y='156' width='150' height='48' rx='8' fill='#18202d' stroke='#a78bfa'/><text x='80' y='185' text-anchor='middle' fill='#e7edf5' font-size='13'>checker</text><rect x='245' y='156' width='150' height='48' rx='8' fill='#18202d' stroke='#a78bfa'/><text x='320' y='185' text-anchor='middle' fill='#e7edf5' font-size='13'>reviewer</text><rect x='485' y='156' width='150' height='48' rx='8' fill='#18202d' stroke='#a78bfa'/><text x='560' y='185' text-anchor='middle' fill='#e7edf5' font-size='13'>reporter</text><rect x='725' y='156' width='150' height='48' rx='8' fill='#18202d' stroke='#a78bfa'/><text x='800' y='185' text-anchor='middle' fill='#e7edf5' font-size='13'>__end__</text></svg></div>
+<details><summary>Mermaid source</summary><pre class='mermaid'>---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([&lt;p&gt;__start__&lt;/p&gt;]):::first
+	orientation(orientation)
+	planner(planner)
+	implementor(implementor)
+	checker(checker)
+	reviewer(reviewer)
+	reporter(reporter)
+	__end__([&lt;p&gt;__end__&lt;/p&gt;]):::last
+	__start__ -.-&gt; orientation;
+	__start__ -.-&gt; planner;
+	checker -.-&gt; implementor;
+	checker -.-&gt; reporter;
+	checker -.-&gt; reviewer;
+	implementor -.-&gt; checker;
+	orientation --&gt; planner;
+	planner --&gt; implementor;
+	reviewer -.-&gt; implementor;
+	reviewer -.-&gt; reporter;
+	reporter --&gt; __end__;
+	implementor -.-&gt; implementor;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
+</pre></details>
+<details><summary>Graph JSON</summary><pre>{
+  &quot;nodes&quot;: [
+    {
+      &quot;id&quot;: &quot;__start__&quot;,
+      &quot;name&quot;: &quot;__start__&quot;
+    },
+    {
+      &quot;id&quot;: &quot;orientation&quot;,
+      &quot;name&quot;: &quot;orientation&quot;
+    },
+    {
+      &quot;id&quot;: &quot;planner&quot;,
+      &quot;name&quot;: &quot;planner&quot;
+    },
+    {
+      &quot;id&quot;: &quot;implementor&quot;,
+      &quot;name&quot;: &quot;implementor&quot;
+    },
+    {
+      &quot;id&quot;: &quot;checker&quot;,
+      &quot;name&quot;: &quot;checker&quot;
+    },
+    {
+      &quot;id&quot;: &quot;reviewer&quot;,
+      &quot;name&quot;: &quot;reviewer&quot;
+    },
+    {
+      &quot;id&quot;: &quot;reporter&quot;,
+      &quot;name&quot;: &quot;reporter&quot;
+    },
+    {
+      &quot;id&quot;: &quot;__end__&quot;,
+      &quot;name&quot;: &quot;__end__&quot;
+    }
+  ],
+  &quot;edges&quot;: [
+    {
+      &quot;source&quot;: &quot;__start__&quot;,
+      &quot;target&quot;: &quot;orientation&quot;,
+      &quot;conditional&quot;: true,
+      &quot;label&quot;: null
+    },
+    {
+      &quot;source&quot;: &quot;__start__&quot;,
+      &quot;target&quot;: &quot;planner&quot;,
+      &quot;conditional&quot;: true,
+      &quot;label&quot;: null
+    },
+    {
+      &quot;source&quot;: &quot;checker&quot;,
+      &quot;target&quot;: &quot;implementor&quot;,
+      &quot;conditional&quot;: true,
+      &quot;label&quot;: null
+    },
+    {
+      &quot;source&quot;: &quot;checker&quot;,
+      &quot;target&quot;: &quot;reporter&quot;,
+      &quot;conditional&quot;: true,
+      &quot;label&quot;: null
+    },
+    {
+      &quot;source&quot;: &quot;checker&quot;,
+      &quot;target&quot;: &quot;reviewer&quot;,
+      &quot;conditional&quot;: true,
+      &quot;label&quot;: null
+    },
+    {
+      &quot;source&quot;: &quot;implementor&quot;,
+      &quot;target&quot;: &quot;checker&quot;,
+      &quot;conditional&quot;: true,
+      &quot;label&quot;: null
+    },
+    {
+      &quot;source&quot;: &quot;implementor&quot;,
+      &quot;target&quot;: &quot;implementor&quot;,
+      &quot;conditional&quot;: true,
+      &quot;label&quot;: null
+    },
+    {
+      &quot;source&quot;: &quot;orientation&quot;,
+      &quot;target&quot;: &quot;planner&quot;,
+      &quot;conditional&quot;: false,
+      &quot;label&quot;: null
+    },
+    {
+      &quot;source&quot;: &quot;planner&quot;,
+      &quot;target&quot;: &quot;implementor&quot;,
+      &quot;conditional&quot;: false,
+      &quot;label&quot;: null
+    },
+    {
+      &quot;source&quot;: &quot;reviewer&quot;,
+      &quot;target&quot;: &quot;implementor&quot;,
+      &quot;conditional&quot;: true,
+      &quot;label&quot;: null
+    },
+    {
+      &quot;source&quot;: &quot;reviewer&quot;,
+      &quot;target&quot;: &quot;reporter&quot;,
+      &quot;conditional&quot;: true,
+      &quot;label&quot;: null
+    },
+    {
+      &quot;source&quot;: &quot;reporter&quot;,
+      &quot;target&quot;: &quot;__end__&quot;,
+      &quot;conditional&quot;: false,
+      &quot;label&quot;: null
+    }
+  ],
+  &quot;mermaid&quot;: &quot;---\nconfig:\n  flowchart:\n    curve: linear\n---\ngraph TD;\n\t__start__([&lt;p&gt;__start__&lt;/p&gt;]):::first\n\torientation(orientation)\n\tplanner(planner)\n\timplementor(implementor)\n\tchecker(checker)\n\treviewer(reviewer)\n\treporter(reporter)\n\t__end__([&lt;p&gt;__end__&lt;/p&gt;]):::last\n\t__start__ -.-&gt; orientation;\n\t__start__ -.-&gt; planner;\n\tchecker -.-&gt; implementor;\n\tchecker -.-&gt; reporter;\n\tchecker -.-&gt; reviewer;\n\timplementor -.-&gt; checker;\n\torientation --&gt; planner;\n\tplanner --&gt; implementor;\n\treviewer -.-&gt; implementor;\n\treviewer -.-&gt; reporter;\n\treporter --&gt; __end__;\n\timplementor -.-&gt; implementor;\n\tclassDef default fill:#f2f0ff,line-height:1.2\n\tclassDef first fill-opacity:0\n\tclassDef last fill:#bfb6fc\n&quot;,
+  &quot;generated_at&quot;: &quot;2026-08-07T18:28:38.729257+00:00&quot;
+}</pre></details>
+<h2>Execution timeline</h2>
+<table><thead><tr><th>#</th><th>Node</th><th>Status</th><th>Duration</th><th>Summary</th></tr></thead><tbody></tbody></table>
+<h2>Reports</h2><p><a href='./report.html'>Rendered report</a> · <a href='./report.md'>Markdown source</a> · <a href='./events.json'>Events JSON</a> · <a href='./status.json'>Status JSON</a></p>
+<script type='application/json' id='status'>{&quot;run_id&quot;: &quot;20260807-182838-921be2&quot;, &quot;feature&quot;: &quot;map-swap-leaks-underground-enemies&quot;, &quot;status&quot;: &quot;running&quot;, &quot;started_at&quot;: &quot;2026-08-07T18:28:38.723Z&quot;, &quot;ended_at&quot;: null, &quot;error&quot;: null, &quot;url&quot;: &quot;https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/20260807-182838-921be2/&quot;}</script>
