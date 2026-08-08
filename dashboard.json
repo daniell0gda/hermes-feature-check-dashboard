@@ -1,22 +1,12 @@
 [
   {
-    "run_id": "20260808-153307-5ab8a7",
-    "status": "running",
-    "url": "runs/20260808-153307-5ab8a7/"
+    "run_id": "20260808-213353-9abc70",
+    "status": "starting",
+    "url": "runs/20260808-213353-9abc70/"
   },
   {
-    "run_id": "20260808-152857-0038ba",
-    "status": "running",
-    "url": "runs/20260808-152857-0038ba/"
-  },
-  {
-    "run_id": "20260807-201948-905744",
-    "status": "completed",
-    "url": "runs/20260807-201948-905744/"
-  },
-  {
-    "run_id": "20260807-182838-921be2",
-    "status": "running",
-    "url": "runs/20260807-182838-921be2/"
+    "run_id": "20260808-195415-c6abd2",
+    "status": "cancelled",
+    "url": "runs/20260808-195415-c6abd2/"
   }
 ]
