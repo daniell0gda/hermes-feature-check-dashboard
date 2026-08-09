@@ -1,9 +1,9 @@
 # Feature Check — In Progress
 
 Status: running
-Phase: checker
+Phase: implementor
 Iteration: —
-Last update: 2026-08-09T18:41:24.178Z
+Last update: 2026-08-09T18:41:29.730Z
 
 ## Progress
 
@@ -35,4 +35,4 @@ Last update: 2026-08-09T18:41:24.178Z
 
 ## Last node
 
-checker
+implementor
