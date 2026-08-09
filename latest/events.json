@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-09T11:25:37.742Z",
+    "node": "planner",
+    "status": "completed",
+    "duration_ms": 61524,
+    "summary": "{\"phase\": \"awaiting_user_plan_approval\", \"plan_path\": \"/workspace/git-workspaces/tower-defense/issue-ice-burn-material-restore-stuck/.gen/feature-check/ice-burn-material-restore-stuck-final2/plan.md\", \"status_path\": \"/workspace/git-workspac\u2026",
+    "error": null
+  }
+]
