@@ -25,5 +25,14 @@
     "duration_ms": 102594,
     "summary": "{\"pending_criteria\": [], \"done_criteria\": [\"**Focused test**: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/floodgate_hole_dig_reconnect.json`\", \"**Full test**: companion regression `floodgate_hole_ran\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-09T15:54:59.872Z",
+    "node": "reporter",
+    "status": "completed",
+    "duration_ms": 3582,
+    "summary": "{\"phase\": \"done\", \"report\": \"# Feature Check Report: harness-hole-dig-action\\n\\n**Mode:** small\\n**Verdict:** \u2705 Production-ready\\n**Progress:** 10 of 10 criteria met\\n\\n## \u2705 Done\\n- **Focused test**: `godot --headless --path . res://scenes/\u2026",
+    "error": null
   }
 ]
