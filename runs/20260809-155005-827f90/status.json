@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/20260809-155005-827f90/",
   "heartbeat_at": "2026-08-09T15:53:06.260Z",
   "last_node": "implementor",
-  "active_node": null,
+  "active_node": "checker",
   "last_event_at": "2026-08-09T15:53:06.260Z",
   "process_id": 55018,
   "host": "b051174c5c3f",
   "phase": "implementor",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-09T15:53:06.261110+00:00",
-    "last_success_at": "2026-08-09T15:51:19.947281+00:00",
+    "last_attempt_at": "2026-08-09T15:53:10.058031+00:00",
+    "last_success_at": "2026-08-09T15:53:10.057975+00:00",
     "last_error": null
   }
 }
