@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/20260809-111616-c70d46/",
-  "heartbeat_at": "2026-08-09T11:23:08.258Z",
-  "last_node": "checker",
-  "active_node": "reporter",
-  "last_event_at": "2026-08-09T11:23:08.258Z",
+  "heartbeat_at": "2026-08-09T11:23:15.846Z",
+  "last_node": "reporter",
+  "active_node": null,
+  "last_event_at": "2026-08-09T11:23:15.846Z",
   "process_id": 44054,
   "host": "b051174c5c3f",
-  "phase": "checker",
+  "phase": "done",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-09T11:23:12.149179+00:00",
-    "last_success_at": "2026-08-09T11:23:12.149118+00:00",
+    "last_attempt_at": "2026-08-09T11:23:15.846594+00:00",
+    "last_success_at": "2026-08-09T11:23:15.830184+00:00",
     "last_error": null
   }
 }
