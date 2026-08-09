@@ -1,42 +1,7 @@
 [
   {
-    "run_id": "20260809-112428-afbdbd",
-    "status": "completed",
-    "url": "runs/20260809-112428-afbdbd/"
-  },
-  {
-    "run_id": "20260809-111616-c70d46",
-    "status": "completed",
-    "url": "runs/20260809-111616-c70d46/"
-  },
-  {
-    "run_id": "20260809-110849-c9efd7",
-    "status": "cancelled",
-    "url": "runs/20260809-110849-c9efd7/"
-  },
-  {
-    "run_id": "20260809-103958-20ecf9",
-    "status": "cancelled",
-    "url": "runs/20260809-103958-20ecf9/"
-  },
-  {
-    "run_id": "20260809-093247-e17260",
-    "status": "completed",
-    "url": "runs/20260809-093247-e17260/"
-  },
-  {
-    "run_id": "20260809-071353-393684",
-    "status": "cancelled",
-    "url": "runs/20260809-071353-393684/"
-  },
-  {
-    "run_id": "20260808-213353-9abc70",
-    "status": "failed",
-    "url": "runs/20260808-213353-9abc70/"
-  },
-  {
-    "run_id": "20260808-195415-c6abd2",
-    "status": "cancelled",
-    "url": "runs/20260808-195415-c6abd2/"
+    "run_id": "20260809-151210-522fa7",
+    "status": "starting",
+    "url": "runs/20260809-151210-522fa7/"
   }
 ]
