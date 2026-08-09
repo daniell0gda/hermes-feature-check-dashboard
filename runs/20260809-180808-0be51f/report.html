@@ -1,11 +1,36 @@
 <!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Feature-check report</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:16px/1.6 system-ui}article{max-width:860px;margin:36px auto;padding:28px;background:#fff;border:1px solid #e4e7ec;border-radius:16px;box-shadow:0 12px 32px rgba(16,24,40,.08)}h1,h2{letter-spacing:-.03em}a{color:#2563eb}pre{background:#f8fafc;padding:14px;border-radius:10px}img{display:block;max-width:100%;height:auto;margin:16px 0;border:1px solid #e4e7ec;border-radius:10px}</style><article><h1>Feature Check — In Progress</h1>
 <p>Status: running</p>
-<p>Phase: awaiting_user_plan_approval</p>
-<p>Iteration: 0</p>
-<p>Last update: 2026-08-09T18:10:00.137Z</p>
+<p>Phase: checker</p>
+<p>Iteration: —</p>
+<p>Last update: 2026-08-09T18:14:50.691Z</p>
 <h2>Progress</h2>
 <h2>✅ Done</h2>
+<ul>
+<li>Refreshing burn on an already-burning enemy never silently drops fractional pending tick damage</li>
+<li>Re-applying burn (second overlapping application) never yields less total delivered burn/fire damage than a single-application baseline on the same enemy/bed</li>
+<li>Fresh burn application still starts clean (no phantom pending from a previous life)</li>
+<li>Burn remains non-stacking: one BurnStatus per enemy; refresh replaces schedule rather than adding a second DoT node</li>
+<li>Burn ticks and end flush still deliver whole HP only; fire damage remains attributed through the existing take_damage/fire stats path</li>
+<li>Headless scenario `burn_status_refresh_pending_damage` passes on a fresh run and is written to fail on zero-on-reset</li>
+<li>`fire_burn_on` and `fire_flashover_spread` still pass headlessly after the fix</li>
+<li>Editor parse gate (`--editor --quit-after 300`) exits 0</li>
+</ul>
 <h2>⬜ Pending</h2>
 <h2>❌ Impossible</h2>
+<ul>
+<li>`_reset` no longer zeroes `_pending_float` (preserve on refresh)</li>
+<li>Arm B fire &gt;= Arm A (both 12 in fixed window); buggy zero-on-reset would give Arm B=11</li>
+<li>Fresh `BurnStatus.new()` still starts pending at 0; Arm A exact fire=12</li>
+<li>Non-stacking path unchanged (`get_node_or_null` + `_reset`); ceiling still holds</li>
+<li>floor ticks + round flush + `take_damage(..., &quot;fire&quot;)` unchanged; harness synthetic instance id 91001 for stats</li>
+<li>Focused scenario load-bearing and green</li>
+<li>Regression pair green</li>
+<li>Editor gate exit 0</li>
+<li>Change is surgical (remove zeroing + comment; harness id for stats; new scenario)</li>
+<li>Meets coding_rules for new/changed code — no demotions</li>
+<li>Pre-existing harness noise (UI node paths, RID leaks on headless exit) unrelated</li>
+<li>`/workspace/git-workspaces/godot-td/issue-burn-status-refresh-loses-pending-damage/.gen/feature-check/burn-status-refresh-loses-pending-damage/status.md`</li>
+<li>`/workspace/git-workspaces/godot-td/issue-burn-status-refresh-loses-pending-damage/.gen/feature-check/burn-status-refresh-loses-pending-damage/changes.md`</li>
+</ul>
 <h2>Last node</h2>
-<p>planner</p></article>
+<p>checker</p></article>
