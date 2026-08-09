@@ -16,5 +16,14 @@
     "duration_ms": 110072,
     "summary": "{\"current_cluster_index\": 1, \"messages\": [{\"role\": \"assistant\", \"content\": \"Implemented cluster 'default': \u250a review diff\\na//workspace/git-workspaces/godot-td/issue-harness-hole-dig-action/changes.md \u2192 b//workspace/git-workspaces/godot-td/i\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-09T15:54:52.651Z",
+    "node": "checker",
+    "status": "completed",
+    "duration_ms": 102594,
+    "summary": "{\"pending_criteria\": [], \"done_criteria\": [\"**Focused test**: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/floodgate_hole_dig_reconnect.json`\", \"**Full test**: companion regression `floodgate_hole_ran\u2026",
+    "error": null
   }
 ]

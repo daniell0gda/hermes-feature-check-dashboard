@@ -1,16 +1,13 @@
 # Feature Check — In Progress
 
 Status: running
-Phase: implementor
+Phase: checker
 Iteration: —
-Last update: 2026-08-09T15:53:06.260Z
+Last update: 2026-08-09T15:54:52.651Z
 
 ## Progress
 
 ## ✅ Done
-
-
-## ⬜ Pending
 
 - **Focused test**: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/floodgate_hole_dig_reconnect.json`
 - **Full test**: companion regression `floodgate_hole_range_band.json` (same band geometry; no single native full-suite entry)
@@ -23,10 +20,13 @@ Last update: 2026-08-09T15:53:06.260Z
 - REFERENCE.md covers both actions
 - Fresh focused harness pass + editor quit-after 300 exit 0
 
+## ⬜ Pending
+
+
 ## ❌ Impossible
 
 
 
 ## Last node
 
-implementor
+checker
