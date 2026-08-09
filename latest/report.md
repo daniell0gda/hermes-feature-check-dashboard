@@ -1,16 +1,13 @@
 # Feature Check — In Progress
 
 Status: running
-Phase: implementor
+Phase: checker
 Iteration: —
-Last update: 2026-08-09T11:26:56.254Z
+Last update: 2026-08-09T11:28:03.673Z
 
 ## Progress
 
 ## ✅ Done
-
-
-## ⬜ Pending
 
 - An enemy burned during an active freeze returns to its true pre-freeze material after freeze and burn have expired.
 - An enemy burned during ice fade-out, after slow duration has reached zero, returns to its true pre-freeze material after both effects have expired.
@@ -19,10 +16,15 @@ Last update: 2026-08-09T11:26:56.254Z
 - The focused scenario verifies both timing paths against a live enemy and passes on a fresh harness run.
 - The scenario completes without game-over and with the enemy/material state still observable.
 
+## ⬜ Pending
+
+- None.
+
 ## ❌ Impossible
 
+- None.
 
 
 ## Last node
 
-implementor
+checker
