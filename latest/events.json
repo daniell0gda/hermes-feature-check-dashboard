@@ -16,5 +16,14 @@
     "duration_ms": 97300,
     "summary": "{\"current_cluster_index\": 1, \"messages\": [{\"role\": \"assistant\", \"content\": \"Implemented cluster 'default': \u2705 Implemented and verified the ice/burn material restoration fix.\\n\\nChanges:\\n- `scripts/game/actors/effects/EffectsManager.gd`\\n  -\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-09T11:20:27.987Z",
+    "node": "checker",
+    "status": "completed",
+    "duration_ms": 73187,
+    "summary": "{\"pending_criteria\": [\"None.\"], \"done_criteria\": [\"An enemy burned during active freeze returns to its true pre-freeze material after both effects expire.\", \"An enemy burned during freeze fade-out returns to its true pre-freeze material aft\u2026",
+    "error": null
   }
 ]
