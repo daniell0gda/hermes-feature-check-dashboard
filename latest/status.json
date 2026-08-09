@@ -1,12 +1,12 @@
 {
   "run_id": "20260809-093247-e17260",
   "feature": "ice-burn-material-restore-stuck-cycle",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-09T09:32:47.769Z",
-  "ended_at": null,
+  "ended_at": "2026-08-09T10:24:17.775Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/20260809-093247-e17260/",
-  "heartbeat_at": "2026-08-09T10:24:13.761Z",
+  "heartbeat_at": "2026-08-09T10:24:17.775Z",
   "last_node": "reporter",
   "active_node": null,
   "last_event_at": "2026-08-09T10:24:13.761Z",
@@ -14,8 +14,8 @@
   "host": "b051174c5c3f",
   "phase": "done",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-09T10:24:13.762108+00:00",
-    "last_success_at": "2026-08-09T10:24:13.755964+00:00",
+    "last_attempt_at": "2026-08-09T10:24:17.775142+00:00",
+    "last_success_at": "2026-08-09T10:24:17.774837+00:00",
     "last_error": null
   }
 }

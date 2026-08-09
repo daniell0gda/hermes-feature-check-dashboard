@@ -1,17 +1,10 @@
-# Feature Check — In Progress
+# Feature Check Report: ice-burn-material-restore-stuck-cycle
 
-Status: running
-Phase: done
-Iteration: —
-Last update: 2026-08-09T10:24:13.761Z
+**Mode:** small
+**Verdict:** ⚠️ Blocked after 1 iterations
+**Progress:** 0 of 7 criteria met
 
-## Progress
-
-## ✅ Done
-
-
-## ⬜ Pending
-
+## ⬜ Pending (7 remaining)
 - A burned enemy that was actively frozen restores its true pre-freeze material after burn and freeze effects expire.
 - A burned enemy that is in the ice fade-out state restores its true pre-freeze material after effects expire.
 - Burn applied during either freeze state does not retain a frozen-tinted material as its restoration baseline.
@@ -20,10 +13,4 @@ Last update: 2026-08-09T10:24:13.761Z
 - The focused scenario completes without game over and with positive egg health.
 - The full scenario suite and editor parse gate complete without regressions.
 
-## ❌ Impossible
-
-
-
-## Last node
-
-reporter
+**Iterations:** 1 / 1
