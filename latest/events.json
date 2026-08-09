@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-09T15:15:50.814Z",
+    "node": "planner",
+    "status": "completed",
+    "duration_ms": 211915,
+    "summary": "{\"phase\": \"awaiting_user_plan_approval\", \"plan_path\": \"/workspace/git-workspaces/godot-td/issue-harness-hole-dig-action/.gen/feature-check/harness-hole-dig-action/plan.md\", \"status_path\": \"/workspace/git-workspaces/godot-td/issue-harness-ho\u2026",
+    "error": null
+  }
+]
