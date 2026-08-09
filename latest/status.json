@@ -1,12 +1,12 @@
 {
   "run_id": "20260809-151210-522fa7",
   "feature": "harness-hole-dig-action",
-  "status": "starting",
+  "status": "running",
   "started_at": "2026-08-09T15:12:10.943Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/20260809-151210-522fa7/",
-  "heartbeat_at": "2026-08-09T15:12:10.943Z",
+  "heartbeat_at": "2026-08-09T15:12:15.075Z",
   "last_node": null,
   "active_node": null,
   "last_event_at": null,
@@ -14,6 +14,8 @@
   "host": "b051174c5c3f",
   "phase": null,
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-09T15:12:10.948020+00:00"
+    "last_attempt_at": "2026-08-09T15:12:15.075084+00:00",
+    "last_success_at": "2026-08-09T15:12:14.775215+00:00",
+    "last_error": null
   }
 }
