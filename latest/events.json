@@ -16,5 +16,14 @@
     "duration_ms": 1019430,
     "summary": "{\"current_cluster_index\": 1, \"messages\": [{\"role\": \"assistant\", \"content\": \"Implemented cluster 'default': Runner confirmed down for a final time. I've completed my verification pass. Here is my structured report.\\n\\n---\\n\\n# Feature-check \u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-09T07:45:37.472Z",
+    "node": "checker",
+    "status": "completed",
+    "duration_ms": 307498,
+    "summary": "{\"pending_criteria\": [\"An enemy burned while actively frozen returns to its pre-freeze material after both freeze and burn have expired.\", \"An enemy burned during the freeze fade-out returns to its pre-freeze material after both freeze and \u2026",
+    "error": null
   }
 ]

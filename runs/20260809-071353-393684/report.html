@@ -1,26 +1,19 @@
 <!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Feature-check report</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:16px/1.6 system-ui}article{max-width:860px;margin:36px auto;padding:28px;background:#fff;border:1px solid #e4e7ec;border-radius:16px;box-shadow:0 12px 32px rgba(16,24,40,.08)}h1,h2{letter-spacing:-.03em}a{color:#2563eb}pre{background:#f8fafc;padding:14px;border-radius:10px}</style><article><h1>Feature Check — In Progress</h1>
 <p>Status: running</p>
-<p>Phase: implementor</p>
+<p>Phase: checker</p>
 <p>Iteration: —</p>
-<p>Last update: 2026-08-09T07:40:25.929Z</p>
+<p>Last update: 2026-08-09T07:45:37.472Z</p>
 <h2>Progress</h2>
-<h2>✳️ Implemented (worktree present, coherent by inspection) — runner blocked, not re-run this pass</h2>
-<p>All six criteria are implemented in the worktree and internally consistent:</p>
-<ul>
-<li>tests/effects/test_ice_burn_material_restore.gd (new) — unit regression covering burning while</li>
-<p>  active freeze, burning during fade-out, and burn baseline == clean original material.</p>
-<li>tests/scenarios/ice_burn_material_restore_stuck.json (new) — deterministic map_1/wave-4 boss</li>
-<p>  scenario, phase 1 (active freeze) + phase 2 (ice fade-out), asserting materials_clean after expiry.</p>
-<li>scripts/game/actors/effects/EffectsManager.gd (M) — apply_burn clears freeze both when</li>
-<p>  slow_time_left&gt;0 and when _ice_freeze_strength/_target_ice_freeze_strength&gt;0.01, before burn baseline.</p>
-<li>scripts/testing/HarnessActions.gd (M) — apply_effect action + _live_enemies().</li>
-<li>scripts/testing/HarnessValues.gd (M) — materials_clean observation.</li>
-</ul>
-<p>Prior recorded run in .gen/harness/ice_burn_material_restore_stuck/result.json shows status</p>
-<p>&quot;pass&quot; with all expectations pass, but that artifact was NOT executed by this worker.</p>
+<h2>✅ Done</h2>
 <h2>⬜ Pending</h2>
-<p>Fresh execution of the focused command (runner currently unreachable this pass) and the full suite.</p>
+<ul>
+<li>An enemy burned while actively frozen returns to its pre-freeze material after both freeze and burn have expired.</li>
+<li>An enemy burned during the freeze fade-out returns to its pre-freeze material after both freeze and burn have expired.</li>
+<li>Applying burn during either active freeze or freeze fade-out never leaves the enemy permanently freeze-tinted.</li>
+<li>Burn restoration uses the same true baseline material that freeze clearing/restoration uses.</li>
+<li>Expiring burn does not restore a stale freeze-tinted material over the enemy’s correct material state.</li>
+<li>The behavior is covered by a deterministic focused gameplay scenario.</li>
+</ul>
 <h2>❌ Impossible</h2>
-<p>(none)</p>
 <h2>Last node</h2>
-<p>implementor</p></article>
+<p>checker</p></article>
