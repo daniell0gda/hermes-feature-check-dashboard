@@ -1,18 +1,13 @@
-# Feature Check — In Progress
+# Feature Check Report: ice-burn-material-restore-stuck-verify
 
-Status: running
-Phase: done
-Iteration: —
-Last update: 2026-08-09T11:23:15.846Z
-
-## Progress
+**Mode:** small
+**Verdict:** ⚠️ Blocked after 2 iterations
+**Progress:** 1 of 8 criteria met
 
 ## ✅ Done
-
 - None.
 
-## ⬜ Pending
-
+## ⬜ Pending (6 remaining)
 - An enemy burned during active freeze returns to its true pre-freeze material after both effects expire.
 - An enemy burned during freeze fade-out returns to its true pre-freeze material after both effects expire.
 - After each overlap sequence, the enemy is neither frozen nor burning.
@@ -21,10 +16,6 @@ Last update: 2026-08-09T11:23:15.846Z
 - The project completes the headless Godot editor parse/import check successfully.
 
 ## ❌ Impossible
-
 - None.
 
-
-## Last node
-
-reporter
+**Iterations:** 2 / 2
