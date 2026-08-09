@@ -1,14 +1,10 @@
-# Feature Check — In Progress
+# Feature Check Report: harness-hole-dig-action
 
-Status: running
-Phase: done
-Iteration: —
-Last update: 2026-08-09T15:54:59.872Z
-
-## Progress
+**Mode:** small
+**Verdict:** ✅ Production-ready
+**Progress:** 10 of 10 criteria met
 
 ## ✅ Done
-
 - **Focused test**: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/floodgate_hole_dig_reconnect.json`
 - **Full test**: companion regression `floodgate_hole_range_band.json` (same band geometry; no single native full-suite entry)
 - **Typecheck/Build**: `godot --headless --path . --editor --quit-after 300`
@@ -20,13 +16,4 @@ Last update: 2026-08-09T15:54:59.872Z
 - REFERENCE.md covers both actions
 - Fresh focused harness pass + editor quit-after 300 exit 0
 
-## ⬜ Pending
-
-
-## ❌ Impossible
-
-
-
-## Last node
-
-reporter
+**Iterations:** 0 / 2
