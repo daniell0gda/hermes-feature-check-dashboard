@@ -52,5 +52,14 @@
     "duration_ms": 299501,
     "summary": "{\"pending_criteria\": [\"A burned enemy that was actively frozen restores its true pre-freeze material after burn and freeze effects expire.\", \"A burned enemy that is in the ice fade-out state restores its true pre-freeze material after effec\u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-09T10:24:13.761Z",
+    "node": "reporter",
+    "status": "completed",
+    "duration_ms": 3953,
+    "summary": "{\"phase\": \"done\", \"report\": \"# Feature Check Report: ice-burn-material-restore-stuck-cycle\\n\\n**Mode:** small\\n**Verdict:** \u26a0\ufe0f Blocked after 1 iterations\\n**Progress:** 0 of 7 criteria met\\n\\n## \u2b1c Pending (7 remaining)\\n- A burned enemy tha\u2026",
+    "error": null
   }
 ]
