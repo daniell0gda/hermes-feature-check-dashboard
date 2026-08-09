@@ -97,5 +97,14 @@
     "duration_ms": 968029,
     "summary": "{\"current_cluster_index\": 1, \"messages\": [{\"role\": \"assistant\", \"content\": \"Implemented cluster 'default': I've completed my verification pass. Here is the structured report.\\n\\n# Feature-check / TDD implementor report \u2014 ice-burn-material-r\u2026",
     "error": null
+  },
+  {
+    "sequence": 12,
+    "timestamp": "2026-08-09T08:47:57.568Z",
+    "node": "checker",
+    "status": "completed",
+    "duration_ms": 587876,
+    "summary": "{\"pending_criteria\": [\"An enemy burned while actively frozen returns to its pre-freeze material after both freeze and burn have expired.\", \"An enemy burned during the freeze fade-out returns to its pre-freeze material after both freeze and \u2026",
+    "error": null
   }
 ]
