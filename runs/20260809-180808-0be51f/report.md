@@ -1,14 +1,10 @@
-# Feature Check — In Progress
+# Feature Check Report: burn-status-refresh-loses-pending-damage
 
-Status: running
-Phase: checker
-Iteration: —
-Last update: 2026-08-09T18:14:50.691Z
-
-## Progress
+**Mode:** small
+**Verdict:** ✅ Production-ready
+**Progress:** 8 of 21 criteria met
 
 ## ✅ Done
-
 - Refreshing burn on an already-burning enemy never silently drops fractional pending tick damage
 - Re-applying burn (second overlapping application) never yields less total delivered burn/fire damage than a single-application baseline on the same enemy/bed
 - Fresh burn application still starts clean (no phantom pending from a previous life)
@@ -18,11 +14,7 @@ Last update: 2026-08-09T18:14:50.691Z
 - `fire_burn_on` and `fire_flashover_spread` still pass headlessly after the fix
 - Editor parse gate (`--editor --quit-after 300`) exits 0
 
-## ⬜ Pending
-
-
 ## ❌ Impossible
-
 - `_reset` no longer zeroes `_pending_float` (preserve on refresh)
 - Arm B fire >= Arm A (both 12 in fixed window); buggy zero-on-reset would give Arm B=11
 - Fresh `BurnStatus.new()` still starts pending at 0; Arm A exact fire=12
@@ -37,7 +29,4 @@ Last update: 2026-08-09T18:14:50.691Z
 - `/workspace/git-workspaces/godot-td/issue-burn-status-refresh-loses-pending-damage/.gen/feature-check/burn-status-refresh-loses-pending-damage/status.md`
 - `/workspace/git-workspaces/godot-td/issue-burn-status-refresh-loses-pending-damage/.gen/feature-check/burn-status-refresh-loses-pending-damage/changes.md`
 
-
-## Last node
-
-checker
+**Iterations:** 0 / 2

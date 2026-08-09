@@ -43,5 +43,14 @@
     "duration_ms": 286503,
     "summary": "{\"pending_criteria\": [], \"done_criteria\": [\"Refreshing burn on an already-burning enemy never silently drops fractional pending tick damage\", \"Re-applying burn (second overlapping application) never yields less total delivered burn/fire dam\u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-09T18:14:54.838Z",
+    "node": "reporter",
+    "status": "completed",
+    "duration_ms": 11,
+    "summary": "{\"phase\": \"done\", \"report\": \"# Feature Check Report: burn-status-refresh-loses-pending-damage\\n\\n**Mode:** small\\n**Verdict:** \u2705 Production-ready\\n**Progress:** 8 of 21 criteria met\\n\\n## \u2705 Done\\n- Refreshing burn on an already-burning enem\u2026",
+    "error": null
   }
 ]
