@@ -43,5 +43,14 @@
     "duration_ms": 3671,
     "summary": "{\"current_cluster_index\": 1, \"messages\": [{\"role\": \"assistant\", \"content\": \"Cluster 'default' already done, skipping\"}]}",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-09T11:21:53.192Z",
+    "node": "checker",
+    "status": "completed",
+    "duration_ms": 66100,
+    "summary": "{\"pending_criteria\": [\"None.\"], \"done_criteria\": [\"An enemy burned during active freeze returns to its true pre-freeze material after both effects expire.\", \"An enemy burned during freeze fade-out returns to its true pre-freeze material aft\u2026",
+    "error": null
   }
 ]
