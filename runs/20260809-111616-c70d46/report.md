@@ -1,13 +1,17 @@
 # Feature Check — In Progress
 
 Status: running
-Phase: implementor
+Phase: checker
 Iteration: —
-Last update: 2026-08-09T11:22:08.363Z
+Last update: 2026-08-09T11:23:08.258Z
 
 ## Progress
 
 ## ✅ Done
+
+- None.
+
+## ⬜ Pending
 
 - An enemy burned during active freeze returns to its true pre-freeze material after both effects expire.
 - An enemy burned during freeze fade-out returns to its true pre-freeze material after both effects expire.
@@ -16,10 +20,6 @@ Last update: 2026-08-09T11:22:08.363Z
 - The deterministic `ice_burn_material_restore_stuck` harness scenario passes on a fresh headless run.
 - The project completes the headless Godot editor parse/import check successfully.
 
-## ⬜ Pending
-
-- None.
-
 ## ❌ Impossible
 
 - None.
@@ -27,4 +27,4 @@ Last update: 2026-08-09T11:22:08.363Z
 
 ## Last node
 
-implementor
+checker
