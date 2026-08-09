@@ -1,12 +1,31 @@
 <!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Feature-check report</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:16px/1.6 system-ui}article{max-width:860px;margin:36px auto;padding:28px;background:#fff;border:1px solid #e4e7ec;border-radius:16px;box-shadow:0 12px 32px rgba(16,24,40,.08)}h1,h2{letter-spacing:-.03em}a{color:#2563eb}pre{background:#f8fafc;padding:14px;border-radius:10px}img{display:block;max-width:100%;height:auto;margin:16px 0;border:1px solid #e4e7ec;border-radius:10px}</style><article><h1>Feature Check — In Progress</h1>
 <p>Status: running</p>
-<p>Phase: awaiting_user_plan_approval</p>
-<p>Iteration: 0</p>
-<p>Last update: 2026-08-09T18:33:21.704Z</p>
+<p>Phase: checker</p>
+<p>Iteration: —</p>
+<p>Last update: 2026-08-09T18:41:24.178Z</p>
 <h2>Progress</h2>
 <h2>✅ Done</h2>
+<ul>
+<li>Editor parse gate (`--editor --quit-after 300`) exits 0</li>
+</ul>
 <h2>⬜ Pending</h2>
+<ul>
+<li>Spawner drains every spawn whose scheduled game time has already passed within a single frame (catch-up), not only one enemy per frame</li>
+<li>Scheduled spawn timing preserves overshoot (accumulates delay) instead of resetting the countdown and dropping owed spawns when `delta &gt; delay`</li>
+<li>Catch-up is queue-bounded (and safety-bounded) so a pathological long frame cannot hang or over-drain beyond the schedule</li>
+<li>Over a fixed game-time window, enemy spawn count is independent of frame length / high `GameState.time_scale` when the wave schedule would deliver those enemies</li>
+<li>`immediate_spawn` keeps its existing ~0.2 s burst behaviour and is not converted into the scheduled catch-up cadence</li>
+<li>Heavy-log `ice_rate_matched_speeds` (ice at `[7.43, 0.0, 7.46]` all phases) yields equal `[SPAWNER DEBUG] Spawning enemy` counts across 1x/2x/5x/10x phases (27/27/27/27 for map_10 wave 1)</li>
+<li>Focused harness `ice_rate_matched_speeds` still passes headlessly on a fresh run</li>
+<li>`projectiles_10x_beam_cone`, `projectiles_2x_roster`, and `projectiles_5x_roster` still pass every expectation on fresh runs</li>
+<li>Post-fix 5x/10x egg headroom is re-checked; any expectation retune is evidence-based difficulty restore, not reintroducing under-spawn</li>
+</ul>
 <h2>❌ Impossible</h2>
 <h2>📝 Notes</h2>
+<ul>
+<li>Iteration 0: empty changes; SpawnerSystem unfixed at ~467–501</li>
+<li>Heavy summary: `.gen/feature-check/.../heavy_full.summary.json`</li>
+<li>Next: implementor must apply IceTower-style while + `timer += delay` in `_process_spawner`</li>
+</ul>
 <h2>Last node</h2>
-<p>planner</p></article>
+<p>checker</p></article>
