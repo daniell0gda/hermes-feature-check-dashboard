@@ -1,22 +1,22 @@
 {
   "run_id": "20260810-121335-f457d1",
   "feature": "spawner-under-spawns-when-frames-are-longer-than-the-spawn-delay-rerun",
-  "status": "running",
+  "status": "cancelled",
   "started_at": "2026-08-10T12:13:35.122Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-10T12:21:56.933Z",
+  "error": "received signal SIGTERM",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/20260810-121335-f457d1/",
-  "heartbeat_at": "2026-08-10T12:15:55.529Z",
+  "heartbeat_at": "2026-08-10T12:21:56.933Z",
   "last_node": "planner",
-  "active_node": null,
+  "active_node": "implementor",
   "last_event_at": "2026-08-10T12:15:55.529Z",
   "process_id": 89828,
   "host": "b051174c5c3f",
   "phase": "awaiting_user_plan_approval",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-10T12:15:55.530439+00:00",
-    "last_success_at": "2026-08-10T12:14:19.504907+00:00",
+    "last_attempt_at": "2026-08-10T12:21:56.933948+00:00",
+    "last_success_at": "2026-08-10T12:15:59.618202+00:00",
     "last_error": null,
-    "last_skipped_remote_at": "2026-08-10T12:14:19.527166+00:00"
+    "last_skipped_remote_at": "2026-08-10T12:15:59.624336+00:00"
   }
 }
