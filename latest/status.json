@@ -1,12 +1,12 @@
 {
   "run_id": "20260810-104906-78bfb0",
   "feature": "spawner-under-spawns-when-frames-are-longer-than-the-spawn-delay",
-  "status": "starting",
+  "status": "running",
   "started_at": "2026-08-10T10:49:06.558Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/20260810-104906-78bfb0/",
-  "heartbeat_at": "2026-08-10T10:49:06.558Z",
+  "heartbeat_at": "2026-08-10T10:50:41.386Z",
   "last_node": null,
   "active_node": null,
   "last_event_at": null,
@@ -14,6 +14,8 @@
   "host": "b051174c5c3f",
   "phase": null,
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-10T10:49:06.562853+00:00"
+    "last_attempt_at": "2026-08-10T10:50:41.386531+00:00",
+    "last_success_at": "2026-08-10T10:49:10.538229+00:00",
+    "last_error": null
   }
 }
