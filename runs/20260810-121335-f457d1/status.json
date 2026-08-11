@@ -15,7 +15,7 @@
   "phase": "awaiting_user_plan_approval",
   "dashboard_publish": {
     "last_attempt_at": "2026-08-10T12:21:56.933948+00:00",
-    "last_success_at": "2026-08-10T12:15:59.618202+00:00",
+    "last_success_at": "2026-08-10T12:22:01.102900+00:00",
     "last_error": null,
     "last_skipped_remote_at": "2026-08-10T12:15:59.624336+00:00"
   }
