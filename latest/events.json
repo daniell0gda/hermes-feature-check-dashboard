@@ -7,5 +7,14 @@
     "duration_ms": 262219,
     "summary": "Harness cluster completed: three fresh headless passes and one fresh windowed pass; result.json status pass; five screenshots generated; known gaps documented in coder report.",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-13T23:21:08.621Z",
+    "node": "checking",
+    "status": "completed",
+    "duration_ms": 165295,
+    "summary": "Checker classification design_failure. Fresh editor/headless/windowed checks pass structurally, but required evidence/design gaps remain: no process-boundary Continue, no exact live-enemy restoration proof, both clear producers not jointly \u2026",
+    "error": null
   }
 ]
