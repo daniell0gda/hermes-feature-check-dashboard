@@ -6,17 +6,18 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-32-retry-20260813/",
-  "heartbeat_at": "2026-08-13T18:38:08.283Z",
-  "last_node": "plan",
+  "heartbeat_at": "2026-08-13T18:40:06.093Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-13T18:38:08.283Z",
+  "last_event_at": "2026-08-13T18:40:06.093Z",
   "process_id": 53452,
   "host": "139f564e62bd",
   "phase": "blocked",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-13T18:38:08.284743+00:00",
-    "last_success_at": "2026-08-13T18:36:41.095537+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-13T18:40:06.095175+00:00",
+    "last_success_at": "2026-08-13T18:38:12.411152+00:00",
+    "last_error": null,
+    "last_skipped_remote_at": "2026-08-13T18:38:12.426857+00:00"
   },
   "metrics": {}
 }
