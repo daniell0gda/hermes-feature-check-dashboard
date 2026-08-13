@@ -1,47 +1,31 @@
-# Issue #5 continuation report
+# Issue #5 — Cannon Siege Payload fixture repair
 
-## Verdict
+## Verdict: done
 
-**incomplete** (checker classification: `design_failure`).
+Focused fixture repair completed through real team-work orchestration (plan → code → check). Checker classification: `pass`; no bounded revision was needed.
 
-## Done
+### What changed
+- Modified only `tests/scenarios/cannon_siege_payload.json` fixture placement: both Cannon positions are `[1.5, 0.0, 0.0]` instead of `[4.0, 0.0, 1.0]`.
+- The old position selected map_7 path-1 Mushnub targets (`max_hp=22`), yielding three `0.22` events (`hp_22=0.66`). The repaired position deterministically reaches path-0 Green Blob (`max_hp=40`) and Cactoro (`max_hp=35`).
+- Exact assertions were preserved: `hp_35 == 0.35`, `hp_40 == 0.40`, Cannon aggregate `0.75`, perk-off zero telemetry, and final reset.
+- No production or harness-core change was made for this fixture mismatch.
 
-- Started a fresh team-work dashboard run: `issue-5-cannon-siege-payload-continuation`.
-- Real delegated phases completed: plan `deleg_f3cb1f48`, code `deleg_9ffb89ee`, check `deleg_d12dca9f`.
-- Fresh editor gate passed: `godot --headless --path . --editor --quit-after 300`, via `run_project_cmd`, exit 0, no visible parse/resource/script diagnostics.
-- Fresh exact explicit-scene harness reached gameplay: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/cannon_siege_payload.json`, via `run_project_cmd`.
-- The action-13 issue was investigated. Cannon true damage is emitted, attributed to Cannon, gated by the selected Unique perk, and equals 1% of runtime target max HP.
-- Perk-off arm passed with zero true-damage instrumentation and empty buckets.
-- Flat artifacts were refreshed: `plan.md`, `clusters/cannon-siege-payload.md`, `coder-reports/revision-continuation-cannon-siege-payload.md`, `check.md`, `status.md`, `revisions.md`, `state.json`.
+### Fresh verification
+- Editor gate via `run_project_cmd`: `["godot","--headless","--path",".","--editor","--quit-after","300"]`; exit `0`, `timedOut=false`.
+- Explicit gameplay via `run_project_cmd`: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cannon_siege_payload.json"]`; exit `0`, `timedOut=false`.
+- Fresh result: `.gen/harness/cannon_siege_payload/result.json`; `status=pass`, 39/39 actions passed, 5/5 expectations passed.
+- Perk-off actions pass normal Cannon damage, zero true-damage count, and empty buckets.
+- Active actions pass exact hp35/hp40/0.75, with ratio `0.01`, Cannon attribution, and max-HP scaling.
+- Reset actions pass level 0, disabled config, ratio 0, zero true-damage count, and empty buckets; `siege_payload_reset` snapshot exists.
+- `git diff --check`: exit 0, empty output.
+- Combined runner output had no targeted Parse Error, Failed loading resource/script, Invalid parameter, or SCRIPT ERROR. Pre-existing non-fatal missing-node/duplicate-signal/shutdown resource-leak noise remains documented in `.gen/check.md`; separate stdout/stderr paths were not returned.
 
-## Not done / blockers
+### Orchestration and lifecycle
+- Real delegated artifacts: `.gen/plan.md`, `.gen/clusters/cannon-siege-payload.md`, `.gen/coder-reports/cannon-siege-payload.md`, `.gen/check.md`, `.gen/status.md`.
+- Dashboard run: `issue-5-cannon-siege-payload-fixture-repair-20260813`.
+- Commit/push/merge: not performed. GitHub issue #5: not closed.
+- Runner worker: released after final project command.
 
-- Required exact scaling did not pass. Runtime targets were `max_hp=22`; fresh active evidence was three `0.22` events (`hp_22=0.66`), not `hp_35=0.35`, `hp_40=0.40`, total `0.75`.
-- The scenario fixture/design must deterministically create or select runtime targets with max HP 35 and 40. Production true-damage code must not be changed merely to fake those buckets.
-- Final reset was not exercised because the harness timed out at action 27 waiting for `stats.true_damage_by_max_hp.hp_35 == 0.35`.
-- Complete focused raw stdout/stderr cleanliness is unverified because runner output was bounded; visible preview had no targeted parse/resource diagnostic.
-
-## Evidence
-
-- Result: `.gen/harness/cannon_siege_payload/result.json` (`status: timeout`, action index 27).
-- Checker: `.gen/check.md`; authoritative status: `.gen/status.md`.
-- Dashboard local run: `.gen/team-work-dashboard/runs/issue-5-cannon-siege-payload-continuation/`.
-- Public dashboard URL requested: https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-5-cannon-siege-payload-continuation/ (remote publish completed, but GitHub Pages currently returns 404 while deployment propagates; root site still shows only the prior published run).
-
-## Lifecycle
-
-No commit, push of the issue branch, merge, or issue closure was performed. Next action is a focused scenario-fixture repair and rerun of the same exact editor/focused command pair.
-
-## Human feedback
-
-No human confirmation was obtained; runtime acceptance remains incomplete.
-
-## Delegation
-
-- plan: `deleg_f3cb1f48`
-- code: `deleg_9ffb89ee`
-- check: `deleg_d12dca9f` (`design_failure`)
-
-## Revision budget
-
-One targeted continuation cycle was consumed; no speculative second cycle was run.
+### Remaining gaps
+- No visual/windowed evidence was required by the acceptance criteria.
+- Diagnostic limitation: run_project_cmd exposed combined output, not separate persisted stdout/stderr files; the targeted scan is against the complete inline output.
