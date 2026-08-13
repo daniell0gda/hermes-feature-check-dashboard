@@ -1,11 +1,1 @@
-{
-  "invocations": [
-    {
-      "task_id": "plan-issue-61-resume",
-      "role": "plan",
-      "cluster_id": null,
-      "status": "completed",
-      "usage": "unknown"
-    }
-  ]
-}
+{}

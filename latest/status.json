@@ -2,32 +2,22 @@
   "run_id": "issue-61-team-work-resume-20260813T175201Z",
   "feature": "issue-61",
   "status": "running",
-  "started_at": "2026-08-13T17:53:36.530Z",
+  "started_at": "2026-08-13T18:04:24.350Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-61-team-work-resume-20260813T175201Z/",
-  "heartbeat_at": "2026-08-13T18:06:25.019Z",
+  "heartbeat_at": "2026-08-13T18:09:44.011Z",
   "last_node": "implementing",
   "active_node": null,
-  "last_event_at": "2026-08-13T18:06:25.019Z",
-  "process_id": 41536,
+  "last_event_at": "2026-08-13T18:09:44.011Z",
+  "process_id": 45105,
   "host": "139f564e62bd",
   "phase": "coded",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-13T18:06:25.020925+00:00",
-    "last_success_at": "2026-08-13T17:56:39.134116+00:00",
+    "last_attempt_at": "2026-08-13T18:09:44.012968+00:00",
+    "last_success_at": "2026-08-13T18:04:34.881497+00:00",
     "last_error": null,
-    "last_skipped_remote_at": "2026-08-13T17:56:39.862976+00:00"
+    "last_skipped_remote_at": "2026-08-13T18:04:38.689824+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan-issue-61-resume",
-        "role": "plan",
-        "cluster_id": null,
-        "status": "completed",
-        "usage": "unknown"
-      }
-    ]
-  }
+  "metrics": {}
 }
