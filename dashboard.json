@@ -1,12 +1,7 @@
 [
   {
-    "run_id": "issue-62-dashboard-recovery-3b366b5d5a",
-    "status": "failed",
-    "url": "runs/issue-62-dashboard-recovery-3b366b5d5a/"
-  },
-  {
-    "run_id": "issue-62-531dda4a65e6",
+    "run_id": "leader-smoke",
     "status": "running",
-    "url": "runs/issue-62-531dda4a65e6/"
+    "url": "runs/leader-smoke/"
   }
 ]
