@@ -13,6 +13,20 @@
       "cluster_id": "world-hazard-cleanup",
       "cost_status": "unavailable",
       "checker_result": "completed"
+    },
+    {
+      "task_id": "code-hazard-transition-regression",
+      "role": "code",
+      "cluster_id": "hazard-transition-regression",
+      "cost_status": "unavailable",
+      "checker_result": "blocked"
+    },
+    {
+      "task_id": "check-35",
+      "role": "check",
+      "cluster_id": null,
+      "cost_status": "unavailable",
+      "checker_result": "incomplete"
     }
   ]
 }
