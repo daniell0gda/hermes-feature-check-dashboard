@@ -17,6 +17,19 @@
       "cluster_id": "cannon-siege-payload",
       "role": "code",
       "cost_status": "unavailable"
+    },
+    {
+      "task_id": "code-fixture-repair-issue-5",
+      "cluster_id": "cannon-siege-payload",
+      "role": "code",
+      "cost_status": "unavailable"
+    },
+    {
+      "task_id": "check-fixture-repair-issue-5",
+      "cluster_id": "cannon-siege-payload",
+      "role": "check",
+      "checker_result": "pass",
+      "cost_status": "unavailable"
     }
   ]
 }

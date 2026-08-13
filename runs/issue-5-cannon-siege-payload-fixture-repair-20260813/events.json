@@ -16,5 +16,14 @@
     "duration_ms": 7072,
     "summary": "scenario fixture repaired: both Cannon placements at [1.5,0,0]; fresh editor gate and explicit harness pass; reset verified",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-13T14:56:45.627Z",
+    "node": "checking",
+    "status": "completed",
+    "duration_ms": 13560,
+    "summary": "pass; editor 0, explicit harness 0, result status pass, 39/39 actions, 5/5 expectations, reset verified",
+    "error": null
   }
 ]
