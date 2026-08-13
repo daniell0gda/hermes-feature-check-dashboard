@@ -1,10 +1,11 @@
-# Team-leader report — issue #5
+# Team-leader report — issue #5 continuation
 
-- Verdict: **blocked**.
-- Checker classification: final `blocked` after revision 1; revision budget 1/2 consumed; no further revision dispatched.
-- Delegated plan → code → check → revision-code → revision-check with real handles recorded in `state.json`.
-- Evidence: editor/import gate exit 0 (Godot 4.4.1); focused runner HTTP 422 / exit 1 with fresh result status `timeout`, reason `game scene did not become available`, empty actions/expectations; `git diff --check` exit 0.
-- Changes: perk definition/wiring, gated Cannon explosion true-damage path, true-damage health/telemetry support, focused/revised scenario, StatsManager parse correction.
-- Unverified: all runtime progression/gameplay/scaling/gating/reset assertions and complete focused raw diagnostics due to pre-scene harness blocker.
-- Next action: investigate scene availability/AgentHarness runner blocker and rerun the exact focused command with fresh result/raw diagnostics; do not weaken acceptance criteria.
-- Lifecycle: worker released after final runner command. No commit, push, merge, or issue closure performed.
+- **Checker classification:** `design_failure`.
+- **Revision budget:** 1 targeted continuation cycle; consumed 1; no further speculative cycle.
+- **Delegation:** plan `deleg_f3cb1f48`, code `deleg_9ffb89ee`, check `deleg_d12dca9f`.
+- **Routing:** terminal incomplete, because the remaining failure is a scenario fixture/design mismatch rather than the obsolete pre-scene diagnosis.
+- **Fresh evidence:** editor gate exit 0; exact explicit-scene gameplay reached action 27. Perk-off zero gating passed. Active Cannon true damage passed semantically at 1% of runtime `max_hp=22`, yielding three `0.22` events and `hp_22=0.66`.
+- **Unmet acceptance:** exact `hp_35=.35`, `hp_40=.40`, total `.75`; final reset was not reached. Complete raw focused diagnostic scan is also unverified due bounded runner output.
+- **Next action:** repair the scenario fixture/map so runtime targets are max HP 35 and 40, retain exact assertions, then rerun the editor gate and explicit-scene command.
+- **Lifecycle:** no commit, issue-branch push, merge, or issue closure.
+- **Dashboard:** run id `issue-5-cannon-siege-payload-continuation`; remote publish attempted and commit created, but public Pages URL currently returns 404 during propagation. URL: https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-5-cannon-siege-payload-continuation/

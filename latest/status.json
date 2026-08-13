@@ -16,7 +16,7 @@
   "dashboard_publish": {
     "last_attempt_at": "2026-08-13T14:32:34.201191+00:00",
     "last_error": null,
-    "last_skipped_remote_at": "2026-08-13T14:32:34.211524+00:00"
+    "last_success_at": "2026-08-13T14:32:34Z"
   },
   "metrics": {}
 }

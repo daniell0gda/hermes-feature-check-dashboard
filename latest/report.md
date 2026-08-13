@@ -1,32 +1,47 @@
-# Team-work report — issue #5
+# Issue #5 continuation report
 
 ## Verdict
-**blocked** after bounded revision budget consumption 1/2.
 
-## Concrete changes
-- Added `cannon_siege_payload` Unique progression definition (1% max-HP ratio), Cannon progression manager state/config and ProgressionManager facade/reset wiring.
-- Integrated gated true-damage bonus into the existing Cannonball explosion path.
-- Added Enemy/EnemyHealthController true-damage path and StatsManager true-component telemetry.
-- Added and revised `tests/scenarios/cannon_siege_payload.json` to cover progression, perk-off zero, two active max-HP targets (0.35/0.40, total 0.75), and reset.
-- Corrected `autoload/StatsManager.gd:100` to use `roundi(target_max_hp)`.
+**incomplete** (checker classification: `design_failure`).
 
-## Delegated phases
-- Plan `plan-issue-5` / handle `deleg_a230a911`: completed; plan and one cluster written.
-- Code `code-cannon-siege-payload` / handle `deleg_4e3e2855`: completed; implementation and initial evidence.
-- Check `check-issue-5` / handle `deleg_f2d6636d`: fixable; found parse/scenario gaps.
-- Revision code `revision-code-1` / handle `deleg_de2cb797`: completed; parse fix and scenario coverage revision.
-- Revision check `revision-check-1` / handle `deleg_fa3425e9`: blocked; fresh harness remained pre-scene timeout.
+## Done
 
-## Actual verification
-- Approved editor gate `godot --headless --path . --editor --quit-after 300` via `run_project_cmd(project=godot-td, workspace=godot-td/issue-5)`: exit 0, Godot 4.4.1; final checker saw no targeted diagnostics.
-- Approved focused scenario via same runner: HTTP 422 / Godot exit 1; fresh `.gen/harness/cannon_siege_payload/result.json` status `timeout`, reason `game scene did not become available`, 120.001s, empty actions/expectations, zero true-damage events.
-- Hermes-side `git diff --check`: exit 0.
-- Worker released with `remove=true` after final runner command.
+- Started a fresh team-work dashboard run: `issue-5-cannon-siege-payload-continuation`.
+- Real delegated phases completed: plan `deleg_f3cb1f48`, code `deleg_9ffb89ee`, check `deleg_d12dca9f`.
+- Fresh editor gate passed: `godot --headless --path . --editor --quit-after 300`, via `run_project_cmd`, exit 0, no visible parse/resource/script diagnostics.
+- Fresh exact explicit-scene harness reached gameplay: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/cannon_siege_payload.json`, via `run_project_cmd`.
+- The action-13 issue was investigated. Cannon true damage is emitted, attributed to Cannon, gated by the selected Unique perk, and equals 1% of runtime target max HP.
+- Perk-off arm passed with zero true-damage instrumentation and empty buckets.
+- Flat artifacts were refreshed: `plan.md`, `clusters/cannon-siege-payload.md`, `coder-reports/revision-continuation-cannon-siege-payload.md`, `check.md`, `status.md`, `revisions.md`, `state.json`.
 
 ## Not done / blockers
-All runtime progression, perk gating, max-HP scaling, true-damage attribution, reset, and focused regression assertions remain unverified because AgentHarness never acquired the game scene. Complete focused raw stdout/stderr was not exposed by the runner response. No visual criterion was required. No commit/push/merge/issue closure performed.
 
-## Next action
-Investigate and fix the pre-scene AgentHarness/runner availability blocker, then rerun the exact focused command and inspect fresh structured and raw evidence. Do not weaken criteria or spend speculative revisions without a proven cause.
+- Required exact scaling did not pass. Runtime targets were `max_hp=22`; fresh active evidence was three `0.22` events (`hp_22=0.66`), not `hp_35=0.35`, `hp_40=0.40`, total `0.75`.
+- The scenario fixture/design must deterministically create or select runtime targets with max HP 35 and 40. Production true-damage code must not be changed merely to fake those buckets.
+- Final reset was not exercised because the harness timed out at action 27 waiting for `stats.true_damage_by_max_hp.hp_35 == 0.35`.
+- Complete focused raw stdout/stderr cleanliness is unverified because runner output was bounded; visible preview had no targeted parse/resource diagnostic.
 
-Issue closure was not performed implicitly.
+## Evidence
+
+- Result: `.gen/harness/cannon_siege_payload/result.json` (`status: timeout`, action index 27).
+- Checker: `.gen/check.md`; authoritative status: `.gen/status.md`.
+- Dashboard local run: `.gen/team-work-dashboard/runs/issue-5-cannon-siege-payload-continuation/`.
+- Public dashboard URL requested: https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-5-cannon-siege-payload-continuation/ (remote publish completed, but GitHub Pages currently returns 404 while deployment propagates; root site still shows only the prior published run).
+
+## Lifecycle
+
+No commit, push of the issue branch, merge, or issue closure was performed. Next action is a focused scenario-fixture repair and rerun of the same exact editor/focused command pair.
+
+## Human feedback
+
+No human confirmation was obtained; runtime acceptance remains incomplete.
+
+## Delegation
+
+- plan: `deleg_f3cb1f48`
+- code: `deleg_9ffb89ee`
+- check: `deleg_d12dca9f` (`design_failure`)
+
+## Revision budget
+
+One targeted continuation cycle was consumed; no speculative second cycle was run.
