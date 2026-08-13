@@ -1,53 +1,20 @@
 {
   "run_id": "issue-35-resume",
   "feature": "Issue #35 timed ground hazards",
-  "status": "failed",
-  "started_at": "2026-08-13T10:09:41.203Z",
-  "ended_at": "2026-08-13T10:34:41.332Z",
+  "status": "running",
+  "started_at": "2026-08-13T11:35:54.306Z",
+  "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-35-resume/",
-  "heartbeat_at": "2026-08-13T10:34:41.332Z",
-  "last_node": "checking",
+  "heartbeat_at": "2026-08-13T11:35:54.306Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-13T10:34:41.320Z",
-  "process_id": 9413,
+  "last_event_at": null,
+  "process_id": 25193,
   "host": "9407b5cac2f4",
-  "phase": "checking",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-13T10:34:41.332199+00:00",
-    "last_error": null,
-    "last_skipped_remote_at": "2026-08-13T10:34:41.341302+00:00"
+    "last_attempt_at": "2026-08-13T11:35:54.306585+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan-35",
-        "role": "planning",
-        "cluster_id": null,
-        "cost_status": "unavailable",
-        "checker_result": "completed"
-      },
-      {
-        "task_id": "code-world-hazard-cleanup",
-        "role": "code",
-        "cluster_id": "world-hazard-cleanup",
-        "cost_status": "unavailable",
-        "checker_result": "completed"
-      },
-      {
-        "task_id": "code-hazard-transition-regression",
-        "role": "code",
-        "cluster_id": "hazard-transition-regression",
-        "cost_status": "unavailable",
-        "checker_result": "blocked"
-      },
-      {
-        "task_id": "check-35",
-        "role": "check",
-        "cluster_id": null,
-        "cost_status": "unavailable",
-        "checker_result": "incomplete"
-      }
-    ]
-  }
+  "metrics": {}
 }
