@@ -1,12 +1,12 @@
 [
   {
-    "run_id": "issue-61-team-work-resume-20260813T175201Z",
-    "status": "completed",
-    "url": "runs/issue-61-team-work-resume-20260813T175201Z/"
+    "run_id": "issue-32-team-work-20260813",
+    "status": "failed",
+    "url": "runs/issue-32-team-work-20260813/"
   },
   {
-    "run_id": "issue-61-team-work",
-    "status": "completed",
-    "url": "runs/issue-61-team-work/"
+    "run_id": "issue-32-retry-20260813",
+    "status": "running",
+    "url": "runs/issue-32-retry-20260813/"
   }
 ]
