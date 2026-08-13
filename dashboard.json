@@ -1,17 +1,7 @@
 [
   {
-    "run_id": "issue-5-cannon-siege-payload-fixture-repair-20260813",
-    "status": "completed",
-    "url": "runs/issue-5-cannon-siege-payload-fixture-repair-20260813/"
-  },
-  {
-    "run_id": "issue-5-cannon-siege-payload-continuation",
-    "status": "failed",
-    "url": "runs/issue-5-cannon-siege-payload-continuation/"
-  },
-  {
-    "run_id": "issue-5-cannon-siege-payload",
-    "status": "failed",
-    "url": "runs/issue-5-cannon-siege-payload/"
+    "run_id": "issue-32-team-work-20260813",
+    "status": "running",
+    "url": "runs/issue-32-team-work-20260813/"
   }
 ]
