@@ -15,7 +15,7 @@
   "phase": "blocked",
   "dashboard_publish": {
     "last_attempt_at": "2026-08-13T23:33:27.613684+00:00",
-    "last_success_at": "2026-08-13T23:33:27.612704+00:00",
+    "last_success_at": "2026-08-13T23:33:31.806924+00:00",
     "last_error": null,
     "last_skipped_remote_at": "2026-08-13T23:30:51.258461+00:00"
   },
