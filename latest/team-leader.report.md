@@ -1,24 +1,25 @@
-# Team leader report — issue #32
+# Team leader report — issue #32 retry
 
 ## Verdict
-blocked
+passed
 
-## Worker phases
-- plan: completed (`deleg_78ed7711`); flat plan and three clusters written.
-- production code: completed (`deleg_1de9b695`); four authorized production files changed; editor gate exit 0.
-- focused evidence: completed (`deleg_f8fd2533`); new focused scenario added; explicit-scene run timed out during underground-entry probe; schema limitations documented.
-- check: blocked (`deleg_6bf00e1a`); preservation runs passed, exact retirement criteria remain unverified.
+## Phases
+- plan: completed (`deleg_7a216db9`), rebased continuation plan at `30ea815`.
+- focused cleanup: completed (`deleg_61a1e6ea`), focused scenario pass with 29/29 actions.
+- check: pass (`deleg_8c8243c6`), fresh import/focused/preservation verification.
 
 ## Evidence
-- Fresh explicit-scene Ice cadence, roster, and beam/cone regressions passed.
-- Focused scenario did not cleanly pass; pipe consumption, exact-once behavior, .4/.6 rounding, exact attribution, death HP/kill semantics, and egg/cave/tube exact-once semantics remain unverified.
-- `git diff --check` passed; changed source scope is four production scripts plus the new focused scenario.
+- `.4 -> 0`, cleared, repeat no-op; HP unchanged.
+- `.6 -> 1`, cleared, repeat no-op; HP `40 -> 39`.
+- Fire/instance `6101` attribution, exactly one kill, tube `captured=1/exited=1`, surface egg `94 -> 84`.
+- Fresh Ice cadence, roster, and beam/cone preservation scenarios passed.
+- No fresh parse/resource-load/invalid-parameter errors; pre-existing runtime diagnostics documented in `.gen/check.md`.
 
 ## Dashboard
-The run is being terminalized as blocked and republished through the configured GitHub Pages deployment. The public URL must be verified after Pages propagation.
+Run `issue-32-retry-20260813` is being terminalized and republished through configured GitHub Pages deployment. Public run JSON must be verified after propagation.
 
 ## Lifecycle
-No commit, push, merge, or issue closure was performed on the project branch. GitHub issue #32 remains open and in-progress.
+Project branch is rebased onto `origin/master` at `30ea815`; no project commit, push, merge, or issue closure was performed. Issue #32 remains open/in-progress pending user lifecycle decision.
 
 ## Next action
-Add a minimal test-only/harness evidence seam for exact fractional residual injection, per-arm checkpoints, retirement/event deltas, and confirmed pipe consumption; rerun focused evidence and checker.
+Human review/acceptance, then commit/push/PR or issue closure as separately authorized.
