@@ -34,5 +34,14 @@
     "duration_ms": 433193,
     "summary": "Revision code blocked by hard stop: real MainMenu Continue second process timed out (runner 422; game scene unavailable). Implementable probes pass: dual clear producers exactly once, raw save preservation/recovery, Saving hold, genuine vic\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-13T23:33:23.634Z",
+    "node": "revision-check",
+    "status": "completed",
+    "duration_ms": 152402,
+    "summary": "Final classification blocked. Implementable probes verified: dual clear producers exactly once, raw failed-write preservation/recovery, Saving hold, victory screenshots. Hard blockers: Continue timed out in both modes with game scene unavai\u2026",
+    "error": null
   }
 ]
