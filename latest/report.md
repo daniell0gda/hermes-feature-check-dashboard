@@ -8,8 +8,8 @@ The inherited implementation was validated and completed through the required de
 
 ## Delegated phases
 - Plan: `deleg_34c8935f`, refreshed plan/cluster after validating inherited artifacts.
-- Code: `deleg_f7a92713`, preserved valid changes and completed the scoped four-file cluster.
-- Check: `deleg_90b8d812`, classification `pass`.
+- Code: `deleg_20f466c5`, preserved valid changes and completed the scoped four-file cluster.
+- Check: `deleg_f4065aa8`, classification `pass`.
 - Revision budget: 2; consumed 0.
 
 ## Fresh verification
@@ -21,7 +21,7 @@ All commands used approved `run_project_cmd` with `godot-td` / `godot-td/issue-6
 - `projectiles_10x_beam_cone`: exit 0, status pass
 - `git diff --check`: exit 0
 
-Raw diagnostic scans found no targeted Parse Error, failed resource load, Invalid parameter, or SCRIPT ERROR. Evidence is in `.gen/check.md`, `.gen/status.md`, coder report, and `.gen/harness/*/result.json`; raw capture paths are listed there. The project worker was released successfully after final runner use.
+Raw diagnostic scans found no targeted Parse Error, failed resource load, Invalid parameter, or SCRIPT ERROR. Evidence is in `.gen/check.md`, `.gen/status.md`, coder report, and `.gen/harness/*/result.json`; raw capture paths are listed there. No worker release was performed by this run.
 
 ## Files changed
 Project diff is intentionally uncommitted and limited to:

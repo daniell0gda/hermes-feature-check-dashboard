@@ -5,14 +5,14 @@
 
 ## Orchestration
 - Resumed the flat `.gen` run with one canonical long-lived dashboard run: `issue-61-team-work-resume-20260813T175201Z`.
-- Real delegated phases completed: plan `deleg_34c8935f`, code `deleg_f7a92713`, check `deleg_90b8d812`.
+- Real delegated phases completed: plan `deleg_34c8935f`, code `deleg_20f466c5`, check `deleg_f4065aa8`.
 - Revision budget: 2; consumed: 0. Checker classification: `pass`.
 
 ## Evidence
 - `.gen/status.md` and `.gen/check.md` report fresh editor gate, focused scenario, and all three baselines passing through `run_project_cmd` with exit 0.
 - Focused residual, death/cave, surface/egg, suction tube capture/exit, and reload reset assertions pass.
 - `git diff --check` passes; intended four-file project diff remains uncommitted.
-- Project worker was released successfully after final runner use.
+- No project-worker release was performed by this run; release remains a cleanup action.
 
 ## Blockers / unverified
 None. Existing non-targeted Godot UI/teardown diagnostics are documented in checker evidence and did not include targeted parse/resource failures.
