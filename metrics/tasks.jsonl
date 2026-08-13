@@ -1,2 +1,2 @@
 {"run_id": "issue-61-team-work", "url": "runs/issue-61-team-work/"}
-{"run_id": "issue-61-team-work-resume-20260813T175201Z", "url": "runs/issue-61-team-work-resume-20260813T175201Z/"}
+{"run_id": "issue-61-team-work-resume-20260813T175201Z", "url": "runs/issue-61-team-work-resume-20260813T175201Z/", "invocations": [{"task_id": "plan-issue-61-resume", "role": "plan", "cluster_id": null, "status": "completed", "usage": "unknown"}, {"task_id": "code-residual-flush-harness-resume", "role": "code", "cluster_id": "residual-flush-harness", "status": "completed", "usage": "unknown"}]}
