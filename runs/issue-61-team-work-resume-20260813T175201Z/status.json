@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-61-team-work-resume-20260813T175201Z/",
-  "heartbeat_at": "2026-08-13T17:53:36.530Z",
-  "last_node": null,
-  "active_node": "planning",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-13T17:56:34.679Z",
+  "last_node": "planning",
+  "active_node": null,
+  "last_event_at": "2026-08-13T17:56:34.679Z",
   "process_id": 41536,
   "host": "139f564e62bd",
-  "phase": "planning",
+  "phase": "planned",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-13T17:54:45.525786+00:00",
-    "last_success_at": "2026-08-13T17:53:47.842129+00:00",
+    "last_attempt_at": "2026-08-13T17:56:34.680570+00:00",
+    "last_success_at": "2026-08-13T17:54:49.897252+00:00",
     "last_error": null
   },
   "metrics": {}
