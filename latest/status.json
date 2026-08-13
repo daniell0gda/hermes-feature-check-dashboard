@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-dispatch/",
   "heartbeat_at": "2026-08-13T23:01:13.292Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
   "process_id": 7599,
   "host": "361add3f9f5b",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-13T23:01:13.292996+00:00"
+    "last_attempt_at": "2026-08-13T23:02:00.360876+00:00",
+    "last_success_at": "2026-08-13T23:01:17.231574+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
