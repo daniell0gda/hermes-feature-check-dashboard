@@ -6,17 +6,27 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-5-cannon-siege-payload-fixture-repair-20260813/",
-  "heartbeat_at": "2026-08-13T14:47:09.780Z",
-  "last_node": null,
-  "active_node": "planning",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-13T14:50:03.267Z",
+  "last_node": "planning",
+  "active_node": "implementing",
+  "last_event_at": "2026-08-13T14:50:03.267Z",
   "process_id": 18809,
   "host": "139f564e62bd",
-  "phase": "planning",
+  "phase": "implementing",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-13T14:49:55.054065+00:00",
-    "last_success_at": "2026-08-13T14:47:13.986017+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-13T14:54:22.168404+00:00",
+    "last_success_at": "2026-08-13T14:49:59.181968+00:00",
+    "last_error": null,
+    "last_skipped_remote_at": "2026-08-13T14:50:03.286953+00:00"
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan-fixture-repair-issue-5",
+        "cluster_id": "cannon-siege-payload",
+        "role": "plan",
+        "cost_status": "unavailable"
+      }
+    ]
+  }
 }

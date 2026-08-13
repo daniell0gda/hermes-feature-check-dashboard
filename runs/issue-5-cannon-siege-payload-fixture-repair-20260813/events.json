@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-13T14:50:03.267Z",
+    "node": "planning",
+    "status": "completed",
+    "duration_ms": 8214,
+    "summary": "plan.md and clusters/cannon-siege-payload.md written; one fixture-only cluster, parallel:false",
+    "error": null
+  }
+]

@@ -1,2 +1,39 @@
-<!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Feature-check report</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:16px/1.6 system-ui}article{max-width:860px;margin:36px auto;padding:28px;background:#fff;border:1px solid #e4e7ec;border-radius:16px;box-shadow:0 12px 32px rgba(16,24,40,.08)}h1,h2{letter-spacing:-.03em}a{color:#2563eb}pre{background:#f8fafc;padding:14px;border-radius:10px}img{display:block;max-width:100%;height:auto;margin:16px 0;border:1px solid #e4e7ec;border-radius:10px}</style><article><h1>No report generated</h1>
-<p>This run did not produce a Markdown report.</p></article>
+<!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Feature-check report</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:16px/1.6 system-ui}article{max-width:860px;margin:36px auto;padding:28px;background:#fff;border:1px solid #e4e7ec;border-radius:16px;box-shadow:0 12px 32px rgba(16,24,40,.08)}h1,h2{letter-spacing:-.03em}a{color:#2563eb}pre{background:#f8fafc;padding:14px;border-radius:10px}img{display:block;max-width:100%;height:auto;margin:16px 0;border:1px solid #e4e7ec;border-radius:10px}</style><article><h1>Issue #5 continuation report</h1>
+<h2>Verdict</h2>
+<p>**incomplete** (checker classification: `design_failure`).</p>
+<h2>Done</h2>
+<ul>
+<li>Started a fresh team-work dashboard run: `issue-5-cannon-siege-payload-continuation`.</li>
+<li>Real delegated phases completed: plan `deleg_f3cb1f48`, code `deleg_9ffb89ee`, check `deleg_d12dca9f`.</li>
+<li>Fresh editor gate passed: `godot --headless --path . --editor --quit-after 300`, via `run_project_cmd`, exit 0, no visible parse/resource/script diagnostics.</li>
+<li>Fresh exact explicit-scene harness reached gameplay: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/cannon_siege_payload.json`, via `run_project_cmd`.</li>
+<li>The action-13 issue was investigated. Cannon true damage is emitted, attributed to Cannon, gated by the selected Unique perk, and equals 1% of runtime target max HP.</li>
+<li>Perk-off arm passed with zero true-damage instrumentation and empty buckets.</li>
+<li>Flat artifacts were refreshed: `plan.md`, `clusters/cannon-siege-payload.md`, `coder-reports/revision-continuation-cannon-siege-payload.md`, `check.md`, `status.md`, `revisions.md`, `state.json`.</li>
+</ul>
+<h2>Not done / blockers</h2>
+<ul>
+<li>Required exact scaling did not pass. Runtime targets were `max_hp=22`; fresh active evidence was three `0.22` events (`hp_22=0.66`), not `hp_35=0.35`, `hp_40=0.40`, total `0.75`.</li>
+<li>The scenario fixture/design must deterministically create or select runtime targets with max HP 35 and 40. Production true-damage code must not be changed merely to fake those buckets.</li>
+<li>Final reset was not exercised because the harness timed out at action 27 waiting for `stats.true_damage_by_max_hp.hp_35 == 0.35`.</li>
+<li>Complete focused raw stdout/stderr cleanliness is unverified because runner output was bounded; visible preview had no targeted parse/resource diagnostic.</li>
+</ul>
+<h2>Evidence</h2>
+<ul>
+<li>Result: `.gen/harness/cannon_siege_payload/result.json` (`status: timeout`, action index 27).</li>
+<li>Checker: `.gen/check.md`; authoritative status: `.gen/status.md`.</li>
+<li>Dashboard local run: `.gen/team-work-dashboard/runs/issue-5-cannon-siege-payload-continuation/`.</li>
+<li>Public dashboard URL requested: https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-5-cannon-siege-payload-continuation/ (remote publish completed, but GitHub Pages currently returns 404 while deployment propagates; root site still shows only the prior published run).</li>
+</ul>
+<h2>Lifecycle</h2>
+<p>No commit, push of the issue branch, merge, or issue closure was performed. Next action is a focused scenario-fixture repair and rerun of the same exact editor/focused command pair.</p>
+<h2>Human feedback</h2>
+<p>No human confirmation was obtained; runtime acceptance remains incomplete.</p>
+<h2>Delegation</h2>
+<ul>
+<li>plan: `deleg_f3cb1f48`</li>
+<li>code: `deleg_9ffb89ee`</li>
+<li>check: `deleg_d12dca9f` (`design_failure`)</li>
+</ul>
+<h2>Revision budget</h2>
+<p>One targeted continuation cycle was consumed; no speculative second cycle was run.</p></article>
