@@ -1,9 +1,9 @@
 {
-  "total_runs": 1,
+  "total_runs": 2,
   "passed": 0,
   "escalated": 0,
   "abandoned": 0,
-  "total_worker_invocations": 1,
+  "total_worker_invocations": 0,
   "total_cost_usd": null,
   "input_tokens": null,
   "output_tokens": null
