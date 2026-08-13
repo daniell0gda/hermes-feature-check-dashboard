@@ -1,42 +1,45 @@
-# Issue #61 team-work report
+# Issue #61 checker report
 
 ## Verdict
-**done**
 
-## Result
-The inherited implementation was validated and completed through the required delegated plan → code → check workflow. The residual-flush harness now verifies rounded-zero and rounded-one residual behavior, exact attribution/idempotence, real death/cave consumption, surface egg arrival, signal-backed tube capture/exit, and post-reload reset.
+done
 
-## Delegated phases
-- Plan: `deleg_34c8935f`, refreshed plan/cluster after validating inherited artifacts.
-- Code: `deleg_20f466c5`, preserved valid changes and completed the scoped four-file cluster.
-- Check: `deleg_f4065aa8`, classification `pass`.
-- Revision budget: 2; consumed 0.
+## Classification
 
-## Fresh verification
-All commands used approved `run_project_cmd` with `godot-td` / `godot-td/issue-61`:
-- editor/import gate: exit 0
-- focused `issue_61_residual_flush`: exit 0, status pass
-- `ice_focus_cone_cadence`: exit 0, status pass
-- `smoke_tower_roster`: exit 0, status pass
-- `projectiles_10x_beam_cone`: exit 0, status pass
-- `git diff --check`: exit 0
+pass
 
-Raw diagnostic scans found no targeted Parse Error, failed resource load, Invalid parameter, or SCRIPT ERROR. Evidence is in `.gen/check.md`, `.gen/status.md`, coder report, and `.gen/harness/*/result.json`; raw capture paths are listed there. No worker release was performed by this run.
+## Exact commands and evidence
 
-## Files changed
-Project diff is intentionally uncommitted and limited to:
-- `scripts/game/actors/enemy/parts/EnemyHealthController.gd`
-- `scripts/testing/HarnessActions.gd`
-- `scripts/testing/HarnessValues.gd`
-- `tests/scenarios/issue_61_residual_flush.json`
+Approved runner parameters for every project command: `project=godot-td`, `workspace=godot-td/issue-61`.
 
-Flat `.gen` artifacts refreshed: `plan.md`, cluster file, coder report, check/status, state, this report, and team-leader report.
+1. `godot --version` — exit 0; Godot 4.4.1.stable.official.49a5bc7b6.
+2. `godot --headless --path . --editor --quit-after 300` — exit 0.
+3. `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/issue_61_residual_flush.json` — exit 0, fresh structured `status=pass`; result `.gen/harness/issue_61_residual_flush/result.json`.
+4. `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/ice_focus_cone_cadence.json` — exit 0, fresh `status=pass`; raw `/tmp/hermes-results/call_rJUWECjtuLD7QcrPkzumRo8K.txt`.
+5. `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/smoke_tower_roster.json` — exit 0, fresh `status=pass`; raw `/tmp/hermes-results/call_LMFVZfpKz3L5bqr8Hl0thMnW.txt`.
+6. `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/projectiles_10x_beam_cone.json` — exit 0, fresh `status=pass`; raw `/tmp/hermes-results/call_xPC2Zm4YqELF9hVBD0qpJ1hf.txt`.
+7. Final `git diff --check` — exit 0; final status remains the four intended implementation files (three modified plus the untracked focused scenario).
 
-## Dashboard
-One long-lived configured dashboard instance used run `issue-61-team-work-resume-20260813T175201Z`, with real GitDeployment to remote `git@github.com:daniell0gda/hermes-feature-check-dashboard.git`, branch `gh-pages`, protected SSH command `ssh -F /opt/data/ssh/config`. Terminal publication and public run-scoped verification follow this report.
+The focused result has 32 actions and 5/5 final expectations passing. Pre-reload action records independently prove 0.4 -> 0 and idempotence, 0.6 -> 1 with HP/`fire`/6101 attribution and idempotence, real Cactoro death attribution plus cave UID consumption, separate surface egg decrement, signal-backed tube `captured=1` and `exited=1`, and pre-reload checkpoints. Reload then yields `map_1`, egg 20, and zeroed stats. All three baseline result files have all expectations passing.
 
-## Not done / lifecycle
-No commit, push, merge, or GitHub issue closure was performed. Human review and any desired project commit/push/issue closure remain next actions.
+Independent complete-output scans of the three persisted baseline captures found zero `Parse Error`, `Failed loading resource`, `Failed to load script`, `Invalid parameter`, and `SCRIPT ERROR` markers. Focused runner output was independently inspected and showed no targeted parse/resource/script diagnostics. Known unrelated `Node not found` UI/health-bar messages, duplicate signal warnings, and renderer/RID/ObjectDB teardown leak diagnostics remain in fresh output and are recorded in `.gen/check.md`; they are not changed-file parse/resource failures and also occur in baseline runs.
+
+## Dashboard publication state
+
+No dashboard publication or notification was performed by this checker. Existing local `.gen/team-work-dashboard` artifacts were preserved. Parent owns dashboard phase/terminal publication and lifecycle actions.
+
+## Unverified criteria
+
+None.
 
 ## Next action
-Finish the same dashboard run, then independently verify remote gh-pages/run-scoped public status and events, HTTP 200, current request ID, terminal status, ended_at, and no skipped-remote marker.
+
+Parent should reconcile this report with the dashboard and complete the issue lifecycle. Do not modify source based on the known unrelated teardown/UI diagnostics.
+
+## Files written by this checker
+
+- `.gen/check.md`
+- `.gen/status.md`
+- `.gen/report.md`
+
+No source, scenario, or dashboard artifact was changed by the checker.
