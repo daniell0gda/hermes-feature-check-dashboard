@@ -1,0 +1,31 @@
+<!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Feature-check report</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:16px/1.6 system-ui}article{max-width:860px;margin:36px auto;padding:28px;background:#fff;border:1px solid #e4e7ec;border-radius:16px;box-shadow:0 12px 32px rgba(16,24,40,.08)}h1,h2{letter-spacing:-.03em}a{color:#2563eb}pre{background:#f8fafc;padding:14px;border-radius:10px}img{display:block;max-width:100%;height:auto;margin:16px 0;border:1px solid #e4e7ec;border-radius:10px}</style><article><h1>Team-work report — issue #5</h1>
+<h2>Verdict</h2>
+<p>**blocked** after bounded revision budget consumption 1/2.</p>
+<h2>Concrete changes</h2>
+<ul>
+<li>Added `cannon_siege_payload` Unique progression definition (1% max-HP ratio), Cannon progression manager state/config and ProgressionManager facade/reset wiring.</li>
+<li>Integrated gated true-damage bonus into the existing Cannonball explosion path.</li>
+<li>Added Enemy/EnemyHealthController true-damage path and StatsManager true-component telemetry.</li>
+<li>Added and revised `tests/scenarios/cannon_siege_payload.json` to cover progression, perk-off zero, two active max-HP targets (0.35/0.40, total 0.75), and reset.</li>
+<li>Corrected `autoload/StatsManager.gd:100` to use `roundi(target_max_hp)`.</li>
+</ul>
+<h2>Delegated phases</h2>
+<ul>
+<li>Plan `plan-issue-5` / handle `deleg_a230a911`: completed; plan and one cluster written.</li>
+<li>Code `code-cannon-siege-payload` / handle `deleg_4e3e2855`: completed; implementation and initial evidence.</li>
+<li>Check `check-issue-5` / handle `deleg_f2d6636d`: fixable; found parse/scenario gaps.</li>
+<li>Revision code `revision-code-1` / handle `deleg_de2cb797`: completed; parse fix and scenario coverage revision.</li>
+<li>Revision check `revision-check-1` / handle `deleg_fa3425e9`: blocked; fresh harness remained pre-scene timeout.</li>
+</ul>
+<h2>Actual verification</h2>
+<ul>
+<li>Approved editor gate `godot --headless --path . --editor --quit-after 300` via `run_project_cmd(project=godot-td, workspace=godot-td/issue-5)`: exit 0, Godot 4.4.1; final checker saw no targeted diagnostics.</li>
+<li>Approved focused scenario via same runner: HTTP 422 / Godot exit 1; fresh `.gen/harness/cannon_siege_payload/result.json` status `timeout`, reason `game scene did not become available`, 120.001s, empty actions/expectations, zero true-damage events.</li>
+<li>Hermes-side `git diff --check`: exit 0.</li>
+<li>Worker released with `remove=true` after final runner command.</li>
+</ul>
+<h2>Not done / blockers</h2>
+<p>All runtime progression, perk gating, max-HP scaling, true-damage attribution, reset, and focused regression assertions remain unverified because AgentHarness never acquired the game scene. Complete focused raw stdout/stderr was not exposed by the runner response. No visual criterion was required. No commit/push/merge/issue closure performed.</p>
+<h2>Next action</h2>
+<p>Investigate and fix the pre-scene AgentHarness/runner availability blocker, then rerun the exact focused command and inspect fresh structured and raw evidence. Do not weaken criteria or spend speculative revisions without a proven cause.</p>
+<p>Issue closure was not performed implicitly.</p></article>
