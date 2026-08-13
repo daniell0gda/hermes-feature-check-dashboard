@@ -6,18 +6,18 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-5-cannon-siege-payload-fixture-repair-20260813/",
-  "heartbeat_at": "2026-08-13T14:50:03.267Z",
-  "last_node": "planning",
-  "active_node": "implementing",
-  "last_event_at": "2026-08-13T14:50:03.267Z",
+  "heartbeat_at": "2026-08-13T14:54:29.239Z",
+  "last_node": "implementing",
+  "active_node": "checking",
+  "last_event_at": "2026-08-13T14:54:29.239Z",
   "process_id": 18809,
   "host": "139f564e62bd",
-  "phase": "implementing",
+  "phase": "checking",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-13T14:54:22.168404+00:00",
-    "last_success_at": "2026-08-13T14:49:59.181968+00:00",
+    "last_attempt_at": "2026-08-13T14:56:32.068110+00:00",
+    "last_success_at": "2026-08-13T14:54:26.250291+00:00",
     "last_error": null,
-    "last_skipped_remote_at": "2026-08-13T14:50:03.286953+00:00"
+    "last_skipped_remote_at": "2026-08-13T14:54:29.259998+00:00"
   },
   "metrics": {
     "invocations": [
@@ -25,6 +25,18 @@
         "task_id": "plan-fixture-repair-issue-5",
         "cluster_id": "cannon-siege-payload",
         "role": "plan",
+        "cost_status": "unavailable"
+      },
+      {
+        "task_id": "plan-fixture-repair-issue-5",
+        "cluster_id": "cannon-siege-payload",
+        "role": "plan",
+        "cost_status": "unavailable"
+      },
+      {
+        "task_id": "code-fixture-repair-issue-5",
+        "cluster_id": "cannon-siege-payload",
+        "role": "code",
         "cost_status": "unavailable"
       }
     ]

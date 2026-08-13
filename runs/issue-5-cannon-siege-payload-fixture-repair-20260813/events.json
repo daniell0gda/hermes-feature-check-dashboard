@@ -7,5 +7,14 @@
     "duration_ms": 8214,
     "summary": "plan.md and clusters/cannon-siege-payload.md written; one fixture-only cluster, parallel:false",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-13T14:54:29.239Z",
+    "node": "implementing",
+    "status": "completed",
+    "duration_ms": 7072,
+    "summary": "scenario fixture repaired: both Cannon placements at [1.5,0,0]; fresh editor gate and explicit harness pass; reset verified",
+    "error": null
   }
 ]
