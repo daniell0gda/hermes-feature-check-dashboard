@@ -1,12 +1,12 @@
 {
   "run_id": "issue-32-retry-20260813",
   "feature": "issue-32-retry-residual-flush",
-  "status": "completed",
+  "status": "failed",
   "started_at": "2026-08-13T18:35:48.047Z",
-  "ended_at": "2026-08-13T18:45:27.105Z",
+  "ended_at": "2026-08-13T18:45:31.067Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-32-retry-20260813/",
-  "heartbeat_at": "2026-08-13T18:45:27.105Z",
+  "heartbeat_at": "2026-08-13T18:45:31.067Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-13T18:45:09.645Z",
@@ -14,8 +14,8 @@
   "host": "139f564e62bd",
   "phase": "passed",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-13T18:45:27.105201+00:00",
-    "last_success_at": "2026-08-13T18:45:14.052930+00:00",
+    "last_attempt_at": "2026-08-13T18:45:31.067126+00:00",
+    "last_success_at": "2026-08-13T18:45:31.066140+00:00",
     "last_error": null,
     "last_skipped_remote_at": "2026-08-13T18:40:12.466816+00:00"
   },
