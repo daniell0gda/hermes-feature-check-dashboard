@@ -13,6 +13,13 @@
       "cluster_id": "residual-flush-harness",
       "status": "completed",
       "usage": "unknown"
+    },
+    {
+      "task_id": "check-issue-61-resume",
+      "role": "check",
+      "cluster_id": null,
+      "status": "pass",
+      "usage": "unknown"
     }
   ]
 }

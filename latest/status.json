@@ -1,21 +1,21 @@
 {
   "run_id": "issue-61-team-work-resume-20260813T175201Z",
   "feature": "issue-61",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-13T17:53:36.530Z",
-  "ended_at": null,
+  "ended_at": "2026-08-13T18:11:26.003Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-61-team-work-resume-20260813T175201Z/",
-  "heartbeat_at": "2026-08-13T18:10:51.344Z",
+  "heartbeat_at": "2026-08-13T18:11:26.003Z",
   "last_node": "checking",
   "active_node": null,
   "last_event_at": "2026-08-13T18:10:51.344Z",
   "process_id": 41536,
   "host": "139f564e62bd",
-  "phase": "coded",
+  "phase": "reporting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-13T18:10:51.345717+00:00",
-    "last_success_at": "2026-08-13T18:06:29.395472+00:00",
+    "last_attempt_at": "2026-08-13T18:11:26.003804+00:00",
+    "last_success_at": "2026-08-13T18:10:55.838170+00:00",
     "last_error": null,
     "last_skipped_remote_at": "2026-08-13T18:06:29.401304+00:00"
   },
@@ -33,6 +33,13 @@
         "role": "code",
         "cluster_id": "residual-flush-harness",
         "status": "completed",
+        "usage": "unknown"
+      },
+      {
+        "task_id": "check-issue-61-resume",
+        "role": "check",
+        "cluster_id": null,
+        "status": "pass",
         "usage": "unknown"
       }
     ]
