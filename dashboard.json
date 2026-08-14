@@ -1,5 +1,10 @@
 [
   {
+    "run_id": "issue-62-f90938dc40a1",
+    "status": "running",
+    "url": "runs/issue-62-f90938dc40a1/"
+  },
+  {
     "run_id": "issue-62-dashboard-recovery-3b366b5d5a",
     "status": "failed",
     "url": "runs/issue-62-dashboard-recovery-3b366b5d5a/"
