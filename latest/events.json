@@ -16,5 +16,14 @@
     "duration_ms": 567170,
     "summary": "Xvfb entrypoint now tracks PID, waits for xdpyinfo readiness, cleans up, and installs x11-utils. Continue still times out; diagnostic logs added but report and final seed->Continue verification remain incomplete.",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-14T07:16:07.217Z",
+    "node": "revision-code",
+    "status": "completed",
+    "duration_ms": 204066,
+    "summary": "Continue now passes through the real MainMenu->MapLoading->Game path with exact map_1 restore. Xvfb/OpenGL works and captures five screenshots. Remaining failure is only windowed final_clear_probe: could not advance to final wave.",
+    "error": null
   }
 ]
