@@ -88,5 +88,14 @@
     "duration_ms": 121237,
     "summary": "Map_1 sequential verification passed: editor/import, seed 6/6, real second-process Continue exact comparison, and focused headless 4/4. Enemy UID/position, spawner queue count 2, timer 0.866666666666666, last_queued_wave 1, and fingerprint \u2026",
     "error": null
+  },
+  {
+    "sequence": 11,
+    "timestamp": "2026-08-14T06:09:37.639Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 107448,
+    "summary": "Created docs/tests/smoke-tests-reference.md with three baseline smoke scenarios, exact native commands, evidence/non-claims, stale-result rules, visual limits, and issue-62 scenarios. Verified all seven referenced scenario files and nine co\u2026",
+    "error": null
   }
 ]
