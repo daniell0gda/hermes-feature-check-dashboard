@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-14T12:09:52.244Z",
+    "node": "planning",
+    "status": "completed",
+    "duration_ms": 94181,
+    "summary": "Planner created .gen/request.md, .gen/plan.md, and sequential clusters 01-gameplay-teardown, 02-harness-regression, 03-verification; no source changes; git diff --check passed.",
+    "error": null
+  }
+]
