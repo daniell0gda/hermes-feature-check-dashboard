@@ -1,5 +1,10 @@
 [
   {
+    "run_id": "issue-63-clear-previous-map-tower-effects-recovery-20260814",
+    "status": "running",
+    "url": "runs/issue-63-clear-previous-map-tower-effects-recovery-20260814/"
+  },
+  {
     "run_id": "issue-63-clear-previous-map-tower-effects-20260814",
     "status": "failed",
     "url": "runs/issue-63-clear-previous-map-tower-effects-20260814/"
