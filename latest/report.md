@@ -1,25 +1,7 @@
-# Feature Check — In Progress
+# Feature Check Report: issue-62-resume-wave
 
-Status: running
-Phase: checker
-Iteration: —
-Last update: 2026-08-14T09:39:42.382Z
+**Mode:** small
+**Verdict:** ✅ Production-ready
+**Progress:** 0 of 0 criteria met
 
-## Progress
-
-## ✅ Done
-
-
-## ⬜ Pending
-
-
-## ❌ Impossible
-
-
-## 📝 Notes
-
-
-
-## Last node
-
-checker
+**Iterations:** 1 / 2

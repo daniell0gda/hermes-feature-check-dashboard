@@ -47,5 +47,15 @@
         "path": "artifacts/.gen/feature-check/issue-62-resume-wave/status.md"
       }
     ]
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-14T09:39:46.778Z",
+    "node": "reporter",
+    "status": "completed",
+    "duration_ms": 27,
+    "summary": "{\"phase\": \"done\", \"report\": \"# Feature Check Report: issue-62-resume-wave\\n\\n**Mode:** small\\n**Verdict:** \u2705 Production-ready\\n**Progress:** 0 of 0 criteria met\\n\\n**Iterations:** 1 / 2\", \"messages\": [{\"role\": \"assistant\", \"content\": \"# Fea\u2026",
+    "error": null,
+    "artifacts": []
   }
 ]

@@ -1,9 +1,9 @@
 {
   "total_runs": 1,
-  "passed": 0,
+  "passed": 1,
   "escalated": 0,
   "abandoned": 0,
-  "total_cost_usd": 0.0,
-  "input_tokens": 0,
-  "output_tokens": 0
+  "total_cost_usd": 0.040946,
+  "input_tokens": 102,
+  "output_tokens": 9568
 }
