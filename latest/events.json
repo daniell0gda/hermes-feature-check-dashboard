@@ -97,5 +97,14 @@
     "duration_ms": 107448,
     "summary": "Created docs/tests/smoke-tests-reference.md with three baseline smoke scenarios, exact native commands, evidence/non-claims, stale-result rules, visual limits, and issue-62 scenarios. Verified all seven referenced scenario files and nine co\u2026",
     "error": null
+  },
+  {
+    "sequence": 12,
+    "timestamp": "2026-08-14T06:18:51.390Z",
+    "node": "checking",
+    "status": "completed",
+    "duration_ms": 549347,
+    "summary": "Final matrix blocked. Three seed runs pass; three focused headless runs pass; three smoke scenarios pass. All three Continue runs timed out before actions, and all three windowed runs failed at VK_KHR_surface/Vulkan/ALSA initialization with\u2026",
+    "error": null
   }
 ]

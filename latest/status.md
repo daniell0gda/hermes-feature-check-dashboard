@@ -1,40 +1,40 @@
-# Issue #62 — final checker status after revision 1
+# Issue #62 — final full-verification status
 
 ## Classification
 
 **blocked**
 
-## Verdict
+## Summary
 
-Revision 1 independently proves several implementable probes, but it does not satisfy the issue acceptance contract. The process-boundary Continue hard stop timed out in both headless and windowed modes before any actions or expectations ran. Exact live-enemy/spawner restoration remains unresolved by design, no genuine naptime transition exists, the requested smoke-reference document is absent, and the 3x3 fresh matrix is incomplete.
+Fresh headless seed runs, focused headless runs, and all three documented baseline smoke scenarios passed. However, all three fresh process-boundary MainMenu Continue runs timed out before any actions/expectations, and all three fresh windowed focused runs failed during renderer/audio initialization (`VK_KHR_surface` unavailable, Vulkan fallback, ALSA failure). No fresh windowed PNG was produced, so exact Continue and visual acceptance remain unverified. This is not a pass.
 
-## Fresh checker commands
+## Fresh matrix
 
-- `run_project_cmd(godot-td, godot-td/issue-62, ["godot","--version"])` → exit 0, `4.4.1.stable.official.49a5bc7b6`.
-- `run_project_cmd(godot-td, godot-td/issue-62, ["godot","--headless","--path",".","--editor","--quit-after","300"])` → exit 0; fresh editor/import gate completed with no targeted parse/resource/script diagnostic in returned output.
-- Known timed-out Continue invocations were not repeated. Worker was released with `remove=true` after the final project command.
+- Seed: `issue_62_full_seed-final-full-{4,5,6}-seed/result.json` → pass, exit 0; paired fixtures exist.
+- Continue: `issue_62_full_continue-final-full-{4,5,6}-continue/result.json` → timeout, zero actions/expectations; runner exit 1 / HTTP 422.
+- Focused headless: `issue_62_full_headless-final-full-headless-{4,5,6}/result.json` → pass, exit 0.
+- Focused windowed: `issue_62_full_visual-final-full-windowed-{4,5,6}/result.json` → fail; runner exit 1 / HTTP 422; no trustworthy PNGs.
+- Smoke placement: `.gen/harness/smoke_placement-final-smoke-placement/result.json` → pass, exit 0.
+- Smoke tower roster: `.gen/harness/smoke_tower_roster-final-smoke-roster/result.json` → pass, exit 0.
+- Smoke underground: `.gen/harness/smoke_underground_visible-final-smoke-underground/result.json` → pass, exit 0.
 
-## Criteria summary
+## What is proven
 
-- **Saving / safe / recovery:** implementable lifecycle probe passes; fresh windowed `indicator_saving.png`, `indicator_save_safe.png`, and `indicator_recovered.png` are readable. No fresh visual Save failed PNG is present.
-- **Immediate failed-write preservation:** passes the deterministic seam (`before == after_failure`, failed result, then successful recovery and changed fingerprint).
-- **Both clear producers:** passes narrow real-signal probe: `Spawner.all_clear` + `SpawnerSystem.all_spawners_clear`, exactly one wave/token increment.
-- **Finished:** fresh visual PNG visibly shows victory; structured result has positive completion time and `phase=finished` but also reports `game_state=playing`, so this is recorded as partial/inconsistent rather than unqualified.
-- **Continue:** blocked. Both `.gen/harness/issue_62_revision1_continue-headless-continue-1/result.json` and `.gen/harness/issue_62_revision1_continue-windowed-1/result.json` are `status=timeout`, zero actions/expectations, exact reason `game scene did not become available`, approximately 45 seconds.
-- **Exact active-wave restoration:** blocked/design failure; no process-boundary comparison and no exact enemy/spawner reconstruction contract.
-- **Naptime:** blocked/design failure; only a phase constant/label exists, not a real product transition.
-- **Smoke reference:** blocked by absent `docs/tests/smoke-tests-reference.md`.
-- **3x3 matrix:** incomplete; suffixed artifact routing works, but the required three headless and three windowed fresh repetitions were not completed.
-- **Diagnostics:** no targeted `Parse Error`, `Failed loading resource`, or `Failed to load script` in the fresh editor gate or successful focused-run evidence. Recurring missing-node, duplicate-signal, renderer/audio, and shutdown leak diagnostics remain separately classified project noise.
+- Focused headless runs prove naptime enter/exit, both clear producers, finished canonical `checkpoint_phase=finished` and `game_state=finished`, positive completion time, and Save failure/recovery action ordering.
+- Seed runs prove fresh active-wave checkpoint payloads containing a live enemy and spawner.
+- Smoke runs prove their documented narrow health checks.
+- Raw output scans found no targeted `Parse Error`, `Failed loading resource`, `Failed to load script`, or `Invalid parameter` diagnostics. Recurring missing-node, duplicate-signal, renderer/audio fallback, and teardown leak noise is recorded separately in `.gen/check.md`.
 
-## Fresh revision artifact roots
+## Not proven / blockers
 
-- Seed: `.gen/harness/issue_62_revision1_seed-headless-1/`
-- Continue timeouts: `.gen/harness/issue_62_revision1_continue-headless-continue-1/`, `.gen/harness/issue_62_revision1_continue-windowed-1/`
-- Visual headless attempts: `.gen/harness/issue_62_revision1_visual-headless-1/`, `.gen/harness/issue_62_revision1_visual-headless-2/`
-- Visual windowed: `.gen/harness/issue_62_revision1_visual-windowed-1/`
-- Inspected windowed PNGs: `indicator_saving.png`, `indicator_save_safe.png`, `indicator_finished.png`, `indicator_recovered.png` in the visual-windowed root's `shots/` directory.
+- Fresh second-process Continue never reaches Game, so exact enemy UID/position/progress/HP/effects and spawner queue/timer/RNG equality are not current evidence.
+- Windowed visual claims are blocked; no current PNG exists to inspect. Existing historical screenshots were intentionally not substituted.
+- The focused visual result also records failed finished expectations (`checkpoint_phase=active_wave`, `game_state=playing`) despite headless finished success.
 
-## Recommended next action
+## Cleanup and next action
 
-Stop the bounded revision cycle. The owner must resolve the second-process MainMenu→Continue transition or accept the infrastructure blocker; separately define/implement exact enemy/spawner snapshot restoration, a genuine naptime transition, and the missing smoke-reference source. Then run the full immutable 3x3 matrix, add/inspect visual Save failed evidence, and re-check the structured finished-state inconsistency. No source/scenario/dashboard/GitHub mutation, commit, push, merge, or issue closure was performed by this checker.
+Worker release completed with `remove=true` after the final project command. No production source, harness, scenario, Git, GitHub, or dashboard mutation was performed. Next: fix runner windowed display prerequisites and the MainMenu Continue handshake, then rerun the complete fresh matrix and inspect every newly generated PNG before reconsidering the verdict.
+
+## Git verification
+
+`git diff --check` passed (exit 0). Worktree remains on `issue/62` with the pre-existing issue-62 implementation/test/doc modifications preserved.
