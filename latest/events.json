@@ -52,5 +52,14 @@
     "duration_ms": 328306,
     "summary": "Enemy restore now works, but exact spawner queue/timer restore still fails. Naptime and clear-producer probes pass. Final-clear probe still fails to reach victory. Coder report written; more focused fixes required.",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-14T05:49:57.676Z",
+    "node": "revision-code",
+    "status": "completed",
+    "duration_ms": 274467,
+    "summary": "Victory/final-clear now passes genuinely. Exact Continue still fails: restored enemy list and spawner queue/timer state are empty/default. Windowed run was blocked by Vulkan/X11 runner failure.",
+    "error": null
   }
 ]
