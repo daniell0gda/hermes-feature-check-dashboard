@@ -25,5 +25,14 @@
     "duration_ms": 204066,
     "summary": "Continue now passes through the real MainMenu->MapLoading->Game path with exact map_1 restore. Xvfb/OpenGL works and captures five screenshots. Remaining failure is only windowed final_clear_probe: could not advance to final wave.",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-14T07:19:26.793Z",
+    "node": "revision-code",
+    "status": "completed",
+    "duration_ms": 194739,
+    "summary": "Windowed final-clear fixed by preventing debug probe auto-next race. Fresh headless and OpenGL/Xvfb windowed probes pass; five screenshots captured and inspected.",
+    "error": null
   }
 ]
