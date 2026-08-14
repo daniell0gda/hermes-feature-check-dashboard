@@ -2,22 +2,19 @@
   "run_id": "issue-63-clear-previous-map-tower-effects-20260814",
   "feature": "issue-63-clear-previous-map-tower-effects",
   "status": "running",
-  "started_at": "2026-08-14T12:07:31.893Z",
+  "started_at": "2026-08-14T12:23:00.384Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-63-clear-previous-map-tower-effects-20260814/",
-  "heartbeat_at": "2026-08-14T12:15:18.679Z",
-  "last_node": "implementing",
+  "heartbeat_at": "2026-08-14T12:23:00.384Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-14T12:15:18.679Z",
-  "process_id": 58542,
+  "last_event_at": null,
+  "process_id": 63562,
   "host": "361add3f9f5b",
-  "phase": "implementing",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-14T12:15:18.680078+00:00",
-    "last_success_at": "2026-08-14T12:09:56.216982+00:00",
-    "last_error": null,
-    "last_skipped_remote_at": "2026-08-14T12:10:06.360538+00:00"
+    "last_attempt_at": "2026-08-14T12:23:05.101444+00:00"
   },
   "metrics": {}
 }
