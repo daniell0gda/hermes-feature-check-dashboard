@@ -43,5 +43,14 @@
     "duration_ms": 456450,
     "summary": "Harness reached real second-process Continue. Exact comparison correctly found a restore bug: wave_runtime.enemies restored empty and spawner queues/timers differ. Naptime probe was fixed for void exit_naptime but not rerun; required coder \u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-14T05:45:19.244Z",
+    "node": "revision-code",
+    "status": "completed",
+    "duration_ms": 328306,
+    "summary": "Enemy restore now works, but exact spawner queue/timer restore still fails. Naptime and clear-producer probes pass. Final-clear probe still fails to reach victory. Coder report written; more focused fixes required.",
+    "error": null
   }
 ]
