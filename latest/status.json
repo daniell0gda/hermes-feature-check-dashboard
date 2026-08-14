@@ -1,20 +1,23 @@
 {
   "run_id": "20260814-092950-ddae52",
   "feature": "issue-62-resume-wave",
-  "status": "starting",
+  "status": "running",
   "started_at": "2026-08-14T09:29:50.835Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/20260814-092950-ddae52/",
-  "heartbeat_at": "2026-08-14T09:29:50.835Z",
-  "last_node": null,
+  "heartbeat_at": "2026-08-14T09:31:59.171Z",
+  "last_node": "planner",
   "active_node": null,
-  "last_event_at": null,
+  "last_event_at": "2026-08-14T09:31:59.171Z",
   "process_id": 49117,
   "host": "361add3f9f5b",
-  "phase": null,
+  "phase": "awaiting_user_plan_approval",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-14T09:29:50.840986+00:00"
+    "last_attempt_at": "2026-08-14T09:31:59.173465+00:00",
+    "last_success_at": "2026-08-14T09:29:55.219830+00:00",
+    "last_error": null,
+    "last_skipped_remote_at": "2026-08-14T09:29:55.264417+00:00"
   },
   "metrics": {}
 }

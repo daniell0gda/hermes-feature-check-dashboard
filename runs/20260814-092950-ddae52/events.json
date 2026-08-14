@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-14T09:31:59.171Z",
+    "node": "planner",
+    "status": "completed",
+    "duration_ms": 123913,
+    "summary": "{\"phase\": \"awaiting_user_plan_approval\", \"plan_path\": \"/workspace/poke-defense-godot/.gen/feature-check/issue-62-resume-wave/plan.md\", \"status_path\": \"/workspace/poke-defense-godot/.gen/feature-check/issue-62-resume-wave/status.md\", \"cluste\u2026",
+    "error": null,
+    "artifacts": [
+      {
+        "label": ".gen/feature-check/issue-62-resume-wave/plan.md",
+        "path": "artifacts/.gen/feature-check/issue-62-resume-wave/plan.md"
+      }
+    ]
+  }
+]
