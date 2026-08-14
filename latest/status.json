@@ -1,12 +1,12 @@
 {
-  "run_id": "leader-smoke",
+  "run_id": "leader-dispatch",
   "feature": "Smoke",
-  "status": "completed",
-  "started_at": "2026-08-14T17:19:21.572Z",
-  "ended_at": "2026-08-14T17:19:26.072Z",
+  "status": "running",
+  "started_at": "2026-08-14T17:19:30.285Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-smoke/",
-  "heartbeat_at": "2026-08-14T17:19:26.072Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-dispatch/",
+  "heartbeat_at": "2026-08-14T17:19:30.285Z",
   "last_node": null,
   "active_node": null,
   "last_event_at": null,
@@ -14,9 +14,7 @@
   "host": "361add3f9f5b",
   "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-14T17:19:26.072192+00:00",
-    "last_success_at": "2026-08-14T17:19:25.519673+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-14T17:19:30.285825+00:00"
   },
   "metrics": {}
 }
