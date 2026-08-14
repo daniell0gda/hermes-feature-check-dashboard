@@ -70,5 +70,14 @@
     "duration_ms": 447817,
     "summary": "Map-1 Continue restore still fails: RNG now matches, but enemies and spawner queue/timer remain default. Exact assertions preserved.",
     "error": null
+  },
+  {
+    "sequence": 9,
+    "timestamp": "2026-08-14T06:05:39.753Z",
+    "node": "revision-code",
+    "status": "completed",
+    "duration_ms": 486044,
+    "summary": "Map_1 root cause found and fixed: typed queue assignment aborted restore. Fresh seed and real second-process Continue now pass exact enemy/spawner comparison. Final sequential rerun and coder report remain pending.",
+    "error": null
   }
 ]
