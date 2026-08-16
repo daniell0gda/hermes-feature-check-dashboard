@@ -6,17 +6,32 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue97-trap-armor-reduction-20260816/",
-  "heartbeat_at": "2026-08-16T20:54:11.620Z",
-  "last_node": "plan",
+  "heartbeat_at": "2026-08-16T20:56:28.063Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-16T20:54:11.620Z",
+  "last_event_at": "2026-08-16T20:56:28.063Z",
   "process_id": 36844,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-16T20:54:11.621151+00:00",
-    "last_success_at": "2026-08-16T20:48:54.245262+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-16T20:56:28.063924+00:00",
+    "last_success_at": "2026-08-16T20:54:15.534386+00:00",
+    "last_error": null,
+    "last_skipped_remote_at": "2026-08-16T20:54:15.541879+00:00"
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "issue97-plan",
+        "cluster_id": "trap-armor-regression",
+        "role": "plan",
+        "model": "grok-4.6",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 159249,
+        "output_tokens": 14029
+      }
+    ]
+  }
 }
