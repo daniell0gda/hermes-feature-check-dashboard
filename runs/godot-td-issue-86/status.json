@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/godot-td-issue-86/",
   "heartbeat_at": "2026-08-16T18:45:33.540Z",
   "last_node": "coding",
-  "active_node": null,
+  "active_node": "coding",
   "last_event_at": "2026-08-16T18:45:33.540Z",
   "process_id": 25707,
   "host": "25e0b2c49eb5",
-  "phase": "intake",
+  "phase": "coding",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-16T18:45:33.540257+00:00",
-    "last_success_at": "2026-08-16T18:41:00.381941+00:00",
+    "last_attempt_at": "2026-08-16T18:47:40.896221+00:00",
+    "last_success_at": "2026-08-16T18:45:37.863670+00:00",
     "last_error": null
   },
   "metrics": {
@@ -24,6 +24,17 @@
         "task_id": "plan-86",
         "cluster_id": null,
         "role": "planning",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "task_id": "code-86-encounter",
+        "cluster_id": "01-encounter-clear-gate",
+        "role": "coding",
         "model": null,
         "model_tier": null,
         "cost_usd": null,
