@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/godot-td-issue-86/",
-  "heartbeat_at": "2026-08-16T18:38:48.593Z",
-  "last_node": "planning",
-  "active_node": "coding",
-  "last_event_at": "2026-08-16T18:38:48.593Z",
+  "heartbeat_at": "2026-08-16T18:45:33.540Z",
+  "last_node": "coding",
+  "active_node": null,
+  "last_event_at": "2026-08-16T18:45:33.540Z",
   "process_id": 25707,
   "host": "25e0b2c49eb5",
-  "phase": "coding",
+  "phase": "intake",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-16T18:40:56.289396+00:00",
-    "last_success_at": "2026-08-16T18:38:52.790178+00:00",
+    "last_attempt_at": "2026-08-16T18:45:33.540257+00:00",
+    "last_success_at": "2026-08-16T18:41:00.381941+00:00",
     "last_error": null
   },
   "metrics": {
