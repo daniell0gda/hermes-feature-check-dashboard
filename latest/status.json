@@ -1,23 +1,23 @@
 {
   "run_id": "issue97-trap-armor-reduction-20260816",
   "feature": "poke-defense-godot issue #97 trap armor reduction",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-16T20:48:05.173Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-16T20:57:52.885Z",
+  "error": "report worker failed (1): Error: Profile 'report' does not exist. Create it with: hermes profile create report",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue97-trap-armor-reduction-20260816/",
-  "heartbeat_at": "2026-08-16T20:57:48.338Z",
-  "last_node": "check",
+  "heartbeat_at": "2026-08-16T20:57:52.885Z",
+  "last_node": "report",
   "active_node": null,
-  "last_event_at": "2026-08-16T20:57:48.338Z",
+  "last_event_at": "2026-08-16T20:57:52.881Z",
   "process_id": 36844,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "report",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-16T20:57:48.338625+00:00",
-    "last_success_at": "2026-08-16T20:56:32.058029+00:00",
+    "last_attempt_at": "2026-08-16T20:57:52.885668+00:00",
+    "last_success_at": "2026-08-16T20:57:52.594772+00:00",
     "last_error": null,
-    "last_skipped_remote_at": "2026-08-16T20:56:32.064564+00:00"
+    "last_skipped_remote_at": "2026-08-16T20:57:52.885282+00:00"
   },
   "metrics": {
     "invocations": [
@@ -42,6 +42,17 @@
         "cost_status": "estimated",
         "input_tokens": 51,
         "output_tokens": 4178
+      },
+      {
+        "task_id": "issue97-check",
+        "cluster_id": "trap-armor-regression",
+        "role": "check",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 43214,
+        "output_tokens": 3791
       }
     ]
   }
