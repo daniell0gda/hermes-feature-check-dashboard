@@ -10,6 +10,17 @@
       "cost_status": "unknown",
       "input_tokens": 159249,
       "output_tokens": 14029
+    },
+    {
+      "task_id": "issue97-code",
+      "cluster_id": "trap-armor-regression",
+      "role": "code",
+      "model": "openai/gpt-5.6-luna",
+      "model_tier": null,
+      "cost_usd": 0.020439115,
+      "cost_status": "estimated",
+      "input_tokens": 51,
+      "output_tokens": 4178
     }
   ]
 }
