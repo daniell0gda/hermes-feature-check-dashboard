@@ -25,5 +25,14 @@
     "duration_ms": 748717,
     "summary": "Added focused issue-86 scenario and coder report; editor/import passed, focused and baseline harness both timed out before scene availability; diff check passed.",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-16T19:07:08.629Z",
+    "node": "checking",
+    "status": "completed",
+    "duration_ms": 292342,
+    "summary": "Fresh check classified design_failure: focused scenario total_waves=0 never exercises required paths and exit accessibility lacks direct observability; editor gate passes, focused harness timeout, diff check passes.",
+    "error": null
   }
 ]
