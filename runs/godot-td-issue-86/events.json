@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-16T18:38:48.593Z",
+    "node": "planning",
+    "status": "completed",
+    "duration_ms": 305489,
+    "summary": "Planner completed .gen/plan.md and three sequential cluster artifacts; runner version/import passed; source untouched.",
+    "error": null
+  }
+]
