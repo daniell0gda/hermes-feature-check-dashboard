@@ -1,12 +1,7 @@
 [
   {
-    "run_id": "issue-71-20260816-retry1",
-    "status": "completed",
-    "url": "runs/issue-71-20260816-retry1/"
-  },
-  {
-    "run_id": "issue-71-20260816",
+    "run_id": "tower-defense-issue-77",
     "status": "running",
-    "url": "runs/issue-71-20260816/"
+    "url": "runs/tower-defense-issue-77/"
   }
 ]
