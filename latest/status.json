@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/tower-defense-issue-77-cont-1/",
   "heartbeat_at": "2026-08-17T19:10:06.626Z",
   "last_node": "plan",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-17T19:10:06.626Z",
   "process_id": 74661,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-17T19:10:06.627127+00:00",
-    "last_success_at": "2026-08-17T19:06:40.753305+00:00",
+    "last_attempt_at": "2026-08-17T19:12:03.754453+00:00",
+    "last_success_at": "2026-08-17T19:10:10.868637+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan-cont-77",
+        "cluster_id": "continuation-plan",
+        "role": "plan",
+        "model": "grok-4.6",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 129149,
+        "output_tokens": 12041
+      }
+    ]
+  }
 }
