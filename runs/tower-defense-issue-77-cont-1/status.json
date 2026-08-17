@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/tower-defense-issue-77-cont-1/",
-  "heartbeat_at": "2026-08-17T19:26:30.080Z",
+  "heartbeat_at": "2026-08-17T20:11:03.783Z",
   "last_node": "code",
-  "active_node": "code",
-  "last_event_at": "2026-08-17T19:26:30.080Z",
+  "active_node": null,
+  "last_event_at": "2026-08-17T20:11:03.783Z",
   "process_id": 74661,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-17T19:37:12.264983+00:00",
-    "last_success_at": "2026-08-17T19:26:34.395538+00:00",
+    "last_attempt_at": "2026-08-17T20:11:03.784700+00:00",
+    "last_success_at": "2026-08-17T19:37:16.358007+00:00",
     "last_error": null
   },
   "metrics": {
