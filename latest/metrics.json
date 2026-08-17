@@ -1,1 +1,15 @@
-{}
+{
+  "invocations": [
+    {
+      "task_id": "plan-77",
+      "cluster_id": "planning",
+      "role": "plan",
+      "model": "grok-4.6",
+      "model_tier": null,
+      "cost_usd": 0.0,
+      "cost_status": "unknown",
+      "input_tokens": 135854,
+      "output_tokens": 20044
+    }
+  ]
+}
