@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-17T19:10:06.626Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 210891,
+    "summary": "Continuation plan rewritten for remaining issue #77 behavior only.\n\nLanded already and left out of this plan: lifetime default/expiry, special single-perk chests, and the current helper-only harness.\n\nStill required: roll spawner/boss befor\u2026",
+    "error": null
+  }
+]
