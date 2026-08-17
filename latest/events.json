@@ -7,5 +7,14 @@
     "duration_ms": 210891,
     "summary": "Continuation plan rewritten for remaining issue #77 behavior only.\n\nLanded already and left out of this plan: lifetime default/expiry, special single-perk chests, and the current helper-only harness.\n\nStill required: roll spawner/boss befor\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-17T19:26:30.080Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 866327,
+    "summary": "Implemented cluster 1 in `/workspace/git-workspaces/tower-defense/issue-77`.\n\nChanged:\n- Dangerous cave confirmation flow and `[CAVE]` logging.\n- Decline sealing through existing `place_block` API.\n- New `CaveDarknessVFX`.\n- Re-carve reveal\u2026",
+    "error": null
   }
 ]
