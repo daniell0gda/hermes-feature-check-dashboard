@@ -1,10 +1,10 @@
 {
-  "total_runs": 3,
+  "total_runs": 1,
   "passed": 0,
   "escalated": 0,
   "abandoned": 0,
-  "total_worker_invocations": 13,
-  "total_cost_usd": 0.398946,
-  "input_tokens": 774958.0,
-  "output_tokens": 98602.0
+  "total_worker_invocations": 0,
+  "total_cost_usd": null,
+  "input_tokens": null,
+  "output_tokens": null
 }
