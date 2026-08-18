@@ -130,34 +130,30 @@ Declined persistence/reveal — RED (scenario coverage absent) → GREEN (seal/d
 \n\n# Coder report: implementation\n\n# Coder report: implementation
 
 ## Changed files
-- `scripts/game/UndergroundSystem.gd` — modified
-- `scripts/game/CaveSystem.gd` — modified
-- `scripts/game/UndergroundSystem.gd` — modified (sealed-interior rejection diagnostic added)
+- `scripts/game/actors/effects/CaveDarknessVFX.gd` — modified; sealed cave cover now uses translucent overlapping fog spheres instead of an opaque black box.
+- `scripts/game/UndergroundSystem.gd` — modified; rejects carve requests whose center is inside an unopened/declined cave and retains carve-stop logging/behavior.
+- `scripts/game/CaveSystem.gd` — existing cluster change preserved; cave interior carve uses the explicit bypass for discovery carving.
+- `tests/scenarios/cave_seal_carve_contracts.json` — new focused harness scenario.
 
 ## Criteria
+- After a dangerous cave is declined, a windowed screenshot of the sealed cave shows dense fog cover, not an opaque solid black cube. — Pending (windowed visual inspection not run in this worker pass)
 - After decline, sealed cells sit one tile inward from the cave rim on the already-carved approach, not on the outer cave edge. — Done
 - After decline, the already-carved approach corridor into the cave is filled with solid blocks. — Done
 - When a multi-block carve rectangle intersects a not-opened cave, carving stops at the cave and cells through or beyond the cave stay solid. — Done
 - Carving is allowed only from already-carved open paths; a carve that starts inside or only connects through a not-opened or declined sealed cave carves zero cells. — Done
-- Declining a dangerous cave still leaves it unpopulated and declined-sealed, and carving the sealed approach later still reveals the rolled contents. — Done
+- Declining a dangerous cave still leaves it unpopulated and declined-sealed, and carving the sealed approach later still reveals the rolled contents. — Done (covered by existing regression harness)
 - Debug-build [CAVE] log line per carve-stop-at-cave event — Done
 - Debug-build [CAVE] log line per sealed-interior carve reject — Done
+- A focused AgentHarness scenario asserts inward seal placement, approach seal blocks, carve-stop at the cave, and no carve inside a sealed cave. — Done
 
 ## Commands and results
-- `["godot", "--version"]` — exit code 0; Godot 4.4.1 detected.
-- `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]` — exit code 0; editor/typecheck import gate completed.
-- `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/cave_seal_carve_contracts.json"]` — exit code 1; required focused scenario is absent (`scenario file not found`).
-- `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/spawner_lifetime_and_discovery_confirmation.json"]` — exit code 0; fresh harness result reports `status=pass`.
-- `["git", "diff", "--check"]` — exit code 0; no whitespace errors.
+- `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/cave_seal_carve_contracts.json"]` — exit code 0; harness status=pass.
+- `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/spawner_lifetime_and_discovery_confirmation.json"]` — exit code 0; harness status=pass.
+- `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]` — exit code 0; editor parse/import gate completed.
+- `git diff --check` — exit code 0; no whitespace errors.
 
 ## Notes
-- `carve_rectangle` now rejects unopened/declined cave cells unless explicitly called for initial cave excavation, and emits debug `[CAVE]` stop diagnostics.
-- Cave sealing now fills the carved approach corridor from the entry toward the cave, stopping one grid cell inward from the cave center/rim rather than placing a single outer-edge block.
-- The focused acceptance scenario must be added or restored by the harness-coverage cluster before focused verification can pass.
-- No dashboard events were published.
-
-## Verification limitation
-The focused acceptance scenario required by the plan is not present in this workspace, so the seven implementation criteria are recorded as implemented but not independently asserted by that scenario in this worker iteration.
-
-Implementation criteria — RED (required focused harness unavailable: missing scenario) → GREEN (implementation and parse gate passed) → focused tests blocked by missing scenario → Done pending checker validation
-  \n
+- Fresh focused result: `.gen/harness/cave_seal_carve_contracts/result.json` with status pass.
+- Existing run logs include expected pre-existing renderer/resource warnings; harness assertions passed.
+- No dashboard events, commit, push, or issue mutation performed.
+\n
