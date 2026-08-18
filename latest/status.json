@@ -6,18 +6,18 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-99-underground-cleanup/",
-  "heartbeat_at": "2026-08-18T15:24:40.569Z",
-  "last_node": "code",
+  "heartbeat_at": "2026-08-18T15:26:30.466Z",
+  "last_node": "check",
   "active_node": null,
-  "last_event_at": "2026-08-18T15:24:40.569Z",
+  "last_event_at": "2026-08-18T15:26:30.466Z",
   "process_id": 164384,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T15:24:40.569944+00:00",
-    "last_success_at": "2026-08-18T15:11:55.352720+00:00",
+    "last_attempt_at": "2026-08-18T15:26:30.466301+00:00",
+    "last_success_at": "2026-08-18T15:24:44.984520+00:00",
     "last_error": null,
-    "last_skipped_remote_at": "2026-08-18T15:11:55.820184+00:00"
+    "last_skipped_remote_at": "2026-08-18T15:24:44.998960+00:00"
   },
   "metrics": {
     "invocations": [
@@ -31,6 +31,17 @@
         "cost_status": "unknown",
         "input_tokens": 116763,
         "output_tokens": 16682
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "grok-4.6",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 199002,
+        "output_tokens": 32762
       }
     ]
   }
