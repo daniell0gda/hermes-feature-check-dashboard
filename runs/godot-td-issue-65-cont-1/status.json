@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/godot-td-issue-65-cont-1/",
   "heartbeat_at": "2026-08-18T07:26:27.836Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
   "process_id": 109078,
   "host": "25e0b2c49eb5",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T07:26:27.836506+00:00"
+    "last_attempt_at": "2026-08-18T07:27:18.300699+00:00",
+    "last_success_at": "2026-08-18T07:26:32.007979+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
