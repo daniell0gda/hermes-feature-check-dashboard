@@ -7,5 +7,14 @@
     "duration_ms": 283855,
     "summary": "Plan written: /workspace/git-workspaces/tower-defense/issue-77/.gen/plan.md\n\nFollow-up contract is in place: 9 criteria, 3 clusters (fog; inward/approach seal + carve stop; harness). `manual_testing: none`. Windowed PNG inspect stays on the\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-18T11:18:26.526Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 165460,
+    "summary": "Implemented cluster `implementation` in `/workspace/git-workspaces/tower-defense/issue-77`.\n\nChanged:\n- `scripts/game/UndergroundSystem.gd`\n  - Rejects disconnected/sealed-interior carving.\n  - Stops rectangular carving at unopened caves.\n \u2026",
+    "error": null
   }
 ]
