@@ -1,12 +1,12 @@
 {
   "run_id": "godot-td-issue-65-cont-1",
   "feature": "underground-enemies-ignore-ground-towers",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-18T07:26:27.836Z",
-  "ended_at": null,
+  "ended_at": "2026-08-18T07:54:47.954Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/godot-td-issue-65-cont-1/",
-  "heartbeat_at": "2026-08-18T07:54:43.749Z",
+  "heartbeat_at": "2026-08-18T07:54:47.954Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-18T07:54:43.749Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T07:54:43.750106+00:00",
-    "last_success_at": "2026-08-18T07:53:48.988140+00:00",
+    "last_attempt_at": "2026-08-18T07:54:47.954158+00:00",
+    "last_success_at": "2026-08-18T07:54:47.953254+00:00",
     "last_error": null,
     "last_skipped_remote_at": "2026-08-18T07:53:49.001111+00:00"
   },
@@ -86,6 +86,17 @@
         "cost_status": "estimated",
         "input_tokens": 75,
         "output_tokens": 6353
+      },
+      {
+        "task_id": "revision-check-2",
+        "cluster_id": null,
+        "role": "check",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 69963,
+        "output_tokens": 3610
       }
     ]
   }
