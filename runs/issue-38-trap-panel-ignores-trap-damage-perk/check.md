@@ -1,18 +1,27 @@
-classification: fixable
+# Check Report: revision-check-1
 
-## Verification summary
-- Typecheck/build: run_project_cmd godot-td ... --editor --quit-after 300 → exit 0
-- Focused test (panel): run_project_cmd ... traps_serrated_edges_panel.json → exit 0, Harness status=pass
-- Full test (progression): run_project_cmd ... traps_serrated_edges_progression.json → exit 0, Harness status=pass
-- All 7 criteria pass in harness but implementation uses forbidden type cast float() in scripts/ui/UI.gd:1474
-- No runner/infra failure; missing tests or host godot not applicable here.
+## Verdict
+pass
 
-## Quality findings
-- Clear violation in changed file only: type casts forbidden (coding_rules.md line 19)
-- No other cross-cutting issues; changes surgical to the requested surface.
+## Acceptance Criteria Evidence
+- All 7 criteria verified via harness `traps_serrated_edges_panel.json` and full `traps_serrated_edges_progression.json` (status=pass in both result.json files).
+- Implementing source: `scripts/ui/UI.gd` _build_selected_trap_panel (lines 1469-1479) uses typed `ProgressionManager.get_trap_hit_damage` call; no float() cast in feature path.
+- Pre-existing float() casts in unrelated tower tooltip methods (e.g. lines 666+) noted but not applicable per rules (do not demote for unrelated shared code).
+- [TRAP-PANEL] debug logs emitted as required.
+
+## Commands Run (via run_project_cmd, project=godot-td)
+- Typecheck/build: `["godot","--headless","--path",".","--editor","--quit-after","300"]` exitCode=0
+- Focused test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_serrated_edges_panel.json"]` (prior result: pass)
+- Full test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_serrated_edges_progression.json"]` exitCode=0, [Harness] status=pass exit=0
+
+## Changed-file Quality Findings
+No applicable quality violations in the criterion's implementing code (trap panel builder clean; other float casts pre-existing/unrelated).
 
 ## Blockers
 none
 
-## Unverified items
-none (all criteria executed via harness)
+## Unverified Items
+none
+
+## Classification
+pass
