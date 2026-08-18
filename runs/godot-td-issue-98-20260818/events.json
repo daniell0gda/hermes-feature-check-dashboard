@@ -16,5 +16,14 @@
     "duration_ms": 1185323,
     "summary": "Implemented the discovery-chance changes in the assigned workspace.\n\nChanged:\n- `/workspace/git-workspaces/godot-td/issue-cave-discovery-chance-unreliable/scripts/game/CaveSystem.gd`\n- `/workspace/git-workspaces/godot-td/issue-cave-discover\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-18T11:28:28.894Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 74868,
+    "summary": "Verified done: 0. Pending: 9 \u2014 9 due to build/test failures (harness timeout on chance=1.0, no passing evidence). Impossible: 0. Quality notes: no changes. Verification: passed (runner probes + typecheck green via run_project_cmd; harness r\u2026",
+    "error": null
   }
 ]
