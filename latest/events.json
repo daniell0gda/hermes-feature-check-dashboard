@@ -1,29 +1,20 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-18T07:40:28.724Z",
+    "timestamp": "2026-08-18T07:30:54.144Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 25,
-    "summary": "{\"status\": \"ok\"}",
+    "duration_ms": 215844,
+    "summary": "Plan written: /workspace/git-workspaces/godot-td/issue-65/.gen/plan.md\n\nAcceptance contract for issue #65: 10 criteria, 2 clusters, manual_testing none. Cluster 1 is flag set/clear plus [UNDERGROUND] logs. Cluster 2 is ground-tower exclusio\u2026",
     "error": null
   },
   {
     "sequence": 2,
-    "timestamp": "2026-08-18T07:40:28.762Z",
+    "timestamp": "2026-08-18T07:43:18.540Z",
     "node": "code",
     "status": "completed",
-    "duration_ms": 16,
-    "summary": "{\"status\": \"ok\"}",
-    "error": null
-  },
-  {
-    "sequence": 3,
-    "timestamp": "2026-08-18T07:40:28.785Z",
-    "node": "check",
-    "status": "completed",
-    "duration_ms": 11,
-    "summary": "{\"status\": \"ok\"}",
+    "duration_ms": 739856,
+    "summary": "Implemented cluster changes in `/workspace/git-workspaces/godot-td/issue-65`.\n\nChanged:\n- Underground flag lifecycle and debug logging.\n- Harness visibility for `is_underground`.\n- Ground-target filtering and in-flight projectile guards.\n- \u2026",
     "error": null
   }
 ]

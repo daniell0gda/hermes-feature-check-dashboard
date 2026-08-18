@@ -1,23 +1,23 @@
 {
-  "run_id": "leader-loop",
-  "feature": "Smoke",
-  "status": "completed",
-  "started_at": "2026-08-18T07:40:23.959Z",
-  "ended_at": "2026-08-18T07:40:28.795Z",
+  "run_id": "godot-td-issue-65-cont-1",
+  "feature": "underground-enemies-ignore-ground-towers",
+  "status": "running",
+  "started_at": "2026-08-18T07:26:27.836Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-loop/",
-  "heartbeat_at": "2026-08-18T07:40:28.795Z",
-  "last_node": "check",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/godot-td-issue-65-cont-1/",
+  "heartbeat_at": "2026-08-18T07:43:18.540Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-18T07:40:28.785Z",
-  "process_id": 114011,
+  "last_event_at": "2026-08-18T07:43:18.540Z",
+  "process_id": 109078,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T07:40:28.795801+00:00",
-    "last_success_at": "2026-08-18T07:40:28.147637+00:00",
+    "last_attempt_at": "2026-08-18T07:43:18.540574+00:00",
+    "last_success_at": "2026-08-18T07:30:58.683406+00:00",
     "last_error": null,
-    "last_skipped_remote_at": "2026-08-18T07:40:28.795003+00:00"
+    "last_skipped_remote_at": "2026-08-18T07:30:58.698203+00:00"
   },
   "metrics": {
     "invocations": [
@@ -25,34 +25,12 @@
         "task_id": "plan",
         "cluster_id": null,
         "role": "plan",
-        "model": null,
+        "model": "grok-4.6",
         "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 139191,
+        "output_tokens": 10718
       }
     ]
   }
