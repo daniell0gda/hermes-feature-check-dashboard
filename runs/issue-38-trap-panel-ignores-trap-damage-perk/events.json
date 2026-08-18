@@ -16,5 +16,14 @@
     "duration_ms": 443436,
     "summary": "Selected-trap panel now uses perk-scaled hit damage. Focused harness passed.\n\nPublic surface: UI._build_selected_trap_panel(trap_id) returns Dmg %.1f  Cd %.2f and is what _upd_upg_panel writes to upg_deltas. Damage comes from ProgressionMan\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-18T12:51:31.126Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 78608,
+    "summary": "Verified done: 0. Pending: 7 \u2014 7 due to quality violations. Impossible: 0. Quality notes: appended (type cast). Verification: failed. Blockers: none. (classification: fixable)\n",
+    "error": null
   }
 ]

@@ -10,6 +10,17 @@
       "cost_status": "unknown",
       "input_tokens": 96048,
       "output_tokens": 13115
+    },
+    {
+      "task_id": "code",
+      "cluster_id": "implementation",
+      "role": "code",
+      "model": "grok-4.6",
+      "model_tier": null,
+      "cost_usd": 0.0,
+      "cost_status": "unknown",
+      "input_tokens": 199102,
+      "output_tokens": 20066
     }
   ]
 }
