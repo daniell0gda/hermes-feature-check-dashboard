@@ -1,1 +1,3 @@
-{"run_id": "run-3", "url": "runs/run-3/", "invocations": [{"task_id": "plan-1", "cluster_id": null, "role": "planning", "model": null, "model_tier": null, "cost_usd": null, "cost_status": "unavailable", "input_tokens": null, "output_tokens": null}]}
+{"run_id": "issue-13-team-work-20260818", "url": "runs/issue-13-team-work-20260818/"}
+{"run_id": "issue-13-team-work-20260818-c", "url": "runs/issue-13-team-work-20260818-c/"}
+{"run_id": "issue-13-team-work-20260818-final", "url": "runs/issue-13-team-work-20260818-final/"}
