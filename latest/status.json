@@ -6,17 +6,32 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-10-floodgate-pump-efficiency/",
-  "heartbeat_at": "2026-08-18T16:17:58.019Z",
-  "last_node": "plan",
+  "heartbeat_at": "2026-08-18T16:34:07.824Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-18T16:17:58.019Z",
+  "last_event_at": "2026-08-18T16:34:07.824Z",
   "process_id": 172822,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T16:17:58.020187+00:00",
-    "last_success_at": "2026-08-18T16:13:47.277348+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-18T16:34:07.824990+00:00",
+    "last_success_at": "2026-08-18T16:18:02.378670+00:00",
+    "last_error": null,
+    "last_skipped_remote_at": "2026-08-18T16:18:02.388474+00:00"
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "grok-4.6",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 195255,
+        "output_tokens": 13080
+      }
+    ]
+  }
 }
