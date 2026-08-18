@@ -6,15 +6,18 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-13-team-work-20260818-final/",
-  "heartbeat_at": "2026-08-18T05:15:56.155Z",
-  "last_node": null,
+  "heartbeat_at": "2026-08-18T05:17:49.475Z",
+  "last_node": "plan",
   "active_node": null,
-  "last_event_at": null,
+  "last_event_at": "2026-08-18T05:17:49.475Z",
   "process_id": 92100,
   "host": "25e0b2c49eb5",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T05:15:56.155485+00:00"
+    "last_attempt_at": "2026-08-18T05:17:49.475995+00:00",
+    "last_success_at": "2026-08-18T05:16:01.026329+00:00",
+    "last_error": null,
+    "last_skipped_remote_at": "2026-08-18T05:16:10.873418+00:00"
   },
   "metrics": {}
 }
