@@ -12,4 +12,4 @@
 - Debug-build [UNDERGROUND] log line per underground-flag clear on exit launch
 
 ## ❌ Impossible
-- A focused harness scenario at tests/scenarios/underground_ground_tower_exclusion.json proves the underground-flag set after porter port, ground-tower targeting exclusion including in-flight projectiles, flag clear after exit launch, post-launch reacquisition, underground-attacker damage, and never-ported surface targetability. — reason: godot command unavailable in verification environment (exit 127); focused harness reports path_blocked for Floodgate placement (concrete technical blocker for green run)
+- A focused harness scenario at tests/scenarios/underground_ground_tower_exclusion.json proves the underground-flag set after porter port, ground-tower targeting exclusion including in-flight projectiles, flag clear after exit launch, post-launch reacquisition, underground-attacker damage, and never-ported surface targetability. — reason: godot command unavailable in verification environment (exit 127); focused harness reports path_blocked or incomplete evidence in prior runs (concrete technical blocker for green run in this env)
