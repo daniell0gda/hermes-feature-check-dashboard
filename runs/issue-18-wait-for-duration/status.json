@@ -6,18 +6,18 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-18-wait-for-duration/",
-  "heartbeat_at": "2026-08-18T12:18:24.100Z",
-  "last_node": "code",
+  "heartbeat_at": "2026-08-18T12:20:00.825Z",
+  "last_node": "check",
   "active_node": null,
-  "last_event_at": "2026-08-18T12:18:24.100Z",
+  "last_event_at": "2026-08-18T12:20:00.825Z",
   "process_id": 142690,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T12:18:24.100958+00:00",
-    "last_success_at": "2026-08-18T12:08:35.446854+00:00",
+    "last_attempt_at": "2026-08-18T12:20:00.825335+00:00",
+    "last_success_at": "2026-08-18T12:18:28.351777+00:00",
     "last_error": null,
-    "last_skipped_remote_at": "2026-08-18T12:08:35.456677+00:00"
+    "last_skipped_remote_at": "2026-08-18T12:18:28.364071+00:00"
   },
   "metrics": {
     "invocations": [
@@ -31,6 +31,17 @@
         "cost_status": "unknown",
         "input_tokens": 134434,
         "output_tokens": 13454
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "grok-4.6",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 212399,
+        "output_tokens": 25288
       }
     ]
   }
