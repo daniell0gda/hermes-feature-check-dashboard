@@ -1,12 +1,12 @@
 {
   "run_id": "issue-13-team-work-20260818-final",
   "feature": "GitHub issue #13 - Run-Scenario editor log freshness",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-18T05:15:56.155Z",
-  "ended_at": null,
+  "ended_at": "2026-08-18T05:22:57.477Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-13-team-work-20260818-final/",
-  "heartbeat_at": "2026-08-18T05:22:53.317Z",
+  "heartbeat_at": "2026-08-18T05:22:57.477Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-18T05:22:53.317Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T05:22:53.317917+00:00",
-    "last_success_at": "2026-08-18T05:21:02.713717+00:00",
+    "last_attempt_at": "2026-08-18T05:22:57.477029+00:00",
+    "last_success_at": "2026-08-18T05:22:57.476231+00:00",
     "last_error": null,
     "last_skipped_remote_at": "2026-08-18T05:21:02.720720+00:00"
   },
