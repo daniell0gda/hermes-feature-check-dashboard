@@ -1,7 +1,7 @@
 [
   {
-    "run_id": "run-3",
-    "status": "completed",
-    "url": "runs/run-3/"
+    "run_id": "leader-smoke",
+    "status": "running",
+    "url": "runs/leader-smoke/"
   }
 ]
