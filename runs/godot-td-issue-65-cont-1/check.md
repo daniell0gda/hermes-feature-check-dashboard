@@ -1,9 +1,9 @@
 # Check Report: underground enemies ignore ground towers
-Task ID: check
+Task ID: revision-check-1
 Classification: fixable
 
 ## Verdict
-fixable — godot unavailable in this check env (exit 127, command-not-found); focused harness fails on scenario setup (Floodgate path_blocked) per coder report; scenario file now present but test not green. Smoke and build passed in coder env. No items Done while gate failed.
+fixable — godot unavailable in this check env (exit 127, command-not-found); focused harness fails on scenario setup (Floodgate path_blocked) per coder report; scenario file now present but test not green. Smoke and build passed in coder env. No items Done while gate failed. Rerun via approved runner required.
 
 ## Commands Run (verbatim from plan)
 - godot --headless --path . --editor --quit-after 300
@@ -27,7 +27,7 @@ All criteria from plan.md in Pending or Impossible due to failed verification ga
 - A focused harness scenario at tests/scenarios/underground_ground_tower_exclusion.json proves the underground-flag set after porter port, ground-tower targeting exclusion including in-flight projectiles, flag clear after exit launch, post-launch reacquisition, underground-attacker damage, and never-ported surface targetability. — Impossible (concrete technical blocker: godot unavailable + harness path_blocked on setup; scenario file now exists)
 
 ## Changed-file Quality Findings (from coder diff + worktree inspection)
-No quality violations recorded per role (only feature diff). Changes in Enemy.gd, EnemyMovementController.gd, Projectile.gd, GenericTowerProjectile.gd, BalistaProjectile.gd, IceTower.gd, HarnessValues.gd, new scenario json. CLAUDE.md rules followed for debug logs [UNDERGROUND], typed? (GDScript), no deep nesting observed in flag logic. No applicable coding_rules.md (TS) violations. No quality: suffix needed.
+No quality violations recorded per role (only feature diff). Changes in Enemy.gd, EnemyMovementController.gd, Projectile.gd, GenericTowerProjectile.gd, BalistaProjectile.gd, IceTower.gd, HarnessValues.gd, new scenario json. CLAUDE.md rules followed for debug logs [UNDERGROUND], typed vars (GDScript), no deep nesting observed in flag logic. No applicable coding_rules.md (TS) violations. No quality: suffix needed. No cross-cutting scope creep.
 
 ## Blockers
 - godot executable not present in check environment PATH (exit 127)

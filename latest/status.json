@@ -6,18 +6,18 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/godot-td-issue-65-cont-1/",
-  "heartbeat_at": "2026-08-18T07:46:45.433Z",
-  "last_node": "code",
+  "heartbeat_at": "2026-08-18T07:47:51.834Z",
+  "last_node": "check",
   "active_node": null,
-  "last_event_at": "2026-08-18T07:46:45.433Z",
+  "last_event_at": "2026-08-18T07:47:51.834Z",
   "process_id": 109078,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T07:46:45.433587+00:00",
-    "last_success_at": "2026-08-18T07:44:44.104980+00:00",
+    "last_attempt_at": "2026-08-18T07:47:51.834353+00:00",
+    "last_success_at": "2026-08-18T07:46:49.609375+00:00",
     "last_error": null,
-    "last_skipped_remote_at": "2026-08-18T07:44:44.118391+00:00"
+    "last_skipped_remote_at": "2026-08-18T07:46:49.622394+00:00"
   },
   "metrics": {
     "invocations": [
@@ -53,6 +53,17 @@
         "cost_status": "unknown",
         "input_tokens": 105363,
         "output_tokens": 5905
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "openai/gpt-5.6-luna",
+        "model_tier": null,
+        "cost_usd": 0.05833869,
+        "cost_status": "estimated",
+        "input_tokens": 60,
+        "output_tokens": 9109
       }
     ]
   }

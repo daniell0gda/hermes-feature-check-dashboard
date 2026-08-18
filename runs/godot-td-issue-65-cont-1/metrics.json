@@ -32,6 +32,17 @@
       "cost_status": "unknown",
       "input_tokens": 105363,
       "output_tokens": 5905
+    },
+    {
+      "task_id": "revision-code-1",
+      "cluster_id": "implementation",
+      "role": "code",
+      "model": "openai/gpt-5.6-luna",
+      "model_tier": null,
+      "cost_usd": 0.05833869,
+      "cost_status": "estimated",
+      "input_tokens": 60,
+      "output_tokens": 9109
     }
   ]
 }

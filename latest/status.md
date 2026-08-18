@@ -10,7 +10,6 @@
 - Surface enemies that were never ported remain acquirable and damageable by ground-level combat towers.
 - Debug-build [UNDERGROUND] log line per underground-flag set on port
 - Debug-build [UNDERGROUND] log line per underground-flag clear on exit launch
-- A focused harness scenario at tests/scenarios/underground_ground_tower_exclusion.json proves the underground-flag set after porter port, ground-tower targeting exclusion including in-flight projectiles, flag clear after exit launch, post-launch reacquisition, underground-attacker damage, and never-ported surface targetability.
 
 ## ❌ Impossible
 - A focused harness scenario at tests/scenarios/underground_ground_tower_exclusion.json proves the underground-flag set after porter port, ground-tower targeting exclusion including in-flight projectiles, flag clear after exit launch, post-launch reacquisition, underground-attacker damage, and never-ported surface targetability. — reason: godot command unavailable in verification environment (exit 127); focused harness reports path_blocked for Floodgate placement (concrete technical blocker for green run)
