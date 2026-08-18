@@ -1,12 +1,12 @@
 {
   "run_id": "issue-10-floodgate-pump-efficiency",
   "feature": "floodgate-pump-efficiency",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-18T16:13:00.298Z",
-  "ended_at": null,
+  "ended_at": "2026-08-18T16:44:31.934Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-10-floodgate-pump-efficiency/",
-  "heartbeat_at": "2026-08-18T16:44:27.507Z",
+  "heartbeat_at": "2026-08-18T16:44:31.934Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-18T16:44:27.507Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T16:44:27.507769+00:00",
-    "last_success_at": "2026-08-18T16:42:18.458922+00:00",
+    "last_attempt_at": "2026-08-18T16:44:31.934978+00:00",
+    "last_success_at": "2026-08-18T16:44:31.933891+00:00",
     "last_error": null,
     "last_skipped_remote_at": "2026-08-18T16:42:18.472789+00:00"
   },
@@ -64,6 +64,17 @@
         "cost_status": "unknown",
         "input_tokens": 119626,
         "output_tokens": 19152
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 67449,
+        "output_tokens": 4892
       }
     ]
   }
