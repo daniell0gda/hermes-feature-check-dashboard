@@ -8,27 +8,28 @@
 - `scripts/game/actors/projectiles/BalistaProjectile.gd` — modified
 - `scripts/game/actors/towers/IceTower.gd` — modified
 - `scripts/testing/HarnessValues.gd` — modified
-- `tests/scenarios/underground_ground_tower_exclusion.json` — new
+- `tests/scenarios/underground_ground_tower_exclusion.json` — new/updated
 
 ## Criteria
-- Ground-level combat towers do not acquire or attack an enemy that reports as underground — Pending: focused harness fails because scenario setup cannot place Floodgate on the carved path; code target filtering is present.
-- Ground-level projectiles already in flight do not damage a target after that target reports as underground — Pending: focused scenario does not complete green; projectile guards are implemented.
-- After that launch, a ground-level combat tower can acquire and damage the same enemy again — Pending: focused scenario does not complete green.
-- Underground-placed attackers still damage enemies that report as underground — Pending: focused scenario setup cannot place Floodgate.
-- Surface enemies that were never ported remain acquirable and damageable by ground-level combat towers — Pending: smoke harness passed; focused scenario not green.
-- Underground flag lifecycle and debug logging — Pending: focused scenario not green; lifecycle/logging code present.
+- Ground-level combat towers exclude underground enemies — Pending: runtime blocked.
+- In-flight ground projectiles do not damage underground enemies — Pending: runtime blocked.
+- Ground towers reacquire after launch — Pending: runtime blocked.
+- Underground attackers damage underground enemies — Pending: runtime blocked.
+- Surface enemies remain targetable — Pending: runtime blocked.
+- Focused harness proves the behavior — Pending: runtime blocked.
 
 ## Commands and results
-- `godot --version` — exit code 0; Godot 4.4.1.stable.official.49a5bc7b6.
-- `godot --headless --path . --editor --quit-after 300` — exit code 0; editor/import gate passed.
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/smoke_tower_roster.json` — exit code 0; smoke harness passed.
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/underground_ground_tower_exclusion.json` — exit code 1 / runner HTTP 422; harness result status `fail`, Floodgate placement rejected (`path_blocked`), generic damage expectation passed, Floodgate damage expectation failed.
-- `git diff --check` — exit code 0; no whitespace errors.
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/underground_ground_tower_exclusion.json` — exit 127; `godot` not installed on PATH.
+- Approved runner with `godot-td` / `issue-65` — HTTP 400; workspace must be namespaced.
+- Approved runner with `godot-td` / `issue-65/godot-td` — exit 126 / HTTP 422; configured cwd `/workspaces/issue-65/godot-td` does not exist.
+- `python3 -m json.tool tests/scenarios/underground_ground_tower_exclusion.json` — exit 0; valid JSON.
+- `git diff --check` — exit 0; no whitespace errors.
 
 ## Notes
-- Added debug-build `[UNDERGROUND]` logs for port set and exit clear.
-- Added `is_underground` harness enemy observation.
-- Added underground guards to base, generic, balista, and ice damage paths, including in-flight projectile resolution.
-- Existing base tower target acquisition already excludes underground enemies.
+- Added debug-build `[UNDERGROUND]` set/clear logs and `is_underground` harness observation.
+- Added underground guards to base, Generic, Balista, and Ice damage paths; Balista follow-up target search also excludes underground enemies.
+- Revised focused scenario to proven map_6 hole/exit/Floodgate/Porter geometry, addressing the prior Floodgate `path_blocked` setup failure.
 - No dashboard events published.
-- Focused scenario now exists but remains a concrete setup blocker requiring a valid underground Floodgate placement for a green acceptance run.
+
+## Handoff
+Runtime acceptance, full harness, and editor/typecheck remain pending until the approved runner maps this checkout or Godot is available.
