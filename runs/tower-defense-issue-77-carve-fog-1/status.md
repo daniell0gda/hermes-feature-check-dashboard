@@ -1,4 +1,5 @@
 ## ✅ Done
+- A focused AgentHarness scenario covers Yes immediate discovery for both spawner and boss, No seal-then-re-carve reveal for both, immediate chest or enemy population without the confirmation, and declined-state persistence after save and restore.
 
 ## ⬜ Pending
 - When a cave discovery roll resolves to spawner or boss, a Yes/No prompt appears with the text "You are about to discover something dangerous. Do you want to take a chance and see what's inside?" before the cave is populated.
@@ -9,7 +10,5 @@
 - A declined sealed cave keeps its discovered, unpopulated, sealed, and originally rolled outcome through the existing cave save and restore path.
 - Forced debug cave-enemy injection still populates underground enemies immediately without waiting on the dangerous-discovery confirmation.
 - Debug-build [CAVE] log line per confirmation, decline-seal, re-carve reveal
-- A focused AgentHarness scenario covers Yes immediate discovery for both spawner and boss, No seal-then-re-carve reveal for both, immediate chest or enemy population without the confirmation, and declined-state persistence after save and restore.
 
 ## ❌ Impossible
-- A focused AgentHarness scenario covers Yes immediate discovery for both spawner and boss, No seal-then-re-carve reveal for both, immediate chest or enemy population without the confirmation, and declined-state persistence after save and restore. — focused harness command failed: scenario file not found (exit_code=1)
