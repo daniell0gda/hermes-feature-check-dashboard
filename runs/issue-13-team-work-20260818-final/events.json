@@ -16,5 +16,14 @@
     "duration_ms": 184620,
     "summary": "Code artifacts and runner evidence written",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-18T05:22:53.317Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 110603,
+    "summary": "Independent checker classified pass",
+    "error": null
   }
 ]
