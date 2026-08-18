@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-loop/",
   "heartbeat_at": "2026-08-18T05:43:49.263Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
   "process_id": 96329,
   "host": "25e0b2c49eb5",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T05:43:49.263750+00:00"
+    "last_attempt_at": "2026-08-18T05:44:36.377902+00:00",
+    "last_success_at": "2026-08-18T05:43:53.234493+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
