@@ -21,6 +21,17 @@
       "cost_status": "unknown",
       "input_tokens": 199002,
       "output_tokens": 32762
+    },
+    {
+      "task_id": "check",
+      "cluster_id": null,
+      "role": "check",
+      "model": "grok-4.3",
+      "model_tier": null,
+      "cost_usd": 0.0,
+      "cost_status": "unknown",
+      "input_tokens": 138172,
+      "output_tokens": 4064
     }
   ]
 }
