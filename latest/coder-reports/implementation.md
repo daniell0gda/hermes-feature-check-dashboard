@@ -1,13 +1,9 @@
 # Coder report: implementation
 
 ## Changed files
-- `scripts/progression/floodgate_tower.json` — modified
 - `scripts/progression/managers/FloodgateTowerProgressionManager.gd` — modified
 - `autoload/ProgressionManager.gd` — modified
 - `scripts/game/actors/towers/FloodgateTower.gd` — modified
-- `tests/scenarios/floodgate_pump_efficiency_progression.json` — new
-- `tests/scenarios/floodgate_pump_efficiency_cycle.json` — new
-- `tests/scenarios/progression_chest_pool.json` — modified
 
 ## Criteria
 - Unowned, floodgate_pump_efficiency is Common, level 0, eligible, and present in a non-flagged chest draw of 100 after venom_miasma_bloom is taken. — Done
@@ -24,15 +20,14 @@
 - The progression_chest_pool scenario still passes after its seeded fallback pins are remasured for one extra eligible Common. — Done
 
 ## Commands and results
-- `godot --version` project=`godot-td` workspace=`poke-defense-godot/issue-floodgate-pump-efficiency` — exit code 0; 4.4.1.stable.official.49a5bc7b6
-- `godot --headless --path . --editor --quit-after 300` — exit code 0; import completed
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/floodgate_pump_efficiency_progression.json` — exit code 0; status=pass in `.gen/harness/floodgate_pump_efficiency_progression/result.json`
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/floodgate_pump_efficiency_cycle.json` — exit code 0; status=pass in `.gen/harness/floodgate_pump_efficiency_cycle/result.json`
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/progression_chest_pool.json` — exit code 0; status=pass in `.gen/harness/progression_chest_pool/result.json`
+- `["godot","--version"]` project=`poke-defense-godot` workspace=`poke-defense-godot/issue-floodgate-pump-efficiency` — HTTP 400; project must be an approved profile key
+- `["godot","--version"]` project=`godot-td` workspace=`poke-defense-godot/issue-floodgate-pump-efficiency` — exit code 0; 4.4.1.stable.official.49a5bc7b6
+- `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit code 0; import completed, re-registered FloodgateTower / FloodgateTowerProgressionManager / ProgressionManager.gd
+- `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/floodgate_pump_efficiency_progression.json"]` — exit code 0; status=pass in `.gen/harness/floodgate_pump_efficiency_progression/result.json`
+- `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/floodgate_pump_efficiency_cycle.json"]` — exit code 0; status=pass in `.gen/harness/floodgate_pump_efficiency_cycle/result.json`
+- `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/progression_chest_pool.json"]` — exit code 0; status=pass in `.gen/harness/progression_chest_pool/result.json`
 
 ## Notes
-- Runner key used: `godot-td` (plan/request). Workspace: `poke-defense-godot/issue-floodgate-pump-efficiency`.
-- Public API: `ProgressionManager.get_floodgate_cycle_cooldown(base)` / `get_floodgate_cycle_cooldown_multiplier()`. Levels store absolute cuts 0.1/0.2/0.3.
-- `progression.<name>.type` is only readable after an active selection; Common is asserted after first apply.
-- Chest-pool remasure also had to invert stale force-mode assertions because commit 0bc9636 already set `venom_miasma_bloom.forceVisibility` to false. Draw count/order was preserved. New pins: `ice_cold_steel` (weighted draw) and `ice_frostbite_focus` (chest award).
-- Waiting-phase logs observed: `L0 -> cooldown 2.00s` then `L3 -> cooldown 1.40s`.
+- Revision 1 quality fix only: no new perk behavior. `_floodgate_pm` is now typed `FloodgateTowerProgressionManager`; getters call it directly; FloodgateTower uses the ProgressionManager autoload (no `float()`/`int()`/`.call()` on the pump-efficiency path).
+- JSON `lvl` is a float (`L1.0` in `[FloodgateProgression]` logs). Dictionary numbers go through `_read_float` (typeof + typed assignment), not `float()`.
+- status.md left for the checker. Existing tests already covered the criteria; this pass re-verified after the quality rewrite.
