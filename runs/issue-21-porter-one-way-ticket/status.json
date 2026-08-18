@@ -6,18 +6,18 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-21-porter-one-way-ticket/",
-  "heartbeat_at": "2026-08-18T19:33:02.177Z",
-  "last_node": "code",
+  "heartbeat_at": "2026-08-18T19:34:25.229Z",
+  "last_node": "check",
   "active_node": null,
-  "last_event_at": "2026-08-18T19:33:02.177Z",
+  "last_event_at": "2026-08-18T19:34:25.229Z",
   "process_id": 186682,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T19:33:02.177662+00:00",
-    "last_success_at": "2026-08-18T19:20:40.065816+00:00",
+    "last_attempt_at": "2026-08-18T19:34:25.229256+00:00",
+    "last_success_at": "2026-08-18T19:33:06.865503+00:00",
     "last_error": null,
-    "last_skipped_remote_at": "2026-08-18T19:20:40.075884+00:00"
+    "last_skipped_remote_at": "2026-08-18T19:33:06.877932+00:00"
   },
   "metrics": {
     "invocations": [
@@ -31,6 +31,17 @@
         "cost_status": "unknown",
         "input_tokens": 120329,
         "output_tokens": 16601
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "grok-4.6",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 407265,
+        "output_tokens": 33288
       }
     ]
   }
