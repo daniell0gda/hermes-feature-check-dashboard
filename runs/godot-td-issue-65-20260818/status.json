@@ -6,17 +6,32 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/godot-td-issue-65-20260818/",
-  "heartbeat_at": "2026-08-18T07:19:18.494Z",
-  "last_node": "plan",
+  "heartbeat_at": "2026-08-18T07:23:54.055Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-18T07:19:18.494Z",
+  "last_event_at": "2026-08-18T07:23:54.055Z",
   "process_id": 103154,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T07:19:18.494856+00:00",
-    "last_success_at": "2026-08-18T07:14:45.612458+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-18T07:23:54.055976+00:00",
+    "last_success_at": "2026-08-18T07:19:22.675773+00:00",
+    "last_error": null,
+    "last_skipped_remote_at": "2026-08-18T07:19:22.697676+00:00"
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "grok-4.6",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 115199,
+        "output_tokens": 12179
+      }
+    ]
+  }
 }
