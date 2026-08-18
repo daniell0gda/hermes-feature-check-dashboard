@@ -1,6 +1,4 @@
 ## ✅ Done
-
-## ⬜ Pending
 - After a porter port into the underground section completes, the ported enemy reports as underground.
 - Ground-level combat towers do not acquire or attack an enemy that reports as underground.
 - Ground-level projectiles already in flight do not damage a target after that target reports as underground.
@@ -11,5 +9,6 @@
 - Debug-build [UNDERGROUND] log line per underground-flag set on port
 - Debug-build [UNDERGROUND] log line per underground-flag clear on exit launch
 
+## ⬜ Pending
+
 ## ❌ Impossible
-- A focused harness scenario at tests/scenarios/underground_ground_tower_exclusion.json proves the underground-flag set after porter port, ground-tower targeting exclusion including in-flight projectiles, flag clear after exit launch, post-launch reacquisition, underground-attacker damage, and never-ported surface targetability. — reason: godot command unavailable in verification environment (exit 127); focused harness reports path_blocked or incomplete evidence in prior runs (concrete technical blocker for green run in this env)
