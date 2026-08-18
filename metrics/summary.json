@@ -3,8 +3,8 @@
   "passed": 0,
   "escalated": 0,
   "abandoned": 0,
-  "total_worker_invocations": 7,
+  "total_worker_invocations": 8,
   "total_cost_usd": 0.271985,
-  "input_tokens": 430561.0,
-  "output_tokens": 63227.0
+  "input_tokens": 467343.0,
+  "output_tokens": 67645.0
 }
