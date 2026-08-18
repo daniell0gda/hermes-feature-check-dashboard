@@ -25,5 +25,14 @@
     "duration_ms": 78608,
     "summary": "Verified done: 0. Pending: 7 \u2014 7 due to quality violations. Impossible: 0. Quality notes: appended (type cast). Verification: failed. Blockers: none. (classification: fixable)\n",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-18T12:54:01.998Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 146409,
+    "summary": "Revision-code-1 done. Quality fix only: `_build_selected_trap_panel` now uses typed `ProgressionManager.get_trap_hit_damage` (no `float()`).\n\nFocused harness: project=godot-td workspace=poke-defense-godot/issue-trap-panel-ignores-trap-damag\u2026",
+    "error": null
   }
 ]
