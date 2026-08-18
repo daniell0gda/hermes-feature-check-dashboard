@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-18T11:15:36.942Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 283855,
+    "summary": "Plan written: /workspace/git-workspaces/tower-defense/issue-77/.gen/plan.md\n\nFollow-up contract is in place: 9 criteria, 3 clusters (fog; inward/approach seal + carve stop; harness). `manual_testing: none`. Windowed PNG inspect stays on the\u2026",
+    "error": null
+  }
+]
