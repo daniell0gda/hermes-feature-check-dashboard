@@ -1,37 +1,20 @@
 {
   "run_id": "leader-dispatch",
   "feature": "Smoke",
-  "status": "completed",
-  "started_at": "2026-08-18T05:47:49.700Z",
-  "ended_at": "2026-08-18T05:47:54.410Z",
+  "status": "running",
+  "started_at": "2026-08-18T06:31:27.602Z",
+  "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-dispatch/",
-  "heartbeat_at": "2026-08-18T05:47:54.410Z",
-  "last_node": "plan",
+  "heartbeat_at": "2026-08-18T06:31:27.602Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-18T05:47:54.390Z",
-  "process_id": 97332,
+  "last_event_at": null,
+  "process_id": 100866,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T05:47:54.410190+00:00",
-    "last_success_at": "2026-08-18T05:47:53.830632+00:00",
-    "last_error": null,
-    "last_skipped_remote_at": "2026-08-18T05:47:54.408681+00:00"
+    "last_attempt_at": "2026-08-18T06:31:27.602331+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan-1",
-        "cluster_id": null,
-        "role": "plan",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      }
-    ]
-  }
+  "metrics": {}
 }
