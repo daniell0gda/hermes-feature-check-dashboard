@@ -1,5 +1,10 @@
 [
   {
+    "run_id": "godot-td-issue-65-cont-1",
+    "status": "running",
+    "url": "runs/godot-td-issue-65-cont-1/"
+  },
+  {
     "run_id": "godot-td-issue-65-20260818",
     "status": "failed",
     "url": "runs/godot-td-issue-65-20260818/"
