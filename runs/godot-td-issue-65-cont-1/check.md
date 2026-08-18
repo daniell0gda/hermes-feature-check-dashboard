@@ -1,21 +1,21 @@
 # Check Report: underground enemies ignore ground towers
 Task ID: check
-Classification: blocked
+Classification: fixable
 
 ## Verdict
-blocked — verification commands cannot execute (godot binary absent from PATH, exit 127 on all godot invocations); focused harness scenario file missing from repository (underground_ground_tower_exclusion.json not present, confirmed by ls and prior runner error HTTP 422 / "scenario file not found").
+fixable — godot unavailable in this check env (exit 127, command-not-found); focused harness fails on scenario setup (Floodgate path_blocked) per coder report; scenario file now present but test not green. Smoke and build passed in coder env. No items Done while gate failed.
 
 ## Commands Run (verbatim from plan)
 - godot --headless --path . --editor --quit-after 300
   exit_code: 127 (command not found)
 - godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/underground_ground_tower_exclusion.json
-  exit_code: 127 (command not found); prior evidence from .gen/harness/.../result.json shows "scenario file not found"
+  exit_code: 127 (command not found); prior coder run: exit 1, harness fail, path_blocked on Floodgate
 - godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/smoke_tower_roster.json
-  exit_code: 127 (command not found); prior evidence shows smoke harness passed (status ok)
+  exit_code: 127 (command not found); prior: exit 0, smoke passed
 
 ## Acceptance Criteria Evidence & Status
-All criteria from plan.md moved to Pending or Impossible due to failed gate (build/test cannot run) and missing scenario file. No items remain Done.
-- After a porter port into the underground section completes, the ported enemy reports as underground. — Pending (unverified; no harness execution possible)
+All criteria from plan.md in Pending or Impossible due to failed verification gate (no build/test execution possible here) and focused scenario not completing green. No items remain Done.
+- After a porter port into the underground section completes, the ported enemy reports as underground. — Pending (unverified here; code present per report)
 - Ground-level combat towers do not acquire or attack an enemy that reports as underground. — Pending
 - Ground-level projectiles already in flight do not damage a target after that target reports as underground. — Pending
 - When an enemy is thrown or launched from the underground exit, that enemy reports as not underground. — Pending
@@ -24,21 +24,21 @@ All criteria from plan.md moved to Pending or Impossible due to failed gate (bui
 - Surface enemies that were never ported remain acquirable and damageable by ground-level combat towers. — Pending
 - Debug-build [UNDERGROUND] log line per underground-flag set on port — Pending
 - Debug-build [UNDERGROUND] log line per underground-flag clear on exit launch — Pending
-- A focused harness scenario proves the underground-flag set, ground-tower targeting exclusion including in-flight projectiles, and flag clear after exit launch. — Impossible (concrete blocker: scenario file absent; see result.json error)
+- A focused harness scenario at tests/scenarios/underground_ground_tower_exclusion.json proves the underground-flag set after porter port, ground-tower targeting exclusion including in-flight projectiles, flag clear after exit launch, post-launch reacquisition, underground-attacker damage, and never-ported surface targetability. — Impossible (concrete technical blocker: godot unavailable + harness path_blocked on setup; scenario file now exists)
 
 ## Changed-file Quality Findings (from coder diff + worktree inspection)
-No quality violations recorded in shared files (per role rules, only report on feature diff). Coder changes touch Enemy.gd, EnemyMovementController.gd, Projectile.gd, tower/projectile scripts, HarnessValues.gd. No applicable coding_rules.md overrides triggered in check (Godot/GDScript project; global rules are TS-focused). CLAUDE.md rules (e.g. typed vars, debug logs, indent) appear followed in the underground flag additions.
+No quality violations recorded per role (only feature diff). Changes in Enemy.gd, EnemyMovementController.gd, Projectile.gd, GenericTowerProjectile.gd, BalistaProjectile.gd, IceTower.gd, HarnessValues.gd, new scenario json. CLAUDE.md rules followed for debug logs [UNDERGROUND], typed? (GDScript), no deep nesting observed in flag logic. No applicable coding_rules.md (TS) violations. No quality: suffix needed.
 
 ## Blockers
-- godot executable not present in check environment PATH
-- Required test scenario res://tests/scenarios/underground_ground_tower_exclusion.json does not exist in worktree (ls confirms; only smoke and other scenarios present)
-- Cannot re-run focused test or typecheck gate
+- godot executable not present in check environment PATH (exit 127)
+- Focused test harness fails on Floodgate placement (path_blocked) — scenario setup issue, not code logic
+- Cannot re-run focused test or typecheck gate in this env
 
 ## Unverified Items
-- All 10 acceptance criteria (no passing automated test evidence for the underground exclusion behavior beyond smoke)
-- Coder-reported implementation of is_underground flag, projectile guards, and debug logs (code present but unexercised by harness)
+- All 10 acceptance criteria (no passing automated test evidence for underground exclusion in this run; smoke only)
+- Coder-reported implementation of is_underground flag, projectile guards, and debug logs (code present but unexercised here)
 
 ## Coder Report Summary
-Coder noted: "focused scenario file is absent from the checkout." Smoke passed, build gate passed in their env. No dashboard events. Implementation adds [UNDERGROUND] logs and guards.
+Coder: focused scenario exists but setup blocker (Floodgate path_blocked); smoke passed, build passed (exit 0), git diff clean. Added [UNDERGROUND] logs, is_underground harness value, underground guards in damage paths. No dashboard events.
 
-Quality notes: none appended (no cross-cutting issues found in feature diff; missing scenario is the sole gap).
+Quality notes: no changes (no cross-cutting issues in feature diff; scenario setup is the gap, fixable by adjusting placement or map in scenario).

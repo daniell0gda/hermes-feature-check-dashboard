@@ -16,5 +16,14 @@
     "duration_ms": 739856,
     "summary": "Implemented cluster changes in `/workspace/git-workspaces/godot-td/issue-65`.\n\nChanged:\n- Underground flag lifecycle and debug logging.\n- Harness visibility for `is_underground`.\n- Ground-target filtering and in-flight projectile guards.\n- \u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-18T07:44:40.109Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 77433,
+    "summary": "Verified done: 0. Pending: 9 \u2014 9 due to build/test failures, 9 due to missing evidence, 0 due to quality violations. Impossible: 1. Quality notes: no changes. Verification: failed. Blockers: godot command-not-found (exit 127), focused scena\u2026",
+    "error": null
   }
 ]
