@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-18T07:40:28.724Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 25,
+    "summary": "{\"status\": \"ok\"}",
+    "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-18T07:40:28.762Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 16,
+    "summary": "{\"status\": \"ok\"}",
+    "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-18T07:40:28.785Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 11,
+    "summary": "{\"status\": \"ok\"}",
+    "error": null
+  }
+]
