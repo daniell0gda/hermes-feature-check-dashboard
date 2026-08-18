@@ -1,17 +1,7 @@
 [
   {
-    "run_id": "tower-defense-issue-77-cont-1",
+    "run_id": "godot-td-issue-98-20260818",
     "status": "running",
-    "url": "runs/tower-defense-issue-77-cont-1/"
-  },
-  {
-    "run_id": "tower-defense-issue-77-carve-fog-1",
-    "status": "completed",
-    "url": "runs/tower-defense-issue-77-carve-fog-1/"
-  },
-  {
-    "run_id": "tower-defense-issue-77",
-    "status": "running",
-    "url": "runs/tower-defense-issue-77/"
+    "url": "runs/godot-td-issue-98-20260818/"
   }
 ]
