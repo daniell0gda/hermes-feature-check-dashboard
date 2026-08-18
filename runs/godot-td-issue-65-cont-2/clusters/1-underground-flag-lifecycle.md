@@ -7,13 +7,13 @@
 
 ## Acceptance criteria
 
-- After a porter port into the underground section completes, the ported enemy reports as underground.
-- When an enemy is thrown or launched from the underground exit, that enemy reports as not underground.
+- After a porter port into the underground section completes, a required focused-scenario wait observes the ported enemy as underground.
+- When that enemy is thrown or launched from the underground exit, a required focused-scenario wait observes that enemy as not underground.
 - Debug-build [UNDERGROUND] log line per underground-flag set on port
 - Debug-build [UNDERGROUND] log line per underground-flag clear on exit launch
 
 ## Verification
 
-- Focused test: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/underground_ground_tower_exclusion.json`
-- Full test: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/smoke_tower_roster.json`
-- Typecheck/build: `godot --headless --path . --editor --quit-after 300`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/underground_ground_tower_exclusion.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_tower_roster.json"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
