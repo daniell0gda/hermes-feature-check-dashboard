@@ -1,1 +1,1 @@
-{"run_id": "issue-21-porter-one-way-ticket", "url": "runs/issue-21-porter-one-way-ticket/"}
+{"run_id": "issue-21-porter-one-way-ticket", "url": "runs/issue-21-porter-one-way-ticket/", "invocations": [{"task_id": "plan", "cluster_id": null, "role": "plan", "model": "grok-4.6", "model_tier": null, "cost_usd": 0.0, "cost_status": "unknown", "input_tokens": 120329, "output_tokens": 16601}]}
