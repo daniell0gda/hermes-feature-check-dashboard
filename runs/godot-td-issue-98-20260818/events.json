@@ -25,5 +25,14 @@
     "duration_ms": 74868,
     "summary": "Verified done: 0. Pending: 9 \u2014 9 due to build/test failures (harness timeout on chance=1.0, no passing evidence). Impossible: 0. Quality notes: no changes. Verification: passed (runner probes + typecheck green via run_project_cmd; harness r\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-18T11:31:33.249Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 180338,
+    "summary": "Implemented revision-code-1 in `/workspace/git-workspaces/godot-td/issue-cave-discovery-chance-unreliable`.\n\nChanges:\n- Preserved first eligible discovery at configured chance `1.0`.\n- Added immediate retry after successful roll without sui\u2026",
+    "error": null
   }
 ]
