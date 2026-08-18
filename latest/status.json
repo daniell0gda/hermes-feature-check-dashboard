@@ -6,18 +6,18 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/tower-defense-issue-77-carve-fog-1/",
-  "heartbeat_at": "2026-08-18T11:18:26.526Z",
-  "last_node": "code",
+  "heartbeat_at": "2026-08-18T11:20:18.100Z",
+  "last_node": "check",
   "active_node": null,
-  "last_event_at": "2026-08-18T11:18:26.526Z",
+  "last_event_at": "2026-08-18T11:20:18.100Z",
   "process_id": 132233,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T11:18:26.527419+00:00",
-    "last_success_at": "2026-08-18T11:15:41.065206+00:00",
+    "last_attempt_at": "2026-08-18T11:20:18.100353+00:00",
+    "last_success_at": "2026-08-18T11:18:30.458457+00:00",
     "last_error": null,
-    "last_skipped_remote_at": "2026-08-18T11:15:41.080437+00:00"
+    "last_skipped_remote_at": "2026-08-18T11:18:30.474121+00:00"
   },
   "metrics": {
     "invocations": [
@@ -31,6 +31,17 @@
         "cost_status": "unknown",
         "input_tokens": 365294,
         "output_tokens": 13495
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "openai/gpt-5.6-luna",
+        "model_tier": null,
+        "cost_usd": 0.06471676,
+        "cost_status": "estimated",
+        "input_tokens": 72,
+        "output_tokens": 7117
       }
     ]
   }

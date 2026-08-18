@@ -1,4 +1,6 @@
 ## ✅ Done
+
+## ⬜ Pending
 - When a cave discovery roll resolves to spawner or boss, a Yes/No prompt appears with the text "You are about to discover something dangerous. Do you want to take a chance and see what's inside?" before the cave is populated.
 - A cave discovery that resolves to chest or enemies populates immediately and does not show the dangerous-discovery confirmation.
 - Confirming Yes on that prompt populates the cave immediately with the already-rolled spawner or boss contents so it is visible and enterable.
@@ -9,5 +11,5 @@
 - Debug-build [CAVE] log line per confirmation, decline-seal, re-carve reveal
 - A focused AgentHarness scenario covers Yes immediate discovery for both spawner and boss, No seal-then-re-carve reveal for both, immediate chest or enemy population without the confirmation, and declined-state persistence after save and restore.
 
-## ⬜ Pending
 ## ❌ Impossible
+- A focused AgentHarness scenario covers Yes immediate discovery for both spawner and boss, No seal-then-re-carve reveal for both, immediate chest or enemy population without the confirmation, and declined-state persistence after save and restore. — focused harness command failed: scenario file not found (exit_code=1)
