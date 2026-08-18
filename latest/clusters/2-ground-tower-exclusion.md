@@ -1,7 +1,7 @@
 # Cluster 2: ground-tower-exclusion
 
 - cluster_id: ground-tower-exclusion
-- owned file scope: `scripts/game/actors/Tower.gd`, `scripts/game/actors/Projectile.gd`, `scripts/game/actors/projectiles/GenericTowerProjectile.gd`, `scripts/game/actors/projectiles/BalistaProjectile.gd`, `scripts/game/actors/towers/IceTower.gd`, `tests/scenarios/underground_ground_tower_exclusion.json`
+- owned file scope: `scripts/game/actors/Tower.gd`, `scripts/game/actors/Projectile.gd`, `scripts/game/actors/projectiles/GenericTowerProjectile.gd`, `scripts/game/actors/projectiles/BalistaProjectile.gd`, `scripts/game/actors/towers/IceTower.gd`, `scripts/testing/HarnessActions.gd`, `tests/scenarios/underground_ground_tower_exclusion.json`
 - dependencies: 1
 - parallel: false
 
@@ -12,7 +12,7 @@
 - After that launch, a ground-level combat tower can acquire and damage the same enemy again.
 - Underground-placed attackers still damage enemies that report as underground.
 - Surface enemies that were never ported remain acquirable and damageable by ground-level combat towers.
-- A focused harness scenario proves the underground-flag set, ground-tower targeting exclusion including in-flight projectiles, and flag clear after exit launch.
+- A focused harness scenario at tests/scenarios/underground_ground_tower_exclusion.json proves the underground-flag set after porter port, ground-tower targeting exclusion including in-flight projectiles, flag clear after exit launch, post-launch reacquisition, underground-attacker damage, and never-ported surface targetability.
 
 ## Verification
 
