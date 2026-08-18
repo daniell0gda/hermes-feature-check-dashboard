@@ -1,12 +1,12 @@
 {
   "run_id": "issue-68-enemyhealthbar-iconboss",
   "feature": "enemyhealthbar-iconboss-path-mismatch",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-18T13:22:14.498Z",
-  "ended_at": null,
+  "ended_at": "2026-08-18T13:38:53.380Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-68-enemyhealthbar-iconboss/",
-  "heartbeat_at": "2026-08-18T13:38:49.188Z",
+  "heartbeat_at": "2026-08-18T13:38:53.380Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-18T13:38:49.188Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T13:38:49.188780+00:00",
-    "last_success_at": "2026-08-18T13:37:25.699344+00:00",
+    "last_attempt_at": "2026-08-18T13:38:53.380995+00:00",
+    "last_success_at": "2026-08-18T13:38:53.379987+00:00",
     "last_error": null,
     "last_skipped_remote_at": "2026-08-18T13:37:25.710476+00:00"
   },
@@ -42,6 +42,17 @@
         "cost_status": "unknown",
         "input_tokens": 247322,
         "output_tokens": 32183
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 105782,
+        "output_tokens": 4408
       }
     ]
   }
