@@ -6,17 +6,32 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-38-trap-panel-ignores-trap-damage-perk/",
-  "heartbeat_at": "2026-08-18T12:42:40.285Z",
-  "last_node": "plan",
+  "heartbeat_at": "2026-08-18T12:50:07.849Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-18T12:42:40.285Z",
+  "last_event_at": "2026-08-18T12:50:07.849Z",
   "process_id": 148958,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-18T12:42:40.285573+00:00",
-    "last_success_at": "2026-08-18T12:38:29.554074+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-18T12:50:07.849843+00:00",
+    "last_success_at": "2026-08-18T12:42:44.412327+00:00",
+    "last_error": null,
+    "last_skipped_remote_at": "2026-08-18T12:42:44.421856+00:00"
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "grok-4.6",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 96048,
+        "output_tokens": 13115
+      }
+    ]
+  }
 }
