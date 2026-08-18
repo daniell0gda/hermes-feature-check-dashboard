@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-18T12:08:31.323Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 270090,
+    "summary": "Plan written: /workspace/git-workspaces/godot-td/issue-harness-wait-for-duration/.gen/plan.md\n\nmanual_testing: none\nclusters: wait-clock \u2192 scenario-and-docs\nrunner probe: godot --version \u2192 4.4.1.stable (exit 0)\nno production source edited\n",
+    "error": null
+  }
+]
