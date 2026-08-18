@@ -16,5 +16,14 @@
     "duration_ms": 965445,
     "summary": "Implemented floodgate_pump_efficiency (Common L1-3, cycle_cooldown -10/-20/-30%) across both clusters. Reports: /workspace/git-workspaces/poke-defense-godot/issue-floodgate-pump-efficiency/.gen/coder-reports/implementation.md\n\nUnowned, floo\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-18T16:36:15.144Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 122882,
+    "summary": "Verified done: 0. Pending: 12 \u2014 0 due to build/test failures, 12 due to missing evidence/quality violations (type casts float/int in Floodgate* files + ProgressionManager). Impossible: 0. Quality notes: appended (no prior entries). Verifica\u2026",
+    "error": null
   }
 ]
