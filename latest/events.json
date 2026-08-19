@@ -25,5 +25,14 @@
     "duration_ms": 104552,
     "summary": "Verified done: 10. Pending: 0. Impossible: 0. Quality notes: no changes. Verification: passed. Blockers: none. (All harnesses green via run_project_cmd godot-td; status+check.md written.)\n",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-19T12:23:44.174Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 30524,
+    "summary": "manual_testing.md written (required; chest UI visible). reads complete, no workers/starts/edits. done.\n",
+    "error": null
   }
 ]
