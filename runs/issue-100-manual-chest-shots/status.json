@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-100-manual-chest-shots/",
-  "heartbeat_at": "2026-08-19T05:52:38.473Z",
-  "last_node": "check",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-19T05:52:38.473Z",
+  "heartbeat_at": "2026-08-19T05:53:14.284Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-19T05:53:14.284Z",
   "process_id": 216186,
   "host": "25e0b2c49eb5",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T05:52:42.667231+00:00",
-    "last_success_at": "2026-08-19T05:52:42.666254+00:00",
+    "last_attempt_at": "2026-08-19T05:53:14.284562+00:00",
+    "last_success_at": "2026-08-19T05:52:46.847165+00:00",
     "last_error": null
   },
   "metrics": {
