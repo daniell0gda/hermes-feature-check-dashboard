@@ -7,5 +7,14 @@
     "duration_ms": 254022,
     "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-harness-log-assertion-gap/.gen/plan.md\n\nmanual_testing: none\nNo ui_scenario.md (harness/schema only)\n\nClusters: 2 sequential\n1. log-assertion-runtime \u2014 HarnessValues, AgentHar\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-19T10:58:05.311Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 658682,
+    "summary": "Implemented log expectations for both plan clusters.\n\nPublic surface: `source: \"log\"` greps this run's `.gen/harness/_logs/<id>.out.log` with `contains` / `!contains` / `regex` / `!regex`. Native Godot has no PS1 redirect, so the harness co\u2026",
+    "error": null
   }
 ]
