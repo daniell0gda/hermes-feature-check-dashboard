@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-70-harness-log-assertion-gap/",
   "heartbeat_at": "2026-08-19T11:03:45.642Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-19T11:03:45.642Z",
   "process_id": 228214,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T11:03:45.642700+00:00",
-    "last_success_at": "2026-08-19T11:02:38.838211+00:00",
+    "last_attempt_at": "2026-08-19T11:03:49.853877+00:00",
+    "last_success_at": "2026-08-19T11:03:49.852490+00:00",
     "last_error": null
   },
   "metrics": {
@@ -63,6 +63,17 @@
         "cost_status": "unknown",
         "input_tokens": 177451,
         "output_tokens": 9850
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 42791,
+        "output_tokens": 3833
       }
     ]
   }
