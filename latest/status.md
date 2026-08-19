@@ -1,8 +1,6 @@
 ## ✅ Done
-- criterion
 
 ## ⬜ Pending
-- criterion
 
 ## ❌ Impossible
 - A headless run of `retry_after_defeat_clears_rewards` records status `pass` and a passing expectation that this run's engine `.out.log` contains `[RunReset]`. — blocked: run_project_cmd with project=poke-defense-godot fails with auth error "project must be an approved profile key" (runner profile mismatch)
