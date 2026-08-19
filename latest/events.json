@@ -43,5 +43,14 @@
     "duration_ms": 60594,
     "summary": "Verified done: 0. Pending: 14 \u2014 14 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes. Verification: blocked. Blockers: run_project_cmd project=poke-defense-godot HTT\u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-19T16:09:53.720Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 199402,
+    "summary": "Revision 2 re-verified the existing porter_boss_runner implementation. No production or scenario files were edited.\n\nBlocked first: run_project_cmd project=poke-defense-godot returned HTTP 400 (not an approved profile key). Working pair is \u2026",
+    "error": null
   }
 ]
