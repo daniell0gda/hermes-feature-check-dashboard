@@ -1,12 +1,12 @@
 {
   "run_id": "issue-100-boss-cave-reward",
   "feature": "boss-cave-reward-and-spawner-lifetime-tests",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-19T03:42:42.455Z",
-  "ended_at": null,
+  "ended_at": "2026-08-19T04:09:57.890Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-100-boss-cave-reward/",
-  "heartbeat_at": "2026-08-19T04:09:53.867Z",
+  "heartbeat_at": "2026-08-19T04:09:57.890Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-19T04:09:53.867Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T04:09:53.867517+00:00",
-    "last_success_at": "2026-08-19T04:08:22.321220+00:00",
+    "last_attempt_at": "2026-08-19T04:09:57.890120+00:00",
+    "last_success_at": "2026-08-19T04:09:57.888214+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 267805,
         "output_tokens": 40323
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 57894,
+        "output_tokens": 4132
       }
     ]
   }
