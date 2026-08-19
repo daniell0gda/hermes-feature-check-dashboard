@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-100-boss-cave-reward/",
-  "heartbeat_at": "2026-08-19T04:08:13.718Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-19T04:08:13.718Z",
+  "heartbeat_at": "2026-08-19T04:09:53.867Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-19T04:09:53.867Z",
   "process_id": 200428,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T04:08:18.281111+00:00",
-    "last_success_at": "2026-08-19T04:08:18.280344+00:00",
+    "last_attempt_at": "2026-08-19T04:09:53.867517+00:00",
+    "last_success_at": "2026-08-19T04:08:22.321220+00:00",
     "last_error": null
   },
   "metrics": {
