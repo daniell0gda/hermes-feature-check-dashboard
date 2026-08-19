@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-20-porter-boss-runner-r2/",
-  "heartbeat_at": "2026-08-19T15:38:56.618Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-19T15:38:56.618Z",
+  "heartbeat_at": "2026-08-19T15:51:55.232Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-19T15:51:55.232Z",
   "process_id": 276924,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T15:39:01.232805+00:00",
-    "last_success_at": "2026-08-19T15:39:01.232007+00:00",
+    "last_attempt_at": "2026-08-19T15:51:55.233388+00:00",
+    "last_success_at": "2026-08-19T15:39:05.256903+00:00",
     "last_error": null
   },
   "metrics": {
