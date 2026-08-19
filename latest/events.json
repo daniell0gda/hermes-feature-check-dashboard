@@ -34,5 +34,14 @@
     "duration_ms": 28182,
     "summary": "**manual_testing.md written; decision: required (new visible boss-reroute + VFX story, screenshot-capturable).**  \nAll reads complete, no workers/leader/source edits performed. Task complete.\n",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-19T15:31:19.754Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 48695,
+    "summary": "Manual-test result: FAILED. Scenario: /workspace/git-workspaces/poke-defense-godot/issue-porter-boss-runner/.gen/ui_scenario.md.\nReport: /workspace/git-workspaces/poke-defense-godot/issue-porter-boss-runner/.gen/manual-report.md. Escalation\u2026",
+    "error": null
   }
 ]
