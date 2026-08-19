@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/64-filter-ineligible-20260819/",
-  "heartbeat_at": "2026-08-19T12:21:20.347Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-19T12:21:20.347Z",
+  "heartbeat_at": "2026-08-19T12:23:09.377Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-19T12:23:09.377Z",
   "process_id": 238292,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T12:21:24.825855+00:00",
-    "last_success_at": "2026-08-19T12:21:24.824764+00:00",
+    "last_attempt_at": "2026-08-19T12:23:09.377657+00:00",
+    "last_success_at": "2026-08-19T12:21:29.189256+00:00",
     "last_error": null
   },
   "metrics": {
