@@ -1,12 +1,12 @@
 {
   "run_id": "issue-20-porter-boss-runner-r2",
   "feature": "porter-boss-runner",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-19T15:33:12.717Z",
-  "ended_at": null,
+  "ended_at": "2026-08-19T16:11:15.780Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-20-porter-boss-runner-r2/",
-  "heartbeat_at": "2026-08-19T16:11:11.485Z",
+  "heartbeat_at": "2026-08-19T16:11:15.780Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-19T16:11:11.485Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T16:11:11.485465+00:00",
-    "last_success_at": "2026-08-19T16:10:02.353450+00:00",
+    "last_attempt_at": "2026-08-19T16:11:15.780768+00:00",
+    "last_success_at": "2026-08-19T16:11:15.779147+00:00",
     "last_error": null
   },
   "metrics": {
@@ -85,6 +85,17 @@
         "cost_status": "unknown",
         "input_tokens": 161867,
         "output_tokens": 9156
+      },
+      {
+        "task_id": "revision-check-2",
+        "cluster_id": null,
+        "role": "check",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 85369,
+        "output_tokens": 3913
       }
     ]
   }
