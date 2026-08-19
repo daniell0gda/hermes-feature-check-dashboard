@@ -5,6 +5,11 @@
     "url": "runs/issue-100-reward-on-open/"
   },
   {
+    "run_id": "issue-100-manual-chest-shots",
+    "status": "running",
+    "url": "runs/issue-100-manual-chest-shots/"
+  },
+  {
     "run_id": "issue-100-boss-cave-reward",
     "status": "completed",
     "url": "runs/issue-100-boss-cave-reward/"
