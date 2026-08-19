@@ -1,4 +1,6 @@
 ## ✅ Done
+
+## ⬜ Pending
 - Unique perk `porter_boss_runner` is type Unique, is eligible before it is taken, and appears in a chest draw before it is taken.
 - Applying `porter_boss_runner` owns it at level 1, then 2, then 3; it stays eligible and appears in a chest draw until level 3; a further apply leaves the level at 3; `reset_for_new_game` returns it to unowned level 0.
 - Without `porter_boss_runner` owned, a Porter in range of a live surface boss does not lock or charge that boss, and the boss stays on the surface.
@@ -13,7 +15,5 @@
 - Debug-build [PORTER_BOSS_RUNNER] log line per boss reroute event
 - Debug-build [PORTER_BOSS_RUNNER] log line per boss miss event
 - Focused harness scenario `porter_boss_runner` covers perk off (no boss target), perk on plus a hit seed (charge then reroute), and perk on plus a miss seed (charge spent, no reroute), and finishes with `status: pass`.
-
-## ⬜ Pending
 
 ## ❌ Impossible
