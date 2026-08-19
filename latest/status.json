@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-70-harness-log-assertion-gap/",
-  "heartbeat_at": "2026-08-19T10:41:56.913Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-19T10:47:02.398Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-19T10:47:02.398Z",
   "process_id": 228214,
   "host": "25e0b2c49eb5",
   "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T10:42:48.376218+00:00",
-    "last_success_at": "2026-08-19T10:42:01.382574+00:00",
+    "last_attempt_at": "2026-08-19T10:47:02.398467+00:00",
+    "last_success_at": "2026-08-19T10:42:52.901083+00:00",
     "last_error": null
   },
   "metrics": {}
