@@ -1,1 +1,1 @@
-{"run_id": "issue-15-fragile-optics", "url": "runs/issue-15-fragile-optics/"}
+{"run_id": "issue-15-fragile-optics", "url": "runs/issue-15-fragile-optics/", "invocations": [{"task_id": "plan", "cluster_id": null, "role": "plan", "model": "grok-4.6", "model_tier": null, "cost_usd": 0.0, "cost_status": "unknown", "input_tokens": 223643, "output_tokens": 15914}]}
