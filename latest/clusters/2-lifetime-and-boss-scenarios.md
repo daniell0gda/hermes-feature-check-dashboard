@@ -8,9 +8,9 @@
 ## Criteria
 
 - After a discovered cave spawner completes its wave_lifetime waves, that cave has has_spawner false, has_chest true, and spawner_lifetime_expired true, and single_perk_chest_count is at least 1.
+- After that lifetime conversion and before the chest is opened, no progression perk is applied and no progression modal is open.
 - Opening that lifetime-converted chest offers exactly one perk and no money option, and a seeded run grants a perk whose rarity matches that seed's 40% Unique roll.
 - Per-cave harness observations report has_chest and spawner_lifetime_expired.
-- The existing spawner_lifetime_and_discovery_confirmation scenario still passes.
 
 ## Verification
 

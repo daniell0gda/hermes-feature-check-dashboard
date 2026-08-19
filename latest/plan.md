@@ -11,23 +11,27 @@ manual_testing: none
 ## Clusters
 
 1. boss-clear-reward — files: `scripts/game/CaveSystem.gd` — depends on: none
-- After the last remaining enemy in a discovered cave with has_boss true is killed, that cave has an unopened chest, has_chest is true, and single_perk_chest_count is at least 1.
-- Opening that boss-clear chest offers exactly one perk and no money option; a seeded Unique branch grants a Unique perk and a seeded Common branch grants a Common perk.
-- After the last remaining enemy in a discovered non-boss enemy cave is killed, that cave has no chest and single_perk_chest_count is 0.
+- After a discovered cave with has_boss true has its last remaining enemy killed underground, that cave has an unopened chest, has_chest is true, and single_perk_chest_count is at least 1.
+- After that underground boss kill and before the chest is opened, no progression perk is applied and no progression modal is open.
+- After a cave boss is killed while on the surface, that cave has an unopened chest, has_chest is true, no progression perk is applied, and no progression modal is open.
+- Opening the boss-clear chest offers exactly one perk and no money option; a seeded Unique branch grants a Unique perk and a seeded Common branch grants a Common perk.
+- After the last remaining enemy in a discovered non-boss enemy cave is killed, that cave has no chest and that cave's chest_count is 0.
 - Debug-build [CAVE] log line per boss-clear chest grant with cave id
 2. lifetime-and-boss-scenarios — files: `scripts/testing/HarnessValues.gd`, `tests/scenarios/boss_cave_kill_reward.json`, `tests/scenarios/spawner_lifetime_chest_conversion.json` — depends on: 1
 - After a discovered cave spawner completes its wave_lifetime waves, that cave has has_spawner false, has_chest true, and spawner_lifetime_expired true, and single_perk_chest_count is at least 1.
+- After that lifetime conversion and before the chest is opened, no progression perk is applied and no progression modal is open.
 - Opening that lifetime-converted chest offers exactly one perk and no money option, and a seeded run grants a perk whose rarity matches that seed's 40% Unique roll.
 - Per-cave harness observations report has_chest and spawner_lifetime_expired.
-- The existing spawner_lifetime_and_discovery_confirmation scenario still passes.
 
 ## Criteria
 
-- After the last remaining enemy in a discovered cave with has_boss true is killed, that cave has an unopened chest, has_chest is true, and single_perk_chest_count is at least 1.
-- Opening that boss-clear chest offers exactly one perk and no money option; a seeded Unique branch grants a Unique perk and a seeded Common branch grants a Common perk.
-- After the last remaining enemy in a discovered non-boss enemy cave is killed, that cave has no chest and single_perk_chest_count is 0.
+- After a discovered cave with has_boss true has its last remaining enemy killed underground, that cave has an unopened chest, has_chest is true, and single_perk_chest_count is at least 1.
+- After that underground boss kill and before the chest is opened, no progression perk is applied and no progression modal is open.
+- After a cave boss is killed while on the surface, that cave has an unopened chest, has_chest is true, no progression perk is applied, and no progression modal is open.
+- Opening the boss-clear chest offers exactly one perk and no money option; a seeded Unique branch grants a Unique perk and a seeded Common branch grants a Common perk.
+- After the last remaining enemy in a discovered non-boss enemy cave is killed, that cave has no chest and that cave's chest_count is 0.
 - Debug-build [CAVE] log line per boss-clear chest grant with cave id
 - After a discovered cave spawner completes its wave_lifetime waves, that cave has has_spawner false, has_chest true, and spawner_lifetime_expired true, and single_perk_chest_count is at least 1.
+- After that lifetime conversion and before the chest is opened, no progression perk is applied and no progression modal is open.
 - Opening that lifetime-converted chest offers exactly one perk and no money option, and a seeded run grants a perk whose rarity matches that seed's 40% Unique roll.
 - Per-cave harness observations report has_chest and spawner_lifetime_expired.
-- The existing spawner_lifetime_and_discovery_confirmation scenario still passes.
