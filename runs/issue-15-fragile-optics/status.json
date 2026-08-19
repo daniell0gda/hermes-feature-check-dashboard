@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-15-fragile-optics/",
-  "heartbeat_at": "2026-08-19T13:57:43.662Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-19T13:57:43.662Z",
+  "heartbeat_at": "2026-08-19T14:19:29.891Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-19T14:19:29.891Z",
   "process_id": 253150,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T13:57:48.019504+00:00",
-    "last_success_at": "2026-08-19T13:57:48.018449+00:00",
+    "last_attempt_at": "2026-08-19T14:19:29.892767+00:00",
+    "last_success_at": "2026-08-19T13:57:52.297965+00:00",
     "last_error": null
   },
   "metrics": {
