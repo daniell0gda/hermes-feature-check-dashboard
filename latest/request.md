@@ -7,7 +7,7 @@ Issue: https://github.com/daniell0gda/poke-defense-godot/issues/20
 
 ## Feature
 
-New Unique perk `porter_boss_runner`: Porter can target bosses. A full charge against a boss does **not** teleport the boss away / consume-and-remove. Instead it forces an extra underground detour lap, reusing `UGSystem.compute_underground_route` for the reroute.
+New Unique perk `porter_boss_runner`: Porter can target bosses. A full charge against a boss does **not** teleport the boss away / consume-and-remove. Instead it forces an extra underground detour lap, reusing `UGSystem.compute_underground_route` for the reroute. Each completed boss charge has a **40% miss chance** (no reroute); 60% hit applies the extra lap.
 
 ## Problem
 
@@ -18,9 +18,10 @@ Porter refuses to target bosses today (`PorterTower._attack_target` / `_update_p
 - Unique perk `porter_boss_runner` exists and is selectable.
 - With the perk, Porter can lock a boss and complete a charge.
 - Full charge on a boss reroutes the boss on an extra underground detour lap via `UGSystem.compute_underground_route` (not consume-and-remove).
-- Porter's existing teleport VFX plays for the boss reroute (no silent reroute).
+- **40% miss chance:** each completed boss charge independently misses 40% of the time. A miss does not reroute the boss (charge is spent, no detour). A hit (60%) applies the extra underground lap. Seeded/deterministic in tests.
+- Porter's existing teleport VFX plays for a successful boss reroute (no silent reroute). Misses must not play the success teleport cue as if the boss was sent.
 - Without the perk, Porter still ignores bosses.
-- Focused `game-test` scenario covers: perk off = no boss target; perk on = charge then reroute + VFX/path evidence.
+- Focused `game-test` scenario covers: perk off = no boss target; perk on + hit seed = charge then reroute; perk on + miss seed = charge spent, no reroute.
 - Visible perk/gameplay: manual-tester windowed screenshots required (not headless-only).
 
 ## Constraints
