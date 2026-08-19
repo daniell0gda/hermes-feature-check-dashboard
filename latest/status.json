@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/64-filter-ineligible-20260819/",
   "heartbeat_at": "2026-08-19T12:23:44.174Z",
   "last_node": "team-leader",
-  "active_node": null,
+  "active_node": "manual-tester",
   "last_event_at": "2026-08-19T12:23:44.174Z",
   "process_id": 238292,
   "host": "25e0b2c49eb5",
-  "phase": "team-leader",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T12:23:44.175085+00:00",
-    "last_success_at": "2026-08-19T12:23:17.808298+00:00",
+    "last_attempt_at": "2026-08-19T12:23:48.494257+00:00",
+    "last_success_at": "2026-08-19T12:23:48.493186+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 128835,
         "output_tokens": 4372
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 24230,
+        "output_tokens": 1326
       }
     ]
   }
