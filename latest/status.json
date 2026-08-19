@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-20-porter-boss-runner/",
   "heartbeat_at": "2026-08-19T15:09:14.603Z",
   "last_node": "plan",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-19T15:09:14.603Z",
   "process_id": 264766,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T15:09:14.603465+00:00",
-    "last_success_at": "2026-08-19T15:03:42.651058+00:00",
+    "last_attempt_at": "2026-08-19T15:09:18.717021+00:00",
+    "last_success_at": "2026-08-19T15:09:18.716200+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "grok-4.6",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 402540,
+        "output_tokens": 17211
+      }
+    ]
+  }
 }
