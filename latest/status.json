@@ -1,12 +1,12 @@
 {
   "run_id": "issue-100-manual-chest-shots",
   "feature": "boss-cave-reward-and-spawner-lifetime-tests",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-19T05:35:04.992Z",
-  "ended_at": null,
+  "ended_at": "2026-08-19T05:53:18.414Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-100-manual-chest-shots/",
-  "heartbeat_at": "2026-08-19T05:53:14.284Z",
+  "heartbeat_at": "2026-08-19T05:53:18.414Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-19T05:53:14.284Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T05:53:14.284562+00:00",
-    "last_success_at": "2026-08-19T05:52:46.847165+00:00",
+    "last_attempt_at": "2026-08-19T05:53:18.414977+00:00",
+    "last_success_at": "2026-08-19T05:53:18.413780+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 57959,
         "output_tokens": 3930
+      },
+      {
+        "task_id": "manual-tester",
+        "cluster_id": null,
+        "role": "manual-tester",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 26403,
+        "output_tokens": 1269
       }
     ]
   }
