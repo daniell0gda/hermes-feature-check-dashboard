@@ -1,6 +1,6 @@
 # Acceptance Plan: boss-cave-reward-and-spawner-lifetime-tests
 
-manual_testing: none
+manual_testing: required
 
 ## Verification
 
@@ -22,6 +22,8 @@ manual_testing: none
 - After that lifetime conversion and before the chest is opened, no progression perk is applied and no progression modal is open.
 - Opening that lifetime-converted chest offers exactly one perk and no money option, and a seeded run grants a perk whose rarity matches that seed's 40% Unique roll.
 - Per-cave harness observations report has_chest and spawner_lifetime_expired.
+- After a cave boss is killed and before the chest is opened, a windowed capture shows an unopened chest on the cave and no perk-choice UI.
+- After that chest is opened, a windowed capture shows the perk-choice / reward UI.
 
 ## Criteria
 
@@ -35,3 +37,5 @@ manual_testing: none
 - After that lifetime conversion and before the chest is opened, no progression perk is applied and no progression modal is open.
 - Opening that lifetime-converted chest offers exactly one perk and no money option, and a seeded run grants a perk whose rarity matches that seed's 40% Unique roll.
 - Per-cave harness observations report has_chest and spawner_lifetime_expired.
+- After a cave boss is killed and before the chest is opened, a windowed capture shows an unopened chest on the cave and no perk-choice UI.
+- After that chest is opened, a windowed capture shows the perk-choice / reward UI.
