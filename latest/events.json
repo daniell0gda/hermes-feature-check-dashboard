@@ -25,5 +25,14 @@
     "duration_ms": 61149,
     "summary": "Verified done: 0. Pending: 5 \u2014 5 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes. Verification: blocked. Blockers: run_project_cmd auth (project=poke-defense-godot\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-19T11:02:30.493Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 195371,
+    "summary": "revision-code-1 re-verified existing implementation. No source edits.\n\nInfra evidence\n- project=poke-defense-godot \u2192 HTTP 400 `project must be an approved profile key`\n- project=godot-td workspace=poke-defense-godot/issue-harness-log-assert\u2026",
+    "error": null
   }
 ]
