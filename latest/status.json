@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-100-reward-on-open/",
   "heartbeat_at": "2026-08-19T05:16:05.608Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-19T05:16:05.608Z",
   "process_id": 209345,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T05:16:05.609379+00:00",
-    "last_success_at": "2026-08-19T05:05:32.198452+00:00",
+    "last_attempt_at": "2026-08-19T05:16:09.914367+00:00",
+    "last_success_at": "2026-08-19T05:16:09.913591+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 191500,
         "output_tokens": 13057
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
       }
     ]
   }
