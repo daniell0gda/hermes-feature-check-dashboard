@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-22-overcharged-rings/",
-  "heartbeat_at": "2026-08-19T20:28:05.352Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-19T20:33:38.220Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-19T20:33:38.220Z",
   "process_id": 292649,
   "host": "25e0b2c49eb5",
   "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-19T20:29:11.560052+00:00",
-    "last_success_at": "2026-08-19T20:28:09.807625+00:00",
+    "last_attempt_at": "2026-08-19T20:33:38.220436+00:00",
+    "last_success_at": "2026-08-19T20:29:15.882169+00:00",
     "last_error": null
   },
   "metrics": {}
