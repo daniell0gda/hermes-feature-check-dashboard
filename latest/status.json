@@ -1,22 +1,37 @@
 {
   "run_id": "run-3",
   "feature": "Smoke",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-20T07:50:41.211Z",
-  "ended_at": null,
+  "ended_at": "2026-08-20T07:50:50.366Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/run-3/",
-  "heartbeat_at": "2026-08-20T07:50:41.211Z",
-  "last_node": null,
-  "active_node": "planning",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-20T07:50:50.366Z",
+  "last_node": "planning",
+  "active_node": null,
+  "last_event_at": "2026-08-20T07:50:50.358Z",
   "process_id": 338316,
   "host": "25e0b2c49eb5",
   "phase": "planning",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T07:50:46.023129+00:00",
-    "last_success_at": "2026-08-20T07:50:45.394761+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-20T07:50:50.366794+00:00",
+    "last_success_at": "2026-08-20T07:50:50.358054+00:00",
+    "last_error": null,
+    "last_skipped_remote_at": "2026-08-20T07:50:50.365648+00:00"
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan-1",
+        "cluster_id": null,
+        "role": "planning",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
+      }
+    ]
+  }
 }
