@@ -1,1 +1,1 @@
-{"run_id": "issue-103-duplicate-display-damage-math", "url": "runs/issue-103-duplicate-display-damage-math/"}
+{"run_id": "issue-103-duplicate-display-damage-math", "url": "runs/issue-103-duplicate-display-damage-math/", "invocations": [{"task_id": "plan", "cluster_id": null, "role": "plan", "model": "grok-4.6", "model_tier": null, "cost_usd": 0.0, "cost_status": "unknown", "input_tokens": 118967, "output_tokens": 13521}]}

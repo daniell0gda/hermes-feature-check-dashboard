@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-103-duplicate-display-damage-math/",
   "heartbeat_at": "2026-08-20T04:34:10.484Z",
   "last_node": "plan",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-20T04:34:10.484Z",
   "process_id": 313472,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T04:34:10.484927+00:00",
-    "last_success_at": "2026-08-20T04:30:10.409663+00:00",
+    "last_attempt_at": "2026-08-20T04:34:15.031953+00:00",
+    "last_success_at": "2026-08-20T04:34:15.031051+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "grok-4.6",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 118967,
+        "output_tokens": 13521
+      }
+    ]
+  }
 }
