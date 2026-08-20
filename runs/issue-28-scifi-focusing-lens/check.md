@@ -1,32 +1,21 @@
-# Check Report: scifi-focusing-lens (revision-check-1)
-Task ID: revision-check-1
-Classification: fixable
+# Check Report: revision-check-2
 
-## Verification Commands (via run_project_cmd)
-- Typecheck/build: ["godot","--headless","--path",".","--editor","--quit-after","300"] → exitCode=0 (success, 9s)
-- Full test: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/smoke_tower_roster.json"] → exitCode=0 (success, 38s)
-- Focused progression: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/scifi_focusing_lens_progression.json"] → exitCode=0 (success)
-- Focused beam lock: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/scifi_focusing_lens.json"] → exitCode=1 (failure)
+## Verification commands (via run_project_cmd)
+- Typecheck/build: ["godot","--headless","--path",".","--editor","--quit-after","300"] — exit 0 (success)
+- Focused test: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/scifi_focusing_lens.json"] — exit 0, status=pass (harness result.json confirms all expectations including [FOCUSING_LENS] logs and DPS)
+- Full test: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/smoke_tower_roster.json"] — exit 0 (success)
 
-## Coder Reports Inspected
-- clusters/1.md, clusters/2.md: implementation claimed complete for perk catalog and beam lock; no per-criterion harness results attached.
-- team-work-dashboard reports: empty or absent detailed evidence for beam criteria.
+## Criteria evidence and status
+All 5 progression criteria and 1 scifi-damage criterion remain Done (pre-existing green tests, no new violations in their files).
+The 6 beam-lock criteria: tests pass (harness exit 0) but implementation violates coding_rules.md "Type casts are forbidden." — moved/annotated Pending with quality suffix. Visual and log assertions covered by harness get_beam_visual_state and append_engine_out_log.
 
-## Acceptance Criteria Evidence & Status
-Progression criteria (L0 eligible, chest inclusion after venom, L1-3 +8/16/25%, reset inactive, scifi damage without perk): all have passing evidence from progression harness (exit 0) and full smoke test (exit 0). Logs confirm ScifiProgression bonuses applied.
-Beam lock criteria (no-perk baseline DPS, +25% at L3 after 1.5s, target switch, live beam trigger, visual intensification/color-shift, [FOCUSING_LENS] logs): lack evidence; focused harness exit 1 indicates missing or broken test hooks (get_beam_dps, is_focusing_lens_bonus_live, get_beam_visual_state, get_aim_lock_elapsed) or logic not firing in harness scenario. No design_failure; gaps are implementation/test fixable.
-No quality violations in ScifiTower.gd / ScifiTowerProjectile.gd / scifi_tower.json (typed vars, no casts, <=2 if nesting, debug logs present per CLAUDE.md, visual state change implemented matching perk visual polish rule).
+## Changed-file quality findings
+- scripts/game/actors/towers/ScifiTower.gd: contains `as Node3D` casts (lines 78,83,88) — forbidden by /opt/data/coding_rules.md
+- scripts/game/actors/projectiles/ScifiTowerProjectile.gd: contains `as Shader`, `as MeshInstance3D`, `as float` casts — forbidden
+No other cross-cutting issues (no scope creep, no duplicated patterns in feature diff).
 
-## Changed-file Quality Findings
-- Feature diff clean; reuses existing _aim_lock_timer, no duplication, surgical changes only.
-- Visual beam state (focused/unfocused via shader params) present and testable.
+## Classification
+fixable
 
 ## Blockers
-None (runner available via run_project_cmd, workspace present, all commands executed with valid exit codes; no docker/auth/infra failures).
-
-## Unverified Items
-- Exact beam lock timing/DPS/visual/log assertions (harness failure).
-- Manual visual beam intensification (headless run only).
-
-## Final Classification
-fixable
+none (runner succeeded; host godot never used)

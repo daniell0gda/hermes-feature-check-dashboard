@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-28-scifi-focusing-lens/",
-  "heartbeat_at": "2026-08-20T06:30:16.178Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-20T06:30:16.178Z",
+  "heartbeat_at": "2026-08-20T06:32:35.397Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-20T06:32:35.397Z",
   "process_id": 322902,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T06:30:20.424811+00:00",
-    "last_success_at": "2026-08-20T06:30:20.424018+00:00",
+    "last_attempt_at": "2026-08-20T06:32:35.398095+00:00",
+    "last_success_at": "2026-08-20T06:30:24.679047+00:00",
     "last_error": null
   },
   "metrics": {

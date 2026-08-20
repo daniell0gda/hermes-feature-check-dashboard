@@ -6,12 +6,12 @@
 - A sci-fi tower with no `scifi_focusing_lens` owned still deals scifi damage on a live wave.
 
 ## ⬜ Pending
-- Without owning `scifi_focusing_lens`, a sci-fi tower locked on the same target for more than 1.5s deals the same beam DPS as during the first 1.5s of that lock. — evidence missing (focused harness failed)
-- With `scifi_focusing_lens` at level 3, once a sci-fi tower has stayed locked on the same living in-range target for more than 1.5s, that beam's DPS is 25% higher than during the first 1.5s of the same lock. — evidence missing (focused harness failed)
-- When a sci-fi tower that owns `scifi_focusing_lens` switches to a different aim target, the focusing-lens DPS bonus is not applied until the new target has been locked for more than 1.5s. — evidence missing (focused harness failed)
-- If lock time on the same target crosses 1.5s while a sci-fi beam is already firing, the focusing-lens DPS bonus applies to that live beam. — evidence missing (focused harness failed)
-- While the focusing-lens DPS bonus is live, the sci-fi beam is intensified, brightened, or color-shifted versus the unfocused beam; when the bonus ends the beam returns to the unfocused appearance. — evidence missing (focused harness failed)
-- Debug-build [FOCUSING_LENS] log line per lock-bonus activate and per lock-bonus deactivate. — evidence missing (focused harness failed)
+- Without owning `scifi_focusing_lens`, a sci-fi tower locked on the same target for more than 1.5s deals the same beam DPS as during the first 1.5s of that lock. — quality: scripts/game/actors/towers/ScifiTower.gd: type casts forbidden (as Node3D)
+- With `scifi_focusing_lens` at level 3, once a sci-fi tower has stayed locked on the same living in-range target for more than 1.5s, that beam's DPS is 25% higher than during the first 1.5s of the same lock. — quality: scripts/game/actors/towers/ScifiTower.gd: type casts forbidden (as Node3D); scripts/game/actors/projectiles/ScifiTowerProjectile.gd: type casts forbidden (as Shader, as MeshInstance3D, as float)
+- When a sci-fi tower that owns `scifi_focusing_lens` switches to a different aim target, the focusing-lens DPS bonus is not applied until the new target has been locked for more than 1.5s. — quality: scripts/game/actors/towers/ScifiTower.gd: type casts forbidden (as Node3D)
+- If lock time on the same target crosses 1.5s while a sci-fi beam is already firing, the focusing-lens DPS bonus applies to that live beam. — quality: scripts/game/actors/towers/ScifiTower.gd: type casts forbidden (as Node3D)
+- While the focusing-lens DPS bonus is live, the sci-fi beam is intensified, brightened, or color-shifted versus the unfocused beam; when the bonus ends the beam returns to the unfocused appearance. — quality: scripts/game/actors/projectiles/ScifiTowerProjectile.gd: type casts forbidden (as Shader, as MeshInstance3D, as float)
+- Debug-build [FOCUSING_LENS] log line per lock-bonus activate and per lock-bonus deactivate. — quality: scripts/game/actors/towers/ScifiTower.gd: type casts forbidden (as Node3D)
 
 ## ❌ Impossible
 - none
