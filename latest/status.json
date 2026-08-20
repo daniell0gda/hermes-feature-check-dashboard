@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-29-scifi-overclock/",
-  "heartbeat_at": "2026-08-20T11:21:16.064Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-20T11:21:16.064Z",
+  "heartbeat_at": "2026-08-20T11:44:48.983Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-20T11:44:48.983Z",
   "process_id": 358485,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T11:21:20.585280+00:00",
-    "last_success_at": "2026-08-20T11:21:20.584403+00:00",
+    "last_attempt_at": "2026-08-20T11:44:48.984578+00:00",
+    "last_success_at": "2026-08-20T11:21:25.085231+00:00",
     "last_error": null
   },
   "metrics": {
