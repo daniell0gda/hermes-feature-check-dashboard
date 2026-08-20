@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-113-underground-grid/",
   "heartbeat_at": "2026-08-20T21:25:12.823Z",
   "last_node": "team-leader",
-  "active_node": null,
+  "active_node": "manual-tester",
   "last_event_at": "2026-08-20T21:25:12.823Z",
   "process_id": 395202,
   "host": "25e0b2c49eb5",
-  "phase": "team-leader",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T21:25:12.823232+00:00",
-    "last_success_at": "2026-08-20T21:24:49.385222+00:00",
+    "last_attempt_at": "2026-08-20T21:25:17.184157+00:00",
+    "last_success_at": "2026-08-20T21:25:17.183222+00:00",
     "last_error": null
   },
   "metrics": {
@@ -74,6 +74,17 @@
         "cost_status": "unknown",
         "input_tokens": 59765,
         "output_tokens": 3794
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 9561,
+        "output_tokens": 1800
       }
     ]
   }
