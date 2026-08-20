@@ -16,5 +16,14 @@
     "duration_ms": 963535,
     "summary": "Implemented Common perk scifi_capacitor_bank (L1\u20133). Sci-Fi reads a live yaw-gate cut (8 \u2192 51 \u2192 94 \u2192 137 deg). Reports: /workspace/git-workspaces/poke-defense-godot/issue-perk-capacitor-bank/.gen/coder-reports/implementation.md and .gen/cha\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-20T08:30:02.361Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 110738,
+    "summary": "Verified done: 11. Pending: 0. Impossible: 0. Quality notes: no changes. Verification: passed. Blockers: none. (status.md + check.md written; all harnesses/builds exit 0 via run_project_cmd)\n",
+    "error": null
   }
 ]
