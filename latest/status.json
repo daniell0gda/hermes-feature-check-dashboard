@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-26-global-perks/",
   "heartbeat_at": "2026-08-20T04:04:21.905Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
   "process_id": 306282,
   "host": "25e0b2c49eb5",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T04:04:21.905322+00:00"
+    "last_attempt_at": "2026-08-20T04:05:11.173613+00:00",
+    "last_success_at": "2026-08-20T04:04:26.468034+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
