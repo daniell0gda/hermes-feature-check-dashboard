@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-20T11:21:16.064Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 334604,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-scifi-overclock/.gen/plan.md\n\nSci-Fi Overclock Unique: +40% beam DPS, 6s continuous fire then 2s no-beam lockout with a recharge tell. Two sequential clusters (catalog, then l\u2026",
+    "error": null
+  }
+]
