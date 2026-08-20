@@ -25,5 +25,14 @@
     "duration_ms": 85340,
     "summary": "Verified done: 6. Pending: 0. Impossible: 0. Quality notes: no changes. Verification: passed. Blockers: none. (build+2 harnesses exit 0 via run_project_cmd; status.md + check.md written; classification=pass)\n",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-20T04:46:13.955Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 23617,
+    "summary": "**manual_testing.md written** (none; refactor+harness only, no new visible story). Task complete.\n",
+    "error": null
   }
 ]
