@@ -7,8 +7,7 @@
 - After loading custom_map, a carve centered beyond ±10 world units and inside the 50x50 map removes solid underground cells.
 - Debug-build [UNDERGROUND] log line per voxel grid init (map width, map height, cell size, grid width, grid depth)
 - Debug-build [UNDERGROUND] log line per out-of-grid carve (requested area)
+- A windowed custom_map underground view shows a carved tunnel near the map edge.
 
 ## ⬜ Pending
-- A windowed custom_map underground view shows a carved tunnel near the map edge. — requires windowed run for screenshot evidence; headless harness cannot verify visual
-
 ## ❌ Impossible
