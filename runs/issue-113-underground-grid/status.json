@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-113-underground-grid/",
-  "heartbeat_at": "2026-08-20T21:25:12.823Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-20T21:25:12.823Z",
+  "heartbeat_at": "2026-08-20T21:26:33.641Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-20T21:26:33.641Z",
   "process_id": 395202,
   "host": "25e0b2c49eb5",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T21:25:17.184157+00:00",
-    "last_success_at": "2026-08-20T21:25:17.183222+00:00",
+    "last_attempt_at": "2026-08-20T21:26:33.641800+00:00",
+    "last_success_at": "2026-08-20T21:25:21.551062+00:00",
     "last_error": null
   },
   "metrics": {

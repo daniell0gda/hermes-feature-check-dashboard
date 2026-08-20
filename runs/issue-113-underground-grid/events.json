@@ -52,5 +52,14 @@
     "duration_ms": 27749,
     "summary": "Done. manual_testing.md written (required; visible edge-tunnel on custom_map). No workers started, no source edits.\n",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-20T21:26:33.641Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 76457,
+    "summary": "Manual-test result: PASSED. Scenario: tests/scenarios/underground_grid_from_map.json. Report: .gen/manual-report.md (with embedded custom_map_edge_tunnel.png next to the edge-tunnel criterion). Escalation: no. (All harness expectations + vi\u2026",
+    "error": null
   }
 ]
