@@ -16,5 +16,14 @@
     "duration_ms": 502319,
     "summary": "Chest Unique filter now uses the map build roster (plus owned unlocks), not placed towers.\n\nFocused harness: `chest_reward_compatibility` \u2014 result.json status=pass, exit 0.\nReport: /workspace/git-workspaces/poke-defense-godot/issue-map-avai\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-20T20:43:59.024Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 135586,
+    "summary": "Verified done: 10. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes. Verification: passed. Blockers: none.\n",
+    "error": null
   }
 ]
