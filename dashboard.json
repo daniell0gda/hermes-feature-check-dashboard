@@ -240,6 +240,11 @@
     "url": "runs/64-filter-ineligible-20260819/"
   },
   {
+    "run_id": "27-perk-capacitor-bank",
+    "status": "running",
+    "url": "runs/27-perk-capacitor-bank/"
+  },
+  {
     "run_id": "20260814-092950-ddae52",
     "status": "completed",
     "url": "runs/20260814-092950-ddae52/"
