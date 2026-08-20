@@ -130,6 +130,11 @@
     "url": "runs/issue-32-retry-20260813/"
   },
   {
+    "run_id": "issue-30-piercing-beam",
+    "status": "running",
+    "url": "runs/issue-30-piercing-beam/"
+  },
+  {
     "run_id": "issue-29-scifi-overclock",
     "status": "failed",
     "url": "runs/issue-29-scifi-overclock/"
