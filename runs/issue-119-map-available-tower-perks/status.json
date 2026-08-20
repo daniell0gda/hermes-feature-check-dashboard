@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-119-map-available-tower-perks/",
-  "heartbeat_at": "2026-08-20T20:43:59.024Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-20T20:43:59.024Z",
+  "heartbeat_at": "2026-08-20T20:44:34.790Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-20T20:44:34.790Z",
   "process_id": 387432,
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T20:44:03.361756+00:00",
-    "last_success_at": "2026-08-20T20:44:03.360602+00:00",
+    "last_attempt_at": "2026-08-20T20:44:34.791036+00:00",
+    "last_success_at": "2026-08-20T20:44:07.739849+00:00",
     "last_error": null
   },
   "metrics": {
