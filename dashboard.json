@@ -1,7 +1,247 @@
 [
   {
+    "run_id": "tower-defense-issue-77-cont-1",
+    "status": "running",
+    "url": "runs/tower-defense-issue-77-cont-1/"
+  },
+  {
+    "run_id": "tower-defense-issue-77-carve-fog-1",
+    "status": "completed",
+    "url": "runs/tower-defense-issue-77-carve-fog-1/"
+  },
+  {
+    "run_id": "tower-defense-issue-77",
+    "status": "running",
+    "url": "runs/tower-defense-issue-77/"
+  },
+  {
+    "run_id": "team-work-intake-probe",
+    "status": "completed",
+    "url": "runs/team-work-intake-probe/"
+  },
+  {
+    "run_id": "run-3",
+    "status": "running",
+    "url": "runs/run-3/"
+  },
+  {
+    "run_id": "leader-smoke",
+    "status": "completed",
+    "url": "runs/leader-smoke/"
+  },
+  {
+    "run_id": "leader-loop",
+    "status": "completed",
+    "url": "runs/leader-loop/"
+  },
+  {
+    "run_id": "leader-dispatch",
+    "status": "completed",
+    "url": "runs/leader-dispatch/"
+  },
+  {
+    "run_id": "issue97-trap-armor-reduction-20260816",
+    "status": "failed",
+    "url": "runs/issue97-trap-armor-reduction-20260816/"
+  },
+  {
+    "run_id": "issue-99-underground-cleanup",
+    "status": "completed",
+    "url": "runs/issue-99-underground-cleanup/"
+  },
+  {
+    "run_id": "issue-71-20260816-retry1",
+    "status": "completed",
+    "url": "runs/issue-71-20260816-retry1/"
+  },
+  {
+    "run_id": "issue-71-20260816",
+    "status": "running",
+    "url": "runs/issue-71-20260816/"
+  },
+  {
+    "run_id": "issue-70-harness-log-assertion-gap",
+    "status": "failed",
+    "url": "runs/issue-70-harness-log-assertion-gap/"
+  },
+  {
+    "run_id": "issue-68-enemyhealthbar-iconboss",
+    "status": "completed",
+    "url": "runs/issue-68-enemyhealthbar-iconboss/"
+  },
+  {
+    "run_id": "issue-63-clear-previous-map-tower-effects-recovery-20260814",
+    "status": "completed",
+    "url": "runs/issue-63-clear-previous-map-tower-effects-recovery-20260814/"
+  },
+  {
+    "run_id": "issue-63-clear-previous-map-tower-effects-20260814",
+    "status": "failed",
+    "url": "runs/issue-63-clear-previous-map-tower-effects-20260814/"
+  },
+  {
+    "run_id": "issue-62-f90938dc40a1",
+    "status": "failed",
+    "url": "runs/issue-62-f90938dc40a1/"
+  },
+  {
+    "run_id": "issue-62-f71f00c5442e",
+    "status": "completed",
+    "url": "runs/issue-62-f71f00c5442e/"
+  },
+  {
+    "run_id": "issue-62-dashboard-recovery-3b366b5d5a",
+    "status": "failed",
+    "url": "runs/issue-62-dashboard-recovery-3b366b5d5a/"
+  },
+  {
+    "run_id": "issue-62-cb495eb68a65",
+    "status": "failed",
+    "url": "runs/issue-62-cb495eb68a65/"
+  },
+  {
+    "run_id": "issue-62-531dda4a65e6",
+    "status": "failed",
+    "url": "runs/issue-62-531dda4a65e6/"
+  },
+  {
+    "run_id": "issue-61-team-work-resume-20260813T175201Z",
+    "status": "completed",
+    "url": "runs/issue-61-team-work-resume-20260813T175201Z/"
+  },
+  {
+    "run_id": "issue-61-team-work",
+    "status": "completed",
+    "url": "runs/issue-61-team-work/"
+  },
+  {
+    "run_id": "issue-38-trap-panel-ignores-trap-damage-perk",
+    "status": "completed",
+    "url": "runs/issue-38-trap-panel-ignores-trap-damage-perk/"
+  },
+  {
+    "run_id": "issue-32-team-work-20260813",
+    "status": "failed",
+    "url": "runs/issue-32-team-work-20260813/"
+  },
+  {
+    "run_id": "issue-32-retry-20260813",
+    "status": "completed",
+    "url": "runs/issue-32-retry-20260813/"
+  },
+  {
     "run_id": "issue-28-scifi-focusing-lens",
     "status": "failed",
     "url": "runs/issue-28-scifi-focusing-lens/"
+  },
+  {
+    "run_id": "issue-26-global-perks",
+    "status": "completed",
+    "url": "runs/issue-26-global-perks/"
+  },
+  {
+    "run_id": "issue-22-overcharged-rings",
+    "status": "completed",
+    "url": "runs/issue-22-overcharged-rings/"
+  },
+  {
+    "run_id": "issue-21-porter-one-way-ticket",
+    "status": "completed",
+    "url": "runs/issue-21-porter-one-way-ticket/"
+  },
+  {
+    "run_id": "issue-20-porter-boss-runner-r2",
+    "status": "failed",
+    "url": "runs/issue-20-porter-boss-runner-r2/"
+  },
+  {
+    "run_id": "issue-20-porter-boss-runner",
+    "status": "failed",
+    "url": "runs/issue-20-porter-boss-runner/"
+  },
+  {
+    "run_id": "issue-18-wait-for-duration",
+    "status": "completed",
+    "url": "runs/issue-18-wait-for-duration/"
+  },
+  {
+    "run_id": "issue-15-fragile-optics",
+    "status": "failed",
+    "url": "runs/issue-15-fragile-optics/"
+  },
+  {
+    "run_id": "issue-13-team-work-20260818-final",
+    "status": "completed",
+    "url": "runs/issue-13-team-work-20260818-final/"
+  },
+  {
+    "run_id": "issue-13-team-work-20260818-c",
+    "status": "running",
+    "url": "runs/issue-13-team-work-20260818-c/"
+  },
+  {
+    "run_id": "issue-13-team-work-20260818",
+    "status": "running",
+    "url": "runs/issue-13-team-work-20260818/"
+  },
+  {
+    "run_id": "issue-103-duplicate-display-damage-math",
+    "status": "completed",
+    "url": "runs/issue-103-duplicate-display-damage-math/"
+  },
+  {
+    "run_id": "issue-100-reward-on-open",
+    "status": "completed",
+    "url": "runs/issue-100-reward-on-open/"
+  },
+  {
+    "run_id": "issue-100-manual-chest-shots",
+    "status": "completed",
+    "url": "runs/issue-100-manual-chest-shots/"
+  },
+  {
+    "run_id": "issue-100-boss-cave-reward",
+    "status": "completed",
+    "url": "runs/issue-100-boss-cave-reward/"
+  },
+  {
+    "run_id": "issue-10-floodgate-pump-efficiency",
+    "status": "completed",
+    "url": "runs/issue-10-floodgate-pump-efficiency/"
+  },
+  {
+    "run_id": "godot-td-issue-98-20260818",
+    "status": "completed",
+    "url": "runs/godot-td-issue-98-20260818/"
+  },
+  {
+    "run_id": "godot-td-issue-86",
+    "status": "failed",
+    "url": "runs/godot-td-issue-86/"
+  },
+  {
+    "run_id": "godot-td-issue-65-cont-2",
+    "status": "failed",
+    "url": "runs/godot-td-issue-65-cont-2/"
+  },
+  {
+    "run_id": "godot-td-issue-65-cont-1",
+    "status": "failed",
+    "url": "runs/godot-td-issue-65-cont-1/"
+  },
+  {
+    "run_id": "godot-td-issue-65-20260818",
+    "status": "failed",
+    "url": "runs/godot-td-issue-65-20260818/"
+  },
+  {
+    "run_id": "64-filter-ineligible-20260819",
+    "status": "completed",
+    "url": "runs/64-filter-ineligible-20260819/"
+  },
+  {
+    "run_id": "20260814-092950-ddae52",
+    "status": "completed",
+    "url": "runs/20260814-092950-ddae52/"
   }
 ]
