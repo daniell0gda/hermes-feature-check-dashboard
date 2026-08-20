@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-28-scifi-focusing-lens/",
   "heartbeat_at": "2026-08-20T06:18:13.277Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-20T06:18:13.277Z",
   "process_id": 322902,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T06:18:13.277620+00:00",
-    "last_success_at": "2026-08-20T06:16:33.542676+00:00",
+    "last_attempt_at": "2026-08-20T06:18:17.660232+00:00",
+    "last_success_at": "2026-08-20T06:18:17.659363+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 47849,
         "output_tokens": 4909
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
       }
     ]
   }
