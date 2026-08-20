@@ -1,12 +1,12 @@
 {
   "run_id": "issue-103-duplicate-display-damage-math",
   "feature": "duplicate-display-damage-math",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-20T04:29:18.867Z",
-  "ended_at": null,
+  "ended_at": "2026-08-20T04:46:18.085Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-103-duplicate-display-damage-math/",
-  "heartbeat_at": "2026-08-20T04:46:13.955Z",
+  "heartbeat_at": "2026-08-20T04:46:18.085Z",
   "last_node": "team-leader",
   "active_node": null,
   "last_event_at": "2026-08-20T04:46:13.955Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T04:46:13.955194+00:00",
-    "last_success_at": "2026-08-20T04:45:54.757944+00:00",
+    "last_attempt_at": "2026-08-20T04:46:18.085544+00:00",
+    "last_success_at": "2026-08-20T04:46:18.083927+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 65210,
         "output_tokens": 2645
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 7720,
+        "output_tokens": 920
       }
     ]
   }
