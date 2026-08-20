@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-119-map-available-tower-perks/",
   "heartbeat_at": "2026-08-20T20:43:59.024Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "team-leader",
   "last_event_at": "2026-08-20T20:43:59.024Z",
   "process_id": 387432,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T20:43:59.024368+00:00",
-    "last_success_at": "2026-08-20T20:41:47.722199+00:00",
+    "last_attempt_at": "2026-08-20T20:44:03.361756+00:00",
+    "last_success_at": "2026-08-20T20:44:03.360602+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 305882,
         "output_tokens": 23735
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 57539,
+        "output_tokens": 4246
       }
     ]
   }
