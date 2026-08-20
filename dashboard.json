@@ -130,6 +130,11 @@
     "url": "runs/issue-32-retry-20260813/"
   },
   {
+    "run_id": "issue-29-scifi-overclock",
+    "status": "running",
+    "url": "runs/issue-29-scifi-overclock/"
+  },
+  {
     "run_id": "issue-28-scifi-focusing-lens",
     "status": "failed",
     "url": "runs/issue-28-scifi-focusing-lens/"
