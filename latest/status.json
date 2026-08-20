@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-26-global-perks/",
   "heartbeat_at": "2026-08-20T04:21:50.677Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "team-leader",
   "last_event_at": "2026-08-20T04:21:50.677Z",
   "process_id": 306282,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T04:21:50.677616+00:00",
-    "last_success_at": "2026-08-20T04:20:25.903460+00:00",
+    "last_attempt_at": "2026-08-20T04:21:54.971329+00:00",
+    "last_success_at": "2026-08-20T04:21:54.970432+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 276576,
         "output_tokens": 26491
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 43819,
+        "output_tokens": 3413
       }
     ]
   }
