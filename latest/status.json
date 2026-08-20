@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-30-piercing-beam/",
-  "heartbeat_at": "2026-08-20T12:36:21.011Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-20T12:36:21.011Z",
+  "heartbeat_at": "2026-08-20T12:38:52.537Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-20T12:38:52.537Z",
   "process_id": 368312,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T12:36:25.739029+00:00",
-    "last_success_at": "2026-08-20T12:36:25.738145+00:00",
+    "last_attempt_at": "2026-08-20T12:38:52.537931+00:00",
+    "last_success_at": "2026-08-20T12:36:29.916848+00:00",
     "last_error": null
   },
   "metrics": {
