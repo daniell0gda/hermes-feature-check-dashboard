@@ -1,12 +1,12 @@
 {
   "run_id": "issue-26-global-perks",
   "feature": "progression-global-perks-too-weak",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-20T04:04:21.905Z",
-  "ended_at": null,
+  "ended_at": "2026-08-20T04:22:30.425Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-26-global-perks/",
-  "heartbeat_at": "2026-08-20T04:22:26.206Z",
+  "heartbeat_at": "2026-08-20T04:22:30.425Z",
   "last_node": "team-leader",
   "active_node": null,
   "last_event_at": "2026-08-20T04:22:26.206Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T04:22:26.206587+00:00",
-    "last_success_at": "2026-08-20T04:21:59.375360+00:00",
+    "last_attempt_at": "2026-08-20T04:22:30.425777+00:00",
+    "last_success_at": "2026-08-20T04:22:30.424164+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 43819,
         "output_tokens": 3413
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 26103,
+        "output_tokens": 1517
       }
     ]
   }
