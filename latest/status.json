@@ -1,12 +1,12 @@
 {
   "run_id": "issue-119-map-available-tower-perks",
   "feature": "map-available-tower-perks",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-20T20:28:06.072Z",
-  "ended_at": null,
+  "ended_at": "2026-08-20T20:44:39.190Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-119-map-available-tower-perks/",
-  "heartbeat_at": "2026-08-20T20:44:34.790Z",
+  "heartbeat_at": "2026-08-20T20:44:39.190Z",
   "last_node": "team-leader",
   "active_node": null,
   "last_event_at": "2026-08-20T20:44:34.790Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T20:44:34.791036+00:00",
-    "last_success_at": "2026-08-20T20:44:07.739849+00:00",
+    "last_attempt_at": "2026-08-20T20:44:39.190503+00:00",
+    "last_success_at": "2026-08-20T20:44:39.188870+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 57539,
         "output_tokens": 4246
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "grok-4.3",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 25297,
+        "output_tokens": 1071
       }
     ]
   }
