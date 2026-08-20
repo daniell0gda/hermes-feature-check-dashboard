@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/27-perk-capacitor-bank/",
-  "heartbeat_at": "2026-08-20T08:30:02.361Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-20T08:30:02.361Z",
+  "heartbeat_at": "2026-08-20T08:30:29.291Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-20T08:30:29.291Z",
   "process_id": 343802,
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T08:30:06.801408+00:00",
-    "last_success_at": "2026-08-20T08:30:06.800348+00:00",
+    "last_attempt_at": "2026-08-20T08:30:29.291660+00:00",
+    "last_success_at": "2026-08-20T08:30:11.381461+00:00",
     "last_error": null
   },
   "metrics": {

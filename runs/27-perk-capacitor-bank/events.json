@@ -25,5 +25,14 @@
     "duration_ms": 110738,
     "summary": "Verified done: 11. Pending: 0. Impossible: 0. Quality notes: no changes. Verification: passed. Blockers: none. (status.md + check.md written; all harnesses/builds exit 0 via run_project_cmd)\n",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-20T08:30:29.291Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 22490,
+    "summary": "**Summary:** Loaded manual-testing-gate skill. Read request/plan/check/status.md (check=pass, plan=manual_testing:none, no new visuals per request). Wrote only .gen/manual_testing.md with `manual_testing: none` (one-line reason). No workers\u2026",
+    "error": null
   }
 ]
