@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-20T04:34:10.484Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 244482,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-duplicate-display-damage-math/.gen/plan.md\n\nAcceptance contract is in `.gen/plan.md` plus one cluster at `.gen/clusters/1-shared-display-damage.md`. No `ui_scenario.md` (`manu\u2026",
+    "error": null
+  }
+]
