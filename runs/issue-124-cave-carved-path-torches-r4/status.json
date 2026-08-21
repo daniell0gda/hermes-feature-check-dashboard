@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-cave-carved-path-torches-r4/",
   "heartbeat_at": "2026-08-21T16:09:19.057Z",
   "last_node": "plan",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-21T16:09:19.057Z",
   "process_id": 437929,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-21T16:09:19.057624+00:00",
-    "last_success_at": "2026-08-21T15:52:00.726939+00:00",
+    "last_attempt_at": "2026-08-21T16:09:23.571033+00:00",
+    "last_success_at": "2026-08-21T16:09:23.570196+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "x-ai/grok-4.6",
+        "model_tier": null,
+        "cost_usd": 0.6080944,
+        "cost_status": "estimated",
+        "input_tokens": 312697,
+        "output_tokens": 3958
+      }
+    ]
+  }
 }
