@@ -10,19 +10,21 @@ manual_testing: required
 
 ## Clusters
 
-1. cave-carved-path-torches — files: `scripts/game/underground/TorchPlacer.gd`, `scripts/game/underground/TorchManager.gd`, `scripts/testing/HarnessValues.gd`, `tests/scenarios/cave_carved_path_torches.json` — depends on: none
+1. cave-carved-path-torches — files: `scripts/game/underground/TorchPlacer.gd`, `scripts/game/underground/TorchManager.gd`, `tests/scenarios/cave_carved_path_torches.json` — depends on: none
+- While a dangerous cave is pending confirmation, that cave's interior has zero active torches, including when its room overlaps already-carved path.
 - After a discovered cave is confirmed open, that cave's carved path has at least one active torch.
-- After a later carve adds a new carved corridor connected to that same open cave, the new corridor has at least one active torch once torch placement has updated.
-- An open cave that already has lit carved path has no leftover dark carved corridor in the same cave; uncarved or intentionally dark rock stays unlit.
-- While a dangerous cave is pending confirmation, that cave's interior has zero active torches.
-- After a dangerous cave is declined, that cave's interior has zero active torches.
+- After the connected 2-by-18 and 18-by-2 cross carve on that confirmed-open cave, sampled points along the north, south, east, and west arms at about 2-unit spacing each have at least one active torch within 2.5 world units on XZ.
+- After a later carve adds a new corridor connected to that same open cave, the new corridor has at least one active torch along its stretch once torch placement has updated.
+- After a dangerous cave is declined, that cave's interior has zero active torches, including when its room overlaps already-carved path.
+- An isolated declined dangerous cave with no overlapping later corridor carve has zero active interior torches.
 - Debug-build [TORCH] log line per cave-path torch update
 
 ## Criteria
 
+- While a dangerous cave is pending confirmation, that cave's interior has zero active torches, including when its room overlaps already-carved path.
 - After a discovered cave is confirmed open, that cave's carved path has at least one active torch.
-- After a later carve adds a new carved corridor connected to that same open cave, the new corridor has at least one active torch once torch placement has updated.
-- An open cave that already has lit carved path has no leftover dark carved corridor in the same cave; uncarved or intentionally dark rock stays unlit.
-- While a dangerous cave is pending confirmation, that cave's interior has zero active torches.
-- After a dangerous cave is declined, that cave's interior has zero active torches.
+- After the connected 2-by-18 and 18-by-2 cross carve on that confirmed-open cave, sampled points along the north, south, east, and west arms at about 2-unit spacing each have at least one active torch within 2.5 world units on XZ.
+- After a later carve adds a new corridor connected to that same open cave, the new corridor has at least one active torch along its stretch once torch placement has updated.
+- After a dangerous cave is declined, that cave's interior has zero active torches, including when its room overlaps already-carved path.
+- An isolated declined dangerous cave with no overlapping later corridor carve has zero active interior torches.
 - Debug-build [TORCH] log line per cave-path torch update
