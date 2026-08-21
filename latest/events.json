@@ -25,5 +25,14 @@
     "duration_ms": 464810,
     "summary": "Verified done: 7. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0.\nQuality notes: no changes (open `max-torches-decimation` still valid). Verification: passed. Blockers: none.\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-21T17:11:17.890Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 25515,
+    "summary": "Wrote `/workspace/git-workspaces/poke-defense-godot/issue-cave-carved-path-torches/.gen/manual_testing.md`:\n\n```text\nmanual_testing: required\nfocus: Top-down underground view showing the full cross-carved path illuminated with active torche\u2026",
+    "error": null
   }
 ]
