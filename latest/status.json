@@ -1,22 +1,23 @@
 {
   "run_id": "issue-124-cave-carved-path-torches-r4",
   "feature": "cave-carved-path-torches-r4",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-21T15:51:05.457Z",
-  "ended_at": null,
+  "ended_at": "2026-08-21T16:53:57.044Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-cave-carved-path-torches-r4/",
-  "heartbeat_at": "2026-08-21T16:53:42.217Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-21T16:53:42.217Z",
+  "heartbeat_at": "2026-08-21T16:53:57.044Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-21T16:53:57.034Z",
   "process_id": 437929,
   "host": "25e0b2c49eb5",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-21T16:53:46.786651+00:00",
-    "last_success_at": "2026-08-21T16:53:46.785726+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-21T16:53:57.044783+00:00",
+    "last_success_at": "2026-08-21T16:53:51.061993+00:00",
+    "last_error": null,
+    "last_skipped_remote_at": "2026-08-21T16:53:57.043878+00:00"
   },
   "metrics": {
     "invocations": [
@@ -63,6 +64,17 @@
         "cost_status": "estimated",
         "input_tokens": 46477,
         "output_tokens": 750
+      },
+      {
+        "task_id": "manual-tester",
+        "cluster_id": null,
+        "role": "manual-tester",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
       }
     ]
   }

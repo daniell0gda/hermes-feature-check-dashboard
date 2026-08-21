@@ -34,5 +34,14 @@
     "duration_ms": 23215,
     "summary": "Manual testing decision written to `/workspace/git-workspaces/poke-defense-godot/issue-cave-carved-path-torches/.gen/manual_testing.md`:\n\n- Decision: `manual_testing: required`\n- Focus: Top-down underground view showing the full cross-carve\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-21T16:53:57.034Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 10248,
+    "summary": "Billing or credits exhausted: HTTP 403: {\"code\":\"personal-team-blocked:spending-limit\",\"error\":\"You have run out of credits or need a Grok subscription. Add credits at https://grok.com/?_s=usage or upgrade at https://grok.com/supergrok.\"}\n\n\u2026",
+    "error": null
   }
 ]
