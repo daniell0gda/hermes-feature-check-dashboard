@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-21T10:51:14.380Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 244560,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-cave-carved-path-torches/.gen/plan.md\n\nOne cluster: 1-cave-carved-path-torches (sequential). manual_testing: required. UI scenario: /workspace/git-workspaces/poke-defense-godo\u2026",
+    "error": null
+  }
+]
