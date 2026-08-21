@@ -11,13 +11,13 @@ pass
 ## Coder reports inspected
 - `.gen/coder-reports/1-cave-carved-path-torches.md`
 - `.gen/coder-reports/implementation.md`
-Coder claimed all 7 plan criteria Done after strengthening `tests/scenarios/cave_carved_path_torches.json`. Fresh runner verification agrees. Visual/manual lighting is not claimed from headless.
+Coder claimed all 7 plan criteria Done with no production edits this iteration. Fresh `run_project_cmd` verification agrees. Visual/manual lighting is not claimed from headless.
 
 ## Commands (run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-cave-carved-path-torches)
-- `["godot","--version"]` → exitCode=0, `4.4.1.stable.official.49a5bc7b6`
-- Typecheck/build: `["godot","--headless","--path",".","--editor","--quit-after","300"]` → exitCode=0, durationMs=9212
-- Focused: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_carved_path_torches.json"]` → exitCode=0, `[Harness] status=pass exit=0`, result `.gen/harness/cave_carved_path_torches/result.json` status=pass finished_at=2026-08-21T16:52:00, all 7 expectations pass
-- Full: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/declined_cave_torches_extinguish.json"]` → exitCode=0, `[Harness] status=pass exit=0`
+- `["godot","--version"]` → exitCode=0, `4.4.1.stable.official.49a5bc7b6`, durationMs=85
+- Typecheck/build: `["godot","--headless","--path",".","--editor","--quit-after","300"]` → exitCode=0, durationMs=9238
+- Focused: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_carved_path_torches.json"]` → exitCode=0, durationMs=12230, `[Harness] status=pass exit=0`; `.gen/harness/cave_carved_path_torches/result.json` status=pass finished_at=2026-08-21T17:09:29 elapsed_sec=8.811; all 7 expectations pass
+- Full: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/declined_cave_torches_extinguish.json"]` → exitCode=0, durationMs=5256, `[Harness] status=pass exit=0`; `.gen/harness/declined_cave_torches_extinguish/result.json` status=pass
 
 Pre-existing HudTheme missing `wood_panel.png` warnings; harness still passes.
 
@@ -33,7 +33,7 @@ Pre-existing HudTheme missing `wood_panel.png` warnings; harness still passes.
 ## Changed-file quality
 Feature diff: Game.gd (debug ortho camera), Torch.gd (LIGHT_RADIUS 2.5, energy 1.2, shadows off), TorchManager.gd (pool grow, [TORCH] log, unlit helper), TorchPlacer.gd (spacing 2, fill unlit), HarnessValues.gd (count_near, unlit_carved_in_cave), new scenario JSON.
 No criterion demoted. Typed vars; new helpers stay small; [TORCH] log gated on `OS.is_debug_build()`.
-Advisory: `.gen/quality-notes.md` entry `max-torches-decimation` — after the cross, placement still caps at 100.
+Advisory: `.gen/quality-notes.md` entry `max-torches-decimation` remains open — after the cross, placement still caps at 100 (`[TORCH] cave-path update active=100`).
 
 ## Blockers
 none
