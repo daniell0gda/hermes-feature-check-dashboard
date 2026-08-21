@@ -7,5 +7,14 @@
     "duration_ms": 1042734,
     "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-cave-carved-path-torches/.gen/plan.md\n\nArtifacts: `.gen/plan.md`, `.gen/clusters/1-cave-carved-path-torches.md`, `.gen/ui_scenario.md`. `manual_testing: required`. One cluster\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-21T16:37:39.750Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 1696179,
+    "summary": "Cluster implementation done. Production torch lock/fill was already in place; this pass only tightened the focused scenario to the new plan wording.\n\nChanged: tests/scenarios/cave_carved_path_torches.json\nReports: .gen/coder-reports/impleme\u2026",
+    "error": null
   }
 ]
