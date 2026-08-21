@@ -32,6 +32,17 @@
       "cost_status": "estimated",
       "input_tokens": 384888,
       "output_tokens": 4128
+    },
+    {
+      "task_id": "manual-testing-gate",
+      "cluster_id": null,
+      "role": "team-leader",
+      "model": "google/gemini-3.7-flash",
+      "model_tier": null,
+      "cost_usd": 0.015617160000000001,
+      "cost_status": "estimated",
+      "input_tokens": 46477,
+      "output_tokens": 750
     }
   ]
 }
