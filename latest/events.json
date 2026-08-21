@@ -16,5 +16,14 @@
     "duration_ms": 552401,
     "summary": "Cluster 1-cave-carved-path-torches implemented. Focused harness `.gen/harness/cave_carved_path_torches/result.json` is status=pass (2026-08-21T10:59:30). Reports: `.gen/coder-reports/1-cave-carved-path-torches.md`, `.gen/changes.md`.\n\nAfter\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-21T11:02:03.616Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 88513,
+    "summary": "Verified done: 6. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes. Verification: passed. Blockers: none.\n",
+    "error": null
   }
 ]
