@@ -3,7 +3,7 @@
 See `implementation.md` in this directory for the same cluster results.
 
 ## Changed files
-- `tests/scenarios/cave_carved_path_torches.json` — modified
+- none this iteration (workspace already implemented; re-verified)
 
 ## Criteria
 - While a dangerous cave is pending confirmation, that cave's interior has zero active torches, including when its room overlaps already-carved path. — Done
@@ -15,4 +15,4 @@ See `implementation.md` in this directory for the same cluster results.
 - Debug-build [TORCH] log line per cave-path torch update — Done
 
 ## Commands and results
-- `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/cave_carved_path_torches.json"]` — exit code 0; result.json status `pass` at `2026-08-21T16:36:15`
+- `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/cave_carved_path_torches.json"]` — exit code 0; result.json status `pass` at `2026-08-21T17:01:56`

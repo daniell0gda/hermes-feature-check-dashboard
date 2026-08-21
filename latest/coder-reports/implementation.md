@@ -1,7 +1,7 @@
 # Coder report: implementation
 
 ## Changed files
-- `tests/scenarios/cave_carved_path_torches.json` — modified: 2-unit samples along the 2x18/18x2 cross (radius 2.5), full-length samples on the later 4x1 corridor, pending zero-torch wait on the overlapping cave 9102, isolated declined cave 9103 at [8,-3,8]
+- none this iteration (workspace already implemented; re-verified)
 
 ## Criteria
 - While a dangerous cave is pending confirmation, that cave's interior has zero active torches, including when its room overlaps already-carved path. — Done
@@ -14,10 +14,10 @@
 
 ## Commands and results
 - `["godot", "--version"]` — exit code 0; `4.4.1.stable.official.49a5bc7b6`
-- `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/cave_carved_path_torches.json"]` — exit code 0; `[Harness] status=pass exit=0`; `.gen/harness/cave_carved_path_torches/result.json` status `pass` at `2026-08-21T16:36:15`; all 7 expectations pass (pending false, count_in_cave 8, count_near 8 at [5.5,-3,-8], unlit 0, 9102 count 0, 9103 count 0, log contains `[TORCH]`)
+- `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/cave_carved_path_torches.json"]` — exit code 0; `[Harness] status=pass exit=0`; `.gen/harness/cave_carved_path_torches/result.json` status `pass` finished_at `2026-08-21T17:01:56`; elapsed_sec 8.812; all 7 expectations pass (9101 count_in_cave actual 10, count_near at [5.5,-3,-8] actual 8, unlit 0, 9102 count 0, 9103 count 0, log contains `[TORCH]`); all timeline waits including four-arm 2.5-radius samples ok=true. DurationMs=12228.
 
 ## Notes
-- Production torch lock/fill already covered pending/declined interiors and carved-path fill; this iteration only strengthened the focused scenario to the new plan wording (full-length 2.5 XZ samples + overlapping pending + isolated decline).
-- Earlier RED: radius 1.0 sample at [6,-3,0] timed out with actual 0; radius 2.5 samples along all four arms then passed without placer changes.
+- Cluster already implemented in prior iterations (TorchPlacer fill, TorchManager lock/log, focused scenario samples). This worker re-ran the focused harness; no production or scenario edits.
+- After the cross carve, `[TORCH] cave-path update active=100` still hits MAX_TORCHES; see quality-notes `max-torches-decimation`. Headless 2.5-radius samples still pass.
 - HudTheme missing `wood_panel.png` still warns; harness still runs.
-- Visual/manual lighting not claimed from this headless run.
+- Screenshots skipped (headless). Visual/manual lighting not claimed.
