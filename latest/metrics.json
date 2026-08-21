@@ -1,1 +1,15 @@
-{}
+{
+  "invocations": [
+    {
+      "task_id": "plan",
+      "cluster_id": null,
+      "role": "plan",
+      "model": "x-ai/grok-4.6",
+      "model_tier": null,
+      "cost_usd": 0.5032624,
+      "cost_status": "estimated",
+      "input_tokens": 234172,
+      "output_tokens": 3845
+    }
+  ]
+}
