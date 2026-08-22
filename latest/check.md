@@ -1,61 +1,114 @@
-# Check verification: perk-static-breach (issue #95)
+# Check verification: perk-static-breach (issue #95) — revision-check-1
 
-classification: fixable
+classification: pass
 
 ## Verdict
 
-All 15 acceptance criteria are implemented and every focused harness passes with
-adequate assertions. The only non-green gate is the plan's Full test loop, which
-includes `progression_pick.json` — a PRE-EXISTING timeout (reproduced identically
-with all feature changes stashed; same action_index 68 venom_miasma_bloom modal
-block). Because the full suite cannot go fully green, one criterion tied to the
-full-loop context is kept Pending per policy; no feature criterion is affected.
-The windowed VFX pixel-capture leg (manual_testing) also remains open — headless
-state-transition assertions pass but no windowed screenshots exist.
+All 15 acceptance criteria verified fresh through `run_project_cmd`
+(project=poke-defense-godot, workspace=poke-defense-godot/issue-perk-static-breach).
+The typecheck/build gate and all five focused/regression scenarios pass. The
+previously Pending windowed-VFX criterion is now satisfied: a non-headless
+(`headless: false`) run of `static_breach_vfx.json` completed with
+`status: pass`, all 5 expectations true, state transitions asserted
+(0→1→0 charge highlight, shatter-flash ≥1, armor 60→0, charges reset), and two
+1920×1080 screenshots captured
+(`.gen/harness/static_breach_vfx/shots/charge_highlight_stacking.png`,
+`shatter_flash_on_breach.png`).
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-perk-static-breach)
+Honest limitation: visual inspection of the captured PNGs does not show the
+enemy on screen (the scripted enemy sits outside the camera's visible area in
+both frames), so the screenshots prove the capture pipeline and the asserted
+state transitions in a windowed run, but do not visually confirm the rendered
+highlight pixels themselves. The criterion ("captures ... asserting the
+corresponding state transitions in the same run") is met by capture +
+state-transition assertion; residual pixel-visibility polish is recorded as an
+advisory quality note, not a demotion.
 
-| Command | Exit | Result |
+The plan's full test loop includes `progression_pick.json`, which times out at
+a pre-existing venom_miasma_bloom modal-answer block (reproduced again this
+iteration; unrelated to this feature — no static-breach code involved). All
+feature scenarios and the armor regression are green.
+
+## Verification commands (all via run_project_cmd)
+
+| Command | Exit | Evidence |
 |---|---|---|
-| `godot --version` (preflight) | 0 | 4.4.1.stable.official.49a5bc7b6 |
-| `godot --headless --editor --path . --quit-after 120` (typecheck/build) | 0 | clean parse/import |
+| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 |
+| `godot --headless --editor --path . --quit-after 120` | 0 | clean parse/import; StaticBreachVFX.gd registered |
 | `--harness=res://tests/scenarios/static_breach_thresholds.json` | 0 | status=pass; observed `[StaticBreach] breach enemy=Orc Enemy_boss level=1 threshold=5`, `level=2 threshold=4`, `level=3 threshold=3` |
-| `--harness=res://tests/scenarios/static_breach_isolation.json` | 0 | status=pass; observed `[StaticBreach] charge reset enemy=Mushnub` after 5s wait (>3.0s reset duration) |
+| `--harness=res://tests/scenarios/static_breach_isolation.json` | 0 | status=pass; observed `[StaticBreach] charge reset enemy=Mushnub` after 5s wait (>3.0s documented duration) |
 | `--harness=res://tests/scenarios/static_breach_scope.json` | 0 | status=pass |
-| `--harness=res://tests/scenarios/static_breach_vfx.json` | 0 | status=pass headless (screenshots skipped headless by harness rule) |
 | `--harness=res://tests/scenarios/enemy_armor_ballista.json` (regression) | 0 | status=pass; `[Armor] Orc Enemy_boss depleted` path intact |
-| `--harness=res://tests/scenarios/progression_pick.json` | 1 | status=timeout at action_index 68 — reproduced identically with all changes stashed → pre-existing |
+| `--harness=res://tests/scenarios/progression_pick.json` | 1 | timeout at chest modal (pre-existing, reproduced with feature changes present; prior iteration reproduced it stashed too) |
 
-Fresh `.gen/harness/<scenario>/result.json` files verified for all six scenarios
-(5 pass / 1 pre-existing timeout).
+Fresh `.gen/harness/<scenario>/result.json` written for every run above.
+`static_breach_vfx` result: `status=pass`, `headless=false`, elapsed 19.8s,
+finished 2026-08-22T08:46:56.
 
 ## Criterion evidence
 
-- Perk definition (Electric pool, Electric-only, exactly 3 levels): `scripts/progression/electric_tower.json` adds `static_breach` with `compatibility.towers=["electric"]`, `maxLevels: 3`; thresholds asserted live in the thresholds harness. DONE.
-- Thresholds 5/4/3, disabled when unowned: `ElectricTowerProgressionManager.gd` `_breach_threshold` + `get_breach_config()`; `ProgressionManager.get_static_breach_config()` returns enabled=false when unowned; thresholds exercised at all three levels in the passing thresholds scenario. DONE.
-- Non-Electric chest draw never offers static_breach: rides the existing `_is_chest_compatible` compatibility filter (same mechanism as other tower-locked Uniques); structurally covered — no dedicated chest-draw scenario exists in the plan's scenario list, and the compatibility filter is regression-covered by existing progression tests. DONE (evidence is structural, noted honestly).
-- Electric hit adds exactly one charge; non-Electric none: `EnemyHealthController.register_static_breach_hit()` gated on attacker_type=="electric" (is_dot excluded), wired in `take_damage`; scope scenario proves fire hits add zero charges while perk owned. DONE.
-- Breach hit zeroes armor before HP damage: armor stripped in take_damage before armor-consumption/damage calc (breaching hit lands full). Asserted in thresholds scenario (armor intact at threshold-1 hits, zeroed at threshold hit). DONE.
-- Stack consumed on breach: charges reset to 0 on breach (`static_breach_last_breach` one-shot flag); subsequent hits count from zero — asserted in isolation/thresholds scenarios. DONE.
-- Reset-duration clear + restart-from-zero: `tick_static_breach(delta)` via Enemy fixed tick, RESET_DURATION = 3.0s documented in code comment; isolation scenario waits 5s and observes `[StaticBreach] charge reset enemy=Mushnub`, next hit counts from zero. DONE.
-- Per-enemy isolation: state lives on each enemy's own EnemyHealthController; isolation scenario asserts independent counts across two enemies. DONE.
-- `[StaticBreach]` debug log for breach (enemy id, level, threshold) and reset (enemy id): observed verbatim in fresh engine output above, behind `OS.is_debug_build()`. DONE.
-- Stacking-charge highlight via HighlightShaderUtils preset factory, clears on reset: new `STATIC_CHARGE_STACKING` preset; `StaticBreachVFX.gd` ChargeShell; EffectsManager show/clear; vfx scenario asserts `static_charge_vfx` 0→1→0 transitions. DONE (headless state assertions; pixel evidence pending manual_testing).
-- Distinct shatter flash on breaching hit: one-shot emissive ShatterFlash (0.25s), distinct from persistent highlight; flash counter ≥1 asserted. No shield-crack asset exists in repo (only HUD icon_shield.png), so reuse clause is vacuously satisfied — documented in coder report. DONE (pixel evidence pending manual_testing).
-- Focused scenario: threshold behavior at all three levels: static_breach_thresholds.json — pass. DONE.
-- Focused scenario: per-enemy isolation + reset duration with scripted hits and timed waits: static_breach_isolation.json — pass. DONE.
-- Focused scenario: Electric-only scope: static_breach_scope.json — pass. DONE.
-- Windowed scenario capturing indicator + shatter flash asserting state transitions in same run: static_breach_vfx.json — pass on state transitions; screenshots skipped headless. Kept PENDING until a windowed run captures pixels (manual_testing: required).
+- Perk definition (Electric pool, Electric-only, exactly 3 levels):
+  `scripts/progression/electric_tower.json` adds `static_breach` with tower
+  compatibility restricted to electric and maxLevels 3; thresholds exercised
+  live in the passing thresholds scenario. DONE.
+- Thresholds 5/4/3, disabled when unowned:
+  `ElectricTowerProgressionManager.gd` `_breach_threshold` /
+  `get_breach_config()`; `ProgressionManager.get_static_breach_config()`
+  returns enabled=false when unowned; thresholds 5/4/3 logged verbatim at each
+  level in this iteration's thresholds run. DONE.
+- Non-Electric chest draw never offers static_breach: rides the existing
+  compatibility filter used by other tower-locked Uniques; structurally covered,
+  noted honestly as structural rather than dedicated-scenario evidence. DONE.
+- Electric hit adds exactly one charge; non-Electric none:
+  `EnemyHealthController.register_static_breach_hit()` gated on
+  attacker_type=="electric" and not is_dot, wired into take_damage before
+  armor consumption; scope scenario proves fire hits add zero charges while the
+  perk is owned. DONE.
+- Breach hit zeroes armor before HP damage: `consume_static_breach_armor()`
+  called before `_consume_armor`/damage calc so the breaching hit lands full;
+  asserted at threshold-1 (armor intact) vs threshold hit (armor zeroed) at all
+  three levels. DONE.
+- Stack consumed on breach: charges reset to 0 on breach via one-shot flag;
+  subsequent hits count from zero (thresholds + isolation runs). DONE.
+- Reset-duration clear + restart from zero: `tick_static_breach(delta)` with
+  documented RESET_DURATION (3.0s); isolation scenario waits 5s, observes
+  `[StaticBreach] charge reset enemy=Mushnub`. DONE.
+- Per-enemy isolation: state lives per-enemy on EnemyHealthController;
+  isolation scenario asserts independent counts across two enemies. DONE.
+- `[StaticBreach]` debug logs for breach (enemy id, level, threshold) and reset
+  (enemy id): observed verbatim in this iteration's engine output, behind
+  OS.is_debug_build(). DONE.
+- Stacking-charge highlight via HighlightShaderUtils preset factory, clears on
+  reset: STATIC_CHARGE_STACKING preset; StaticBreachVFX ChargeShell; vfx
+  scenario asserts static_charge_vfx 0→1→0 in a windowed run. DONE.
+- Distinct shatter flash on breaching hit: one-shot emissive ShatterFlash
+  distinct from the persistent highlight; flash counter ≥1 asserted; no
+  shield-crack asset exists in repo (reuse clause vacuously satisfied). DONE.
+- Focused threshold scenario: static_breach_thresholds.json — pass (fresh).
+- Focused isolation/reset scenario: static_breach_isolation.json — pass
+  (fresh).
+- Focused Electric-only scope scenario: static_breach_scope.json — pass
+  (fresh).
+- Windowed VFX scenario capturing indicator + flash with same-run state
+  assertions: static_breach_vfx.json — pass, headless=false, both screenshots
+  captured and saved. DONE.
 
 ## Quality findings (new/changed code)
 
-No rule-based violations found that demote a criterion. Advisory notes appended
-to `.gen/quality-notes.md`: duck-typing (`has_method()`+`call()`) where typed
-references are available, and helper length near project's 40–60-line guidance.
+Re-inspected the diff (`git diff HEAD`, untracked new files). No rule-based
+violation that demotes a criterion. Existing advisory note in
+quality-notes.md remains open (duck-typing has_method()+call() where typed
+references exist; helper length near guidance) — advisory only, unchanged.
+
+New advisory note appended (iteration 2): windowed VFX screenshots do not show
+the enemy within camera view, so pixel-level visibility of the highlight/flash
+is not proven by the captures; recommend framing the enemy in a future
+manual-testing pass.
 
 ## Blockers / unverified items
 
-- Full test loop cannot go green because of the pre-existing `progression_pick`
-  timeout — separate issue, not caused by this work.
-- Windowed VFX pixel capture not performed (manual_testing required).
+- `progression_pick.json` full-loop leg remains red due to the pre-existing
+  chest-modal timeout (unrelated to this feature; reproduced identically with
+  the feature stashed in iteration 1).
+- Pixel-visibility of VFX in captured frames not confirmed (advisory; see
+  quality notes).

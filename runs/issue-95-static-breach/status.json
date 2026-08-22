@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-95-static-breach/",
-  "heartbeat_at": "2026-08-22T08:53:04.591Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T08:53:04.591Z",
+  "heartbeat_at": "2026-08-22T08:59:07.130Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T08:59:07.130Z",
   "process_id": 469740,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T08:53:08.834566+00:00",
-    "last_success_at": "2026-08-22T08:53:08.833752+00:00",
+    "last_attempt_at": "2026-08-22T08:59:07.130732+00:00",
+    "last_success_at": "2026-08-22T08:53:13.262704+00:00",
     "last_error": null
   },
   "metrics": {

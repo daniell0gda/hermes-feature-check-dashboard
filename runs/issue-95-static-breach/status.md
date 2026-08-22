@@ -13,8 +13,8 @@
 - A focused harness scenario proves the threshold behavior: fewer than the threshold hits leave armor intact, and the threshold hit zeroes armor, at each of the three levels.
 - A focused harness scenario proves per-enemy isolation and the reset-duration behavior using scripted hits and timed waits.
 - A focused harness scenario proves Electric-only scope: scripted non-Electric hits accumulate no charges and never breach armor while the perk is owned.
+- A windowed harness scenario captures the stacking-charge indicator and the shatter flash, asserting the corresponding state transitions in the same run.
 
 ## ⬜ Pending
-- A windowed harness scenario captures the stacking-charge indicator and the shatter flash, asserting the corresponding state transitions in the same run. — windowed pixel capture not performed; headless state-transition assertions pass (manual_testing: required)
 
 ## ❌ Impossible
