@@ -11,10 +11,11 @@
 - `_on_rewards_pressed` still instantiates the rewards modal and populates it from ProgressionManager's current selections.
 - A windowed run of the `hud_other_panels` scenario captures a `panel_rewards` screenshot checkpoint showing the rewards modal's wood frame, and the scenario finishes with status pass.
 - A windowed screenshot scenario captures the opened reward-pick modal showing its wood frame and cards, and finishes with status pass.
+- Closing the rewards modal through its corner close control removes the modal from the scene tree. (quality violation fixed in revision 1)
+- Every ProgressionModal close path (corner close control, close(), accepting a card) still removes the modal from the tree and restores the pre-open pause state. (quality violation fixed in revision 1)
 
 ## ⬜ Pending
-- Closing the rewards modal through its corner close control removes the modal from the scene tree.
-- Every ProgressionModal close path (corner close control, close(), accepting a card) still removes the modal from the tree and restores the pre-open pause state. — quality: scripts/ui/ProgressionModal.gd: NOTIFICATION_PREDELETE handler calls get_tree() on an out-of-tree node, emitting `ERROR: Parameter "data.tree" is null` on every post-tree free (seen in .gen/harness/progression_modal_wood_frame run); guard with is_inside_tree() or move pause restore to EXIT_TREE
+- (none)
 
 ## ❌ Impossible
 - (none)

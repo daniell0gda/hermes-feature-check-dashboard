@@ -1,25 +1,28 @@
-# Coder report: implementation
+# Coder report: implementation (revision 1)
 
 ## Changed files
-- `scenes/ui/RewardsModal.tscn` — modified: TitledPanel root with ModalPanel Frame, TopRow/CloseBtn, TitlePlate; borderless Window.
-- `scenes/ui/ProgressionModal.tscn` — modified: same wood-frame structure (Backdrop kept), cards inside the frame grid.
-- `scripts/ui/RewardsModal.gd` — modified: node paths updated to Frame/VBox layout, close(close_path) unification, [REWARDS_MODAL] open/close log lines, _selection_count/_closed guards, WM_CLOSE_REQUEST routing.
-- `scripts/ui/ProgressionModal.gd` — modified: grid path updated, close_btn wired to close("corner_close"), open log line added, PREDELETE null-tree guard fix (this session).
-- `tests/scenarios/hud_other_panels.json` — modified: added rewards-open steps + `panel_rewards` screenshot checkpoint.
-- `tests/scenarios/progression_modal_wood_frame.json` — new windowed screenshot scenario for the reward-pick modal.
-- `textures/ui/hud/wood_panel.png` — new texture referenced by HudTheme.tres ModalPanel stylebox.
+- `scripts/ui/ProgressionModal.gd` — modified: `_notification` no longer handles
+  NOTIFICATION_PREDELETE; the last-resort pause restore moved to
+  NOTIFICATION_EXIT_TREE, which fires while the node is still inside the tree so
+  `get_tree()` is safe.
 
 ## Criteria
-All cluster 1–3 criteria implemented; caller-contract criteria verified unchanged-green (no edits needed in UI.gd/CaveSystem.gd/AgentHarness.gd).
+- Closing the rewards modal through its corner close control removes the modal from the scene tree — Done (re-verified)
+- Every ProgressionModal close path (corner close control, close(), accepting a card) still removes the modal from the tree and restores the pre-open pause state — Done (quality violation fixed)
+- All other criteria — unchanged Done, re-verified by full gate sweep
 
 ## Commands and results
-- `godot --headless --path . --editor --quit-after 300` — exit code 0; wood_panel.png imported, no script errors.
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/progression_modal_close_resume.json` — exit code 0; `[Harness] status=pass`; log shows `[PROGRESSION_MODAL] open money=30 options=3` / `close path=harness paused_restored=false` / `close path=choose_option:money`.
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/smoke_placement.json` — exit code 0; status=pass.
-- `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/hud_other_panels.json` — exit code 0; status=pass; `[REWARDS_MODAL] open trigger=rewards_button selections=0`.
-- `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/progression_modal_wood_frame.json` — exit code 0; status=pass; screenshot captured while modal visible and tree paused.
+All via run_project_cmd project=godot-td workspace=poke-defense-godot/issue-window-modals-skip-wood-frame:
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/progression_modal_close_resume.json` — exit 0; status=pass; `[PROGRESSION_MODAL] open money=30 options=3`, `close path=harness`, `open money=31 options=3`, `close path=choose_option:money`; NO `Parameter "data.tree" is null` error.
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/smoke_placement.json` — exit 0; status=pass.
+- `godot --headless --path . --editor --quit-after 300` — exit 0; clean import/typecheck, no script errors.
+- `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/progression_modal_wood_frame.json` (windowed) — exit 0; status=pass; screenshot refreshed; NO data.tree error on teardown.
+- `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/hud_other_panels.json` (windowed) — exit 0; status=pass; `[REWARDS_MODAL] open trigger=rewards_button selections=0`; panel_rewards captured; NO data.tree error.
+
+Harness result JSONs under `.gen/harness/<scenario>/result.json` all `status: pass`.
 
 ## Notes
-- Found and fixed during verification: `ProgressionModal._notification(PREDELETE)` crashed when freed outside the tree (`Parameter "data.tree" is null` at line 74) during windowed-scenario teardown; now guarded by a null get_tree() check.
-- Harness result JSONs written under `.gen/harness/<scenario>/result.json`.
-- Pre-existing noisy-but-harmless warnings: invalid UID ext_resource fallbacks for HudTheme textures, duplicate-signal connect errors in UI/Game setup, dummy-renderer RID leak errors at exit.
+- EXIT_TREE handler is idempotent with close(): both write `tree.paused = _was_paused`.
+- Remaining exit-time RID/leak noise is pre-existing dummy-renderer teardown noise,
+  not part of this diff (see check.md advisory list).
+- Pre-existing invalid-UID warnings in HudTheme.tres/UI.tscn remain (advisory).
