@@ -16,5 +16,14 @@
     "duration_ms": 1047374,
     "summary": "Implementation complete. Summary:\n\n**Cluster 1 \u2014 modal-close-resume-transition** (`scripts/ui/ProgressionModal.gd`)\n- Added a single `close(close_path)` funnel: hide \u2192 restore pre-open pause state \u2192 log \u2192 queue_free. WM close request, `choo\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-22T07:11:16.522Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 553916,
+    "summary": "Check complete. All verification ran through `run_project_cmd` (project=poke-defense-godot, workspace=poke-defense-godot/issue-progression-modal-close-resume); no host Godot was used.\n\nVerified done: 8. Pending: 0. Impossible: 0.\nQuality no\u2026",
+    "error": null
   }
 ]
