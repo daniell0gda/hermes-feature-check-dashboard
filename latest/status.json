@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue53-burn-status-refresh/",
-  "heartbeat_at": "2026-08-22T12:23:12.166Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-22T12:23:12.166Z",
+  "heartbeat_at": "2026-08-22T12:23:50.703Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-22T12:23:50.703Z",
   "process_id": 523505,
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T12:23:16.768978+00:00",
-    "last_success_at": "2026-08-22T12:23:16.767781+00:00",
+    "last_attempt_at": "2026-08-22T12:23:50.703742+00:00",
+    "last_success_at": "2026-08-22T12:23:20.898481+00:00",
     "last_error": null
   },
   "metrics": {
