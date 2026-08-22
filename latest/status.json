@@ -1,36 +1,22 @@
 {
-  "run_id": "issue137-earth-continent-map",
-  "feature": "earth-continent-map-integration",
+  "run_id": "issue138-norocktree-1787411442",
+  "feature": "no-rock-or-tree-same-position-as-building",
   "status": "running",
-  "started_at": "2026-08-22T22:56:15.876Z",
+  "started_at": "2026-08-22T23:01:40.084Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-22T23:03:20.210Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue138-norocktree-1787411442/",
+  "heartbeat_at": "2026-08-22T23:04:04.116Z",
   "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T23:03:20.210Z",
-  "process_id": 788449,
+  "active_node": null,
+  "last_event_at": "2026-08-22T23:04:04.116Z",
+  "process_id": 789587,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T23:03:24.546609+00:00",
-    "last_success_at": "2026-08-22T23:03:24.546007+00:00",
+    "last_attempt_at": "2026-08-22T23:04:04.116439+00:00",
+    "last_success_at": "2026-08-22T23:01:49.469637+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 109661,
-        "output_tokens": 5803
-      }
-    ]
-  }
+  "metrics": {}
 }
