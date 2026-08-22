@@ -70,5 +70,14 @@
     "duration_ms": 49288,
     "summary": "Gate decision complete.\n\n- Check status: pass (revision-check-2), all acceptance criteria verified with harness + windowed screenshots.\n- Decision: manual_testing: required \u2014 this is a new player-visible story (upgrade click spawns the floa\u2026",
     "error": null
+  },
+  {
+    "sequence": 9,
+    "timestamp": "2026-08-22T18:31:32.927Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 1051005,
+    "summary": "The `release_project_worker` tool isn't exposed in this session (only `run_project_cmd` is available), so the worker container is left for the orchestrator to release.\n\nManual-test result: PASSED. Scenario: tests/scenarios/upgrade_click_mon\u2026",
+    "error": null
   }
 ]
