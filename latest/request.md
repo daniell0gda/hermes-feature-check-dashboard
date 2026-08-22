@@ -1,22 +1,25 @@
-# Issue 124: cave-carved-path-torches
+# Issue #95 — Static Breach perk
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
-Project: godot-td
-Workspace: poke-defense-godot/issue-cave-carved-path-torches
+Implement GitHub issue #95 in this worktree.
 
-## Goal
-Fix cave torch placement so every carved cave-path corridor is visibly lit end to end, including newly carved corridors. Keep pending/declined dangerous caves completely dark.
+Requirements:
+- Add `static_breach`, Electric-only, 3 levels.
+- Each Electric hit on an enemy stacks a per-enemy charge; thresholds are 5/4/3 for levels 1/2/3.
+- The next hit at threshold sets remaining armor to zero.
+- Charges reset after the enemy leaves range/loses target lock for an explicit, documented duration.
+- Add the required stacking-charge indicator using the existing HighlightShaderUtils preset-highlight factory pattern.
+- Add a distinct shatter flash on the triggering hit, reusing the shield-crack asset if available.
+- Add focused game-test coverage for threshold behavior, per-enemy isolation/reset, Electric-only scope, and VFX/state transitions.
 
-## Required verification
-- Fresh plan, code, and check from the beginning; do not trust prior reports.
-- Use native Linux Godot through run_project_cmd.
-- Headless scenario must sample the full length of all four arms of a 2-by-18 plus 18-by-2 cross at roughly 2-unit intervals, not only the cave room.
-- Verify new connected corridor coverage.
-- Verify zero torches in pending and declined cave interiors, including overlap with carved paths.
-- Scan raw output for parse/resource errors separately from harness status.
-- Manual testing is required: windowed, top-down orthographic screenshots before/after the cross carve and after decline. Inspect actual PNG pixels. A stale screenshot or headless result is not evidence.
+Use native Linux Godot verification through the approved runner. Preserve exact acceptance criteria, inspect fresh structured results and raw diagnostics, and perform required visual/windowed evidence for VFX. Do not commit, push, merge, or close the issue.
 
-## Known previous failures to investigate
-Previous implementation passed weak headless checks but Daniel rejected the screenshots: only portions of the cross were visibly lit. Previous r2/r3 failed because code/check used a rejected model. Previous r4/r5 had stale evidence and manual-tester/provider failures. Do not mark visual pass unless fresh PNG timestamps and inspected pixels prove the full carved cross is lit end to end.
+Project: poke-defense-godot
+Runner key: godot-td
+Workspace: poke-defense-godot/issue-perk-static-breach
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/95
+Request ID: issue-95-static-breach
+Feature name: perk-static-breach
+Revision budget: 2
+manual_testing: required (player-facing VFX)
 
-Do not commit, push, merge, or close the issue.
+Follow team-work's plan → code → check workflow and write all required flat .gen artifacts.

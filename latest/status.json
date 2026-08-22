@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-124-cave-carved-path-torches-fresh",
-  "feature": "cave-carved-path-torches-fresh",
+  "run_id": "issue-95-static-breach",
+  "feature": "perk-static-breach",
   "status": "running",
-  "started_at": "2026-08-22T08:39:56.692Z",
+  "started_at": "2026-08-22T07:58:29.722Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-cave-carved-path-torches-fresh/",
-  "heartbeat_at": "2026-08-22T08:45:25.735Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T08:45:25.735Z",
-  "process_id": 479551,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-95-static-breach/",
+  "heartbeat_at": "2026-08-22T08:53:04.591Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T08:53:04.591Z",
+  "process_id": 469740,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T08:45:29.969589+00:00",
-    "last_success_at": "2026-08-22T08:45:29.968666+00:00",
+    "last_attempt_at": "2026-08-22T08:53:04.591453+00:00",
+    "last_success_at": "2026-08-22T08:44:52.427317+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,30 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 84093,
-        "output_tokens": 6029
+        "input_tokens": 139624,
+        "output_tokens": 6580
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 293235,
+        "output_tokens": 2693
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 307827,
+        "output_tokens": 4810
       }
     ]
   }

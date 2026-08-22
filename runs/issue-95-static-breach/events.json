@@ -25,5 +25,14 @@
     "duration_ms": 361760,
     "summary": "Check complete. Artifacts written to .gen/check.md, .gen/status.md, and .gen/quality-notes.md.\n\nVerified done: 14. Pending: 1 \u2014 0 due to build/test failures (typecheck/build gate exit 0; all four static_breach harness scenarios plus enemy_a\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-22T08:53:04.591Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 496519,
+    "summary": "The `release_project_worker` tool isn't exposed in this session (only `run_project_cmd` from the app_containers_runner plugin); the worker is described as a disposable per-run container, so I'm reporting that instead of forcing a host-side \u2026",
+    "error": null
   }
 ]
