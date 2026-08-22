@@ -52,5 +52,14 @@
     "duration_ms": 38904,
     "summary": "Manual-testing gate complete.\n\n- Read request.md, plan.md (status), check.md, status.md; check is `pass`.\n- Decision: the feature adds a new player-visible story \u2014 chained small-explosion VFX on underground trap hits, explicitly an acceptan\u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-22T19:39:52.892Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 947424,
+    "summary": "Manual test complete.\n\nManual-test result: FAILED. Scenario: .gen/ui_scenario.md.\nReport: /workspace/git-workspaces/poke-defense-godot/issue-buried-ordnance/.gen/manual-report.md. Escalation: yes (Team-Leader review required).\n\nKey findings\u2026",
+    "error": null
   }
 ]

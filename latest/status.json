@@ -1,22 +1,91 @@
 {
-  "run_id": "req-136-padding-closable-panels-close-button",
-  "feature": "padding closable panels close button",
+  "run_id": "issue-39-buried-ordnance",
+  "feature": "Traps Buried Ordnance unique perk",
   "status": "running",
-  "started_at": "2026-08-22T19:38:13.668Z",
+  "started_at": "2026-08-22T18:01:26.915Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
-  "heartbeat_at": "2026-08-22T19:38:13.668Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
-  "process_id": 697063,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-39-buried-ordnance/",
+  "heartbeat_at": "2026-08-22T19:39:52.892Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-22T19:39:52.892Z",
+  "process_id": 660756,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T19:38:19.126092+00:00",
-    "last_success_at": "2026-08-22T19:38:18.320607+00:00",
+    "last_attempt_at": "2026-08-22T19:39:52.892491+00:00",
+    "last_success_at": "2026-08-22T19:24:09.739467+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 229675,
+        "output_tokens": 7974
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 202332,
+        "output_tokens": 14025
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 110652,
+        "output_tokens": 3328
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 420990,
+        "output_tokens": 23927
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 137897,
+        "output_tokens": 4839
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 43489,
+        "output_tokens": 353
+      }
+    ]
+  }
 }
