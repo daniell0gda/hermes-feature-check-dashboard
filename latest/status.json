@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-133-panels-closable-x-escape/",
   "heartbeat_at": "2026-08-22T14:05:27.756Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-22T14:05:27.756Z",
   "process_id": 569006,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T14:05:27.760465+00:00",
-    "last_success_at": "2026-08-22T13:45:27.002364+00:00",
+    "last_attempt_at": "2026-08-22T14:05:32.233940+00:00",
+    "last_success_at": "2026-08-22T14:05:32.233100+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 90026,
         "output_tokens": 6565
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 206675,
+        "output_tokens": 23728
       }
     ]
   }
