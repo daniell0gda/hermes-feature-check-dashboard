@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-20260822-132458/",
   "heartbeat_at": "2026-08-22T13:34:51.108Z",
   "last_node": "plan",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-22T13:34:51.108Z",
   "process_id": 563145,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T13:34:51.109096+00:00",
-    "last_success_at": "2026-08-22T13:26:05.971061+00:00",
+    "last_attempt_at": "2026-08-22T13:34:55.818347+00:00",
+    "last_success_at": "2026-08-22T13:34:55.817268+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 160756,
+        "output_tokens": 8597
+      }
+    ]
+  }
 }
