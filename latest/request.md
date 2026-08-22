@@ -1,21 +1,24 @@
-# Issue 124 follow-up: fix cave sealing regression
+# Issue #63 continuation request
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
-Workspace: poke-defense-godot/issue-cave-carved-path-torches
-Runner: godot-td
+## Goal
 
-## Required scope
-Preserve the existing issue-124 torch implementation, but fix the regression exposed by `tests/scenarios/cave_pending_seals_entrance_instantly.json`.
+Reloading a failed map must start clean: no Porter shots, beams, timers, or leftover VFX from the previous map. Re-verify on current master after cherry-picking the existing teardown/regression work.
 
-The scenario must reliably prove:
-- A hole-to-exit route exists before the dangerous cave is discovered.
-- The instant confirmation is requested, the cave entrance is physically sealed and the route becomes unavailable.
-- Pending cave interior has zero torches.
-- Confirming yes restores the exact route and valid cave lighting.
+## Acceptance criteria
 
-Previous check evidence: the regression failed at the initial route assertion on clean HEAD because RNG-discovered caves on map_9 carved/locked over the test corridor before the assertion. This is now required work, not an acceptable blocker. Diagnose and fix the smallest product/test-fixture boundary that makes this scenario deterministic without weakening its assertions or hiding real sealing behavior. Do not simply remove the regression scenario or reduce assertions.
+1. A scenario places and activates a Porter on map A, then reloads a failed map onto map B.
+2. Reload teardown cancels previous-map tower activity (projectiles, timers, Porter dissolve/target, beams, callbacks).
+3. After reload, only new-map towers may act. Porter on the old map must stay quiet.
+4. Deterministic AgentHarness scenario with pre-reload activity and post-reload zero residual action.
+5. Fresh headless focused harness plus raw Godot diagnostic scan.
+6. Windowed OpenGL-compatible screenshot after reload; inspect the PNG (Map B / new tower activity, no stale Porter VFX).
 
-## Verification
-Use native Godot through run_project_cmd. Run editor/import gate, issue-124 focused torch scenario, `declined_cave_torches_extinguish.json`, and `cave_pending_seals_entrance_instantly.json`. Scan raw stdout/stderr independently for script errors, parse errors, failed resources, and invalid calls. Then run the required windowed top-down issue-124 scenario and inspect fresh PNGs; stale screenshots/headless screenshot results are not proof.
+## Constraints
 
-Do not commit, push, merge, or close the issue.
+- Workspace: `/workspace/git-workspaces/poke-defense-godot/issue-clear-previous-map-tower-effects`
+- Branch: `issue/clear-previous-map-tower-effects` (based on current origin/master + cherry-pick `40808d9` with conflict merge).
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/63
+- Flat `.gen/` artifacts. New request id. Do not close/merge/push.
+- Project commands only via runner `godot-td` / workspace `poke-defense-godot/issue-clear-previous-map-tower-effects`.
+- Visible reload/VFX: `manual_testing: required`.
+- Follow `/opt/data/coding_rules.md`.
