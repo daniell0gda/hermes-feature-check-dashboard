@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-123-progression-pick-scenario-stale",
-  "feature": "progression_pick scenario compatible tower recipe",
+  "run_id": "issue-124-cave-carved-path-torches-fresh",
+  "feature": "cave-carved-path-torches-fresh",
   "status": "running",
-  "started_at": "2026-08-22T08:06:37.179Z",
+  "started_at": "2026-08-22T08:39:56.692Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-123-progression-pick-scenario-stale/",
-  "heartbeat_at": "2026-08-22T09:05:12.085Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-cave-carved-path-torches-fresh/",
+  "heartbeat_at": "2026-08-22T09:09:03.931Z",
   "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T09:05:12.085Z",
-  "process_id": 472003,
+  "active_node": null,
+  "last_event_at": "2026-08-22T09:09:03.931Z",
+  "process_id": 479551,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T09:05:16.553709+00:00",
-    "last_success_at": "2026-08-22T09:05:16.552297+00:00",
+    "last_attempt_at": "2026-08-22T09:09:03.931333+00:00",
+    "last_success_at": "2026-08-22T09:01:06.668134+00:00",
     "last_error": null
   },
   "metrics": {
@@ -24,12 +24,12 @@
         "task_id": "plan",
         "cluster_id": null,
         "role": "plan",
-        "model": null,
+        "model": "stealth/ox-alpha",
         "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 84093,
+        "output_tokens": 6029
       },
       {
         "task_id": "code",
@@ -39,41 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 188154,
-        "output_tokens": 13697
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 114264,
-        "output_tokens": 6121
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 220833,
-        "output_tokens": 10616
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 43152,
-        "output_tokens": 3064
+        "input_tokens": 281074,
+        "output_tokens": 8939
       }
     ]
   }
