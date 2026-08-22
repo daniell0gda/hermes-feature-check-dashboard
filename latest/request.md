@@ -1,17 +1,30 @@
-# Request: Water Tower — Water Pressure perk (#46)
+# Request: Frozen Fracture perk (#94)
 
-Source issue: https://github.com/daniell0gda/poke-defense-godot/issues/46
+Project: poke-defense-godot
+Workspace: poke-defense-godot/issue-perk-frozen-fracture
+Branch: issue/perk-frozen-fracture
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/94
+Runner project key: godot-td
+Revision budget: 2
 
-## Summary
-Add a new Common progression perk `water_pressure` (levels 1–3) for the Water tower:
-Water's own damage against already-Wet targets is increased by +20% / +35% / +50%.
+## Feature
 
-## Context
-- Only Electric currently benefits from Wet status (`electric_wet_conduction`); Water gets nothing.
-- Follow existing Common perk patterns (e.g. `electric_wet_conduction`) for data, unlock, UI listing, and tests.
+Add Common perk `frozen_fracture` (3 levels). While an enemy is under Ice Tower slow, it takes +10%/+20%/+30% increased armor-damage from any source. No effect if the enemy is not currently slowed. No new VFX.
 
-## Done when
-- New Common `water_pressure` (L1–3): Water's own damage vs already-Wet targets +20%/+35%/+50%.
-- No new visual required — pure conditional damage% modifier against the existing Wet status.
+## Acceptance
 
-manual_testing: none (pure stat modifier; no new visible mechanic). Headless harness verification is sufficient unless implementation adds visible UI beyond standard perk listing.
+- Perk exists as Common, 3 levels, ids/values as specified.
+- Armor-damage bonus applies only while Ice slow is active.
+- `game-test` scenario compares armor-damage on a slowed vs unslowed enemy with the perk active.
+- No new VFX.
+
+## Constraints
+
+- Use `run_project_cmd` with project `godot-td` and workspace `poke-defense-godot/issue-perk-frozen-fracture`.
+- Follow `/opt/data/coding_rules.md` and project context.
+- Visible perk/UI work needs windowed screenshots if the perk appears in progression UI.
+- Do not commit, push, merge, or close the issue.
+
+## Classification
+
+`check.md` must include `classification: pass|fixable|design_failure|blocked`.
