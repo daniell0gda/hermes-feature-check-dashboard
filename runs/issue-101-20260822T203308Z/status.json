@@ -1,12 +1,12 @@
 {
   "run_id": "issue-101-20260822T203308Z",
   "feature": "underground-side-panel-carve-place-exit-",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-22T20:33:08.851Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T21:07:54.292Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-101-20260822T203308Z/",
-  "heartbeat_at": "2026-08-22T21:07:49.763Z",
+  "heartbeat_at": "2026-08-22T21:07:54.292Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-22T21:07:49.763Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:07:49.764063+00:00",
-    "last_success_at": "2026-08-22T20:57:07.730512+00:00",
+    "last_attempt_at": "2026-08-22T21:07:54.292556+00:00",
+    "last_success_at": "2026-08-22T21:07:54.291273+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 175634,
         "output_tokens": 20478
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 159525,
+        "output_tokens": 9183
       }
     ]
   }
