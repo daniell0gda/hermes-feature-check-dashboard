@@ -1,40 +1,22 @@
-# Request: Issue #108 — Harness cannot boot a non-game scene, so the main menu is untestable
+# Request — Issue #91: Progression perk "Undermining"
 
-- Project: poke-defense-godot
-- Runner key: `godot-td` (never the folder name)
-- Runner workspace: `poke-defense-godot/issue-harness-cannot-boot-menu-scene`
-- Branch: `issue/harness-cannot-boot-menu-scene` (cut from origin/master)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/108
-- Type: harness / ui · priority:medium
+- **Project:** poke-defense-godot (runner key `godot-td`, workspace `poke-defense-godot/issue-perk-undermining`)
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/91
+- **Branch:** issue/perk-undermining (cut fresh from origin/master @ d241462)
+- **Labels:** status:in-progress, priority:medium, type:common, type:progression-perk, type:traps, type:armor
 
 ## Problem
+None of the underground traps (`trap_01`/Jaw, `trap_03`/Spike, `trap_02`/Saw, `trap_05`/Blender, `data/towers.xml:35-38`) have an `armor_dmg` stat, so armored enemies routed underground are just as shielded there as on the surface.
 
-Every scenario runs against `res://scenes/Main.tscn`, hard-coded in
-`.claude/skills/game-test/scripts/Run-Scenario.ps1:193`, and `AgentHarness._await_game()`
-(`scripts/testing/AgentHarness.gd:171-182`) blocks until `current_scene` has a `Game` child whose
-`Placement.tower_placement` is non-null. Any non-game scene (e.g. `scenes/MainMenu.tscn`) is
-unreachable by the harness, so the main menu's live 3D backdrop cannot be asserted or screenshotted.
+## Done when (exact acceptance criteria from the issue)
+1. New perk `undermining`, type Common, traps only, 3 levels.
+2. All 4 traps gain flat armor-damage per hit — L1 8, L2 15, L3 25 — added the same way Ballista's `armor_dmg` is read via `TowersConfig.get_armor_damage()` (`systems/TowersConfig.gd:184-186`).
+3. Does not affect any surface tower.
+4. Visual: tint traps' existing hit-impact effect to flag the armor-strip portion; if a given trap currently has no impact VFX at all, note that as a pre-existing gap rather than scope creep for this issue.
 
-## Done when
-
-1. `HarnessScenario` accepts an optional `scene` (defaulting to `res://scenes/Main.tscn`) and
-   `Run-Scenario.ps1` passes it through instead of hard-coding the path.
-2. `AgentHarness._await_game()` no longer requires a `Game` with a live `Placement` when the
-   scenario declares it does not need one — a screenshot-and-expectation-only timeline must run
-   against any scene.
-3. A value source can read a property at an arbitrary node path under the current scene, so the
-   orbit and the backdrop world are assertable without adding test-only methods to production code.
-4. A `main_menu` scenario exists that boots `scenes/MainMenu.tscn`, waits, asserts the camera moved
-   and enemies are on the field, and takes a `-Windowed` screenshot of the menu over the map.
-
-## Redo notes for resumed runs
-
-- Use runner key `godot-td`, workspace `poke-defense-godot/issue-harness-cannot-boot-menu-scene`.
-- Godot on Linux: native commands via runner; windowed evidence with
-  `--rendering-method gl_compatibility --audio-driver Dummy` when Vulkan fails.
-- Manual testing is required: player-facing menu screen with live backdrop → windowed PNGs/GIF,
-  plus overall UI-sanity pass (`ui_feels_broken: yes|no`) on every final screenshot.
-
-## Historical reference
-
-None — fresh claim from origin/master at pickup time.
+## Notes / redo guidance for workers
+- Runner workspace naming pitfall: use exactly project key `godot-td` and workspace `poke-defense-godot/issue-perk-undermining`. Invented names cause HTTP 422 chdir failures that look like infra blockers.
+- Native Linux Godot verification through the runner only. Editor gate: `godot --headless --path . --editor --quit-after 300`. Gameplay harnesses need explicit scene arg before user args.
+- Visible player-facing perk → manual_testing should be `required`; manual-tester must never use `--headless`; windowed evidence via `--rendering-method gl_compatibility --audio-driver Dummy` when Vulkan fails; screenshots/GIFs into `.gen/screenshots/`.
+- Check profile must emit the literal line `classification: <pass|fixable|design_failure|blocked>` (lowercase value, no bold) so leader routing parses it.
+- Historical reference only (previous abandoned claim): commit 84c8e60 "bird view centers..." was on this branch before reset — unrelated to this issue; branch was reset to origin/master d241462.
