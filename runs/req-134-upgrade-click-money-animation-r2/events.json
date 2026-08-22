@@ -34,5 +34,14 @@
     "duration_ms": 5181801,
     "summary": "Summary of the revision-code-1 implementation pass (cluster: implementation, issue #134 upgrade-click-money-animation):\n\n## State found on arrival\nThe feature code was already in place from the prior iteration (uncommitted diff):\n- `scripts\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-22T17:52:19.889Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 778760,
+    "summary": "Verification complete; artifacts written to `.gen/check.md`, `.gen/status.md`, `.gen/revisions.md`.\n\nSummary: All gates re-run fresh via run_project_cmd (project=poke-defense-godot, workspace=poke-defense-godot/issue-upgrade-click-money-ani\u2026",
+    "error": null
   }
 ]
