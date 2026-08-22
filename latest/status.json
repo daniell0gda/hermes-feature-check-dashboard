@@ -1,12 +1,12 @@
 {
   "run_id": "issue115-ground-material-ignores-cache-r1",
   "feature": "ground-plane material cache reuse (issue 115)",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-22T22:02:08.141Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T22:32:01.080Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue115-ground-material-ignores-cache-r1/",
-  "heartbeat_at": "2026-08-22T22:31:55.375Z",
+  "heartbeat_at": "2026-08-22T22:32:01.080Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-22T22:31:55.375Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T22:31:55.375616+00:00",
-    "last_success_at": "2026-08-22T22:26:07.154196+00:00",
+    "last_attempt_at": "2026-08-22T22:32:01.080440+00:00",
+    "last_success_at": "2026-08-22T22:32:01.078063+00:00",
     "last_error": null
   },
   "metrics": {
@@ -85,6 +85,17 @@
         "cost_status": "unknown",
         "input_tokens": 21469,
         "output_tokens": 414
+      },
+      {
+        "task_id": "manual-tester",
+        "cluster_id": null,
+        "role": "manual-tester",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 113690,
+        "output_tokens": 4001
       }
     ]
   }
