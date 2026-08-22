@@ -1,36 +1,39 @@
-# Acceptance Plan: water_pressure (Water Tower — Water Pressure perk, issue #46)
+# Acceptance Plan: elemental-attunement
+
+manual_testing: required
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/water_pressure_progression.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/progression_pick.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+- Focused test: `run_project_cmd(project="godot-td", workspace="poke-defense-godot/issue-elemental-attunement", cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/elemental_attunement.json"])`
+- Full test: `run_project_cmd(project="godot-td", workspace="poke-defense-godot/issue-elemental-attunement", cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/floodgate_saltwater_purge.json"])`
+- Typecheck/build: `run_project_cmd(project="godot-td", workspace="poke-defense-godot/issue-elemental-attunement", cmd=["godot","--headless","--path",".","--editor","--quit-after","300"])`
 
 ## Clusters
 
-1. water-pressure-perk-core — files: `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd`, `autoload/ProgressionManager.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — depends on: none
-- With `water_pressure` not owned, a Water hit against a Wet enemy deals its normal damage (bonus ratio 0.0).
-- At level 1 / 2 / 3, a Water tower hit against an already-Wet enemy deals 1.2× / 1.35× / 1.5× the damage the same hit would deal without the perk.
-- The bonus applies only while the target is Wet (`wet_time_left > 0`): a Water hit against a non-Wet enemy is unmodified at every perk level.
-- The bonus multiplies only Water-attributed hits: Electric hits against Wet enemies keep exactly their `electric_wet_conduction` bonus, and other attacker types against Wet enemies are unmodified.
-- After a progression reset, the Water-vs-Wet bonus returns to 0.0 and Water hits against Wet enemies again deal normal damage.
-- Debug-build `[WATER-PRESSURE]` log line per perk-level application, naming the event with the applied level and resulting bonus ratio.
-2. water-pressure-perk-data-and-harness — files: `scripts/progression/water_tower.json`, `tests/scenarios/water_pressure_progression.json` — depends on: 1
-- `water_tower.json` defines a Common perk `water_pressure` with maxLevels 3 whose levels carry +20% / +35% / +50%, and repeated `apply_progression("res://scripts/progression/water_tower.json", "water_pressure")` calls raise its current level 1 → 2 → 3 with a fourth call rejected (level stays 3, ineligible for further picks).
-- A focused AgentHarness scenario (`water_pressure_progression`) asserts the unowned baseline, each level's exact ratio, and the non-Wet guard via `progression_call` expectations, and passes headless with `status: pass`.
-3. water-pressure-tooltip — files: `scripts/ui/UI.gd` — depends on: 2
-- While `water_pressure` is owned, the Water tower tooltip includes a "Bonus vs Wet" percentage line matching the owned level (+20%/+35%/+50%), and the line is absent when the perk is not owned.
+1. attunement-perk-and-effectiveness — files: `scripts/progression/global.json`, `scripts/config/Balance.gd`, `autoload/ProgressionManager.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — depends on: none
+- A new Unique progression named `elemental_attunement` exists in the global progression pool (`scripts/progression/global.json`), is eligible for chest/cave draws under the same rules as other Uniques, and reaches level 1 after being applied through the progression manager.
+- With no attunement owned, every attacker/defender pair resolves exactly as before the change: fire/fire stays 0.5x, water/water stays 0.5x, electric/electric keeps its 0.3x self-resistance, and no other entry in the effectiveness path shifts.
+- Owning the fire attunement makes fire-attributed damage resolve as super-effective (2.0x) against Water-typed and Electric-typed enemies, while fire damage against Fire-typed enemies keeps its 0.5x self-resistance.
+- Owning the water attunement makes water-attributed damage resolve as super-effective (2.0x) against Fire-typed and Electric-typed enemies, while water damage against Water-typed enemies keeps its 0.5x self-resistance.
+- Owning the electric attunement makes electric-attributed damage resolve as super-effective (2.0x) against Fire-typed and Water-typed enemies, while electric damage against Electric-typed enemies keeps its 0.3x self-resistance.
+- Owning `elemental_attunement` grants extended coverage for exactly one chosen element (fire, water, or electric); the two unchosen elements' towers gain no new multiplier, and the perk never removes any self-resistance.
+- The attunement perk can be selected from the player-facing progression pick flow (it appears as a choosable option and choosing it applies the perk), matching how existing Unique perks are presented.
+- Debug-build `[ELEMENTAL_ATTUNEMENT]` log line per application event, naming which element was chosen.
+2. attunement-gameplay-verification — files: `tests/scenarios/elemental_attunement.json` — depends on: 1
+- In a live map, one scripted fire-typed direct hit on a Water-typed enemy removes exactly twice the baseline HP when the fire attunement is owned compared to the same hit without the perk (deterministic harness arithmetic, no projectile flight involved).
+- In a live map, once the water attunement is owned, a scripted water-typed direct hit on a Fire-typed enemy resolves at 2.0x while a scripted water-typed direct hit on a Water-typed enemy still resolves at its 0.5x self-resistance.
+- The existing effectiveness-path gameplay regression (`floodgate_saltwater_purge`) still passes end-to-end after the change.
 
 ## Criteria
 
-- With `water_pressure` not owned, a Water hit against a Wet enemy deals its normal damage (bonus ratio 0.0).
-- At level 1 / 2 / 3, a Water tower hit against an already-Wet enemy deals 1.2× / 1.35× / 1.5× the damage the same hit would deal without the perk.
-- The bonus applies only while the target is Wet (`wet_time_left > 0`): a Water hit against a non-Wet enemy is unmodified at every perk level.
-- The bonus multiplies only Water-attributed hits: Electric hits against Wet enemies keep exactly their `electric_wet_conduction` bonus, and other attacker types against Wet enemies are unmodified.
-- After a progression reset, the Water-vs-Wet bonus returns to 0.0 and Water hits against Wet enemies again deal normal damage.
-- Debug-build `[WATER-PRESSURE]` log line per perk-level application, naming the event with the applied level and resulting bonus ratio.
-- `water_tower.json` defines a Common perk `water_pressure` with maxLevels 3 whose levels carry +20% / +35% / +50%, and repeated `apply_progression("res://scripts/progression/water_tower.json", "water_pressure")` calls raise its current level 1 → 2 → 3 with a fourth call rejected (level stays 3, ineligible for further picks).
-- A focused AgentHarness scenario (`water_pressure_progression`) asserts the unowned baseline, each level's exact ratio, and the non-Wet guard via `progression_call` expectations, and passes headless with `status: pass`.
-- While `water_pressure` is owned, the Water tower tooltip includes a "Bonus vs Wet" percentage line matching the owned level (+20%/+35%/+50%), and the line is absent when the perk is not owned.
-
-manual_testing: none
+- A new Unique progression named `elemental_attunement` exists in the global progression pool (`scripts/progression/global.json`), is eligible for chest/cave draws under the same rules as other Uniques, and reaches level 1 after being applied through the progression manager.
+- With no attunement owned, every attacker/defender pair resolves exactly as before the change: fire/fire stays 0.5x, water/water stays 0.5x, electric/electric keeps its 0.3x self-resistance, and no other entry in the effectiveness path shifts.
+- Owning the fire attunement makes fire-attributed damage resolve as super-effective (2.0x) against Water-typed and Electric-typed enemies, while fire damage against Fire-typed enemies keeps its 0.5x self-resistance.
+- Owning the water attunement makes water-attributed damage resolve as super-effective (2.0x) against Fire-typed and Electric-typed enemies, while water damage against Water-typed enemies keeps its 0.5x self-resistance.
+- Owning the electric attunement makes electric-attributed damage resolve as super-effective (2.0x) against Fire-typed and Water-typed enemies, while electric damage against Electric-typed enemies keeps its 0.3x self-resistance.
+- Owning `elemental_attunement` grants extended coverage for exactly one chosen element (fire, water, or electric); the two unchosen elements' towers gain no new multiplier, and the perk never removes any self-resistance.
+- The attunement perk can be selected from the player-facing progression pick flow (it appears as a choosable option and choosing it applies the perk), matching how existing Unique perks are presented.
+- Debug-build `[ELEMENTAL_ATTUNEMENT]` log line per application event, naming which element was chosen.
+- In a live map, one scripted fire-typed direct hit on a Water-typed enemy removes exactly twice the baseline HP when the fire attunement is owned compared to the same hit without the perk (deterministic harness arithmetic, no projectile flight involved).
+- In a live map, once the water attunement is owned, a scripted water-typed direct hit on a Fire-typed enemy resolves at 2.0x while a scripted water-typed direct hit on a Water-typed enemy still resolves at its 0.5x self-resistance.
+- The existing effectiveness-path gameplay regression (`floodgate_saltwater_purge`) still passes end-to-end after the change.

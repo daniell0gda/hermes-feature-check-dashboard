@@ -1,11 +1,20 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T13:01:47.842Z",
+    "timestamp": "2026-08-22T12:17:33.703Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 923441,
-    "summary": "Plan verified. Summary:\n\n- **Plan & clusters**: already complete and consistent in `.gen/plan.md` + `.gen/clusters/` (3 clusters: perk-core, data-and-harness, tooltip; 9 criteria; `manual_testing: none`). No changes needed.\n- **Runner coord\u2026",
+    "duration_ms": 455905,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-elemental-attunement/.gen/plan.md\n",
+    "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-22T13:12:09.536Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 3271312,
+    "summary": "tric self-resistance is 0.3x.\n- `_compute_effectiveness` checks `type_configs[defender].resistances` first, else falls back to `get_effectiveness(attacker, defender)`.\n\n**Damage application** (`scripts/game/actors/enemy/parts/EnemyHealthCon\u2026",
     "error": null
   }
 ]
