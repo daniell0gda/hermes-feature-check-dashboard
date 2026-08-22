@@ -1,21 +1,21 @@
 {
-  "run_id": "perk-siege-breaker-92-run1",
-  "feature": "perk-siege-breaker",
+  "run_id": "issue137-earth-continent-map",
+  "feature": "earth-continent-map-integration",
   "status": "running",
-  "started_at": "2026-08-22T19:55:11.096Z",
+  "started_at": "2026-08-22T19:22:39.115Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-siege-breaker-92-run1/",
-  "heartbeat_at": "2026-08-22T20:05:43.014Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T20:05:43.014Z",
-  "process_id": 703999,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
+  "heartbeat_at": "2026-08-22T20:07:44.827Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T20:07:44.827Z",
+  "process_id": 690443,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T20:05:47.336199+00:00",
-    "last_success_at": "2026-08-22T20:05:47.335372+00:00",
+    "last_attempt_at": "2026-08-22T20:07:44.828477+00:00",
+    "last_success_at": "2026-08-22T19:47:05.300468+00:00",
     "last_error": null
   },
   "metrics": {
@@ -27,9 +27,20 @@
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
+        "cost_status": "estimated",
+        "input_tokens": 100823,
+        "output_tokens": 5038
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 126297,
-        "output_tokens": 6559
+        "input_tokens": 160390,
+        "output_tokens": 19298
       }
     ]
   }

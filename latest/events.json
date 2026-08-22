@@ -1,11 +1,29 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T20:05:43.014Z",
+    "timestamp": "2026-08-22T19:26:19.781Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 580648,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-perk-siege-breaker/.gen/plan.md\n",
+    "duration_ms": 215500,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-earth-continent-map-integration/.gen/plan.md\n",
+    "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-22T19:46:56.117Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 1231812,
+    "summary": "Summary of the code-worker run (cluster: implementation) \u2014 bounded, honest status:\n\n## What was done\n\nFiles changed in the worktree:\n- scripts/game/visuals/BackdropEarth.gd\n  - Added GROUNDED_CONTINENT_APEX = 2.014 (measured from the GLB PO\u2026",
+    "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-22T20:07:44.827Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 1244170,
+    "summary": "Check complete. Artifacts written to /workspace/git-workspaces/poke-defense-godot/issue-earth-continent-map-integration/.gen/check.md and .gen/status.md.\n\nVerified done: 0. Pending: 9 \u2014 9 due to build/test failures (2 of them additionally l\u2026",
     "error": null
   }
 ]

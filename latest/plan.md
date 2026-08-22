@@ -1,42 +1,35 @@
-# Acceptance Plan: perk-siege-breaker
+# Acceptance Plan: earth-continent-map-integration
+
+Manual testing: required
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/cannon_siege_breaker_progression.json"]`
-- Full test: `["bash", "-c", "for f in $(find tests/scenarios -name '*.json' | sort); do godot --headless --path . res://scenes/Main.tscn -- \"--harness=res://${f%.json}\" || exit 1; done"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
-
-manual_testing: required
+- Focused test: ["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/backdrop_earth_visible.json"]
+- Full test: ["python3", "-c", "import glob,subprocess,sys;\n[sys.exit(subprocess.call(['godot','--headless','--path','.','res://scenes/Main.tscn','--','--harness=res://'+f])) for f in [glob.glob('tests/scenarios/*.json')[0]]]"]
+- Typecheck/build: ["godot", "--headless", "--path", ".", "--editor", "--quit-after", "2"]
 
 ## Clusters
 
-1. siege-breaker-perk-definition — files: `scripts/progression/cannon_tower.json`, `scripts/progression/managers/CannonTowerProgressionManager.gd`, `autoload/ProgressionManager.gd` — depends on: none
-- The progression pool defines a perk named `siege_breaker` in the Cannon progression file, typed Unique, restricted to the cannon tower only, with exactly 3 levels.
-- A ProgressionManager query returns the armor-damage-reduction multiplier for Cannon hits as 0.5 while the perk is unowned, 0.35 at level 1, 0.20 at level 2, and 0.0 at level 3.
-- Re-applying or replaying saved perk levels lands on the level's exact multiplier instead of compounding (level values are absolute per level).
-- Debug-build [CannonProgression] log line per siege_breaker level application carrying the perk level and resulting armor-reduction multiplier.
-2. cannon-armor-reduction-combat — files: `scripts/game/actors/enemy/parts/EnemyHealthController.gd`, `tests/scenarios/cannon_siege_breaker_progression.json` — depends on: 1
-- A direct hit attributed to a cannon tower against an enemy whose armor survives the hit deals HP damage reduced by the siege_breaker-scaled multiplier rather than the fixed 0.5 penalty (e.g. 10 base damage vs surviving armor yields 3.5/2.0/0.0 reduction at levels 1–3, exact arithmetic via the harness armor_hit path with tower_type_id "cannon").
-- With siege_breaker unowned, an armored enemy hit by a cannon takes HP damage under the unchanged 0.5 armor penalty (existing armor behaviour regression).
-- With siege_breaker owned at any level, a hit attributed to a non-cannon tower against surviving armor still takes the unchanged 0.5 penalty.
-- Owning siege_breaker does not change any enemy's armor value directly: armor drains at its normal rate from non-cannon hits, and cannon hits consume the same armor-damage amount they did before the perk.
-- Once the enemy's armor is depleted (or the enemy has none), cannon damage is applied at full effectiveness regardless of siege_breaker level.
+1. grounded-continent-placement — files: `scripts/game/visuals/BackdropEarth.gd` — depends on: none
+- The grounded configuration targets exactly one named continent mesh (`Continent_Africa`) from `stylized_earth_in_clouds.glb`, and the chosen mesh name is recorded in code with a runtime warning if the mesh is absent.
+- After `configure_for_map` on a surface map, the earth rig pose places the chosen continent flush under the playable field at y=0 with no floating gap, and the globe's body/horizon lies close enough to the board that it is inside the normal gameplay camera's view frustum (no longer sunk a full body radius below the plane nor pushed far behind the board).
+- From the normal gameplay camera, the continent terrain fills the space around/underneath the playable field so the map no longer reads as an isolated floating tile against plain sky (windowed screenshot).
+- In the windowed screenshot from the normal gameplay camera, the continent terrain around the board blends with the map field in scale and color, with no hard seam between board and globe surface.
+- During play in the grounded configuration, the globe does not rotate: the earth body's world transform measured at two times several seconds apart is identical (spin disabled, not merely slowed).
+- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent mesh and the final rig position/scale/rotation.
+2. backdrop-regression-and-harness-contract — files: `tests/scenarios/backdrop_earth_visible.json`, `tests/scenarios/backdrop_earth_glint.json` — depends on: 1
+- The focused harness scenarios `backdrop_earth_visible` and `backdrop_earth_glint` pass headless: map loads, `backdrop_earth_present` is true, and their `backdrop_earth_center_y` expectation matches the grounded rig pose actually produced by the revised placement.
+- With the grounded configuration active, other continents, ocean, cloud banks, and the atmosphere rim remain visible from the normal gameplay camera; only the previously hidden meshes (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud` prefixed) stay hidden (windowed screenshot).
+- The windowed run of `backdrop_earth_visible` produces a surface screenshot file showing the map sitting on the continent from the default gameplay camera.
 
 ## Criteria
 
-- The progression pool defines a perk named `siege_breaker` in the Cannon progression file, typed Unique, restricted to the cannon tower only, with exactly 3 levels.
-- A ProgressionManager query returns the armor-damage-reduction multiplier for Cannon hits as 0.5 while the perk is unowned, 0.35 at level 1, 0.20 at level 2, and 0.0 at level 3.
-- Re-applying or replaying saved perk levels lands on the level's exact multiplier instead of compounding (level values are absolute per level).
-- Debug-build [CannonProgression] log line per siege_breaker level application carrying the perk level and resulting armor-reduction multiplier.
-- A direct hit attributed to a cannon tower against an enemy whose armor survives the hit deals HP damage reduced by the siege_breaker-scaled multiplier rather than the fixed 0.5 penalty (e.g. 10 base damage vs surviving armor yields 3.5/2.0/0.0 reduction at levels 1–3, exact arithmetic via the harness armor_hit path with tower_type_id "cannon").
-- With siege_breaker unowned, an armored enemy hit by a cannon takes HP damage under the unchanged 0.5 armor penalty (existing armour behaviour regression).
-- With siege_breaker owned at any level, a hit attributed to a non-cannon tower against surviving armor still takes the unchanged 0.5 penalty.
-- Owning siege_breaker does not change any enemy's armor value directly: armor drains at its normal rate from non-cannon hits, and cannon hits consume the same armor-damage amount they did before the perk.
-- Once the enemy's armor is depleted (or the enemy has none), cannon damage is applied at full effectiveness regardless of siege_breaker level.
-
-## Manual testing note
-
-Player-visible story: a Cannon with siege_breaker hitting an armored enemy must show the existing
-shield-crack/shatter flash pattern (the Exposed Plating #87-series effect reused via the enemy VFX
-path); no second, new effect may appear. Capture windowed PNG/GIF evidence per team-work rules —
-headless-only verification is not sufficient.
+- The grounded configuration targets exactly one named continent mesh (`Continent_Africa`) from `stylized_earth_in_clouds.glb`, and the chosen mesh name is recorded in code with a runtime warning if the mesh is absent.
+- After `configure_for_map` on a surface map, the earth rig pose places the chosen continent flush under the playable field at y=0 with no floating gap, and the globe's body/horizon lies close enough to the board that it is inside the normal gameplay camera's view frustum (no longer sunk a full body radius below the plane nor pushed far behind the board).
+- From the normal gameplay camera, the continent terrain fills the space around/underneath the playable field so the map no longer reads as an isolated floating tile against plain sky (windowed screenshot).
+- In the windowed screenshot from the normal gameplay camera, the continent terrain around the board blends with the map field in scale and color, with no hard seam between board and globe surface.
+- During play in the grounded configuration, the globe does not rotate: the earth body's world transform measured at two times several seconds apart is identical (spin disabled, not merely slowed).
+- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent mesh and the final rig position/scale/rotation.
+- The focused harness scenarios `backdrop_earth_visible` and `backdrop_earth_glint` pass headless: map loads, `backdrop_earth_present` is true, and their `backdrop_earth_center_y` expectation matches the grounded rig pose actually produced by the revised placement.
+- With the grounded configuration active, other continents, ocean, cloud banks, and the atmosphere rim remain visible from the normal gameplay camera; only the previously hidden meshes (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud` prefixed) stay hidden (windowed screenshot).
+- The windowed run of `backdrop_earth_visible` produces a surface screenshot file showing the map sitting on the continent from the default gameplay camera.
