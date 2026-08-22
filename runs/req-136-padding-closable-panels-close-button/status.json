@@ -1,80 +1,20 @@
 {
   "run_id": "req-136-padding-closable-panels-close-button",
   "feature": "padding closable panels close button",
-  "status": "completed",
-  "started_at": "2026-08-22T19:38:13.668Z",
-  "ended_at": "2026-08-22T19:53:35.729Z",
+  "status": "running",
+  "started_at": "2026-08-22T20:33:24.676Z",
+  "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
-  "heartbeat_at": "2026-08-22T19:53:35.729Z",
-  "last_node": "manual-tester",
+  "heartbeat_at": "2026-08-22T20:33:24.676Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-22T19:53:27.905Z",
-  "process_id": 697063,
+  "last_event_at": null,
+  "process_id": 721304,
   "host": "25e0b2c49eb5",
-  "phase": "manual-tester",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T19:53:35.729511+00:00",
-    "last_success_at": "2026-08-22T19:53:35.727888+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T20:33:24.677052+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 60396,
-        "output_tokens": 1595
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 83715,
-        "output_tokens": 2787
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 134715,
-        "output_tokens": 3065
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 43177,
-        "output_tokens": 617
-      },
-      {
-        "task_id": "manual-tester",
-        "cluster_id": null,
-        "role": "manual-tester",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 105499,
-        "output_tokens": 3137
-      }
-    ]
-  }
+  "metrics": {}
 }
