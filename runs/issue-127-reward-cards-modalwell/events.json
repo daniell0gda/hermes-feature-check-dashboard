@@ -7,5 +7,14 @@
     "duration_ms": 277840,
     "summary": "The plan is verified consistent: 17 criteria, each appearing exactly once in `## Criteria` and in exactly one of the 4 clusters; 3 concrete run_project_cmd commands; `manual_testing: required`. The plan was revised to add Daniel's follow-up\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-22T11:44:29.593Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 467651,
+    "summary": "The `release_project_worker` tool isn't available in this session's toolset (only `run_project_cmd` is exposed), so worker release could not be performed from here \u2014 flagging that to the orchestrator rather than bypassing the runner.\n\nSumma\u2026",
+    "error": null
   }
 ]
