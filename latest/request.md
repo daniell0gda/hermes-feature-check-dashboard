@@ -1,33 +1,40 @@
-# Request: Issue #106 — Harness cannot reach runtime-instanced modals
+# Request: Issue #108 — Harness cannot boot a non-game scene, so the main menu is untestable
 
-- Repo: daniell0gda/poke-defense-godot
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/106
-- Workspace: poke-defense-godot/issue-harness-cannot-reach-runtime-modals
-- Branch: issue/harness-cannot-reach-runtime-modals (cut fresh from origin/master, d241462)
-- Labels: status:in-progress, priority:medium, type:coverage-gap, type:harness
+- Project: poke-defense-godot
+- Runner key: `godot-td` (never the folder name)
+- Runner workspace: `poke-defense-godot/issue-harness-cannot-boot-menu-scene`
+- Branch: `issue/harness-cannot-boot-menu-scene` (cut from origin/master)
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/108
+- Type: harness / ui · priority:medium
 
 ## Problem
 
-`HarnessActions._resolve_target()` (scripts/testing/HarnessActions.gd:585-610) only matches a fixed
-name list (`game`, `ui`, `underground`, `cave_system`, `progression`, `towers`, `hole_placement`,
-`gamestate`, `strategy_record`). Runtime-instanced modals like the Options screen
-(`UI.gd._on_pause_options()` → `preload(...).instantiate()`, reference never kept) are unreachable.
-So scenarios cannot: switch Options to the Sound tab (themed HSliders never seen rendered), open a
-WoodDropdown picker to screenshot its floating list / name plate / SpeedOption rows, or assert which
-resolution/UI-scale row is checked.
+Every scenario runs against `res://scenes/Main.tscn`, hard-coded in
+`.claude/skills/game-test/scripts/Run-Scenario.ps1:193`, and `AgentHarness._await_game()`
+(`scripts/testing/AgentHarness.gd:171-182`) blocks until `current_scene` has a `Game` child whose
+`Placement.tower_placement` is non-null. Any non-game scene (e.g. `scenes/MainMenu.tscn`) is
+unreachable by the harness, so the main menu's live 3D backdrop cannot be asserted or screenshotted.
 
-## Done when (either approach)
+## Done when
 
-- `UI.gd` keeps the instantiated options modal in a field (like `_setup_manage_towers_popup()`
-  keeps `manage_towers_popup`) plus small `ui`-callable methods (e.g. options-tab setter,
-  picker-opener); **or**
-- `_resolve_target` gains a generic node-path target (e.g. `{"target":"node","path":"UI/OptionsScreen/..."}`).
+1. `HarnessScenario` accepts an optional `scene` (defaulting to `res://scenes/Main.tscn`) and
+   `Run-Scenario.ps1` passes it through instead of hard-coding the path.
+2. `AgentHarness._await_game()` no longer requires a `Game` with a live `Placement` when the
+   scenario declares it does not need one — a screenshot-and-expectation-only timeline must run
+   against any scene.
+3. A value source can read a property at an arbitrary node path under the current scene, so the
+   orbit and the backdrop world are assertable without adding test-only methods to production code.
+4. A `main_menu` scenario exists that boots `scenes/MainMenu.tscn`, waits, asserts the camera moved
+   and enemies are on the field, and takes a `-Windowed` screenshot of the menu over the map.
 
-Then extend `tests/scenarios/hud_other_panels.json` with checkpoints for the Sound tab and one open
-WoodDropdown; inspect the PNGs.
+## Redo notes for resumed runs
 
-## Redo notes (learned from prior runs)
+- Use runner key `godot-td`, workspace `poke-defense-godot/issue-harness-cannot-boot-menu-scene`.
+- Godot on Linux: native commands via runner; windowed evidence with
+  `--rendering-method gl_compatibility --audio-driver Dummy` when Vulkan fails.
+- Manual testing is required: player-facing menu screen with live backdrop → windowed PNGs/GIF,
+  plus overall UI-sanity pass (`ui_feels_broken: yes|no`) on every final screenshot.
 
-- Runner names are exact: project key `godot-td`, workspace `poke-defense-godot/issue-harness-cannot-reach-runtime-modals`. Never invent variants (HTTP 422).
-- Checker classification line must be exactly `classification: pass|fixable|blocked|design_failure` (no bold value).
-- Manual testing: this issue is about rendered UI theming — windowed screenshots required (never `--headless` for manual evidence). Use runner flags `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` when Vulkan fails in worker. Overall UI-sanity pass on each final screenshot (`ui_feels_broken: yes|no`).
+## Historical reference
+
+None — fresh claim from origin/master at pickup time.
