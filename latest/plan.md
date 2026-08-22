@@ -1,39 +1,38 @@
-# Acceptance Plan: perk-undermining
+# Acceptance Plan: harness-can-boot-non-game-scenes (Issue #108)
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/undermining_progression.json"]`
-- Full test: `["bash", "-lc", "for f in tests/scenarios/undermining_*.json tests/scenarios/enemy_armor_trap.json tests/scenarios/traps_serrated_edges_progression.json tests/scenarios/trap_stats_attribution.json; do id=$(basename \"$f\" .json); godot --headless --path . res://scenes/Main.tscn -- \"--harness=res://$f\" > /dev/null 2>&1; s=$(python3 -c \"import json;print(json.load(open('.gen/harness/$id/result.json'))['status'])\" 2>/dev/null); echo \"$id: $s\"; [ \"$s\" = pass ] || exit 1; done"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "120"]`
+- Focused test: `run_project_cmd project=godot-td workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene cmd=["godot","--headless","--path",".","res://scenes/MainMenu.tscn","--","--harness=res://tests/scenarios/main_menu.json"]`
+- Full test: `run_project_cmd project=godot-td workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/menu_backdrop_map.json"]`
+- Typecheck/build: `run_project_cmd project=godot-td workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene cmd=["godot","--headless","--path",".","--editor","--quit-after","300"]`
 
 ## Clusters
 
-1. undermining-perk-definition — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `autoload/ProgressionManager.gd` — depends on: none
-- A progression named `undermining` exists in the trap progression pool with type Common, exactly 3 levels, and is offered only for traps (never for any surface tower).
-- With `undermining` at levels 1/2/3, the exposed trap armor-damage bonus is 8/15/25 respectively; when the perk is not owned it is 0.
-2. undermining-trap-runtime — files: `scripts/game/actors/Trap.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — depends on: 1
-- Each hit from any of the four traps (`trap_01`, `trap_02`, `trap_03`, `trap_05`) on an armored enemy removes exactly the current `undermining` level's armor amount (8/15/25), clamped so armor never goes below zero, in addition to normal HP damage.
-- Without the perk owned, a trap hit changes enemy armor by exactly zero (existing behaviour preserved).
-- Surface tower hits are unchanged by `undermining`: owning it does not add armor damage to any non-trap tower's hits.
-- Debug-build `[Undermining]` log line per armor-stripping trap hit
-3. undermining-hit-vfx — files: `scripts/game/actors/Trap.gd`, `scripts/game/actors/effects/EffectsManager.gd` — depends on: 2
-- When an owned-perk trap hit actually strips armor, the trap's existing hit-impact effect shows a distinct tint signalling the armor-strip portion, and the tint is absent on trap hits while the perk is unowned.
-4. undermining-game-test-coverage — files: `tests/scenarios/undermining_progression.json`, `tests/scenarios/undermining_trap_armor.json`, `tests/scenarios/undermining_scope_isolation.json` — depends on: 1, 2, 3
-- A focused harness scenario proves definition and persistence: `undermining` resolves as Common/traps-only with 3 levels, applying levels yields the 8/15/25 armor values through the same accessor Ballista uses, re-applying past level 3 stays at 25, and save/reload restores the level and value.
-- A focused harness scenario proves live trap behavior: a real trap hit on an armored underground enemy reduces armor by exactly the perk amount at each level, and by zero when unowned.
-- A focused harness scenario proves scope isolation: while `undermining` is owned, scripted surface-tower hits apply no perk-derived armor damage.
+1. scenario-scene-selection — files: `scripts/testing/HarnessScenario.gd`, `scripts/testing/AgentHarness.gd`, `.claude/skills/game-test/scripts/Run-Scenario.ps1` — depends on: none
+- A scenario JSON may declare an optional top-level `scene` res:// path; when absent the harness boots the current default (`res://scenes/Main.tscn`), so every existing scenario runs unchanged.
+- When a scenario declares a scene, the runner launches that scene and the harness's boot wait succeeds against it without requiring a `Game` child.
+- A scenario that does not need a game completes its timeline, expectations, screenshots, and writes `result.json` with `status: pass` against any booted scene; a game-dependent action or expectation in such a scenario still fails rather than silently passing.
+- The PowerShell wrapper forwards the scenario's declared scene to Godot instead of hard-coding `res://scenes/Main.tscn`; a `-DryRun` invocation prints that scene path in its argument list.
+2. node-path-value-source — files: `scripts/testing/HarnessValues.gd` — depends on: none
+- A new expectation/wait-condition value source resolves an arbitrary property by node path relative to the current scene root (e.g. a camera transform under the menu scene), returning the property value for comparison with existing ops.
+- The value source reports a failed resolve (not a false pass) when the node path or property does not exist, so an expectation against a missing node fails the scenario.
+3. main-menu-scenario — files: `tests/scenarios/main_menu.json` — depends on: 1, 2
+- A `main_menu` scenario boots `res://scenes/MainMenu.tscn` headlessly and finishes with `status: pass`.
+- The scenario asserts via timeline waits/expectations that the menu camera orientation changed over time (the live backdrop orbit is moving).
+- The scenario asserts enemies are present on the backdrop field during the run.
+- Run with `-Windowed`, the scenario captures a PNG screenshot showing the main menu UI rendered over the 3D map backdrop; the fresh result records the screenshot entry and no skipped-headless placeholder for that checkpoint.
+
+manual_testing: required — player-facing menu screen with live backdrop needs windowed PNG/GIF evidence plus an overall UI-sanity pass (`ui_feels_broken: yes|no`) on every final screenshot, per the issue's redo notes.
 
 ## Criteria
 
-- A progression named `undermining` exists in the trap progression pool with type Common, exactly 3 levels, and is offered only for traps (never for any surface tower).
-- With `undermining` at levels 1/2/3, the exposed trap armor-damage bonus is 8/15/25 respectively; when the perk is not owned it is 0.
-- Each hit from any of the four traps (`trap_01`, `trap_02`, `trap_03`, `trap_05`) on an armored enemy removes exactly the current `undermining` level's armor amount (8/15/25), clamped so armor never goes below zero, in addition to normal HP damage.
-- Without the perk owned, a trap hit changes enemy armor by exactly zero (existing behaviour preserved).
-- Surface tower hits are unchanged by `undermining`: owning it does not add armor damage to any non-trap tower's hits.
-- Debug-build `[Undermining]` log line per armor-stripping trap hit
-- When an owned-perk trap hit actually strips armor, the trap's existing hit-impact effect shows a distinct tint signalling the armor-strip portion, and the tint is absent on trap hits while the perk is unowned.
-- A focused harness scenario proves definition and persistence: `undermining` resolves as Common/traps-only with 3 levels, applying levels yields the 8/15/25 armor values through the same accessor Ballista uses, re-applying past level 3 stays at 25, and save/reload restores the level and value.
-- A focused harness scenario proves live trap behavior: a real trap hit on an armored underground enemy reduces armor by exactly the perk amount at each level, and by zero when unowned.
-- A focused harness scenario proves scope isolation: while `undermining` is owned, scripted surface-tower hits apply no perk-derived armor damage.
-
-manual_testing: required
+- A scenario JSON may declare an optional top-level `scene` res:// path; when absent the harness boots the current default (`res://scenes/Main.tscn`), so every existing scenario runs unchanged.
+- When a scenario declares a scene, the runner launches that scene and the harness's boot wait succeeds against it without requiring a `Game` child.
+- A scenario that does not need a game completes its timeline, expectations, screenshots, and writes `result.json` with `status: pass` against any booted scene; a game-dependent action or expectation in such a scenario still fails rather than silently passing.
+- The PowerShell wrapper forwards the scenario's declared scene to Godot instead of hard-coding `res://scenes/Main.tscn`; a `-DryRun` invocation prints that scene path in its argument list.
+- A new expectation/wait-condition value source resolves an arbitrary property by node path relative to the current scene root (e.g. a camera transform under the menu scene), returning the property value for comparison with existing ops.
+- The value source reports a failed resolve (not a false pass) when the node path or property does not exist, so an expectation against a missing node fails the scenario.
+- A `main_menu` scenario boots `res://scenes/MainMenu.tscn` headlessly and finishes with `status: pass`.
+- The scenario asserts via timeline waits/expectations that the menu camera orientation changed over time (the live backdrop orbit is moving).
+- The scenario asserts enemies are present on the backdrop field during the run.
+- Run with `-Windowed`, the scenario captures a PNG screenshot showing the main menu UI rendered over the 3D map backdrop; the fresh result records the screenshot entry and no skipped-headless placeholder for that checkpoint.

@@ -1,22 +1,47 @@
 {
-  "run_id": "issue-91-perk-undermining-211435",
-  "feature": "perk-undermining",
+  "run_id": "issue-108-harness-non-game-scene-211634",
+  "feature": "harness-cannot-boot-menu-scene",
   "status": "running",
-  "started_at": "2026-08-22T21:41:00.756Z",
+  "started_at": "2026-08-22T21:16:34.815Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-91-perk-undermining-211435/",
-  "heartbeat_at": "2026-08-22T21:41:00.756Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
-  "process_id": 764154,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-108-harness-non-game-scene-211634/",
+  "heartbeat_at": "2026-08-22T21:41:16.268Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T21:41:16.268Z",
+  "process_id": 748239,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:41:05.540226+00:00",
-    "last_success_at": "2026-08-22T21:41:05.068913+00:00",
+    "last_attempt_at": "2026-08-22T21:41:16.269175+00:00",
+    "last_success_at": "2026-08-22T21:38:09.792191+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 47355,
+        "output_tokens": 3809
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 296029,
+        "output_tokens": 29063
+      }
+    ]
+  }
 }
