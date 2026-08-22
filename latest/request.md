@@ -1,21 +1,30 @@
-# Request: Upgrade tower button disabled without money (issue #135)
+# Request: #33 Systemic: Elemental Attunement
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/135
-- **Slug:** upgrade-button-disabled-without-money
-- **Project:** poke-defense-godot
-- **Workspace:** poke-defense-godot/issue-upgrade-button-disabled-without-money
-- **Branch:** issue/upgrade-button-disabled-without-money
+Project: poke-defense-godot (runner key `godot-td`)
+Workspace: `poke-defense-godot/issue-elemental-attunement`
+Branch: `issue/elemental-attunement`
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/33
+Slug: `elemental-attunement`
 
 ## Problem
-The upgrade tower button stays clickable when the player has no money. It should be disabled whenever the player cannot afford the upgrade, and instantly re-enabled the moment the upgrade panel is open and the player has enough money.
 
-## Acceptance criteria (from the issue)
-1. Upgrade tower button is disabled while the player has less money than the upgrade cost.
-2. When the upgrade panel is opened and the player has enough money, the button is enabled immediately (no need to reopen or click elsewhere).
-3. Button state updates live as money changes while the panel is open (spend below cost → disables again).
-4. Harness verification covers both states: no-money → disabled, affordable → enabled instantly on panel open.
+`Balance.type_effectiveness` (`scripts/config/Balance.gd`) makes fire/water/electric each resist themselves (`"fire": {"Fire": 0.5}`, `"water": {"Water": 0.5}`, `"electric": {"Electric": 0.5}`). A player who commits heavily to one element has no progression-side recourse if a level leans on that element's resistant enemy type.
 
-## Notes
-- This is visible UI work: per Daniel's standing expectation, visible chest/UI/gameplay behavior requires team-work manual-tester with windowed screenshots (never headless-only). Manual testing must be `required`.
-- Use native Linux Godot via runner commands (`run_project_cmd`), explicit scene argument before harness user args.
-- Checker classification line required: `classification: pass|fixable|design_failure|blocked`.
+## Done when
+
+New Unique `elemental_attunement`: pick one of fire/water/electric; that element's towers also gain the super-effective multiplier normally reserved for the other two elements against their respective resistant types.
+
+No new visual required — pure stat modifier: extends an existing invisible damage-multiplier table (`Balance.type_effectiveness`) with no new visible mechanic of its own.
+
+It only ever restores coverage on the other two elements. It never removes the self-resistance.
+
+Example of intended coverage (fire pick): Fire towers keep `Fire` enemies at 0.5, but also gain the super-effective multipliers the other two elements normally have against *their* resistant types (water vs Water, electric vs Electric), applied from the chosen element's towers.
+
+## Constraints
+
+- Use `run_project_cmd` with project `godot-td` and workspace `poke-defense-godot/issue-elemental-attunement`.
+- Follow `/opt/data/coding_rules.md`.
+- Do not commit, push, merge, or close the issue.
+- Native Linux Godot verification through the runner.
+- Visible UI for picking the element is only required if the existing Unique perk flow already has a player-facing pick; otherwise keep it a stat/table modifier and prove it with a focused harness.
+- Planner: still-captureable perk-select / type-multiplier user story should get a generic `.gen/ui_scenario.md`. If the perk is pickable in a modal, `manual_testing: required`.

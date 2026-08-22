@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-135-upgrade-button-20260822T123636Z",
-  "feature": "upgrade-button-disabled-without-money",
+  "run_id": "elemental-attunement-20260822",
+  "feature": "elemental-attunement",
   "status": "running",
-  "started_at": "2026-08-22T12:36:36.349Z",
+  "started_at": "2026-08-22T12:09:52.904Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-135-upgrade-button-20260822T123636Z/",
-  "heartbeat_at": "2026-08-22T13:16:53.335Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T13:16:53.335Z",
-  "process_id": 546463,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/elemental-attunement-20260822/",
+  "heartbeat_at": "2026-08-22T13:19:16.226Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T13:19:16.226Z",
+  "process_id": 533041,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T13:16:57.598280+00:00",
-    "last_success_at": "2026-08-22T13:16:57.597678+00:00",
+    "last_attempt_at": "2026-08-22T13:19:16.226699+00:00",
+    "last_success_at": "2026-08-22T13:12:18.455943+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 201331,
-        "output_tokens": 12042
+        "input_tokens": 174334,
+        "output_tokens": 7313
       },
       {
         "task_id": "code",
@@ -39,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 225679,
-        "output_tokens": 16752
+        "input_tokens": 220558,
+        "output_tokens": 24829
       }
     ]
   }
