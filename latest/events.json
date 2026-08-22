@@ -1,11 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T11:53:00.005Z",
+    "timestamp": "2026-08-22T11:54:37.131Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 442128,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-burn-status-refresh-loses-pending-damage/.gen/plan.md\n",
+    "duration_ms": 387496,
+    "summary": "Plan written: /workspace/poke-defense-godot/.gen/plan.md\n\nSummary:\n- Feature: issue #130 \u2014 carve tool on underground layer rotates camera to top-down bird's-eye view; cancel restores prior angle unless the player rotated manually during car\u2026",
     "error": null
   }
 ]

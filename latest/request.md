@@ -1,35 +1,17 @@
-# Request: BurnStatus._reset zeroes accumulated pending sub-integer DoT damage on refresh
+# Request: Underground carve top-down camera rotation (issue #130)
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/53
-Workspace: /workspace/git-workspaces/poke-defense-godot/issue-burn-status-refresh-loses-pending-damage
-Branch: issue/burn-status-refresh-loses-pending-damage (from origin/master)
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/130
+Branch: issue/underground-carve-topdown-camera-rotation
 
-## Problem
+## Goal
+When the carve tool is activated in the underground layer, the camera should automatically rotate to a top-down "bird view" angle so carved paths are visible from above.
 
-`scripts/game/status/BurnStatus.gd`'s `_reset()` path (used by `apply_or_refresh` whenever a
-burning enemy is hit by another fire-typed source before its current burn expires) zeroes the
-instance's `_pending_float` sub-integer damage carry when refreshing the DoT. Fractional damage
-accumulated toward the next tick is silently discarded.
-
-This makes re-applying burn to an already-burning enemy strictly *less* effective than letting it
-run out, and makes aggregate `damage_by_type.fire` assertions in headless scenarios unreliable.
-
-## Done when
-
-- `BurnStatus._reset()` (or `apply_or_refresh`) preserves or properly flushes `_pending_float`
-  when a burn is refreshed.
-- Re-applying burn to an already-burning target never results in less total delivered damage than
-  letting the existing burn run out unrefreshed.
-- Verified by a headless scenario that hits the same enemy with two overlapping burn applications
-  and asserts total delivered burn damage is monotonically non-decreasing relative to a
-  single-application baseline.
+## Acceptance criteria
+- Entering carve mode on the underground layer rotates the camera to a top-down bird's-eye angle.
+- Only the rotation changes — camera position/zoom are untouched.
+- Canceling carve restores the previous camera angle.
+- If the user manually changed the camera angle while carving, canceling does NOT restore the old angle (keep the user's new angle).
 
 ## Notes
-
-- A prior abandoned attempt exists as commit e5a0538 on the old branch state ("fix(burn):
-  preserve pending float on BurnStatus refresh", touching BurnStatus.gd, HarnessActions.gd, and
-  tests/scenarios/burn_status_refresh_pending_damage.json). The worktree was reset to
-  origin/master; that commit is historical reference only — do not assume it was verified. It may
-  be consulted or re-derived, but all acceptance criteria must be freshly implemented and
-  verified.
-- Runner key for project commands: `godot-td`. Use run_project_cmd; never local godot/npm.
+- Visible player-facing UI/camera behavior → manual testing with windowed screenshots is required; underground views need top-down camera shots (side angles hide carved-path lighting).
+- Follow /opt/data/coding_rules.md.
