@@ -1,81 +1,69 @@
 <!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Feature-check report</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:16px/1.6 system-ui}article{max-width:860px;margin:36px auto;padding:28px;background:#fff;border:1px solid #e4e7ec;border-radius:16px;box-shadow:0 12px 32px rgba(16,24,40,.08)}h1,h2{letter-spacing:-.03em}a{color:#2563eb}pre{background:#f8fafc;padding:14px;border-radius:10px}img{display:block;max-width:100%;height:auto;margin:16px 0;border:1px solid #e4e7ec;border-radius:10px}</style><article><h1>Team-leader report</h1>
 <ul>
-<li>**Result:** failed</li>
+<li>**Result:** completed</li>
 <li>**Classification:** pass</li>
-<li>**Feature:** underground-side-panel-carve-place-exit-</li>
-<li>**Run:** issue-101-20260822T203308Z</li>
+<li>**Feature:** upgrade-click-money-animation</li>
+<li>**Run:** req-134-upgrade-click-money-animation-r2</li>
 <li>**Lifecycle:** dashboard publish only; project commit/push/close not implied</li>
 </ul>
 <h2>Status</h2>
 <h2>✅ Done</h2>
 <ul>
-<li>On map_1 with the underground layer active, the Carve, Place Block, and Place Exit buttons each render entirely inside the side panel frame, with no part extending past the frame edges or covering its corner brackets.</li>
-<li>On a map where Porter is unlocked, with the underground layer active, the same three buttons render entirely inside the side panel frame clear of its corner brackets.</li>
-<li>The Place Exit button displays its runtime-built name+price content fully, with neither line clipped or truncated by the button or the panel.</li>
-<li>In the underground layer, the layer toggle button is visible inside the side panel and pressing it switches the game back to the surface layer (GameState.current_layer == &quot;surface&quot;).</li>
-<li>A windowed `hud_wood_panels` harness run reports a passing `hud_underground` checkpoint that verifies none of the three underground buttons&#x27; rects overlap the side panel frame or its corner brackets.</li>
-<li>Surface-layer side panel behaviour is unchanged: on map_1 the surface shot checkpoints of `hud_wood_panels` still pass with the existing surface controls laid out as before.</li>
+<li>Clicking &quot;Upgrade&quot; in tower details triggers the same animation used for money increase</li>
+<li>Animation visually matches the existing money-increase effect</li>
+<li>Verified in-game via windowed screenshot — re-verified by checker this iteration: fresh windowed run captured both shots; independent pixel-diff found ~2,149 new yellow pixels clustered at screen ~(800–1200, 300–500) in `.gen/harness/upgrade_click_money_popup/shots/after_upgrade_click_popup_visible.png`, and a zoomed vision read identified floating yellow &quot;+20 COINS!&quot; text there, absent from the before shot</li>
 </ul>
 <h2>⬜ Pending</h2>
-<ul>
-<li>(none)</li>
-</ul>
 <h2>❌ Impossible</h2>
-<ul>
-<li>(none)</li>
-</ul>
 <h2>Check</h2>
-<h1>Check report: underground-side-panel-carve-place-exit- (iteration 3)</h1>
-<p>classification: pass</p>
-<h2>Verdict</h2>
-<p>All 6 acceptance criteria verified green through fresh `run_project_cmd` runs against</p>
-<p>`poke-defense-godot/issue-underground-side-panel-carve-place-exit-`. No quality violations in</p>
-<p>changed code. No blockers.</p>
-<h2>Verification commands (all via run_project_cmd, project=godot-td)</h2>
-<p>| Gate | cmd | exit | result |</p>
+<h1>Check report — upgrade-click-money-animation (req-134 r2, revision-check-2)</h1>
+<p>Classification: pass</p>
+<h2>Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-upgrade-click-money-animation)</h2>
+<p>| Gate | Command | Exit | Result |</p>
 <p>|---|---|---|---|</p>
-<p>| Runner preflight | `[&quot;godot&quot;,&quot;--version&quot;]` | 0 | Godot 4.4.1.stable.official |</p>
-<p>| Typecheck/build | `[&quot;godot&quot;,&quot;--headless&quot;,&quot;--path&quot;,&quot;.&quot;,&quot;--editor&quot;,&quot;--quit-after&quot;,&quot;300&quot;]` | 0 | Full import/scan clean; no parse/script errors in output |</p>
-<p>| Focused (windowed) | `[&quot;godot&quot;,&quot;--path&quot;,&quot;.&quot;,&quot;res://scenes/Main.tscn&quot;,&quot;--windowed&quot;,&quot;--resolution&quot;,&quot;1280x720&quot;,&quot;--&quot;,&quot;--harness=res://tests/scenarios/hud_wood_panels.json&quot;]` | 0 | `.gen/harness/hud_wood_panels/result.json` status=pass, headless=false, both expectations pass |</p>
-<p>| Full test | `[&quot;godot&quot;,&quot;--headless&quot;,&quot;--path&quot;,&quot;.&quot;,&quot;res://scenes/Main.tscn&quot;,&quot;--&quot;,&quot;--harness=res://tests/scenarios/smoke_underground_visible.json&quot;]` | 0 | `[Harness] status=pass exit=0`; full suite PASS except known pre-existing cannon_* FAILs unrelated to this diff |</p>
-<h2>Acceptance criteria — evidence</h2>
-<p>1. **Underground buttons inside side panel frame, clear of brackets (map_1)** — DONE.</p>
-<p>   Windowed run: `wait_for_condition ui_call.get_underground_panel_layout.ok == true` passed</p>
-<p>   after `hud_underground` screenshot (result.json actions[29]). Independent visual inspection of</p>
-<p>   `.gen/harness/hud_wood_panels/shots/hud_underground.png`: Carve / Place Block / Place Exit all</p>
-<p>   fully inside the panel inner area, corner brackets uncovered.</p>
-<p>2. **Porter-unlocked coverage** — DONE. Scenario sets `tower_availability = 4`</p>
-<p>   (`call gamestate.set`) before a second `hud_underground_porter` shot + layout re-check</p>
-<p>   (actions[31..32], ok=true). Visual inspection of `hud_underground_porter.png`: same three</p>
-<p>   buttons fully inside frame, clear of brackets. Note: coverage is via live</p>
-<p>   `tower_availability` change on map_1 rather than loading a different map; the button-gating</p>
-<p>   path exercised is the same `_on_tower_availability_changed` refresh, so the layout assertion</p>
-<p>   is equivalent.</p>
-<p>3. **Place Exit name+price unclipped** — DONE. `ui_call.exit_text_lines_visible == true` wait</p>
-<p>   passed (actions[30]); probe asserts both label rects enclosed by the button AND min-size fit</p>
-<p>   (clip-proof). Screenshot confirms &quot;Place Exit&quot; / &quot;2 coins&quot; both lines fully visible.</p>
-<p>4. **Toggle visible underground; press → surface** — DONE. Probe reports</p>
-<p>   `toggle_visible` inside layout ok; scenario calls `_on_toggle_layer` (the wired handler) and</p>
-<p>   final expectations pass: `GameState.current_layer == &quot;surface&quot;` and</p>
-<p>   `is_underground_controls_visible == false`.</p>
-<p>5. **Windowed `hud_underground` checkpoint verifying no button-rect/frame overlap** — DONE.</p>
-<p>   Implemented as non-vacuous programmatic waits on `get_underground_panel_layout()` (per-button</p>
-<p>   `encloses()` against content box minus StyleBox margins; missing/hidden controls are</p>
-<p>   violations) inside the windowed `hud_wood_panels` run; all passed with real pixels captured</p>
-<p>   (headless=false).</p>
-<p>6. **Surface behaviour unchanged** — DONE. The same windowed run&#x27;s earlier surface beats</p>
-<p>   (`hud_idle`, `hud_towers_locked`, etc.) all executed ok and overall status=pass; UI.tscn/UI.gd</p>
-<p>   changes touch only the underground branch (`SIDE_PANEL_TOP_UNDERGROUND`, PlaceExit min height,</p>
-<p>   new probes).</p>
-<h2>Changed-file quality findings</h2>
-<p>Files changed vs HEAD d241462: `scenes/UI.tscn`, `scripts/ui/UI.gd`,</p>
-<p>`tests/scenarios/hud_wood_panels.json`. Checked against `/opt/data/coding_rules.md` +</p>
-<p>worktree `CLAUDE.md`: typed GDScript throughout, single-purpose ~50-line probe functions,</p>
-<p>surgical diff, no dead code, comments trace to criteria. No violations.</p>
-<h2>Blockers</h2>
-<p>None. Runner reachable and used for every project command (no host-shell Godot).</p>
-<h2>Unverified items</h2>
+<p>| Runner probe | `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 |</p>
+<p>| Editor/parse gate | `godot --headless --path . --editor --quit-after 300` | 0 | Parse clean; no script errors |</p>
+<p>| Focused harness (headless) | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` | 0 | status=**pass**, all 3 expectations pass — `.gen/harness/upgrade_click_money_popup/result.json` (money 1460 &lt; 1500, tower level == 2, reward_popups == 0) |</p>
+<p>| Focused harness (windowed) | `godot --path . res://scenes/Main.tscn --resolution 1280x720 -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` | 0 | status=pass; both screenshots `outcome: captured` (1920x1080 PNGs in `.gen/harness/upgrade_click_money_popup/shots/`) |</p>
+<h2>Acceptance criteria evidence</h2>
+<p>1. **Clicking &quot;Upgrade&quot; in tower details triggers the same animation used for money increase** — Done.</p>
+<p>   `scripts/ui/UI.gd::_on_upgrade_pressed` → `_spawn_upgrade_money_popup(cost_exact)` →</p>
+<p>   `ChestRewardSystem.create_reward_popup()` — the literal chest-payout factory. Fresh headless run</p>
+<p>   logged `[CHEST REWARD] Created popup for 20 coins at (-5.684, 1.5, -5.213)` on the real handler</p>
+<p>   path; inline wait_for_condition steps asserted popup count 1, text &quot;+20 coins!&quot;, tower level 2,</p>
+<p>   money charged, and popup freed after the tween (final reward_popups == 0).</p>
+<p>2. **Animation visually matches the existing money-increase effect** — Done.</p>
+<p>   Same `ChestRewardSystem.create_reward_popup` Label3D style/tween, +1.5 Y anchor above the tower,</p>
+<p>   parented to the currently visible layer (`Surface`/`Underground` via `GameState.current_layer`,</p>
+<p>   matching the existing string-comparison style in UI.gd).</p>
+<p>3. **Verified in-game via windowed screenshot** — Done.</p>
+<p>   Windowed run this iteration recaptured both checkpoints as `captured`. Independent checker-side</p>
+<p>   pixel analysis of `after_upgrade_click_popup_visible.png`: ~2,149 new yellow pixels vs the before</p>
+<p>   shot, clustered at screen ~(800–1200, 300–500); a zoomed vision read of that region identifies</p>
+<p>   floating yellow text &quot;+20 COINS!&quot; next to the path near the tower position, absent from the</p>
+<p>   before shot. Details panel was deselected before capture, so the popup is unoccluded.</p>
+<h2>Changed-file quality review</h2>
+<p>Diff vs HEAD: `scripts/game/ChestRewardSystem.gd`, `scripts/testing/HarnessValues.gd`,</p>
+<p>`scripts/ui/UI.gd`, plus new `tests/scenarios/upgrade_click_money_popup.json`. No rule violations:</p>
 <ul>
-<li>Manual windowed PNG review was performed agent-side via image inspection of both fresh shots;</li>
-<p>  human manual testing remains per plan&#x27;s `manual_testing: required` flag (leader&#x27;s call).</p>
-</ul></article>
+<li>Typed GDScript, guard clauses, ≤2 nesting levels (CLAUDE.md); surgical diff — every changed line</li>
+<p>  traces to the issue or its verification instrumentation.</p>
+<li>Popup factory reused with a default `parent_path` arg; existing callers unchanged (no duplication).</li>
+<li>Harness fields confined to `HarnessValues._enemy_report()` reading node meta tags; no gameplay</li>
+<p>  logic altered beyond the requested popup spawn.</p>
+<li>Single-line `if x: return` in `_spawn_upgrade_money_popup` matches surrounding UI.gd conventions.</li>
+</ul>
+<p>No new tests duplicating existing coverage: no prior test asserted the upgrade-click popup;</p>
+<p>the new scenario is the sole coverage for this criterion.</p>
+<h2>Quality notes</h2>
+<p>`.gen/quality-notes.md`: does not exist / no open entries; nothing appended — no scope creep or</p>
+<p>duplicated bad patterns in the feature diff. `.gen-blocked-req134-attempt1/` is declared workflow</p>
+<p>archive state from the previous blocked attempt, not scope creep.</p>
+<h2>Blockers / unverified</h2>
+<ul>
+<li>None. Pre-existing engine warnings (invalid UID ext_resources, GLB resources not imported in this</li>
+<p>  headless container, exit-time RID leak reports) are unrelated legacy noise present on master paths</p>
+<p>  and do not affect this diff.</p>
+</ul>
+<h2>Verdict</h2>
+<p>classification: pass</p></article>
