@@ -16,5 +16,14 @@
     "duration_ms": 4356804,
     "summary": "Implementation complete. Summary:\n\n**Changes** (all verified via run_project_cmd):\n- `scripts/utils/CaveUtils.gd` \u2014 `find_suitable_cave_position` gained a `grid_bounds` param: candidates are biased into the radius-inset box near edges, then\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-22T15:13:37.230Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 429497,
+    "summary": "Verification complete. Artifacts written:\n\n- /workspace/git-workspaces/poke-defense-godot/issue-cave-position-outside-grid/.gen/check.md\n- /workspace/git-workspaces/poke-defense-godot/issue-cave-position-outside-grid/.gen/status.md\n\nVerifie\u2026",
+    "error": null
   }
 ]
