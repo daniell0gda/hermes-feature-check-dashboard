@@ -1,12 +1,12 @@
 {
   "run_id": "issue-108-harness-non-game-scene-211634",
   "feature": "harness-cannot-boot-menu-scene",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-22T21:16:34.815Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T21:41:20.694Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-108-harness-non-game-scene-211634/",
-  "heartbeat_at": "2026-08-22T21:41:16.268Z",
+  "heartbeat_at": "2026-08-22T21:41:20.694Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-22T21:41:16.268Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:41:16.269175+00:00",
-    "last_success_at": "2026-08-22T21:38:09.792191+00:00",
+    "last_attempt_at": "2026-08-22T21:41:20.694496+00:00",
+    "last_success_at": "2026-08-22T21:41:20.693299+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 296029,
         "output_tokens": 29063
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 99929,
+        "output_tokens": 4444
       }
     ]
   }
