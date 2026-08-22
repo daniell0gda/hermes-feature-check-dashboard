@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue115-ground-material-ignores-cache-r1/",
-  "heartbeat_at": "2026-08-22T22:24:55.125Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-22T22:24:55.125Z",
+  "heartbeat_at": "2026-08-22T22:25:57.751Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-22T22:25:57.751Z",
   "process_id": 772166,
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T22:24:59.657784+00:00",
-    "last_success_at": "2026-08-22T22:24:59.656827+00:00",
+    "last_attempt_at": "2026-08-22T22:25:57.751705+00:00",
+    "last_success_at": "2026-08-22T22:25:03.914736+00:00",
     "last_error": null
   },
   "metrics": {

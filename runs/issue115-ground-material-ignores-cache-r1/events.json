@@ -43,5 +43,14 @@
     "duration_ms": 129109,
     "summary": "HTTP 400: This request is not valid. Check the model name and other parameters. Additional info: Provider returned error\n",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-22T22:25:57.751Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 58094,
+    "summary": "Manual-testing gate complete.\n\n- Check status is `pass`; all 7 criteria verified via fresh harness runs (per .gen/check.md), with only manual screenshot evidence outstanding.\n- Decision: `manual_testing: required` \u2014 the change is player-vis\u2026",
+    "error": null
   }
 ]
