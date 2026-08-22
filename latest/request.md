@@ -1,15 +1,10 @@
-# Issue #123 — progression_pick scenario is red since chest rewards require a compatible tower
+# Issue #128 — Tower details panel blinks and returns mid-reflow when a placement mode is armed
 
-Implement the issue requirements from https://github.com/daniell0gda/poke-defense-godot/issues/123.
-
-Project: poke-defense-godot
-Workspace: poke-defense-godot/issue-progression-pick-scenario-stale
+Implement the issue exactly as described in https://github.com/daniell0gda/poke-defense-godot/issues/128.
 
 Acceptance criteria:
-- Update tests/scenarios/progression_pick.json so it places a venom tower, or otherwise owns a compatible tower, before opening the chest and selecting venom_miasma_bloom; the scenario must pass.
-- Preserve and verify chest_duplication is granted before carving, including the cave_chest_duplicate RNG site behavior.
-- Update the “Reaching a chest organically” section of .claude/skills/game-test/REFERENCE.md to match the fixed recipe and tower requirement.
-- Use native Linux Godot/project-runner verification, fresh focused scenario evidence, and inspect raw diagnostics separately from harness status.
-- Do not close, merge, or push the issue. Commit is not requested.
+- Arming or clearing a placement mode leaves the tower details panel exactly as it was; hide it only when selection genuinely goes away.
+- With a tower selected and Carve armed, the wood frame encloses Upgrade/Sell buttons and the Active row; no one-measurement-behind reflow.
+- Update `tests/scenarios/hud_wood_panels.json` so `hud_mode_carve_armed` shows a complete frame and asserts `UI.get_upgrade_panel_text()` still reports the tower heading immediately after `_on_carve`.
 
-Visible UI is not the primary change, but run any required scenario evidence according to the team-work manual-testing gate.
+Use native Linux Godot verification through the approved `godot-td` runner, including fresh visual/windowed evidence for the existing panel drawing correctly. Preserve the flat `.gen` contract and do not close, merge, or push the issue implicitly.

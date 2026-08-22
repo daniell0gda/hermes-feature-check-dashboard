@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-123-progression-pick-scenario-stale",
-  "feature": "progression_pick scenario compatible tower recipe",
+  "run_id": "issue-128-tower-details-blinks-on-mode-arm",
+  "feature": "Tower details panel blink and reflow",
   "status": "running",
-  "started_at": "2026-08-22T08:06:37.179Z",
+  "started_at": "2026-08-22T07:57:03.786Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-123-progression-pick-scenario-stale/",
-  "heartbeat_at": "2026-08-22T08:14:15.267Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T08:14:15.267Z",
-  "process_id": 472003,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-128-tower-details-blinks-on-mode-arm/",
+  "heartbeat_at": "2026-08-22T08:15:55.682Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T08:15:55.682Z",
+  "process_id": 469202,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T08:14:19.639536+00:00",
-    "last_success_at": "2026-08-22T08:14:19.638749+00:00",
+    "last_attempt_at": "2026-08-22T08:15:55.683059+00:00",
+    "last_success_at": "2026-08-22T08:04:34.688322+00:00",
     "last_error": null
   },
   "metrics": {
@@ -24,12 +24,12 @@
         "task_id": "plan",
         "cluster_id": null,
         "role": "plan",
-        "model": null,
+        "model": "stealth/ox-alpha",
         "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 119291,
+        "output_tokens": 6869
       }
     ]
   }
