@@ -1,36 +1,22 @@
 {
-  "run_id": "req-136-padding-closable-panels-close-button",
-  "feature": "padding closable panels close button",
+  "run_id": "heart-hud-beat-139-1787422828",
+  "feature": "heart-hud-beat-on-egg-damage",
   "status": "running",
-  "started_at": "2026-08-22T18:20:38.202Z",
+  "started_at": "2026-08-22T18:20:29.149Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
-  "heartbeat_at": "2026-08-22T18:26:05.796Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/heart-hud-beat-139-1787422828/",
+  "heartbeat_at": "2026-08-22T18:30:48.876Z",
   "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T18:26:05.796Z",
-  "process_id": 666624,
+  "active_node": null,
+  "last_event_at": "2026-08-22T18:30:48.876Z",
+  "process_id": 666532,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T18:26:10.637201+00:00",
-    "last_success_at": "2026-08-22T18:26:10.636578+00:00",
+    "last_attempt_at": "2026-08-22T18:30:48.876577+00:00",
+    "last_success_at": "2026-08-22T18:21:35.365456+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 69203,
-        "output_tokens": 4293
-      }
-    ]
-  }
+  "metrics": {}
 }
