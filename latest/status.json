@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-135-upgrade-button-20260822T123636Z/",
   "heartbeat_at": "2026-08-22T13:16:53.335Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-22T13:16:53.335Z",
   "process_id": 546463,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T13:16:53.335521+00:00",
-    "last_success_at": "2026-08-22T13:01:41.976725+00:00",
+    "last_attempt_at": "2026-08-22T13:16:57.598280+00:00",
+    "last_success_at": "2026-08-22T13:16:57.597678+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 201331,
         "output_tokens": 12042
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 225679,
+        "output_tokens": 16752
       }
     ]
   }
