@@ -16,5 +16,14 @@
     "duration_ms": 524455,
     "summary": "All done. Summary:\n\n**Implementation (cluster 1 \u2014 underground-dig-buttons-layout)**\n- `scripts/ui/UI.gd`: `SIDE_PANEL_TOP_UNDERGROUND` \u2212226 \u2192 \u2212274, so the underground side panel grows 48px taller upward.\n- `scenes/UI.tscn`: PlaceExit button\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-22T20:46:52.666Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 324786,
+    "summary": "Check complete. Artifacts written:\n\n- /workspace/git-workspaces/poke-defense-godot/issue-underground-side-panel-carve-place-exit-/.gen/check.md\n- /workspace/git-workspaces/poke-defense-godot/issue-underground-side-panel-carve-place-exit-/.g\u2026",
+    "error": null
   }
 ]

@@ -1,32 +1,43 @@
-# Request: perk-siege-breaker (issue #92)
+# Request: issue #101 — underground-side-panel-carve-place-exit-
 
-- **Project:** poke-defense-godot
-- **Workspace:** /workspace/git-workspaces/poke-defense-godot/issue-perk-siege-breaker
-- **Branch:** issue/perk-siege-breaker (cut from origin/master @ d241462)
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/92
-- **Request ID:** perk-siege-breaker-92-run1 (restarted after external workspace wipe at 20:22; prior run's plan artifacts were destroyed, not superseded)
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/101
+- **Project:** poke-defense-godot (runner key `godot-td`)
+- **Workspace:** `poke-defense-godot/issue-underground-side-panel-carve-place-exit-`
+  (`/workspace/git-workspaces/poke-defense-godot/issue-underground-side-panel-carve-place-exit-`)
+- **Branch:** `issue/underground-side-panel-carve-place-exit-` (cut fresh from origin/master @ d241462)
+- **Claimed:** 2026-08-22T20:26Z, assigned @me, label `status:in-progress`
 
-## Feature
+## Problem
 
-Progression: Siege Breaker perk (Unique, Cannon only, 3 levels) — Cannon's own hits ignore the armor damage-reduction penalty: penalty reduced from 50% to 35%/20%/0% per level.
+`Root/ItemList/DigBtns` (`scenes/UI.tscn`) is an HBoxContainer anchored as a sibling of
+`Root/ItemList/SidePanel`, not content inside it. Its three buttons lay out over the panel,
+spill past the 274px frame, and cover the right-hand corner brackets. Additionally (comment 1)
+in the underground layer `DigBtns` completely covers `SideColumn/ToggleLayer` — there is no
+visible/clickable control to switch back to surface.
 
-## Acceptance criteria
+Note: `place_exit_btn` builds a two-line name+price child at runtime (`UI.gd`
+`_populate_underground_buttons_with_prices`) and needs extra height.
 
-1. New perk `siege_breaker`, type Unique, Cannon only, 3 levels.
-2. Reduces the armor-damage-reduction multiplier applied in `EnemyHealthController.take_damage()` for Cannon's hits from 0.5 → 0.35/0.20/0.0 by level.
-3. Does NOT modify `enemy.armor` — armor drains at normal rate from other towers' hits; only the multiplier on Cannon's own hits changes.
-4. Visual: reuse the shield-crack flash effect from Exposed Plating (#87-series), no new second effect.
+## Done when
 
-## Runner notes (pin correct names — redo safety)
+1. The three underground controls render fully inside the side panel frame, clear of its corner
+   brackets, on both `map_1` and a map where Porter is unlocked.
+2. `place_exit_btn` still shows its price without clipping.
+3. The `hud_underground` checkpoint in `tests/scenarios/hud_wood_panels.json` shows no button
+   overlapping the panel frame.
+4. The layer toggle ("Surface") remains visible and clickable in the underground layer.
 
-- Runner key: `godot-td` (never folder name). Workspace: `poke-defense-godot/issue-perk-siege-breaker`.
-- Editor gate: `godot --headless --path . --editor --quit-after 300` via runner.
-- Harnesses: explicit scene arg before user args; never rely on project.godot main scene.
+## Runner notes (redo guards)
 
-## Historical context
+- Runner key is `godot-td`; workspace name is exactly
+  `poke-defense-godot/issue-underground-side-panel-carve-place-exit-`. Do not invent workspace names.
+- Windowed evidence via runner; manual testing must not be headless. Manual testing expected:
+  **required** (visible UI layout fix) with windowed PNGs of `hud_idle` + `hud_underground`,
+  plus overall ui_feels_broken sanity pass on each final screenshot.
 
-First run (same request-id) was aborted when the workspace directory was externally wiped mid-run (~20:22 UTC) while plan/code phases were underway. Worktree was recreated fresh from origin/master. Treat all earlier artifacts as lost.
+## Historical context (not implementation)
 
-## Manual testing expectation
-
-Visible player-facing perk → manual_testing: required with windowed PNGs/GIFs per team-work rules (no --headless-only).
+An earlier unclaimed attempt fixed this same layout (DigBtns moved into SideColumn as a VBox;
+ItemList grew to 274x206) but was never merged or verified through team-work. Treat as design
+reference only; re-implement and verify from scratch on the fresh worktree. A previous pickup
+run was killed by cron inactivity timeout before implementation; the watchdog reset the claim.
