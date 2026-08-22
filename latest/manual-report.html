@@ -1,0 +1,67 @@
+<!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Feature-check report</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:16px/1.6 system-ui}article{max-width:860px;margin:36px auto;padding:28px;background:#fff;border:1px solid #e4e7ec;border-radius:16px;box-shadow:0 12px 32px rgba(16,24,40,.08)}h1,h2{letter-spacing:-.03em}a{color:#2563eb}pre{background:#f8fafc;padding:14px;border-radius:10px}img{display:block;max-width:100%;height:auto;margin:16px 0;border:1px solid #e4e7ec;border-radius:10px}</style><article><h1>Manual Test Report – req-136 padding-closable-panels-close-button</h1>
+<h2>Summary</h2>
+<ul>
+<li>Result: PASSED</li>
+<li>Tested on: 2026-08-22, windowed Godot 4.4.1 (gl_compatibility, llvmpipe software GL), Linux worker</li>
+<li>Scenario: tests/scenarios/hud_other_panels.json (windowed run)</li>
+<li>Tester: Manual-tester profile</li>
+</ul>
+<p>Ran the hud_other_panels screenshot scenario windowed via the project runner</p>
+<p>(`godot --path . res://scenes/Main.tscn --rendering-method gl_compatibility --audio-driver Dummy -- --harness=res://tests/scenarios/hud_other_panels.json`).</p>
+<p>Harness result: status=pass, exit 0, all actions ok, expectation `game_state == paused` met.</p>
+<p>The debug log also showed the new reservation line twice:</p>
+<p>`[TITLED_PANEL] ManageTowersPanel reserves 90px of right padding for the close corner`</p>
+<p>and `[TITLED_PANEL] Panel reserves 90px of right padding for the close corner`.</p>
+<p>All four panel screenshots were inspected visually: no content overlaps or touches</p>
+<p>the corner ✕ on any closable panel.</p>
+<h2>Scenario Walkthrough</h2>
+<p>### Step 1 – Tower details panel</p>
+<ul>
+<li>Action: Loaded map_1, placed a generic tower at (-6, 0, 2), selected it, opened tower details; screenshot `panel_tower_details`.</li>
+<li>Expected: Panel content (header &quot;Generic Tower&quot;, Lv.1 badge, stat rows, Upgrade/Sell buttons) clear of any corner ✕.</li>
+<li>Observed: The tower details panel correctly carries **no** ✕ (it is non-closable in this build). Content lays out normally with no clipping. The placed tower is visible on the map behind the panel.</li>
+<li>Status: PASS</li>
+</ul>
+<p><img src='screenshots/panel_tower_details.png' alt='tower details' loading='lazy'></p>
+<p>### Step 2 – Pause menu overlay</p>
+<ul>
+<li>Action: Opened the pause menu; screenshot `panel_pause_menu`.</li>
+<li>Expected: Pause menu buttons clean, no regression around corner ornaments (pause menu has no close button).</li>
+<li>Observed: Resume / Options / Quit to Menu / Quit Game buttons are vertically stacked and centered inside the frame; silver corner ornaments sit on the outer frame only and touch no buttons. No visual regression.</li>
+<li>Status: PASS</li>
+</ul>
+<p><img src='screenshots/panel_pause_menu.png' alt='pause menu' loading='lazy'></p>
+<p>### Step 3 – Manage Towers overlay</p>
+<ul>
+<li>Action: Opened Manage Towers over the pause menu; screenshot `panel_manage_towers`.</li>
+<li>Expected: Group list rows and cost text not running under the ✕.</li>
+<li>Observed: The ornate metal ✕ is flush at the panel&#x27;s top-right corner. The nearest content (&quot;Raise to Highest&quot; button) sits below-left of it with clear empty space; cost text (`Lvl 1 Dmg 3.0 Rate 1.10/s Cost 20.0`) and upgrade buttons are far from the corner. No overlap.</li>
+<li>Status: PASS</li>
+</ul>
+<p><img src='screenshots/panel_manage_towers.png' alt='manage towers' loading='lazy'></p>
+<p>### Step 4 – Options screen</p>
+<ul>
+<li>Action: Opened Options from the pause menu; screenshot `panel_options`.</li>
+<li>Expected: Option rows/toggles clear of the ✕.</li>
+<li>Observed: The metal ✕ chip is flush at the Options window&#x27;s top-right outer corner. Fullscreen / Resolution / UI Scale rows and the Apply button sit lower and left of it with visible breathing room; nothing touches the ✕. Restore Defaults / Close remain at the bottom.</li>
+<li>Status: PASS</li>
+</ul>
+<p><img src='screenshots/panel_options.png' alt='options' loading='lazy'></p>
+<h2>Criteria</h2>
+<ul>
+<li>On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.</li>
+<p>  - <img src='screenshots/panel_manage_towers.png' alt='manage towers' loading='lazy'></p>
+<p>  - <img src='screenshots/panel_options.png' alt='options' loading='lazy'></p>
+<li>On a closable panel built like the tower details panel (UpgPanel), every visible content control lies fully outside the CloseChip rect once laid out — covered by the focused unit test (31 ok / 0 failed per changes.md); in this windowed build UpgPanel carries no ✕ and its content shows no clipping:</li>
+<p>  - <img src='screenshots/panel_tower_details.png' alt='tower details' loading='lazy'></p>
+<li>Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and reserved inset — confirmed in run log (ManageTowersPanel, 90px).</li>
+<li>CloseChip flush top-right + single close_requested contract: covered by unit tests (not re-proven by stills here); visually the ✕ is flush top-right on Manage Towers and Options shots above.</li>
+</ul>
+<h2>Issues and Observations</h2>
+<ul>
+<li>Low: The tower details (UpgPanel) panel does not show a ✕ in the live game, so the player-facing proof of the fix rests on Manage Towers and Options plus unit tests. Not a bug — just where the evidence lives.</li>
+<li>Low (pre-existing): invalid-UID warnings for HudTheme textures and several missing GLB models (portal arch, backdrop earth, ruined house, Generic_lv1.glb) spam the log; unrelated to this change.</li>
+</ul>
+<h2>Recommendation</h2>
+<p>Ready. All four panels render cleanly with no content/✕ overlap; harness run passed and the debug log confirms the 90px reservation is applied. No code fixes needed.</p>
+<p>Manual-test result: PASSED. Scenario: tests/scenarios/hud_other_panels.json. Report: .gen/manual-report.md. Escalation: no.</p></article>

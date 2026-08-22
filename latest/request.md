@@ -1,40 +1,22 @@
-# Request: Issue #108 — Harness cannot boot a non-game scene, so the main menu is untestable
+# Request: req-136-padding-closable-panels-close-button
 
-- Project: poke-defense-godot
-- Runner key: `godot-td` (never the folder name)
-- Runner workspace: `poke-defense-godot/issue-harness-cannot-boot-menu-scene`
-- Branch: `issue/harness-cannot-boot-menu-scene` (cut from origin/master)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/108
-- Type: harness / ui · priority:medium
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/136
+- Project: poke-defense-godot (runner key: godot-td)
+- Workspace: /workspace/git-workspaces/poke-defense-godot/issue-padding-closable-panels-close-button (branch issue/padding-closable-panels-close-button, base origin/master 5042d9f)
 
-## Problem
+## Acceptance criteria (from issue)
+- Closable panels reserve horizontal padding so the "x" button never overlaps content.
+- Tower details panel shows all its content clear of the "x" button.
+- Verified visually that no other closable panel (e.g. shop, settings) has the overlap either.
 
-Every scenario runs against `res://scenes/Main.tscn`, hard-coded in
-`.claude/skills/game-test/scripts/Run-Scenario.ps1:193`, and `AgentHarness._await_game()`
-(`scripts/testing/AgentHarness.gd:171-182`) blocks until `current_scene` has a `Game` child whose
-`Placement.tower_placement` is non-null. Any non-game scene (e.g. `scenes/MainMenu.tscn`) is
-unreachable by the harness, so the main menu's live 3D backdrop cannot be asserted or screenshotted.
+## Notes
+- Visible UI change: manual_testing expected required (windowed screenshots).
+- Workers must use runner key `godot-td` and workspace `poke-defense-godot/issue-padding-closable-panels-close-button`.
 
-## Done when
-
-1. `HarnessScenario` accepts an optional `scene` (defaulting to `res://scenes/Main.tscn`) and
-   `Run-Scenario.ps1` passes it through instead of hard-coding the path.
-2. `AgentHarness._await_game()` no longer requires a `Game` with a live `Placement` when the
-   scenario declares it does not need one — a screenshot-and-expectation-only timeline must run
-   against any scene.
-3. A value source can read a property at an arbitrary node path under the current scene, so the
-   orbit and the backdrop world are assertable without adding test-only methods to production code.
-4. A `main_menu` scenario exists that boots `scenes/MainMenu.tscn`, waits, asserts the camera moved
-   and enemies are on the field, and takes a `-Windowed` screenshot of the menu over the map.
-
-## Redo notes for resumed runs
-
-- Use runner key `godot-td`, workspace `poke-defense-godot/issue-harness-cannot-boot-menu-scene`.
-- Godot on Linux: native commands via runner; windowed evidence with
-  `--rendering-method gl_compatibility --audio-driver Dummy` when Vulkan fails.
-- Manual testing is required: player-facing menu screen with live backdrop → windowed PNGs/GIF,
-  plus overall UI-sanity pass (`ui_feels_broken: yes|no`) on every final screenshot.
-
-## Historical reference
-
-None — fresh claim from origin/master at pickup time.
+## Revision note (2026-08-22 20:45 UTC)
+- Fix changed at ~20:00 UTC: `_reserve_content_padding` now widens the frame PanelContainer's
+  panel stylebox `content_margin_right` (+90px) instead of shrinking `frame.offset_right`.
+- Existing `.gen/screenshots/*.png` and `.gen/harness/hud_other_panels/shots/*.png` are STALE
+  (19:52, pre-fix). The manual tester MUST capture fresh windowed screenshots after this change.
+- Acceptance addition: ✕ must sit flush INSIDE the frame's top-right corner (not floating outside
+  the panel art). Report `ui_feels_broken: yes|no` per final screenshot.
