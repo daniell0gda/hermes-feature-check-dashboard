@@ -65,6 +65,11 @@
     "url": "runs/issue-95-static-breach/"
   },
   {
+    "run_id": "issue-93-molten-shackles",
+    "status": "running",
+    "url": "runs/issue-93-molten-shackles/"
+  },
+  {
     "run_id": "issue-71-20260816-retry1",
     "status": "completed",
     "url": "runs/issue-71-20260816-retry1/"
