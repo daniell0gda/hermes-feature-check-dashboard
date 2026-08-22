@@ -14,7 +14,9 @@
   "host": "25e0b2c49eb5",
   "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T05:53:46.035869+00:00"
+    "last_attempt_at": "2026-08-22T05:53:46.035869+00:00",
+    "last_success_at": "2026-08-22T05:53:50.480671+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
