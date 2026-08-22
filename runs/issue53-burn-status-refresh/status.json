@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue53-burn-status-refresh/",
   "heartbeat_at": "2026-08-22T11:53:00.005Z",
   "last_node": "plan",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-22T11:53:00.005Z",
   "process_id": 523505,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T11:53:00.006143+00:00",
-    "last_success_at": "2026-08-22T11:45:41.986734+00:00",
+    "last_attempt_at": "2026-08-22T11:53:04.395410+00:00",
+    "last_success_at": "2026-08-22T11:53:04.394585+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 148329,
+        "output_tokens": 6043
+      }
+    ]
+  }
 }
