@@ -1,38 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T19:05:53.487Z",
+    "timestamp": "2026-08-22T19:26:19.781Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 162195,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-padding-closable-panels-close-button/.gen/plan.md\n\nSummary:\n- Plan, cluster file (.gen/clusters/closable-panel-content-padding.md), and .gen/ui_scenario.md are in place; 6 cri\u2026",
-    "error": null
-  },
-  {
-    "sequence": 2,
-    "timestamp": "2026-08-22T19:21:09.627Z",
-    "node": "code",
-    "status": "completed",
-    "duration_ms": 911469,
-    "summary": "The `release_project_worker` tool isn't available in this session's toolset, so worker release is left to the orchestrator. Work complete.\n\n## Summary\n\nCluster `closable-panel-content-padding` \u2014 the previously Pending criterion (UpgPanel to\u2026",
-    "error": null
-  },
-  {
-    "sequence": 3,
-    "timestamp": "2026-08-22T19:24:56.039Z",
-    "node": "check",
-    "status": "completed",
-    "duration_ms": 221984,
-    "summary": "Verified done: 6. Pending: 0. Impossible: 0. Quality notes: resolved the open stray-test-report-file entry (report now under .gen/test-reports/, legacy file gitignored). Verification: passed \u2014 all commands run fresh through run_project_cmd \u2026",
-    "error": null
-  },
-  {
-    "sequence": 4,
-    "timestamp": "2026-08-22T19:25:45.931Z",
-    "node": "team-leader",
-    "status": "completed",
-    "duration_ms": 45251,
-    "summary": "Manual testing gate complete.\n\n- Loaded manual-testing-gate skill; read request.md, plan.md, check.md, status.md.\n- Check classification is pass; plan hints manual_testing: required.\n- Decision: required \u2014 the change is a new player-visible\u2026",
+    "duration_ms": 215500,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-earth-continent-map-integration/.gen/plan.md\n",
     "error": null
   }
 ]

@@ -1,62 +1,111 @@
 # Team-leader report
 
 - **Result:** failed
-- **Classification:** **fixable**
-- **Feature:** padding closable panels close button
-- **Run:** req-136-padding-closable-panels-close-button
+- **Classification:** unknown
+- **Feature:** earth-continent-map-integration
+- **Run:** issue137-earth-continent-map
 - **Lifecycle:** dashboard publish only; project commit/push/close not implied
 
 ## Status
 
 ## ✅ Done
-- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
-- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
-- The CloseChip remains flush in the frame's top-right corner and pressing it still emits exactly one `close_requested` (existing contract preserved).
-- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
-- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
+(none — build/test gate not green)
 
 ## ⬜ Pending
-- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
-  — missing evidence: no test instantiates the actual UpgPanel scene (coverage is via synthetic panels and ManageTowersPanel/OptionsScreen), and the plan marks manual_testing: required (windowed screenshots of panel_tower_details / panel_manage_towers / panel_options) which was not produced in this run.
+- The grounded configuration targets exactly one named continent mesh from `stylized_earth_in_clouds.glb`, and the chosen mesh name is recorded in code or project documentation so it can be checked against the GLB's mesh list.
+- After `configure_for_map`, from the normal gameplay camera on a surface map, the playable field sits flush on the chosen continent with no visible gap or floating edge between the board and the globe surface (verified by windowed screenshot).
+- In the windowed screenshot from the normal gameplay camera, the continent terrain around the board reads as continuous with the map field (scale and color blend), with no hard seam between board and globe surface.
+- During play, the globe does not rotate: the earth body's world rotation measured at two times several seconds apart is identical in the grounded configuration.
+- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent mesh and the final rig position/scale/rotation.
+- With the grounded configuration active, other continents, ocean, cloud banks, and the atmosphere rim remain visible from the normal gameplay camera; only the previously hidden meshes (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud` prefixed) stay hidden (windowed screenshot).
+- The existing focused harness scenario `backdrop_earth_visible` still passes: map loads, `backdrop_earth_present` is true, `backdrop_earth_center_y` equals 0, and the surface screenshot is produced. — fails: actual `backdrop_earth_center_y` = -83.2 (fresh run 2026-08-22T15:41:57, exit 1); grounded rig sinks globe by body_radius below y=0 while the scenario still expects 0
 
 ## ❌ Impossible
-- (none)
+(none)
 
 ## Check
 
-# Check report: req-136-padding-closable-panels-close-button (iteration check)
+# Check Report — earth-continent-map-integration (issue #137)
 
-Classification: **fixable**
+Iteration: 1 · Classification: **fixable**
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-padding-closable-panels-close-button)
+## Verification commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-earth-continent-map-integration)
 
-- `godot --version` — exit 0 (4.4.1.stable.official.49a5bc7b6)
-- `godot --headless --path . --import` — exit 0 (UID warnings only, pre-existing theme UID staleness)
-- `godot --headless --path . --check-only --script res://scripts/ui/hud/TitledPanel.gd` — exit 0
-- `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit 0; "29 ok, 0 failed"
-- `godot --headless --path . res://tests/ui/test_enemy_armor_bar.tscn` — exit 0; "35 ok, 0 failed"
-- `godot --headless --path . res://tests/ui/test_enemy_health_bar_boss_icon.tscn` — exit 0; "18 ok, 0 failed"
-- `godot --headless --path . res://tests/ui/test_enemy_health_bar_oiled_icon.tscn` — exit 0; "8 ok, 0 failed"
+| Command | Exit | Result |
+|---|---|---|
+| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner reachable |
+| `godot --headless --path . --editor --quit-after 300` (import/build gate) | 0 | Import completed; stylized_earth_in_clouds.glb reimported |
+| Focused harness `backdrop_earth_visible.json` | 1 | status: fail — `backdrop_earth_center_y == -83.2`, expected 0 |
+| Harness `backdrop_earth_glint.json` | 1 | status: fail — same center_y failure |
+| Full suite loop (`bash -c for f in tests/scenarios/*.json ...`) | n/a | `bash` not on profile allowlist ("cmd executable is not allowed"); not run |
+| Windowed screenshots / manual visual pass | not run | manual-tester owns `.gen/manual-report.md`; none present |
 
-## Acceptance criteria evidence
+Fresh harness evidence: `.gen/harness/backdrop_earth_visible/result.json`
+(finished_at 2026-08-22T15:41:57), log `.gen/harness/_logs/backdrop_earth_visible.out.log`.
 
-1. Closable panel reserves padding so no content control intersects the CloseChip rect — PASS. `_reserve_content_padding()` in `scripts/ui/hud/TitledPanel.gd` pulls `Frame.offset_right` to `-CLOSE_CORNER_SIZE.x`; test asserts offset <= -90 and leaf-rect overlap check passes.
-2. Padding applies only when closable / scene-placed chip exists — PASS. Tests: non-closable frame keeps `offset_right == 0` and full-rect anchors; scene-placed CloseChip reserves same padding.
-3. CloseChip flush top-right and emits exactly one `close_requested` — PASS ("it sits flush in the top-right corner", "pressing it emits close_requested once (got 1)").
-4. UpgPanel-style tower details content clear of chip — NOT PROVEN. The focused test covers synthetic closable panels plus ManageTowersPanel/OptionsScreen scenes, but never instantiates the actual UpgPanel scene; plan marks manual_testing: required and no windowed screenshots were produced. Moved to Pending.
-5. Manage Towers + Options keep content clear of chip — PASS (`_test_real_closable_scenes_keep_content_clear_of_the_chip`, both scenes).
-6. Debug `[TITLED_PANEL]` log naming panel and inset — PASS (log lines visible in headless run output: "reserves 90px of right padding for the close corner").
+## Acceptance criteria
 
-## Changed-file quality
+### Cluster 1: grounded-continent-placement
 
-- `scripts/ui/hud/TitledPanel.gd`: small, typed, documented helpers; debug-only log per CLAUDE.md convention. No violations found.
-- `tests/ui/test_titled_panel_close_corner.gd`: new tests assert real criteria (rect overlap math), not smoke loads. No duplicate coverage of existing tests found in the suite. Minor note (non-blocking): `_content_rects_outside_chip` only fails on overlapping *leaf* controls (childless), so a container that fully contains the chip region but has its own visual could slip through; acceptable for this criterion.
+- Continent mesh named and recorded — **verified in code**:
+  `GROUNDED_CONTINENT = "Continent_Africa"` in `scripts/game/visuals/BackdropEarth.gd`,
+  with the full GLB node list in a comment. Checker independently parsed
+  `models/stylized_earth_in_clouds.glb`: node/mesh `Continent_Africa` exists. PASS.
+- Flush placement from gameplay camera (windowed screenshot) — **NOT VERIFIED**.
+  No windowed run or screenshot exists in this workspace; headless screenshots are
+  skipped (`reason: "headless"`). Manual report absent. PENDING.
+- Terrain continuity / no hard seam (windowed screenshot) — NOT VERIFIED. Same reason. PENDING.
+- Globe does not rotate during play — **partially verified by code inspection only**:
+  grounded path never calls `_start_earth_spin()`. No automated test asserts
+  rotation equality at two times. PENDING (missing evidence).
+- Debug `[BACKDROP EARTH]` log per grounding event naming mesh + pos/scale/rot —
+  **verified**: fresh log line `[BACKDROP EARTH] grounded continent=Continent_Africa
+  pos=(-21.2, -83.2, -51.76) scale=0.9999… rot_deg=(15.39, 21.67, 83.15)`. PASS.
 
-## Scope creep / quality notes
+### Cluster 2: backdrop-regression-coverage
 
-- Untracked stray file `.gen-test-report.txt` at repo root written by the test script into `res://`. Should live under `.gen/` per coding rules; advisory only, not a criterion demotion.
-- No prior open quality-notes entries existed.
+- Other continents/ocean/clouds/atmosphere visible; hidden prefixes unchanged
+  (windowed screenshot) — NOT VERIFIED. No windowed run. PENDING.
+- Existing focused scenario `backdrop_earth_visible` still passes — **FAILS**.
+  `backdrop_earth_present` is true but `backdrop_earth_center_y` equals −83.2
+  instead of 0. The grounded rig sinks the globe by body_radius below y=0, so
+  center_y is now negative by design of the change — but the plan requires the
+  existing expectation to still hold and it was neither updated nor satisfied.
+  This is a real regression against the plan's own criterion. FAIL → Pending.
+
+## Build/test gate
+
+Import/editor gate passes. The full test suite was NOT run: the plan's full-suite
+command uses `bash`, which is rejected by the runner profile allowlist
+("cmd executable is not allowed by the project profile"). A python3-based loop
+was attempted as substitute and also failed to produce green results because the
+focused earth scenarios fail (see above). Since the build/test gate is not green,
+no item may remain Done; all criteria go to Pending.
+
+## Changed-file quality findings
+
+- `models/stylized_earth_in_clouds.glb`: replaced via Git LFS pointer update
+  (9.58 MB new object). Content itself unreviewable here; noted, no violation.
+- `scripts/game/visuals/BackdropEarth.gd`: typed variables used throughout, small
+  focused functions, guard clauses, debug-only `[TAG]` logging — complies with
+  CLAUDE.md and coding_rules.md. No quality violation found in changed code.
+- Scope creep: none beyond the two intended files.
 
 ## Blockers
 
-None. Runner reachable, all gates green. Remaining work is small: add an UpgPanel-scene-based assertion (or produce the required windowed screenshots) for criterion 4, then re-run the focused test.
+- None infrastructural. Runner healthy. Failures are implementation-level.
+
+## Unverified items
+
+- Windowed screenshots (flush fit, seam blend, backdrop regression view).
+- Rotation-invariance measurement at two times.
+- Full test suite (allowlist blocks `bash`; needs a python3-loop variant command
+  in the plan or an updated profile allowlist).
+
+## Verdict
+
+fixable — the grounding code is present and partially evidenced, but the focused
+harness regressed (`backdrop_earth_center_y = -83.2 ≠ 0`), the full suite could not
+run under the profile allowlist, and all windowed/manual visual criteria have no
+evidence.
