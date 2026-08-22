@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue138-norocktree-1787411442/",
   "heartbeat_at": "2026-08-22T23:23:59.149Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "team-leader",
   "last_event_at": "2026-08-22T23:23:59.149Z",
   "process_id": 789587,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T23:23:59.150161+00:00",
-    "last_success_at": "2026-08-22T23:06:14.221929+00:00",
+    "last_attempt_at": "2026-08-22T23:24:03.875108+00:00",
+    "last_success_at": "2026-08-22T23:24:03.874435+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 59224,
         "output_tokens": 2014
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 166779,
+        "output_tokens": 3932
       }
     ]
   }
