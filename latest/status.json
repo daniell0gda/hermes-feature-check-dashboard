@@ -1,21 +1,21 @@
 {
-  "run_id": "water-pressure-46",
-  "feature": "water_pressure",
+  "run_id": "issue-127-window-modals-skip-wood-frame",
+  "feature": "window-modals-skip-wood-frame",
   "status": "running",
-  "started_at": "2026-08-22T10:29:28.343Z",
+  "started_at": "2026-08-22T09:57:39.112Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/water-pressure-46/",
-  "heartbeat_at": "2026-08-22T10:41:13.302Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T10:41:13.302Z",
-  "process_id": 501363,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-window-modals-skip-wood-frame/",
+  "heartbeat_at": "2026-08-22T10:45:00.685Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T10:45:00.685Z",
+  "process_id": 493943,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T10:41:17.534207+00:00",
-    "last_success_at": "2026-08-22T10:41:17.533157+00:00",
+    "last_attempt_at": "2026-08-22T10:45:00.686040+00:00",
+    "last_success_at": "2026-08-22T10:06:10.806022+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 109548,
-        "output_tokens": 6808
+        "input_tokens": 87092,
+        "output_tokens": 6478
       }
     ]
   }

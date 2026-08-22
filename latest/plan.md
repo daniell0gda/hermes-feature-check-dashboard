@@ -1,35 +1,48 @@
-# Acceptance Plan: water_pressure (Water Tower — Water Pressure perk, issue #46)
+# Acceptance Plan: window-modals-skip-wood-frame (#127)
+
+manual_testing: required
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/water_pressure_progression.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/progression_pick.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+- Focused test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-window-modals-skip-wood-frame` cmd=["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/progression_modal_close_resume.json"]
+- Full test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-window-modals-skip-wood-frame` cmd=["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_placement.json"]
+- Typecheck/build: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-window-modals-skip-wood-frame` cmd=["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]
 
 ## Clusters
 
-1. water-pressure-perk-core — files: `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd`, `autoload/ProgressionManager.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd`, `tests/scenarios/water_pressure_progression.json` — depends on: none
-- With `water_pressure` not owned, a Water hit against a Wet enemy deals its normal damage (bonus ratio 0.0).
-- `water_tower.json` defines a Common perk `water_pressure` with maxLevels 3 whose levels carry +20% / +35% / +50%, and after `apply_progression("res://scripts/progression/water_tower.json", "water_pressure")` repeated calls raise its current level 1 → 2 → 3 with a fourth call rejected (level stays 3, ineligible for further picks).
-- At level 1 / 2 / 3, a Water tower hit against an already-Wet enemy deals 1.2× / 1.35× / 1.5× the damage the same hit would deal without the perk.
-- The bonus applies only while the target is Wet (`wet_time_left > 0`): a Water hit against a non-Wet enemy is unmodified at every perk level.
-- The bonus multiplies only Water-attributed hits: Electric hits against Wet enemies keep exactly their `electric_wet_conduction` bonus, and other attacker types against Wet enemies are unmodified.
-- After a progression reset, the Water-vs-Wet bonus returns to 0.0 and Water hits against Wet enemies again deal normal damage.
-- Debug-build `[WATER-PRESSURE]` log line per perk-level application, naming the event with the applied level and resulting bonus ratio.
-- A focused AgentHarness scenario (`water_pressure_progression`) asserts the unowned baseline, each level's exact ratio, and the non-Wet guard via `progression_call` expectations, and passes headless with `status: pass`.
-2. water-pressure-tooltip — files: `scripts/ui/UI.gd` — depends on: 1
-- While `water_pressure` is owned, the Water tower tooltip includes a "Bonus vs Wet" percentage line matching the owned level (+20%/+35%/+50%), and the line is absent when the perk is not owned.
+1. modal-wood-frame-rework — files: `scenes/ui/RewardsModal.tscn`, `scripts/ui/RewardsModal.gd`, `scenes/ui/ProgressionModal.tscn`, `scripts/ui/ProgressionModal.gd` — depends on: none
+- Opening the rewards modal shows the same wood-framed panel with a straddling name plate as PauseMenu and Options, using existing ModalPanel / TitlePlate theme styling with no new art.
+- Opening the reward-pick modal shows the same wood-framed panel with a straddling name plate as the other HUD modals, with its reward cards laid out inside the frame.
+- Neither modal presents an OS-style window decoration or title bar; each dismisses through its in-panel corner close control and honors the engine close_requested path.
+- Closing the rewards modal through its corner close control removes the modal from the scene tree.
+- Every ProgressionModal close path (corner close control, close(), accepting a card) still removes the modal from the tree and restores the pre-open pause state.
+- The reward-pick modal keeps its existing selection contract: choosing a card emits its selection signal and dismisses the modal; an out-of-range choice leaves it open and the game paused.
+- The rewards modal still lists one entry per current progression selection, with the empty-selection header when there are none.
+- Debug-build [REWARDS_MODAL] log line per open and per close event, naming the trigger and the selection count.
+- Debug-build [PROGRESSION_MODAL] log line per open event, naming the money amount and option count (close lines already exist).
+
+2. caller-contract-compat — files: `scripts/ui/UI.gd`, `scripts/game/CaveSystem.gd`, `scripts/testing/AgentHarness.gd` — depends on: 1
+- After the rework, `open_progression_modal` still returns a live modal instance that CaveSystem's Window-typed call site can hold, query visibility on, and observe closing without errors.
+- AgentHarness auto-answer still recognizes the live reward-pick modal as a ProgressionModal and answers it, so an auto-answer chest scenario completes without timing out.
+- `_on_rewards_pressed` still instantiates the rewards modal and populates it from ProgressionManager's current selections.
+
+3. harness-checkpoints — files: `tests/scenarios/hud_other_panels.json`, `tests/scenarios/` (new progression-modal screenshot scenario) — depends on: 1
+- A windowed run of the `hud_other_panels` scenario captures a `panel_rewards` screenshot checkpoint showing the rewards modal's wood frame, and the scenario finishes with status pass.
+- A windowed screenshot scenario captures the opened reward-pick modal showing its wood frame and cards, and finishes with status pass.
 
 ## Criteria
 
-- With `water_pressure` not owned, a Water hit against a Wet enemy deals its normal damage (bonus ratio 0.0).
-- `water_tower.json` defines a Common perk `water_pressure` with maxLevels 3 whose levels carry +20% / +35% / +50%, and after `apply_progression("res://scripts/progression/water_tower.json", "water_pressure")` repeated calls raise its current level 1 → 2 → 3 with a fourth call rejected (level stays 3, ineligible for further picks).
-- At level 1 / 2 / 3, a Water tower hit against an already-Wet enemy deals 1.2× / 1.35× / 1.5× the damage the same hit would deal without the perk.
-- The bonus applies only while the target is Wet (`wet_time_left > 0`): a Water hit against a non-Wet enemy is unmodified at every perk level.
-- The bonus multiplies only Water-attributed hits: Electric hits against Wet enemies keep exactly their `electric_wet_conduction` bonus, and other attacker types against Wet enemies are unmodified.
-- After a progression reset, the Water-vs-Wet bonus returns to 0.0 and Water hits against Wet enemies again deal normal damage.
-- Debug-build `[WATER-PRESSURE]` log line per perk-level application, naming the event with the applied level and resulting bonus ratio.
-- A focused AgentHarness scenario (`water_pressure_progression`) asserts the unowned baseline, each level's exact ratio, and the non-Wet guard via `progression_call` expectations, and passes headless with `status: pass`.
-- While `water_pressure` is owned, the Water tower tooltip includes a "Bonus vs Wet" percentage line matching the owned level (+20%/+35%/+50%), and the line is absent when the perk is not owned.
-
-manual_testing: none
+- Opening the rewards modal shows the same wood-framed panel with a straddling name plate as PauseMenu and Options, using existing ModalPanel / TitlePlate theme styling with no new art.
+- Opening the reward-pick modal shows the same wood-framed panel with a straddling name plate as the other HUD modals, with its reward cards laid out inside the frame.
+- Neither modal presents an OS-style window decoration or title bar; each dismisses through its in-panel corner close control and honors the engine close_requested path.
+- Closing the rewards modal through its corner close control removes the modal from the scene tree.
+- Every ProgressionModal close path (corner close control, close(), accepting a card) still removes the modal from the tree and restores the pre-open pause state.
+- The reward-pick modal keeps its existing selection contract: choosing a card emits its selection signal and dismisses the modal; an out-of-range choice leaves it open and the game paused.
+- The rewards modal still lists one entry per current progression selection, with the empty-selection header when there are none.
+- Debug-build [REWARDS_MODAL] log line per open and per close event, naming the trigger and the selection count.
+- Debug-build [PROGRESSION_MODAL] log line per open event, naming the money amount and option count (close lines already exist).
+- After the rework, `open_progression_modal` still returns a live modal instance that CaveSystem's Window-typed call site can hold, query visibility on, and observe closing without errors.
+- AgentHarness auto-answer still recognizes the live reward-pick modal as a ProgressionModal and answers it, so an auto-answer chest scenario completes without timing out.
+- `_on_rewards_pressed` still instantiates the rewards modal and populates it from ProgressionManager's current selections.
+- A windowed run of the `hud_other_panels` scenario captures a `panel_rewards` screenshot checkpoint showing the rewards modal's wood frame, and the scenario finishes with status pass.
+- A windowed screenshot scenario captures the opened reward-pick modal showing its wood frame and cards, and finishes with status pass.
