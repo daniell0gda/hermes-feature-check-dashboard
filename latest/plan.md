@@ -1,32 +1,33 @@
-# Acceptance Plan: cave-carved-path-torches (iteration 2)
-
-## Verification
-
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/cave_carved_path_torches.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/declined_cave_torches_extinguish.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+# Acceptance Plan: issue #125 — ProgressionModal close button resumes the game with the modal still up
 
 manual_testing: required
 
+## Verification
+
+- Focused test: `run_project_cmd(["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/progression_modal_close_resume.json"])`
+- Full test: `run_project_cmd(["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_tower_roster.json"])`
+- Typecheck/build: `run_project_cmd(["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"])`
+
 ## Clusters
 
-1. cave-carved-path-torches — files: `scripts/game/underground/TorchPlacer.gd`, `scripts/game/underground/TorchManager.gd`, `scripts/game/underground/Torch.gd`, `tests/scenarios/cave_carved_path_torches.json` — depends on: none
-- After a dangerous cave is confirmed open, sampled points along every carved cell of that cave's full connected carved network (cave room plus all corridors) each have at least one active torch within Torch.LIGHT_RADIUS (2.5 world units) on XZ; proven with count_near checks spaced about every 2 units along the full length of both arms of the cross carve (north/south and east/west), not only at the cave centre or arm tips.
-- Carving a new connected corridor into an already confirmed-open cave produces active torches along the new path's full extent: count_near at about 2-unit spacing along the whole new corridor finds at least one active torch within 2.5 world units (XZ) of each sample point.
-- No leftover dark carved corridor remains in the same connected open-cave network as lit path after the cross carve: zero carved cells of the network are outside torch coverage (uncarved rock may stay dark).
-- While a dangerous cave is pending confirmation, its interior contains zero active torches, including where its room overlaps already-carved path.
-- After a dangerous cave is declined, its interior contains zero active torches (regression: currently fails with 5 torches in declined fixture cave 9102).
-- The torch pool does not silently cap coverage on large carves: after the full cross carve, total active torches exceed any internal maximum such that every network sample criterion above passes without holes caused by pool exhaustion.
-- Debug-build [TORCH] log line per cave-path torch update, naming the event (torch added/removed for a carve or decline) with cave id and world position context.
+1. modal-close-resume-transition — files: `scripts/ui/ProgressionModal.gd` — depends on: none
+- After any close path of the ProgressionModal (close button/window close request or accepting a reward), no ProgressionModal instance remains in the scene tree and it renders nowhere.
+- After any close path of the ProgressionModal completes, the scene tree pause state equals the pause state from before the modal opened, so gameplay is running again.
+- Modal dismissal takes effect at or before the moment gameplay resumes: once the tree reports unpaused after a close, no subsequent frame shows the modal visible again.
+- Debug-build [PROGRESSION_MODAL] log line per modal close/dismiss event, naming the close path and the pause state restored to
+- Accepting a reward card while the game was already unpaused before the modal opened leaves the game unpaused after the modal closes.
+2. close-transition-harness-coverage — files: `scripts/testing/AgentHarness.gd`, `scripts/testing/HarnessValues.gd`, `tests/scenarios/progression_modal_close_resume.json` — depends on: 1
+- A focused harness scenario drives the ProgressionModal close action and passes only when the modal is gone from the tree and gameplay has resumed.
+- The harness can resolve the number of currently open ProgressionModal instances and their visibility as an expectation source.
+- An out-of-range choose_option call leaves the modal open and keeps the game paused (regression guard on the existing decline contract).
 
 ## Criteria
 
-- After a dangerous cave is confirmed open, sampled points along every carved cell of that cave's full connected carved network (cave room plus all corridors) each have at least one active torch within Torch.LIGHT_RADIUS (2.5 world units) on XZ; proven with count_near checks spaced about every 2 units along the full length of both arms of the cross carve (north/south and east/west), not only at the cave centre or arm tips.
-- Carving a new connected corridor into an already confirmed-open cave produces active torches along the new path's full extent: count_near at about 2-unit spacing along the whole new corridor finds at least one active torch within 2.5 world units (XZ) of each sample point.
-- No leftover dark carved corridor remains in the same connected open-cave network as lit path after the cross carve: zero carved cells of the network are outside torch coverage (uncarved rock may stay dark).
-- While a dangerous cave is pending confirmation, its interior contains zero active torches, including where its room overlaps already-carved path.
-- After a dangerous cave is declined, its interior contains zero active torches (regression: currently fails with 5 torches in declined fixture cave 9102).
-- The torch pool does not silently cap coverage on large carves: after the full cross carve, total active torches exceed any internal maximum such that every network sample criterion above passes without holes caused by pool exhaustion.
-- Debug-build [TORCH] log line per cave-path torch update, naming the event (torch added/removed for a carve or decline) with cave id and world position context.
-
-Manual testing note: player-visible lighting must be verified windowed (never --headless) using debug_look_down_underground top-down ortho screenshots before/after the cross carve and after decline; the after-carve screenshot must show the entire cross lit end to end. See .gen/ui_scenario.md.
+- After any close path of the ProgressionModal (close button/window close request or accepting a reward), no ProgressionModal instance remains in the scene tree and it renders nowhere.
+- After any close path of the ProgressionModal completes, the scene tree pause state equals the pause state from before the modal opened, so gameplay is running again.
+- Modal dismissal takes effect at or before the moment gameplay resumes: once the tree reports unpaused after a close, no subsequent frame shows the modal visible again.
+- Debug-build [PROGRESSION_MODAL] log line per modal close/dismiss event, naming the close path and the pause state restored to
+- Accepting a reward card while the game was already unpaused before the modal opened leaves the game unpaused after the modal closes.
+- A focused harness scenario drives the ProgressionModal close action and passes only when the modal is gone from the tree and gameplay has resumed.
+- The harness can resolve the number of currently open ProgressionModal instances and their visibility as an expectation source.
+- An out-of-range choose_option call leaves the modal open and keeps the game paused (regression guard on the existing decline contract).

@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-125-progression-modal-close-resume/",
-  "heartbeat_at": "2026-08-22T06:44:26.609Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T06:44:26.609Z",
+  "heartbeat_at": "2026-08-22T07:01:58.438Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T07:01:58.438Z",
   "process_id": 462011,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T06:44:31.064318+00:00",
-    "last_success_at": "2026-08-22T06:44:31.063504+00:00",
+    "last_attempt_at": "2026-08-22T07:01:58.438439+00:00",
+    "last_success_at": "2026-08-22T06:44:35.312839+00:00",
     "last_error": null
   },
   "metrics": {
