@@ -1,30 +1,22 @@
-# Request: #33 Systemic: Elemental Attunement
+# Request: upgrade-click-money-animation
 
-Project: poke-defense-godot (runner key `godot-td`)
-Workspace: `poke-defense-godot/issue-elemental-attunement`
-Branch: `issue/elemental-attunement`
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/33
-Slug: `elemental-attunement`
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/134
+- **Project:** poke-defense-godot
+- **Git workspace:** /workspace/git-workspaces/poke-defense-godot/issue-upgrade-click-money-animation (branch issue/upgrade-click-money-animation, base origin/master @726ee0c)
+- **Request ID:** req-134-upgrade-click-money-animation-r2
 
-## Problem
+## Goal
 
-`Balance.type_effectiveness` (`scripts/config/Balance.gd`) makes fire/water/electric each resist themselves (`"fire": {"Fire": 0.5}`, `"water": {"Water": 0.5}`, `"electric": {"Electric": 0.5}`). A player who commits heavily to one element has no progression-side recourse if a level leans on that element's resistant enemy type.
+Play the existing floating money-increase animation when the player clicks "Upgrade" in the tower details panel. Upgrading currently spends money with no visual feedback.
 
-## Done when
+## Acceptance criteria (from issue)
 
-New Unique `elemental_attunement`: pick one of fire/water/electric; that element's towers also gain the super-effective multiplier normally reserved for the other two elements against their respective resistant types.
+1. Clicking "Upgrade" in tower details triggers the same animation used for money increase.
+2. Animation visually matches the existing money-increase effect (position/style consistent).
+3. Verified in-game via windowed screenshot.
 
-No new visual required — pure stat modifier: extends an existing invisible damage-multiplier table (`Balance.type_effectiveness`) with no new visible mechanic of its own.
+## Notes
 
-It only ever restores coverage on the other two elements. It never removes the self-resistance.
-
-Example of intended coverage (fire pick): Fire towers keep `Fire` enemies at 0.5, but also gain the super-effective multipliers the other two elements normally have against *their* resistant types (water vs Water, electric vs Electric), applied from the chosen element's towers.
-
-## Constraints
-
-- Use `run_project_cmd` with project `godot-td` and workspace `poke-defense-godot/issue-elemental-attunement`.
-- Follow `/opt/data/coding_rules.md`.
-- Do not commit, push, merge, or close the issue.
-- Native Linux Godot verification through the runner.
-- Visible UI for picking the element is only required if the existing Unique perk flow already has a player-facing pick; otherwise keep it a stat/table modifier and prove it with a focused harness.
-- Planner: still-captureable perk-select / type-multiplier user story should get a generic `.gen/ui_scenario.md`. If the perk is pickable in a modal, `manual_testing: required`.
+- Visible player-facing effect → manual_testing: required.
+- Previous attempt (req-134-upgrade-click-money-animation) was blocked: planner and coder both hit their iteration limits without writing artifacts; its partial unverified changes were discarded and archived under .gen-blocked-req134-attempt1/. Start fresh.
+- Do not close or push unless Daniel asks.
