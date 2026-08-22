@@ -25,5 +25,14 @@
     "duration_ms": 673677,
     "summary": "Check complete. All verification ran fresh through run_project_cmd (project poke-defense-godot, workspace poke-defense-godot/issue-perk-frozen-fracture) \u2014 runner probe, editor/typecheck gate (exit 0), both focused frozen_fracture scenarios \u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-22T10:47:51.415Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 84120,
+    "summary": "Manual testing gate complete.\n\n- check.md shows classification: pass with all 10 criteria verified via harness runs.\n- The change is a hidden numeric perk (armor-damage bonus while Ice-slowed), explicitly no new VFX; the only visible surfac\u2026",
+    "error": null
   }
 ]

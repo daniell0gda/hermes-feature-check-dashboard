@@ -1,41 +1,15 @@
-# Acceptance Plan: issue-124-cave-carved-path-torches
-
-## Verification
-
-All project commands run through Hermes `run_project_cmd` (project `godot-td`, workspace `poke-defense-godot/issue-cave-carved-path-torches`).
-
-- Focused test: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_carved_path_torches.json"]
-- Full test: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/declined_cave_torches_extinguish.json"] then repeat the same token form with `cave_pending_seals_entrance_instantly.json` (the focused scenario above plus these two regression scenarios constitute the full torch/cave harness pass)
-- Typecheck/build: ["godot","--headless","--path",".","--editor","--quit-after","300"]
-
-Raw-output rule: scan fresh runner stdout/stderr separately from harness status for `Parse Error`, `SCRIPT ERROR`, `Failed loading resource`, `Invalid call`; a harness `status=pass` alone is not acceptance evidence.
-
-## Clusters
-
-1. torch-coverage-along-carved-corridors — files: `scripts/game/underground/TorchPlacer.gd`, `scripts/game/underground/TorchManager.gd` — depends on: none
-- After carving a 2-by-18 plus 18-by-2 cross underground, every sampled point along all four arms at roughly 2-unit intervals has at least one active torch within its light coverage radius.
-- When a new corridor is carved that connects to an already-lit carved path, torches appear along the new corridor's entire length, not only near the junction.
-- Every carved cell reachable in the connected carved network lies within coverage of at least one placed torch (no unlit carved cells reported by the torch state source).
-2. dark-pending-and-declined-caves — files: `scripts/game/underground/TorchPlacer.gd`, `scripts/game/underground/TorchManager.gd`, `scripts/game/CaveSystem.gd` — depends on: none
-- A pending (unconfirmed) dangerous cave interior contains zero torches even when it overlaps already-carved, otherwise-lit path cells.
-- After a dangerous cave is declined and sealed, its interior contains zero active torches, including any cells that overlap previously carved path.
-3. harness-scenario-and-evidence — files: `tests/scenarios/cave_carved_path_torches.json` — depends on: 1, 2
-- The headless `cave_carved_path_torches` scenario passes with count_near expectations sampled along the full length of all four cross arms (~every 2 units), not only inside the cave room.
-- Fresh windowed-run screenshot PNGs exist with current timestamps showing the full carved cross visibly lit end to end and declined caves dark, and their pixels have been inspected (manual tester).
-- Debug-build `[TORCH]` log line appears per torch recompute event, naming the trigger (initial placement vs incremental carve) and the number of torches placed.
-
-## Criteria
-
 ## ✅ Done
+- The `frozen_fracture` perk exists in the global Common progression pool as type Common with exactly 3 levels.
+- With `frozen_fracture` at levels 1/2/3, the exposed armor-damage bonus is 10%/20%/30% respectively; when the perk is not owned the bonus is disabled (no increase).
+- A chest draw that includes the pool offers `frozen_fracture` alongside other Common perks, and its level descriptions state the armor-damage bonus values.
+- While an enemy is under an active Ice Tower slow, each point of incoming armor damage from any damage source is increased by the perk's level bonus (10%/20%/30%).
+- An enemy that is not currently slowed takes unmodified armor damage even when `frozen_fracture` is owned.
+- After an enemy's Ice slow expires, subsequent hits take unmodified armor damage again.
+- The bonus scales armor damage only; the hit's HP damage is unchanged by the perk.
+- A debug-build log line with a stable filterable `[FrozenFracture]` marker records each boosted armor-damage application (enemy id, level, bonus percent).
+- A focused game-test scenario compares armor remaining after identical armor-damage hits on a slowed versus an unslowed enemy with the perk active, asserting the slowed enemy lost exactly the level-multiplied amount more.
+- A focused game-test scenario asserts the three perk levels produce 10%/20%/30% extra armor damage respectively and that behavior reverts to baseline once the slow expires.
 
 ## ⬜ Pending
-- After carving a 2-by-18 plus 18-by-2 cross underground, every sampled point along all four arms at roughly 2-unit intervals has at least one active torch within its light coverage radius.
-- When a new corridor is carved that connects to an already-lit carved path, torches appear along the new corridor's entire length, not only near the junction.
-- Every carved cell reachable in the connected carved network lies within coverage of at least one placed torch (no unlit carved cells reported by the torch state source).
-- A pending (unconfirmed) dangerous cave interior contains zero torches even when it overlaps already-carved, otherwise-lit path cells.
-- After a dangerous cave is declined and sealed, its interior contains zero active torches, including any cells that overlap previously carved path.
-- The headless `cave_carved_path_torches` scenario passes with count_near expectations sampled along the full length of all four cross arms (~every 2 units), not only inside the cave room.
-- Fresh windowed-run screenshot PNGs exist with current timestamps showing the full carved cross visibly lit end to end and declined caves dark, and their pixels have been inspected (manual tester).
-- Debug-build `[TORCH]` log line appears per torch recompute event, naming the trigger (initial placement vs incremental carve) and the number of torches placed.
 
 ## ❌ Impossible

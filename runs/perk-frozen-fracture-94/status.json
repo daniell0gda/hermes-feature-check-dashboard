@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-frozen-fracture-94/",
-  "heartbeat_at": "2026-08-22T10:46:23.013Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-22T10:46:23.013Z",
+  "heartbeat_at": "2026-08-22T10:47:51.415Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-22T10:47:51.415Z",
   "process_id": 493095,
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T10:46:27.295087+00:00",
-    "last_success_at": "2026-08-22T10:46:27.294234+00:00",
+    "last_attempt_at": "2026-08-22T10:47:51.415376+00:00",
+    "last_success_at": "2026-08-22T10:46:31.433975+00:00",
     "last_error": null
   },
   "metrics": {
