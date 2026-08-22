@@ -1,31 +1,37 @@
-# Acceptance Plan: panels-closable-x-escape
+# Acceptance Plan: overcharge_capacitors
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/panels_closable_x_escape.json"]`
-- Full test: `["godot", "--headless", "--windowed", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/hud_other_panels.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]`
-
-manual_testing: required
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/overcharge_capacitors_progression.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/display_damage_surface_parity.json"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
 ## Clusters
 
-1. closable-panels-and-escape-routing — files: `scripts/ui/UI.gd`, `scripts/ui/PauseMenu.gd`, `scripts/ui/ManageTowersPopup.gd`, `scripts/ui/OptionsScreen.gd`, `scenes/UI.tscn`, `scenes/ui/ManageTowersPanel.tscn`, `scenes/ui/OptionsScreen.tscn` — depends on: none
-- Every non-Menu panel (tower details, Manage Towers, Options, and any other overlay panel outside the Menu/pause panel) shows an "X" close button, and pressing it hides that panel.
-- Pressing Escape while any non-Menu panel is visible closes the topmost open panel and does not open or close the Menu panel.
-- After a panel is closed by its X button or by Escape, gameplay input works again and the game is not left paused.
-- Pressing Escape when no panel is open shows the Menu (pause) panel, preserving the current pause behaviour.
-- Re-opening a panel that was closed via X or Escape works (the panel becomes visible again with correct content, e.g. selecting another tower re-shows the tower details panel).
-- Debug-build [PANELS] log line per panel open/close event, naming the panel and whether it opened or closed.
-2. closable-panels-harness-scenario — files: `tests/scenarios/panels_closable_x_escape.json`, `tests/ui/test_titled_panel_close_corner.gd` — depends on: 1
-- A headless AgentHarness scenario opens each non-Menu panel through the harness API, drives its close path, and passes with status `pass` and exit code 0 on the visibility expectations for every covered panel.
+1. overcharge-perk-logic — files: `scripts/progression/global.json`, `autoload/ProgressionManager.gd` — depends on: none
+- `overcharge_capacitors` is registered as a Common progression perk in the global progression pool: it is eligible on a fresh run and appears in `draw_choices_for_chest` draws.
+- With fewer than 3 towers of a type owned, the damage multiplier for that tower type is unchanged by the perk (no partial bonus below the 3-tower threshold).
+- With exactly 3 towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-1 bonus value from its definition.
+- With 6 or more towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-2 bonus value (one tier per complete group of 3 same-type towers, per the issue's tier table).
+- The bonus is per type: owning 3 towers of type A and 3 of type B gives each type its own bonus, while a type with fewer than 3 towers gets none.
+- The perk's type bonus composes with the existing damage pipeline: `get_tower_damage_multiplier_for(kind)` returns the global damage bonus and the overcharge bonus combined, and per-tower Unique bonuses still apply on top.
+- When the count of same-type towers drops back below a threshold (tower removed or destroyed), the corresponding bonus tier stops applying.
+- After `reset_for_new_game()`, no overcharge bonus applies and the perk selection is cleared.
+- Debug-build `[OVERCHARGE]` log line per bonus recompute, naming the tower type, same-type tower count, applied tier, and resulting multiplier; absent in release builds.
+2. overcharge-harness-scenario — files: `tests/scenarios/overcharge_capacitors_progression.json` — depends on: 1
+- A harness scenario proves the per-type stacking math through the progression API and placed towers, covering the boundary cases: fewer than 3 (no bonus), exactly 3 (tier 1), and 6+ (tier 2) same-type towers, with all expectations passing.
 
 ## Criteria
 
-- Every non-Menu panel (tower details, Manage Towers, Options, and any other overlay panel outside the Menu/pause panel) shows an "X" close button, and pressing it hides that panel.
-- Pressing Escape while any non-Menu panel is visible closes the topmost open panel and does not open or close the Menu panel.
-- After a panel is closed by its X button or by Escape, gameplay input works again and the game is not left paused.
-- Pressing Escape when no panel is open shows the Menu (pause) panel, preserving the current pause behaviour.
-- Re-opening a panel that was closed via X or Escape works (the panel becomes visible again with correct content, e.g. selecting another tower re-shows the tower details panel).
-- Debug-build [PANELS] log line per panel open/close event, naming the panel and whether it opened or closed.
-- A headless AgentHarness scenario opens each non-Menu panel through the harness API, drives its close path, and passes with status `pass` and exit code 0 on the visibility expectations for every covered panel.
+- `overcharge_capacitors` is registered as a Common progression perk in the global progression pool: it is eligible on a fresh run and appears in `draw_choices_for_chest` draws.
+- With fewer than 3 towers of a type owned, the damage multiplier for that tower type is unchanged by the perk (no partial bonus below the 3-tower threshold).
+- With exactly 3 towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-1 bonus value from its definition.
+- With 6 or more towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-2 bonus value (one tier per complete group of 3 same-type towers, per the issue's tier table).
+- The bonus is per type: owning 3 towers of type A and 3 of type B gives each type its own bonus, while a type with fewer than 3 towers gets none.
+- The perk's type bonus composes with the existing damage pipeline: `get_tower_damage_multiplier_for(kind)` returns the global damage bonus and the overcharge bonus combined, and per-tower Unique bonuses still apply on top.
+- When the count of same-type towers drops back below a threshold (tower removed or destroyed), the corresponding bonus tier stops applying.
+- After `reset_for_new_game()`, no overcharge bonus applies and the perk selection is cleared.
+- Debug-build `[OVERCHARGE]` log line per bonus recompute, naming the tower type, same-type tower count, applied tier, and resulting multiplier; absent in release builds.
+- A harness scenario proves the per-type stacking math through the progression API and placed towers, covering the boundary cases: fewer than 3 (no bonus), exactly 3 (tier 1), and 6+ (tier 2) same-type towers, with all expectations passing.
+
+manual_testing: optional

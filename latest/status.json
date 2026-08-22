@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-133-panels-closable-x-escape",
-  "feature": "panels-closable-x-escape",
-  "status": "running",
-  "started_at": "2026-08-22T13:36:02.196Z",
-  "ended_at": null,
+  "run_id": "issue-34-overcharge-capacitors-20260822-132458",
+  "feature": "overcharge-capacitors",
+  "status": "failed",
+  "started_at": "2026-08-22T13:24:58.585Z",
+  "ended_at": "2026-08-22T14:05:35.845Z",
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-133-panels-closable-x-escape/",
-  "heartbeat_at": "2026-08-22T14:05:27.756Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T14:05:27.756Z",
-  "process_id": 569006,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-20260822-132458/",
+  "heartbeat_at": "2026-08-22T14:05:35.845Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T14:05:31.299Z",
+  "process_id": 563145,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T14:05:32.233940+00:00",
-    "last_success_at": "2026-08-22T14:05:32.233100+00:00",
+    "last_attempt_at": "2026-08-22T14:05:35.845035+00:00",
+    "last_success_at": "2026-08-22T14:05:35.842952+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 90026,
-        "output_tokens": 6565
+        "input_tokens": 160756,
+        "output_tokens": 8597
       },
       {
         "task_id": "code",
@@ -39,8 +39,19 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 206675,
-        "output_tokens": 23728
+        "input_tokens": 215513,
+        "output_tokens": 20920
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 130272,
+        "output_tokens": 3363
       }
     ]
   }
