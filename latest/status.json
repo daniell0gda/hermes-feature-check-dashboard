@@ -1,21 +1,21 @@
 {
-  "run_id": "issue115-ground-material-ignores-cache-r1",
-  "feature": "ground-plane material cache reuse (issue 115)",
+  "run_id": "issue-108-harness-non-game-scene-211634",
+  "feature": "harness-cannot-boot-menu-scene",
   "status": "running",
-  "started_at": "2026-08-22T22:02:08.141Z",
+  "started_at": "2026-08-22T22:00:30.990Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue115-ground-material-ignores-cache-r1/",
-  "heartbeat_at": "2026-08-22T22:05:35.936Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T22:05:35.936Z",
-  "process_id": 772166,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-108-harness-non-game-scene-211634/",
+  "heartbeat_at": "2026-08-22T22:10:46.238Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T22:10:46.238Z",
+  "process_id": 771093,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T22:05:40.242539+00:00",
-    "last_success_at": "2026-08-22T22:05:40.241765+00:00",
+    "last_attempt_at": "2026-08-22T22:10:46.239551+00:00",
+    "last_success_at": "2026-08-22T22:03:25.969430+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 52605,
-        "output_tokens": 3314
+        "input_tokens": 50760,
+        "output_tokens": 2073
       }
     ]
   }

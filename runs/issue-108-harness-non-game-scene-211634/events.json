@@ -7,5 +7,14 @@
     "duration_ms": 160224,
     "summary": "Plan artifacts were already in place from prior iterations; I validated them against the current tree and re-ran all three verification commands fresh via the approved runner (`godot-td`, workspace `poke-defense-godot/issue-harness-cannot-b\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-22T22:10:46.238Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 445072,
+    "summary": "The `release_project_worker` tool isn't exposed in this session (only `run_project_cmd`), so worker release is left to the orchestrator. Work is complete.\n\nSummary:\n\n- Implemented the last pending criterion: `AgentHarness._await_game()` now\u2026",
+    "error": null
   }
 ]

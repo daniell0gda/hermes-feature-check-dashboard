@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-108-harness-non-game-scene-211634/",
-  "heartbeat_at": "2026-08-22T22:03:16.585Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T22:03:16.585Z",
+  "heartbeat_at": "2026-08-22T22:10:46.238Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T22:10:46.238Z",
   "process_id": 771093,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T22:03:21.165862+00:00",
-    "last_success_at": "2026-08-22T22:03:21.165193+00:00",
+    "last_attempt_at": "2026-08-22T22:10:46.239551+00:00",
+    "last_success_at": "2026-08-22T22:03:25.969430+00:00",
     "last_error": null
   },
   "metrics": {
