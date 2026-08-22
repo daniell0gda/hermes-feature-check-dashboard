@@ -1,21 +1,21 @@
 {
-  "run_id": "issue130-underground-carve-topdown-camera-rotation",
-  "feature": "underground-carve-topdown-camera-rotation",
-  "status": "failed",
-  "started_at": "2026-08-22T14:56:55.786Z",
-  "ended_at": "2026-08-22T16:49:58.542Z",
+  "run_id": "issue-39-buried-ordnance",
+  "feature": "Traps Buried Ordnance unique perk",
+  "status": "running",
+  "started_at": "2026-08-22T16:31:20.395Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue130-underground-carve-topdown-camera-rotation/",
-  "heartbeat_at": "2026-08-22T16:49:58.542Z",
-  "last_node": "check",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-39-buried-ordnance/",
+  "heartbeat_at": "2026-08-22T16:58:25.331Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-22T16:49:54.164Z",
-  "process_id": 603064,
+  "last_event_at": "2026-08-22T16:58:25.331Z",
+  "process_id": 641033,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T16:49:58.542917+00:00",
-    "last_success_at": "2026-08-22T16:49:58.541648+00:00",
+    "last_attempt_at": "2026-08-22T16:58:25.332166+00:00",
+    "last_success_at": "2026-08-22T16:37:24.231016+00:00",
     "last_error": null
   },
   "metrics": {
@@ -27,31 +27,9 @@
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 194989,
-        "output_tokens": 5773
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 122040,
-        "output_tokens": 2464
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 193238,
-        "output_tokens": 8391
+        "cost_status": "estimated",
+        "input_tokens": 93892,
+        "output_tokens": 2772
       }
     ]
   }
