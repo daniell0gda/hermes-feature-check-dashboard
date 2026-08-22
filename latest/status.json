@@ -1,47 +1,22 @@
 {
-  "run_id": "issue-127-reward-cards-modalwell",
-  "feature": "window-modals-skip-wood-frame",
+  "run_id": "issue53-burn-status-refresh",
+  "feature": "burn-status-refresh-pending-damage",
   "status": "running",
-  "started_at": "2026-08-22T11:31:08.215Z",
+  "started_at": "2026-08-22T11:44:11.093Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-reward-cards-modalwell/",
-  "heartbeat_at": "2026-08-22T11:44:29.593Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T11:44:29.593Z",
-  "process_id": 518620,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue53-burn-status-refresh/",
+  "heartbeat_at": "2026-08-22T11:44:11.093Z",
+  "last_node": null,
+  "active_node": "plan",
+  "last_event_at": null,
+  "process_id": 523505,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T11:44:34.370210+00:00",
-    "last_success_at": "2026-08-22T11:44:34.369301+00:00",
+    "last_attempt_at": "2026-08-22T11:45:37.877527+00:00",
+    "last_success_at": "2026-08-22T11:44:15.300894+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 66237,
-        "output_tokens": 3889
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 120810,
-        "output_tokens": 4531
-      }
-    ]
-  }
+  "metrics": {}
 }
