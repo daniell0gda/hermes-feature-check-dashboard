@@ -6,7 +6,7 @@
   },
   {
     "run_id": "tower-defense-issue-77-cont-1",
-    "status": "running",
+    "status": "completed",
     "url": "runs/tower-defense-issue-77-cont-1/"
   },
   {
@@ -16,7 +16,7 @@
   },
   {
     "run_id": "tower-defense-issue-77",
-    "status": "running",
+    "status": "completed",
     "url": "runs/tower-defense-issue-77/"
   },
   {
@@ -116,7 +116,7 @@
   },
   {
     "run_id": "issue-71-20260816",
-    "status": "running",
+    "status": "completed",
     "url": "runs/issue-71-20260816/"
   },
   {
@@ -286,12 +286,12 @@
   },
   {
     "run_id": "issue-13-team-work-20260818-c",
-    "status": "running",
+    "status": "completed",
     "url": "runs/issue-13-team-work-20260818-c/"
   },
   {
     "run_id": "issue-13-team-work-20260818",
-    "status": "running",
+    "status": "completed",
     "url": "runs/issue-13-team-work-20260818/"
   },
   {
@@ -336,7 +336,7 @@
   },
   {
     "run_id": "issue-124-cave-carved-path-torches-r5",
-    "status": "running",
+    "status": "completed",
     "url": "runs/issue-124-cave-carved-path-torches-r5/"
   },
   {
@@ -381,7 +381,7 @@
   },
   {
     "run_id": "issue-110-grass-grid-misses-far-edges",
-    "status": "running",
+    "status": "completed",
     "url": "runs/issue-110-grass-grid-misses-far-edges/"
   },
   {
@@ -461,7 +461,7 @@
   },
   {
     "run_id": "107-hud-theme-missing-wood-panel",
-    "status": "running",
+    "status": "completed",
     "url": "runs/107-hud-theme-missing-wood-panel/"
   }
 ]

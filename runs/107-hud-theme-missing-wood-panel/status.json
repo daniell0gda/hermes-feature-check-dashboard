@@ -1,9 +1,9 @@
 {
   "run_id": "107-hud-theme-missing-wood-panel",
   "feature": "hud-theme-missing-wood-panel",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-20T07:54:30.178Z",
-  "ended_at": null,
+  "ended_at": "2026-08-20T08:00:24.323Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/107-hud-theme-missing-wood-panel/",
   "heartbeat_at": "2026-08-20T08:00:24.323Z",

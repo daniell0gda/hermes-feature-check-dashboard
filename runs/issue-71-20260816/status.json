@@ -1,9 +1,9 @@
 {
   "run_id": "issue-71-20260816",
   "feature": "defeated-map-victory-screen-space-hide",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-17T05:06:45.321Z",
-  "ended_at": null,
+  "ended_at": "2026-08-17T05:06:45.321Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-71-20260816/",
   "heartbeat_at": "2026-08-17T05:06:45.321Z",

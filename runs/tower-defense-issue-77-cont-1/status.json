@@ -1,9 +1,9 @@
 {
   "run_id": "tower-defense-issue-77-cont-1",
   "feature": "Issue #77 continuation: dangerous cave confirmation, sealing, darkness, and reveal",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-17T19:05:19.352Z",
-  "ended_at": null,
+  "ended_at": "2026-08-18T04:10:28.833Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/tower-defense-issue-77-cont-1/",
   "heartbeat_at": "2026-08-18T04:10:28.833Z",

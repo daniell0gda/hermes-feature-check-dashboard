@@ -1,9 +1,9 @@
 {
   "run_id": "issue-124-cave-carved-path-torches-r5",
   "feature": "cave-carved-path-torches-r5",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-21T16:56:15.623Z",
-  "ended_at": null,
+  "ended_at": "2026-08-21T17:11:17.890Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-cave-carved-path-torches-r5/",
   "heartbeat_at": "2026-08-21T17:11:17.890Z",

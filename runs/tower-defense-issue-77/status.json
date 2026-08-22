@@ -1,9 +1,9 @@
 {
   "run_id": "tower-defense-issue-77",
   "feature": "Issue #77 cave discovery confirmation, darkness, rewards, and spawner lifetime",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-17T10:14:47.726Z",
-  "ended_at": null,
+  "ended_at": "2026-08-17T10:32:20.845Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/tower-defense-issue-77/",
   "heartbeat_at": "2026-08-17T10:32:20.845Z",
