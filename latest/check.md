@@ -1,64 +1,84 @@
-# Check report — upgrade-click-money-animation (req-134 r2, revision-check-2)
+# Check Report — earth-continent-map-integration (issue #137)
 
-Classification: pass
+Iteration: 1 · Classification: **fixable**
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-upgrade-click-money-animation)
+## Verification commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-earth-continent-map-integration)
 
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Runner probe | `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 |
-| Editor/parse gate | `godot --headless --path . --editor --quit-after 300` | 0 | Parse clean; no script errors |
-| Focused harness (headless) | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` | 0 | status=**pass**, all 3 expectations pass — `.gen/harness/upgrade_click_money_popup/result.json` (money 1460 < 1500, tower level == 2, reward_popups == 0) |
-| Focused harness (windowed) | `godot --path . res://scenes/Main.tscn --resolution 1280x720 -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` | 0 | status=pass; both screenshots `outcome: captured` (1920x1080 PNGs in `.gen/harness/upgrade_click_money_popup/shots/`) |
+| Command | Exit | Result |
+|---|---|---|
+| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner reachable |
+| `godot --headless --path . --editor --quit-after 300` (import/build gate) | 0 | Import completed; stylized_earth_in_clouds.glb reimported |
+| Focused harness `backdrop_earth_visible.json` | 1 | status: fail — `backdrop_earth_center_y == -83.2`, expected 0 |
+| Harness `backdrop_earth_glint.json` | 1 | status: fail — same center_y failure |
+| Full suite loop (`bash -c for f in tests/scenarios/*.json ...`) | n/a | `bash` not on profile allowlist ("cmd executable is not allowed"); not run |
+| Windowed screenshots / manual visual pass | not run | manual-tester owns `.gen/manual-report.md`; none present |
 
-## Acceptance criteria evidence
+Fresh harness evidence: `.gen/harness/backdrop_earth_visible/result.json`
+(finished_at 2026-08-22T15:41:57), log `.gen/harness/_logs/backdrop_earth_visible.out.log`.
 
-1. **Clicking "Upgrade" in tower details triggers the same animation used for money increase** — Done.
-   `scripts/ui/UI.gd::_on_upgrade_pressed` → `_spawn_upgrade_money_popup(cost_exact)` →
-   `ChestRewardSystem.create_reward_popup()` — the literal chest-payout factory. Fresh headless run
-   logged `[CHEST REWARD] Created popup for 20 coins at (-5.684, 1.5, -5.213)` on the real handler
-   path; inline wait_for_condition steps asserted popup count 1, text "+20 coins!", tower level 2,
-   money charged, and popup freed after the tween (final reward_popups == 0).
+## Acceptance criteria
 
-2. **Animation visually matches the existing money-increase effect** — Done.
-   Same `ChestRewardSystem.create_reward_popup` Label3D style/tween, +1.5 Y anchor above the tower,
-   parented to the currently visible layer (`Surface`/`Underground` via `GameState.current_layer`,
-   matching the existing string-comparison style in UI.gd).
+### Cluster 1: grounded-continent-placement
 
-3. **Verified in-game via windowed screenshot** — Done.
-   Windowed run this iteration recaptured both checkpoints as `captured`. Independent checker-side
-   pixel analysis of `after_upgrade_click_popup_visible.png`: ~2,149 new yellow pixels vs the before
-   shot, clustered at screen ~(800–1200, 300–500); a zoomed vision read of that region identifies
-   floating yellow text "+20 COINS!" next to the path near the tower position, absent from the
-   before shot. Details panel was deselected before capture, so the popup is unoccluded.
+- Continent mesh named and recorded — **verified in code**:
+  `GROUNDED_CONTINENT = "Continent_Africa"` in `scripts/game/visuals/BackdropEarth.gd`,
+  with the full GLB node list in a comment. Checker independently parsed
+  `models/stylized_earth_in_clouds.glb`: node/mesh `Continent_Africa` exists. PASS.
+- Flush placement from gameplay camera (windowed screenshot) — **NOT VERIFIED**.
+  No windowed run or screenshot exists in this workspace; headless screenshots are
+  skipped (`reason: "headless"`). Manual report absent. PENDING.
+- Terrain continuity / no hard seam (windowed screenshot) — NOT VERIFIED. Same reason. PENDING.
+- Globe does not rotate during play — **partially verified by code inspection only**:
+  grounded path never calls `_start_earth_spin()`. No automated test asserts
+  rotation equality at two times. PENDING (missing evidence).
+- Debug `[BACKDROP EARTH]` log per grounding event naming mesh + pos/scale/rot —
+  **verified**: fresh log line `[BACKDROP EARTH] grounded continent=Continent_Africa
+  pos=(-21.2, -83.2, -51.76) scale=0.9999… rot_deg=(15.39, 21.67, 83.15)`. PASS.
 
-## Changed-file quality review
+### Cluster 2: backdrop-regression-coverage
 
-Diff vs HEAD: `scripts/game/ChestRewardSystem.gd`, `scripts/testing/HarnessValues.gd`,
-`scripts/ui/UI.gd`, plus new `tests/scenarios/upgrade_click_money_popup.json`. No rule violations:
+- Other continents/ocean/clouds/atmosphere visible; hidden prefixes unchanged
+  (windowed screenshot) — NOT VERIFIED. No windowed run. PENDING.
+- Existing focused scenario `backdrop_earth_visible` still passes — **FAILS**.
+  `backdrop_earth_present` is true but `backdrop_earth_center_y` equals −83.2
+  instead of 0. The grounded rig sinks the globe by body_radius below y=0, so
+  center_y is now negative by design of the change — but the plan requires the
+  existing expectation to still hold and it was neither updated nor satisfied.
+  This is a real regression against the plan's own criterion. FAIL → Pending.
 
-- Typed GDScript, guard clauses, ≤2 nesting levels (CLAUDE.md); surgical diff — every changed line
-  traces to the issue or its verification instrumentation.
-- Popup factory reused with a default `parent_path` arg; existing callers unchanged (no duplication).
-- Harness fields confined to `HarnessValues._enemy_report()` reading node meta tags; no gameplay
-  logic altered beyond the requested popup spawn.
-- Single-line `if x: return` in `_spawn_upgrade_money_popup` matches surrounding UI.gd conventions.
+## Build/test gate
 
-No new tests duplicating existing coverage: no prior test asserted the upgrade-click popup;
-the new scenario is the sole coverage for this criterion.
+Import/editor gate passes. The full test suite was NOT run: the plan's full-suite
+command uses `bash`, which is rejected by the runner profile allowlist
+("cmd executable is not allowed by the project profile"). A python3-based loop
+was attempted as substitute and also failed to produce green results because the
+focused earth scenarios fail (see above). Since the build/test gate is not green,
+no item may remain Done; all criteria go to Pending.
 
-## Quality notes
+## Changed-file quality findings
 
-`.gen/quality-notes.md`: does not exist / no open entries; nothing appended — no scope creep or
-duplicated bad patterns in the feature diff. `.gen-blocked-req134-attempt1/` is declared workflow
-archive state from the previous blocked attempt, not scope creep.
+- `models/stylized_earth_in_clouds.glb`: replaced via Git LFS pointer update
+  (9.58 MB new object). Content itself unreviewable here; noted, no violation.
+- `scripts/game/visuals/BackdropEarth.gd`: typed variables used throughout, small
+  focused functions, guard clauses, debug-only `[TAG]` logging — complies with
+  CLAUDE.md and coding_rules.md. No quality violation found in changed code.
+- Scope creep: none beyond the two intended files.
 
-## Blockers / unverified
+## Blockers
 
-- None. Pre-existing engine warnings (invalid UID ext_resources, GLB resources not imported in this
-  headless container, exit-time RID leak reports) are unrelated legacy noise present on master paths
-  and do not affect this diff.
+- None infrastructural. Runner healthy. Failures are implementation-level.
+
+## Unverified items
+
+- Windowed screenshots (flush fit, seam blend, backdrop regression view).
+- Rotation-invariance measurement at two times.
+- Full test suite (allowlist blocks `bash`; needs a python3-loop variant command
+  in the plan or an updated profile allowlist).
 
 ## Verdict
 
-classification: pass
+fixable — the grounding code is present and partially evidenced, but the focused
+harness regressed (`backdrop_earth_center_y = -83.2 ≠ 0`), the full suite could not
+run under the profile allowlist, and all windowed/manual visual criteria have no
+evidence.
