@@ -1,39 +1,37 @@
-# Acceptance Plan: perk-undermining
+# Acceptance Plan: req-136-padding-closable-panels-close-button
+
+Closable `TitledPanel` panels reserve horizontal padding so the painted corner "x" (`CloseChip`, 90x103, flush top-right *inside* the frame art) never overlaps panel content; verified on tower details and every other closable panel (Manage Towers, Options).
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/undermining_progression.json"]`
-- Full test: `["bash", "-lc", "for f in tests/scenarios/undermining_*.json tests/scenarios/enemy_armor_trap.json tests/scenarios/traps_serrated_edges_progression.json tests/scenarios/trap_stats_attribution.json; do id=$(basename \"$f\" .json); godot --headless --path . res://scenes/Main.tscn -- \"--harness=res://$f\" > /dev/null 2>&1; s=$(python3 -c \"import json;print(json.load(open('.gen/harness/$id/result.json'))['status'])\" 2>/dev/null); echo \"$id: $s\"; [ \"$s\" = pass ] || exit 1; done"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "120"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://tests/ui/test_titled_panel_close_corner.tscn"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_armor_bar.tscn"] && ["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_health_bar_boss_icon.tscn"] && ["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_health_bar_oiled_icon.tscn"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]` followed by `["godot", "--headless", "--path", ".", "--check-only", "--script", "res://scripts/ui/hud/TitledPanel.gd"]`
+
+Note: the visual overlap claim itself cannot be proven headless. Run the existing
+`tests/scenarios/hud_other_panels.json` scenario with `-Windowed` (fresh screenshots of
+tower details, Manage Towers, Options taken AFTER the 20:00 UTC padding fix — pre-fix
+`.gen/screenshots/*.png` and `.gen/harness/hud_other_panels/shots/*.png` are stale) and
+report `ui_feels_broken: yes|no` per final screenshot. This is the
+`manual_testing: required` path below.
+
+manual_testing: required
 
 ## Clusters
 
-1. undermining-perk-definition — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `autoload/ProgressionManager.gd` — depends on: none
-- A progression named `undermining` exists in the trap progression pool with type Common, exactly 3 levels, and is offered only for traps (never for any surface tower).
-- With `undermining` at levels 1/2/3, the exposed trap armor-damage bonus is 8/15/25 respectively; when the perk is not owned it is 0.
-2. undermining-trap-runtime — files: `scripts/game/actors/Trap.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — depends on: 1
-- Each hit from any of the four traps (`trap_01`, `trap_02`, `trap_03`, `trap_05`) on an armored enemy removes exactly the current `undermining` level's armor amount (8/15/25), clamped so armor never goes below zero, in addition to normal HP damage.
-- Without the perk owned, a trap hit changes enemy armor by exactly zero (existing behaviour preserved).
-- Surface tower hits are unchanged by `undermining`: owning it does not add armor damage to any non-trap tower's hits.
-- Debug-build `[Undermining]` log line per armor-stripping trap hit
-3. undermining-hit-vfx — files: `scripts/game/actors/Trap.gd`, `scripts/game/actors/effects/EffectsManager.gd` — depends on: 2
-- When an owned-perk trap hit actually strips armor, the trap's existing hit-impact effect shows a distinct tint signalling the armor-strip portion, and the tint is absent on trap hits while the perk is unowned.
-4. undermining-game-test-coverage — files: `tests/scenarios/undermining_progression.json`, `tests/scenarios/undermining_trap_armor.json`, `tests/scenarios/undermining_scope_isolation.json` — depends on: 1, 2, 3
-- A focused harness scenario proves definition and persistence: `undermining` resolves as Common/traps-only with 3 levels, applying levels yields the 8/15/25 armor values through the same accessor Ballista uses, re-applying past level 3 stays at 25, and save/reload restores the level and value.
-- A focused harness scenario proves live trap behavior: a real trap hit on an armored underground enemy reduces armor by exactly the perk amount at each level, and by zero when unowned.
-- A focused harness scenario proves scope isolation: while `undermining` is owned, scripted surface-tower hits apply no perk-derived armor damage.
+1. closable-panel-content-padding — files: `scripts/ui/hud/TitledPanel.gd`, `tests/ui/test_titled_panel_close_corner.gd`, `tests/ui/test_titled_panel_close_corner.tscn` — depends on: none
+- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
+- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
+- The CloseChip sits flush INSIDE the frame's top-right corner (enclosed by the full-size frame art, not floating outside it) and pressing it still emits exactly one `close_requested` (existing contract preserved).
+- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
+- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
+- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
 
 ## Criteria
 
-- A progression named `undermining` exists in the trap progression pool with type Common, exactly 3 levels, and is offered only for traps (never for any surface tower).
-- With `undermining` at levels 1/2/3, the exposed trap armor-damage bonus is 8/15/25 respectively; when the perk is not owned it is 0.
-- Each hit from any of the four traps (`trap_01`, `trap_02`, `trap_03`, `trap_05`) on an armored enemy removes exactly the current `undermining` level's armor amount (8/15/25), clamped so armor never goes below zero, in addition to normal HP damage.
-- Without the perk owned, a trap hit changes enemy armor by exactly zero (existing behaviour preserved).
-- Surface tower hits are unchanged by `undermining`: owning it does not add armor damage to any non-trap tower's hits.
-- Debug-build `[Undermining]` log line per armor-stripping trap hit
-- When an owned-perk trap hit actually strips armor, the trap's existing hit-impact effect shows a distinct tint signalling the armor-strip portion, and the tint is absent on trap hits while the perk is unowned.
-- A focused harness scenario proves definition and persistence: `undermining` resolves as Common/traps-only with 3 levels, applying levels yields the 8/15/25 armor values through the same accessor Ballista uses, re-applying past level 3 stays at 25, and save/reload restores the level and value.
-- A focused harness scenario proves live trap behavior: a real trap hit on an armored underground enemy reduces armor by exactly the perk amount at each level, and by zero when unowned.
-- A focused harness scenario proves scope isolation: while `undermining` is owned, scripted surface-tower hits apply no perk-derived armor damage.
-
-manual_testing: required
+- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
+- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
+- The CloseChip sits flush INSIDE the frame's top-right corner (enclosed by the full-size frame art, not floating outside it) and pressing it still emits exactly one `close_requested` (existing contract preserved).
+- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
+- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
+- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.

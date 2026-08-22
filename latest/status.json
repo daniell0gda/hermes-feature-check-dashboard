@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-91-perk-undermining-211435",
-  "feature": "perk-undermining",
+  "run_id": "req-136-padding-closable-panels-close-button",
+  "feature": "padding closable panels close button",
   "status": "running",
-  "started_at": "2026-08-22T21:14:36.281Z",
+  "started_at": "2026-08-22T21:12:24.676Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-91-perk-undermining-211435/",
-  "heartbeat_at": "2026-08-22T21:20:10.383Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T21:20:10.383Z",
-  "process_id": 747159,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
+  "heartbeat_at": "2026-08-22T21:20:43.006Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T21:20:43.006Z",
+  "process_id": 746125,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:20:14.661994+00:00",
-    "last_success_at": "2026-08-22T21:20:14.661369+00:00",
+    "last_attempt_at": "2026-08-22T21:20:43.006956+00:00",
+    "last_success_at": "2026-08-22T21:18:09.424652+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,19 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 81290,
-        "output_tokens": 6366
+        "input_tokens": 29621,
+        "output_tokens": 972
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 89810,
+        "output_tokens": 3382
       }
     ]
   }
