@@ -1,12 +1,12 @@
 {
   "run_id": "issue-135-upgrade-button-20260822T123636Z",
   "feature": "upgrade-button-disabled-without-money",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-22T12:36:36.349Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T13:31:12.899Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-135-upgrade-button-20260822T123636Z/",
-  "heartbeat_at": "2026-08-22T13:31:07.314Z",
+  "heartbeat_at": "2026-08-22T13:31:12.899Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-22T13:31:07.314Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T13:31:07.315290+00:00",
-    "last_success_at": "2026-08-22T13:25:06.492095+00:00",
+    "last_attempt_at": "2026-08-22T13:31:12.899248+00:00",
+    "last_success_at": "2026-08-22T13:31:12.896264+00:00",
     "last_error": null
   },
   "metrics": {
@@ -63,6 +63,17 @@
         "cost_status": "estimated",
         "input_tokens": 62617,
         "output_tokens": 459
+      },
+      {
+        "task_id": "manual-tester",
+        "cluster_id": null,
+        "role": "manual-tester",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 124673,
+        "output_tokens": 4359
       }
     ]
   }
