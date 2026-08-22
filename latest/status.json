@@ -1,21 +1,21 @@
 {
-  "run_id": "issue130-underground-carve-topdown-camera-rotation",
-  "feature": "underground-carve-topdown-camera-rotation",
+  "run_id": "issue-127-reward-cards-modalwell",
+  "feature": "window-modals-skip-wood-frame",
   "status": "running",
-  "started_at": "2026-08-22T11:47:11.684Z",
+  "started_at": "2026-08-22T11:31:08.215Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue130-underground-carve-topdown-camera-rotation/",
-  "heartbeat_at": "2026-08-22T11:54:37.131Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T11:54:37.131Z",
-  "process_id": 524640,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-reward-cards-modalwell/",
+  "heartbeat_at": "2026-08-22T11:57:20.659Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-22T11:57:20.659Z",
+  "process_id": 518620,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T11:54:41.553006+00:00",
-    "last_success_at": "2026-08-22T11:54:41.552442+00:00",
+    "last_attempt_at": "2026-08-22T11:57:20.660122+00:00",
+    "last_success_at": "2026-08-22T11:52:58.085738+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,41 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 80780,
-        "output_tokens": 6254
+        "input_tokens": 66237,
+        "output_tokens": 3889
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 120810,
+        "output_tokens": 4531
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 174696,
+        "output_tokens": 6220
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 24471,
+        "output_tokens": 447
       }
     ]
   }

@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-reward-cards-modalwell/",
-  "heartbeat_at": "2026-08-22T11:52:49.183Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-22T11:52:49.183Z",
+  "heartbeat_at": "2026-08-22T11:57:20.659Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-22T11:57:20.659Z",
   "process_id": 518620,
   "host": "25e0b2c49eb5",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T11:52:53.459563+00:00",
-    "last_success_at": "2026-08-22T11:52:53.458630+00:00",
+    "last_attempt_at": "2026-08-22T11:57:20.660122+00:00",
+    "last_success_at": "2026-08-22T11:52:58.085738+00:00",
     "last_error": null
   },
   "metrics": {
