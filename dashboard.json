@@ -330,6 +330,11 @@
     "url": "runs/godot-td-issue-65-20260818/"
   },
   {
+    "run_id": "elemental-attunement-20260822",
+    "status": "running",
+    "url": "runs/elemental-attunement-20260822/"
+  },
+  {
     "run_id": "64-filter-ineligible-20260819",
     "status": "completed",
     "url": "runs/64-filter-ineligible-20260819/"
