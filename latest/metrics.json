@@ -4,12 +4,12 @@
       "task_id": "plan",
       "cluster_id": null,
       "role": "plan",
-      "model": null,
+      "model": "stealth/ox-alpha",
       "model_tier": null,
-      "cost_usd": null,
-      "cost_status": "unavailable",
-      "input_tokens": null,
-      "output_tokens": null
+      "cost_usd": 0.0,
+      "cost_status": "unknown",
+      "input_tokens": 139624,
+      "output_tokens": 6580
     },
     {
       "task_id": "code",
@@ -19,8 +19,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 188154,
-      "output_tokens": 13697
+      "input_tokens": 293235,
+      "output_tokens": 2693
     },
     {
       "task_id": "check",
@@ -30,8 +30,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 114264,
-      "output_tokens": 6121
+      "input_tokens": 307827,
+      "output_tokens": 4810
     },
     {
       "task_id": "revision-code-1",
@@ -41,8 +41,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 220833,
-      "output_tokens": 10616
+      "input_tokens": 183856,
+      "output_tokens": 4019
     },
     {
       "task_id": "revision-check-1",
@@ -52,30 +52,19 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 43152,
-      "output_tokens": 3064
+      "input_tokens": 205904,
+      "output_tokens": 5282
     },
     {
-      "task_id": "revision-code-2",
-      "cluster_id": "implementation",
-      "role": "code",
-      "model": "stealth/ox-alpha",
-      "model_tier": null,
-      "cost_usd": 0.0,
-      "cost_status": "unknown",
-      "input_tokens": 191660,
-      "output_tokens": 11962
-    },
-    {
-      "task_id": "revision-check-2",
+      "task_id": "manual-testing-gate",
       "cluster_id": null,
-      "role": "check",
+      "role": "team-leader",
       "model": "stealth/ox-alpha",
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 111707,
-      "output_tokens": 3413
+      "input_tokens": 25775,
+      "output_tokens": 644
     }
   ]
 }

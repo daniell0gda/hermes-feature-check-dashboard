@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-123-progression-pick-scenario-stale",
-  "feature": "progression_pick scenario compatible tower recipe",
+  "run_id": "issue-95-static-breach",
+  "feature": "perk-static-breach",
   "status": "running",
-  "started_at": "2026-08-22T08:06:37.179Z",
+  "started_at": "2026-08-22T07:58:29.722Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-123-progression-pick-scenario-stale/",
-  "heartbeat_at": "2026-08-22T09:18:34.689Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-22T09:18:34.689Z",
-  "process_id": 472003,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-95-static-breach/",
+  "heartbeat_at": "2026-08-22T09:18:49.083Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-22T09:18:49.083Z",
+  "process_id": 469740,
   "host": "25e0b2c49eb5",
-  "phase": "team-leader",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T09:18:39.018030+00:00",
-    "last_success_at": "2026-08-22T09:18:39.017111+00:00",
+    "last_attempt_at": "2026-08-22T09:18:49.083933+00:00",
+    "last_success_at": "2026-08-22T09:00:32.709432+00:00",
     "last_error": null
   },
   "metrics": {
@@ -24,12 +24,12 @@
         "task_id": "plan",
         "cluster_id": null,
         "role": "plan",
-        "model": null,
+        "model": "stealth/ox-alpha",
         "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 139624,
+        "output_tokens": 6580
       },
       {
         "task_id": "code",
@@ -39,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 188154,
-        "output_tokens": 13697
+        "input_tokens": 293235,
+        "output_tokens": 2693
       },
       {
         "task_id": "check",
@@ -50,8 +50,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 114264,
-        "output_tokens": 6121
+        "input_tokens": 307827,
+        "output_tokens": 4810
       },
       {
         "task_id": "revision-code-1",
@@ -61,8 +61,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 220833,
-        "output_tokens": 10616
+        "input_tokens": 183856,
+        "output_tokens": 4019
       },
       {
         "task_id": "revision-check-1",
@@ -72,30 +72,19 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 43152,
-        "output_tokens": 3064
+        "input_tokens": 205904,
+        "output_tokens": 5282
       },
       {
-        "task_id": "revision-code-2",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 191660,
-        "output_tokens": 11962
-      },
-      {
-        "task_id": "revision-check-2",
+        "task_id": "manual-testing-gate",
         "cluster_id": null,
-        "role": "check",
+        "role": "team-leader",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 111707,
-        "output_tokens": 3413
+        "input_tokens": 25775,
+        "output_tokens": 644
       }
     ]
   }
