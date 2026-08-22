@@ -16,5 +16,14 @@
     "duration_ms": 112897,
     "summary": "API call failed after 3 retries: HTTP 429: The requested model is temporarily at capacity upstream. This is not your API key's rate limit \u2014 please retry shortly.\n",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-22T15:42:21.474Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 174763,
+    "summary": "API call failed after 3 retries: HTTP 429: Too many concurrent inference requests for an account with low available credits.\n",
+    "error": null
   }
 ]
