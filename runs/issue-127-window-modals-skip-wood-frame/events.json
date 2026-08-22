@@ -52,5 +52,14 @@
     "duration_ms": 57259,
     "summary": "Manual-testing gate complete.\n\n- Read skill manual-testing-gate plus request.md, plan.md, check.md, status.md.\n- Check verdict is pass (all 14 criteria verified; revision-1 fix confirmed). The story is a new player-visible UI restyle (wood \u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-22T11:13:22.965Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 264566,
+    "summary": "Manual-test result: PASSED. Scenario: .gen/ui_scenario.md.\nReport: .gen/manual-report.md. Escalation: no.\n\nSummary of what I did:\n- Ran two windowed harness scenarios via run_project_cmd (no --headless):\n  - hud_other_panels: status=pass, e\u2026",
+    "error": null
   }
 ]
