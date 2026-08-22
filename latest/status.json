@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-107-hud-theme-missing-wood-panel",
-  "feature": "hud-theme-missing-wood-panel",
+  "run_id": "issue53-burn-status-refresh",
+  "feature": "burn-status-refresh-pending-damage",
   "status": "running",
-  "started_at": "2026-08-22T11:25:54.026Z",
+  "started_at": "2026-08-22T11:44:11.093Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-107-hud-theme-missing-wood-panel/",
-  "heartbeat_at": "2026-08-22T12:22:31.305Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-22T12:22:31.305Z",
-  "process_id": 517868,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue53-burn-status-refresh/",
+  "heartbeat_at": "2026-08-22T12:23:12.166Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T12:23:12.166Z",
+  "process_id": 523505,
   "host": "25e0b2c49eb5",
-  "phase": "manual-tester",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T12:22:35.906601+00:00",
-    "last_success_at": "2026-08-22T12:22:35.905724+00:00",
+    "last_attempt_at": "2026-08-22T12:23:12.167091+00:00",
+    "last_success_at": "2026-08-22T12:16:31.472748+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 50024,
-        "output_tokens": 1677
+        "input_tokens": 148329,
+        "output_tokens": 6043
       },
       {
         "task_id": "code",
@@ -39,30 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 155366,
-        "output_tokens": 4483
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 125129,
-        "output_tokens": 2917
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 38443,
-        "output_tokens": 445
+        "input_tokens": 310679,
+        "output_tokens": 22891
       }
     ]
   }
