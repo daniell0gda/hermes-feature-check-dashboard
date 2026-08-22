@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-22T08:05:25.750Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 363030,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-perk-static-breach/.gen/plan.md\n",
+    "error": null
+  }
+]

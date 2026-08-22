@@ -1,10 +1,25 @@
-# Issue #128 — Tower details panel blinks and returns mid-reflow when a placement mode is armed
+# Issue #95 — Static Breach perk
 
-Implement the issue exactly as described in https://github.com/daniell0gda/poke-defense-godot/issues/128.
+Implement GitHub issue #95 in this worktree.
 
-Acceptance criteria:
-- Arming or clearing a placement mode leaves the tower details panel exactly as it was; hide it only when selection genuinely goes away.
-- With a tower selected and Carve armed, the wood frame encloses Upgrade/Sell buttons and the Active row; no one-measurement-behind reflow.
-- Update `tests/scenarios/hud_wood_panels.json` so `hud_mode_carve_armed` shows a complete frame and asserts `UI.get_upgrade_panel_text()` still reports the tower heading immediately after `_on_carve`.
+Requirements:
+- Add `static_breach`, Electric-only, 3 levels.
+- Each Electric hit on an enemy stacks a per-enemy charge; thresholds are 5/4/3 for levels 1/2/3.
+- The next hit at threshold sets remaining armor to zero.
+- Charges reset after the enemy leaves range/loses target lock for an explicit, documented duration.
+- Add the required stacking-charge indicator using the existing HighlightShaderUtils preset-highlight factory pattern.
+- Add a distinct shatter flash on the triggering hit, reusing the shield-crack asset if available.
+- Add focused game-test coverage for threshold behavior, per-enemy isolation/reset, Electric-only scope, and VFX/state transitions.
 
-Use native Linux Godot verification through the approved `godot-td` runner, including fresh visual/windowed evidence for the existing panel drawing correctly. Preserve the flat `.gen` contract and do not close, merge, or push the issue implicitly.
+Use native Linux Godot verification through the approved runner. Preserve exact acceptance criteria, inspect fresh structured results and raw diagnostics, and perform required visual/windowed evidence for VFX. Do not commit, push, merge, or close the issue.
+
+Project: poke-defense-godot
+Runner key: godot-td
+Workspace: poke-defense-godot/issue-perk-static-breach
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/95
+Request ID: issue-95-static-breach
+Feature name: perk-static-breach
+Revision budget: 2
+manual_testing: required (player-facing VFX)
+
+Follow team-work's plan → code → check workflow and write all required flat .gen artifacts.

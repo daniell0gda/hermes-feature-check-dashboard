@@ -1,36 +1,22 @@
 {
-  "run_id": "issue-128-tower-details-blinks-on-mode-arm",
-  "feature": "Tower details panel blink and reflow",
+  "run_id": "issue-95-static-breach",
+  "feature": "perk-static-breach",
   "status": "running",
-  "started_at": "2026-08-22T07:57:03.786Z",
+  "started_at": "2026-08-22T07:58:29.722Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-128-tower-details-blinks-on-mode-arm/",
-  "heartbeat_at": "2026-08-22T08:04:25.883Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-95-static-breach/",
+  "heartbeat_at": "2026-08-22T08:05:25.750Z",
   "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T08:04:25.883Z",
-  "process_id": 469202,
+  "active_node": null,
+  "last_event_at": "2026-08-22T08:05:25.750Z",
+  "process_id": 469740,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T08:04:30.249894+00:00",
-    "last_success_at": "2026-08-22T08:04:30.249079+00:00",
+    "last_attempt_at": "2026-08-22T08:05:25.750271+00:00",
+    "last_success_at": "2026-08-22T07:59:27.206207+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 119291,
-        "output_tokens": 6869
-      }
-    ]
-  }
+  "metrics": {}
 }
