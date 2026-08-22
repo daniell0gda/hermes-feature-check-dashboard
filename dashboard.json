@@ -201,7 +201,7 @@
   },
   {
     "run_id": "issue-128-tower-details-blinks-on-mode-arm",
-    "status": "running",
+    "status": "failed",
     "url": "runs/issue-128-tower-details-blinks-on-mode-arm/"
   },
   {
