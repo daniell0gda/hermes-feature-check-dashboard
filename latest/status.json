@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-134-upgrade-click-money-animation-r3/",
   "heartbeat_at": "2026-08-22T21:10:51.054Z",
   "last_node": "plan",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-22T21:10:51.054Z",
   "process_id": 739919,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:10:51.055762+00:00",
-    "last_success_at": "2026-08-22T21:02:11.738991+00:00",
+    "last_attempt_at": "2026-08-22T21:10:56.622113+00:00",
+    "last_success_at": "2026-08-22T21:10:56.621539+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 119133,
+        "output_tokens": 5236
+      }
+    ]
+  }
 }
