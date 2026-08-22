@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-cave-carved-path-torches-retry-stealth/",
-  "heartbeat_at": "2026-08-22T06:50:25.566Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-22T06:50:25.566Z",
+  "heartbeat_at": "2026-08-22T06:51:40.133Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-22T06:51:40.133Z",
   "process_id": 460204,
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T06:50:29.939720+00:00",
-    "last_success_at": "2026-08-22T06:50:29.938765+00:00",
+    "last_attempt_at": "2026-08-22T06:51:40.133337+00:00",
+    "last_success_at": "2026-08-22T06:50:34.274719+00:00",
     "last_error": null
   },
   "metrics": {
