@@ -1,22 +1,32 @@
-# Request: upgrade-click-money-animation
+# Request: no-rock-or-tree-same-position-as-building
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/134
-- **Project:** poke-defense-godot
-- **Git workspace:** /workspace/git-workspaces/poke-defense-godot/issue-upgrade-click-money-animation (branch issue/upgrade-click-money-animation, base origin/master @726ee0c)
-- **Request ID:** req-134-upgrade-click-money-animation-r2
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/138
+Project: poke-defense-godot
+Workspace: poke-defense-godot/issue-no-rock-or-tree-same-position-as-building
+Branch: issue/no-rock-or-tree-same-position-as-building
 
 ## Goal
+In `scripts/game/NatureDecoration.gd`, trees, dead trees, and rocks must never be placed
+at the same XZ position as an already-placed building. Grass and other small vegetation
+remain allowed at the same position as a building.
 
-Play the existing floating money-increase animation when the player clicks "Upgrade" in the tower details panel. Upgrading currently spends money with no visual feedback.
+## Context
+- `_generate_all_decorations()` generates buildings (`_generate_building`) before trees,
+  dead trees, and rocks — so building positions can be recorded and checked.
+- Each generator currently only checks path/egg/spawner clearance via `_is_valid_position`;
+  only trees check distance from other trees.
+- Buildings are placed in `buildings_container` ("buildings_container" node).
 
-## Acceptance criteria (from issue)
+## Acceptance criteria
+1. Trees, dead trees, and rocks are never placed at the same position (or overlapping)
+   as an already-placed building.
+2. Grass (and other small vegetation: bushes, flowers) may still share a position with
+   a building.
+3. Placement still respects existing path/egg/spawner clearances and attempt limits
+   (no infinite loops when space runs out).
+4. Editor import/parse gate passes (`godot --headless --editor --quit-after` style check)
+   and any existing nature-decoration-related tests still pass.
 
-1. Clicking "Upgrade" in tower details triggers the same animation used for money increase.
-2. Animation visually matches the existing money-increase effect (position/style consistent).
-3. Verified in-game via windowed screenshot.
-
-## Notes
-
-- Visible player-facing effect → manual_testing: required.
-- Previous attempt (req-134-upgrade-click-money-animation) was blocked: planner and coder both hit their iteration limits without writing artifacts; its partial unverified changes were discarded and archived under .gen-blocked-req134-attempt1/. Start fresh.
-- Do not close or push unless Daniel asks.
+## Manual testing
+manual_testing: required — visible placement; take windowed top-down screenshots showing
+buildings with no tree/rock intersecting them, grass allowed near buildings.
