@@ -1,41 +1,31 @@
-# Acceptance Plan: issue-108-harness-non-game-scene
+# Acceptance Plan: issue-109-nature-decoration-counts
 
 ## Verification
 
-- Focused test: `run_project_cmd project=godot-td workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene cmd=["godot","--headless","--path",".","res://scenes/MainMenu.tscn","--","--harness=res://tests/scenarios/main_menu.json"]`
-- Full test: `run_project_cmd project=godot-td workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/menu_backdrop_map.json"]`
-- Typecheck/build: `run_project_cmd project=godot-td workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene cmd=["godot","--headless","--path",".","--editor","--quit-after","300"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/nature_decoration_scaling.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/level_walkthrough_lean.json"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]`
 
-manual_testing: required — player-facing main menu over the live 3D backdrop needs a `-Windowed` screenshot plus a UI-sanity pass (`ui_feels_broken: yes|no`).
+manual_testing: required
 
 ## Clusters
 
-1. scenario-scene-selection — files: `scripts/testing/HarnessScenario.gd`, `.claude/skills/game-test/scripts/Run-Scenario.ps1`, `scripts/testing/AgentHarness.gd` — depends on: none
-- A scenario JSON with no top-level `scene` key boots `res://scenes/Main.tscn`, preserving all existing game-scenario behaviour.
-- A scenario JSON that declares a `scene` value boots that scene as the harness's current scene.
-- The PowerShell wrapper forwards the scenario's declared scene to Godot instead of always launching `res://scenes/Main.tscn`.
-- When the declared scene is loaded, the harness stops waiting for boot once the declared scene is current and does not require a `Game` child with live placement; game-dependent actions on such a run fail their own action rather than timing out the whole run at boot.
-2. node-path-value-source — files: `scripts/testing/HarnessValues.gd` — depends on: none
-- A value source resolves a named property of any node addressed by NodePath relative to the current scene root.
-- A dotted field name digs into the returned property value (e.g. transform components) instead of failing.
-- A missing node path, missing property, or failed dig produces an explicit failed expectation record, never a silent default value.
-3. main-menu-scenario — files: `tests/scenarios/main_menu.json` — depends on: 1, 2
-- A `main_menu` scenario boots `res://scenes/MainMenu.tscn` headlessly and finishes with status `pass`.
-- After two camera probes separated by a multi-second wait, the menu backdrop camera's orbit is reported as moving.
-- The menu backdrop world reports at least one enemy on the surface layer within the scenario budget.
-- The menu Play button is reported enabled via the node-path value source, without adding test-only methods to production code.
+1. nature-count-scaling — files: `scripts/game/NatureDecoration.gd`, `tests/scenarios/nature_decoration_scaling.json` — depends on: none
+- On a 20x20 map (area 400) the placed counts equal today's values exactly: 4 trees, 6 bushes, 5 flower groups, 2 dead trees (scale factor is exactly 1.0 at 400 m²).
+- On a 50x50 map each of the four counts is proportionally larger by the area ratio (2500/400 = 6.25x the 20x20 baseline counts, rounded to a whole number, minimum 1).
+- An explicit count override under `environment.decorations` in the map config takes precedence over the computed area-scaled count for each of the four categories.
+- A headless harness scenario loads a 50x50 map and asserts the placed tree, bush, flower-group, and dead-tree counts match the area-scaled contract, and exits with status pass.
+- Debug-build `[NATURE]` log line per decoration-count computation, naming map width, height, scale factor, and the four resulting counts.
+- The existing nature-visibility regression scene (`res://tests/visuals/test_nature_visibility_range.tscn`) still exits 0 after the change.
+2. manual-visual-verification — files: `.gen/manual/` (evidence only, no production files) — depends on: 1
+- In a windowed (non-headless) run with PNG screenshots captured, `custom_map` (50x50) visibly shows trees and bushes spread across the whole board, not only near the paths or one corner; overall UI sanity verdict recorded as `ui_feels_broken: yes|no`.
 
 ## Criteria
 
-- A scenario JSON with no top-level `scene` key boots `res://scenes/Main.tscn`, preserving all existing game-scenario behaviour.
-- A scenario JSON that declares a `scene` value boots that scene as the harness's current scene.
-- The PowerShell wrapper forwards the scenario's declared scene to Godot instead of always launching `res://scenes/Main.tscn`.
-- When the declared scene is loaded, the harness stops waiting for boot once the declared scene is current and does not require a `Game` child with live placement; game-dependent actions on such a run fail their own action rather than timing out the whole run at boot.
-- A value source resolves a named property of any node addressed by NodePath relative to the current scene root.
-- A dotted field name digs into the returned property value (e.g. transform components) instead of failing.
-- A missing node path, missing property, or failed dig produces an explicit failed expectation record, never a silent default value.
-- A `main_menu` scenario boots `res://scenes/MainMenu.tscn` headlessly and finishes with status `pass`.
-- After two camera probes separated by a multi-second wait, the menu backdrop camera's orbit is reported as moving.
-- The menu backdrop world reports at least one enemy on the surface layer within the scenario budget.
-- The menu Play button is reported enabled via the node-path value source, without adding test-only methods to production code.
-- Debug-build [HARNESS] log line per declared-scene boot, naming the booted scene path and whether an embedded Game world was found.
+- On a 20x20 map (area 400) the placed counts equal today's values exactly: 4 trees, 6 bushes, 5 flower groups, 2 dead trees (scale factor is exactly 1.0 at 400 m²).
+- On a 50x50 map each of the four counts is proportionally larger by the area ratio (2500/400 = 6.25x the 20x20 baseline counts, rounded to a whole number, minimum 1).
+- An explicit count override under `environment.decorations` in the map config takes precedence over the computed area-scaled count for each of the four categories.
+- A headless harness scenario loads a 50x50 map and asserts the placed tree, bush, flower-group, and dead-tree counts match the area-scaled contract, and exits with status pass.
+- Debug-build `[NATURE]` log line per decoration-count computation, naming map width, height, scale factor, and the four resulting counts.
+- The existing nature-visibility regression scene (`res://tests/visuals/test_nature_visibility_range.tscn`) still exits 0 after the change.
+- In a windowed (non-headless) run with PNG screenshots captured, `custom_map` (50x50) visibly shows trees and bushes spread across the whole board, not only near the paths or one corner; overall UI sanity verdict recorded as `ui_feels_broken: yes|no`.
