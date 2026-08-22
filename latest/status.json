@@ -1,36 +1,22 @@
 {
-  "run_id": "issue-107-hud-theme-missing-wood-panel",
-  "feature": "hud-theme-missing-wood-panel",
+  "run_id": "issue-127-reward-cards-modalwell",
+  "feature": "window-modals-skip-wood-frame",
   "status": "running",
-  "started_at": "2026-08-22T11:25:54.026Z",
+  "started_at": "2026-08-22T11:31:08.215Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-107-hud-theme-missing-wood-panel/",
-  "heartbeat_at": "2026-08-22T11:32:19.989Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-reward-cards-modalwell/",
+  "heartbeat_at": "2026-08-22T11:36:37.012Z",
   "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T11:32:19.989Z",
-  "process_id": 517868,
+  "active_node": null,
+  "last_event_at": "2026-08-22T11:36:37.012Z",
+  "process_id": 518620,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T11:32:24.597214+00:00",
-    "last_success_at": "2026-08-22T11:32:24.596392+00:00",
+    "last_attempt_at": "2026-08-22T11:36:37.013724+00:00",
+    "last_success_at": "2026-08-22T11:32:03.647849+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 50024,
-        "output_tokens": 1677
-      }
-    ]
-  }
+  "metrics": {}
 }

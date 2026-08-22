@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-22T11:36:37.012Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 277840,
+    "summary": "The plan is verified consistent: 17 criteria, each appearing exactly once in `## Criteria` and in exactly one of the 4 clusters; 3 concrete run_project_cmd commands; `manual_testing: required`. The plan was revised to add Daniel's follow-up\u2026",
+    "error": null
+  }
+]

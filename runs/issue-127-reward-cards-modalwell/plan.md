@@ -30,6 +30,11 @@ manual_testing: required
 - A windowed run of the `hud_other_panels` scenario captures a `panel_rewards` screenshot checkpoint showing the rewards modal's wood frame, and the scenario finishes with status pass.
 - A windowed screenshot scenario captures the opened reward-pick modal showing its wood frame and cards, and finishes with status pass.
 
+4. card-modalwell-treatment — files: `scripts/ui/ProgressionModal.gd` — depends on: 1
+- Each reward card inside the reward-pick modal renders with the same background treatment as the tower-details panel's stats area (theme type variation `ModalWell` from themes/hud/HudTheme.tres), not the default grey PanelContainer style.
+- A card for a Unique rarity option shows its rarity accent without relying on an invalid `add_theme_color_override("panel", ...)` call on PanelContainer; any retained tint is applied through a duplicated StyleBoxFlat border so no error or warning is emitted when the modal opens.
+- The windowed screenshot of the opened reward-pick modal shows the cards with the ModalWell background treatment, including the Unique accent when a Unique option is offered.
+
 ## Criteria
 
 - Opening the rewards modal shows the same wood-framed panel with a straddling name plate as PauseMenu and Options, using existing ModalPanel / TitlePlate theme styling with no new art.
@@ -46,3 +51,6 @@ manual_testing: required
 - `_on_rewards_pressed` still instantiates the rewards modal and populates it from ProgressionManager's current selections.
 - A windowed run of the `hud_other_panels` scenario captures a `panel_rewards` screenshot checkpoint showing the rewards modal's wood frame, and the scenario finishes with status pass.
 - A windowed screenshot scenario captures the opened reward-pick modal showing its wood frame and cards, and finishes with status pass.
+- Each reward card inside the reward-pick modal renders with the same background treatment as the tower-details panel's stats area (theme type variation `ModalWell` from themes/hud/HudTheme.tres), not the default grey PanelContainer style.
+- A card for a Unique rarity option shows its rarity accent without relying on an invalid `add_theme_color_override("panel", ...)` call on PanelContainer; any retained tint is applied through a duplicated StyleBoxFlat border so no error or warning is emitted when the modal opens.
+- The windowed screenshot of the opened reward-pick modal shows the cards with the ModalWell background treatment, including the Unique accent when a Unique option is offered.
