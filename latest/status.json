@@ -1,21 +1,21 @@
 {
-  "run_id": "issue137-earth-continent-map",
-  "feature": "earth-continent-map-integration",
+  "run_id": "req-136-padding-closable-panels-close-button",
+  "feature": "padding closable panels close button",
   "status": "running",
-  "started_at": "2026-08-22T19:22:39.115Z",
+  "started_at": "2026-08-22T19:03:06.297Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-22T19:26:19.781Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T19:26:19.781Z",
-  "process_id": 690443,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
+  "heartbeat_at": "2026-08-22T19:29:19.293Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-22T19:29:19.293Z",
+  "process_id": 682907,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T19:26:24.305319+00:00",
-    "last_success_at": "2026-08-22T19:26:24.304537+00:00",
+    "last_attempt_at": "2026-08-22T19:29:19.293697+00:00",
+    "last_success_at": "2026-08-22T19:25:54.718575+00:00",
     "last_error": null
   },
   "metrics": {
@@ -27,9 +27,42 @@
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
-        "cost_status": "estimated",
-        "input_tokens": 100823,
-        "output_tokens": 5038
+        "cost_status": "unknown",
+        "input_tokens": 68713,
+        "output_tokens": 1857
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 166269,
+        "output_tokens": 12512
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 100695,
+        "output_tokens": 3080
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 45902,
+        "output_tokens": 496
       }
     ]
   }

@@ -34,5 +34,14 @@
     "duration_ms": 45251,
     "summary": "Manual testing gate complete.\n\n- Loaded manual-testing-gate skill; read request.md, plan.md, check.md, status.md.\n- Check classification is pass; plan hints manual_testing: required.\n- Decision: required \u2014 the change is a new player-visible\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-22T19:29:19.293Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 208812,
+    "summary": "Manual test complete. Summary:\n\n- Ran the windowed harness scenario `hud_other_panels.json` through the project runner (`godot --path . res://scenes/Main.tscn -- --harness=...`, no --headless): status **pass**, all 17 actions ok, expectatio\u2026",
+    "error": null
   }
 ]
