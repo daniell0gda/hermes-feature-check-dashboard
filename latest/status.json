@@ -1,47 +1,22 @@
 {
-  "run_id": "issue105-towers-bar-slot-row-overflow-margin-1",
-  "feature": "towers-bar-slot-row-overflow-margin",
+  "run_id": "issue138-norocktree-1787411442",
+  "feature": "no-rock-or-tree-same-position-as-building",
   "status": "running",
-  "started_at": "2026-08-22T20:31:34.497Z",
+  "started_at": "2026-08-22T20:10:17.337Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue105-towers-bar-slot-row-overflow-margin-1/",
-  "heartbeat_at": "2026-08-22T20:50:03.330Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T20:50:03.330Z",
-  "process_id": 719669,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue138-norocktree-1787411442/",
+  "heartbeat_at": "2026-08-22T20:51:41.159Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-22T20:51:41.159Z",
+  "process_id": 710129,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T20:50:08.000282+00:00",
-    "last_success_at": "2026-08-22T20:50:07.999607+00:00",
+    "last_attempt_at": "2026-08-22T20:51:41.160617+00:00",
+    "last_success_at": "2026-08-22T20:10:26.492010+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 73382,
-        "output_tokens": 5279
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      }
-    ]
-  }
+  "metrics": {}
 }
