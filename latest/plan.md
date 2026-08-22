@@ -1,43 +1,48 @@
-# Acceptance Plan: clear-previous-map-tower-effects
+# Acceptance Plan: window-modals-skip-wood-frame (#127)
+
+manual_testing: required
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/issue_63_clear_previous_map_tower_effects.json"]`
-- Full test: `["godot", "--rendering-method", "gl_compatibility", "--audio-driver", "Dummy", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/issue_63_clear_previous_map_tower_effects.json"]` (windowed/Xvfb runner so the screenshot checkpoint captures real pixels)
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
-
-All project commands go through Hermes `run_project_cmd` (`project: godot-td`, `workspace: poke-defense-godot/issue-clear-previous-map-tower-effects`). A passing harness exit code alone is not enough: the fresh runner stdout/stderr must also be scanned for `Parse Error`, `Failed loading resource`, and `Invalid parameter`.
+- Focused test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-window-modals-skip-wood-frame` cmd=["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/progression_modal_close_resume.json"]
+- Full test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-window-modals-skip-wood-frame` cmd=["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_placement.json"]
+- Typecheck/build: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-window-modals-skip-wood-frame` cmd=["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]
 
 ## Clusters
 
-1. map-reload-teardown-and-regression-scenario — files: `scripts/game/Game.gd`, `scripts/game/TowerManager.gd`, `scripts/game/actors/Tower.gd`, `scripts/game/actors/towers/PorterTower.gd`, `scripts/game/actors/towers/ScifiTower.gd`, `scripts/testing/AgentHarness.gd`, `scripts/testing/HarnessActions.gd`, `scripts/testing/HarnessValues.gd`, `tests/scenarios/issue_63_clear_previous_map_tower_effects.json` — depends on: none
-- A deterministic AgentHarness scenario places and activates a Porter on map A, then reloads onto map B via `load_map`.
-- Reload teardown stops previous-map tower simulation: after reload, no tower from map A receives fixed ticks or fires projectiles.
-- After reload, Porter state from map A is fully cleared: no current target, no pending dissolve effect, no beam or teleport VFX residue.
-- After two separate post-reload waits, telemetry checkpoints record zero Porter target/shot/launch/impact/damage activity from the previous map.
-- After reload, a newly placed tower on map B produces fresh targeting activity, proving new-map towers still act normally.
-- Telemetry checkpoints retain pre-reload counters and the map-generation count across the reload, so post-reload deltas are attributable to the new map.
-- Debug-build [TOWER] log line per tower teardown event during map reload (tower kind and instance id), filterable to confirm each previous-map tower was torn down exactly once.
-- Headless focused run passes with status=pass and clean engine diagnostics (no Parse Error / Failed loading resource / Invalid parameter in the run's captured stdout/stderr).
-- Windowed OpenGL-compatibility run captures a post-reload PNG showing map B with new-tower activity and no stale Porter VFX; the PNG is inspected.
+1. modal-wood-frame-rework — files: `scenes/ui/RewardsModal.tscn`, `scripts/ui/RewardsModal.gd`, `scenes/ui/ProgressionModal.tscn`, `scripts/ui/ProgressionModal.gd` — depends on: none
+- Opening the rewards modal shows the same wood-framed panel with a straddling name plate as PauseMenu and Options, using existing ModalPanel / TitlePlate theme styling with no new art.
+- Opening the reward-pick modal shows the same wood-framed panel with a straddling name plate as the other HUD modals, with its reward cards laid out inside the frame.
+- Neither modal presents an OS-style window decoration or title bar; each dismisses through its in-panel corner close control and honors the engine close_requested path.
+- Closing the rewards modal through its corner close control removes the modal from the scene tree.
+- Every ProgressionModal close path (corner close control, close(), accepting a card) still removes the modal from the tree and restores the pre-open pause state.
+- The reward-pick modal keeps its existing selection contract: choosing a card emits its selection signal and dismisses the modal; an out-of-range choice leaves it open and the game paused.
+- The rewards modal still lists one entry per current progression selection, with the empty-selection header when there are none.
+- Debug-build [REWARDS_MODAL] log line per open and per close event, naming the trigger and the selection count.
+- Debug-build [PROGRESSION_MODAL] log line per open event, naming the money amount and option count (close lines already exist).
+
+2. caller-contract-compat — files: `scripts/ui/UI.gd`, `scripts/game/CaveSystem.gd`, `scripts/testing/AgentHarness.gd` — depends on: 1
+- After the rework, `open_progression_modal` still returns a live modal instance that CaveSystem's Window-typed call site can hold, query visibility on, and observe closing without errors.
+- AgentHarness auto-answer still recognizes the live reward-pick modal as a ProgressionModal and answers it, so an auto-answer chest scenario completes without timing out.
+- `_on_rewards_pressed` still instantiates the rewards modal and populates it from ProgressionManager's current selections.
+
+3. harness-checkpoints — files: `tests/scenarios/hud_other_panels.json`, `tests/scenarios/` (new progression-modal screenshot scenario) — depends on: 1
+- A windowed run of the `hud_other_panels` scenario captures a `panel_rewards` screenshot checkpoint showing the rewards modal's wood frame, and the scenario finishes with status pass.
+- A windowed screenshot scenario captures the opened reward-pick modal showing its wood frame and cards, and finishes with status pass.
 
 ## Criteria
 
-- A deterministic AgentHarness scenario places and activates a Porter on map A, then reloads onto map B via `load_map`.
-- Reload teardown stops previous-map tower simulation: after reload, no tower from map A receives fixed ticks or fires projectiles.
-- After reload, Porter state from map A is fully cleared: no current target, no pending dissolve effect, no beam or teleport VFX residue.
-- After two separate post-reload waits, telemetry checkpoints record zero Porter target/shot/launch/impact/damage activity from the previous map.
-- After reload, a newly placed tower on map B produces fresh targeting activity, proving new-map towers still act normally.
-- Telemetry checkpoints retain pre-reload counters and the map-generation count across the reload, so post-reload deltas are attributable to the new map.
-- Debug-build [TOWER] log line per tower teardown event during map reload (tower kind and instance id), filterable to confirm each previous-map tower was torn down exactly once.
-- Headless focused run passes with status=pass and clean engine diagnostics (no Parse Error / Failed loading resource / Invalid parameter in the run's captured stdout/stderr).
-- Windowed OpenGL-compatibility run captures a post-reload PNG showing map B with new-tower activity and no stale Porter VFX; the PNG is inspected.
-
-## Manual testing
-
-manual_testing: required — the reload boundary and absence of stale Porter VFX are player-visible and need human inspection of the captured PNG.
-
-## Notes
-
-- Branch under test already carries the teardown/regression work (cherry-pick of `40808d9`); this plan re-verifies it on the rebased tree rather than prescribing new implementation.
-- Do not close, merge, or push as part of this task.
+- Opening the rewards modal shows the same wood-framed panel with a straddling name plate as PauseMenu and Options, using existing ModalPanel / TitlePlate theme styling with no new art.
+- Opening the reward-pick modal shows the same wood-framed panel with a straddling name plate as the other HUD modals, with its reward cards laid out inside the frame.
+- Neither modal presents an OS-style window decoration or title bar; each dismisses through its in-panel corner close control and honors the engine close_requested path.
+- Closing the rewards modal through its corner close control removes the modal from the scene tree.
+- Every ProgressionModal close path (corner close control, close(), accepting a card) still removes the modal from the tree and restores the pre-open pause state.
+- The reward-pick modal keeps its existing selection contract: choosing a card emits its selection signal and dismisses the modal; an out-of-range choice leaves it open and the game paused.
+- The rewards modal still lists one entry per current progression selection, with the empty-selection header when there are none.
+- Debug-build [REWARDS_MODAL] log line per open and per close event, naming the trigger and the selection count.
+- Debug-build [PROGRESSION_MODAL] log line per open event, naming the money amount and option count (close lines already exist).
+- After the rework, `open_progression_modal` still returns a live modal instance that CaveSystem's Window-typed call site can hold, query visibility on, and observe closing without errors.
+- AgentHarness auto-answer still recognizes the live reward-pick modal as a ProgressionModal and answers it, so an auto-answer chest scenario completes without timing out.
+- `_on_rewards_pressed` still instantiates the rewards modal and populates it from ProgressionManager's current selections.
+- A windowed run of the `hud_other_panels` scenario captures a `panel_rewards` screenshot checkpoint showing the rewards modal's wood frame, and the scenario finishes with status pass.
+- A windowed screenshot scenario captures the opened reward-pick modal showing its wood frame and cards, and finishes with status pass.

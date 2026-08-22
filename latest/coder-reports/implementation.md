@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation
+# Coder report: implementation
 
 ## Changed files
 - `scenes/ui/RewardsModal.tscn` — modified: TitledPanel root with ModalPanel Frame, TopRow/CloseBtn, TitlePlate; borderless Window.
@@ -23,4 +23,3 @@ All cluster 1–3 criteria implemented; caller-contract criteria verified unchan
 - Found and fixed during verification: `ProgressionModal._notification(PREDELETE)` crashed when freed outside the tree (`Parameter "data.tree" is null` at line 74) during windowed-scenario teardown; now guarded by a null get_tree() check.
 - Harness result JSONs written under `.gen/harness/<scenario>/result.json`.
 - Pre-existing noisy-but-harmless warnings: invalid UID ext_resource fallbacks for HudTheme textures, duplicate-signal connect errors in UI/Game setup, dummy-renderer RID leak errors at exit.
-\n
