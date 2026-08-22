@@ -420,6 +420,11 @@
     "url": "runs/issue-10-floodgate-pump-efficiency/"
   },
   {
+    "run_id": "heart-hud-beat-139-1787422828",
+    "status": "running",
+    "url": "runs/heart-hud-beat-139-1787422828/"
+  },
+  {
     "run_id": "godot-td-issue-98-20260818",
     "status": "completed",
     "url": "runs/godot-td-issue-98-20260818/"
