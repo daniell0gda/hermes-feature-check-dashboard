@@ -1,29 +1,39 @@
-# Acceptance Plan: burn-status-refresh-pending-damage
+# Acceptance Plan: elemental-attunement
+
+manual_testing: required
 
 ## Verification
 
-- Focused test: `run_project_cmd(project="godot-td", workspace="godot-td/issue-burn-status-refresh-loses-pending-damage", cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/burn_status_refresh_pending_damage.json"])`
-- Full test: `run_project_cmd(project="godot-td", workspace="godot-td/issue-burn-status-refresh-loses-pending-damage", cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/fire_burn_on.json"])`
-- Typecheck/build: `run_project_cmd(project="godot-td", workspace="godot-td/issue-burn-status-refresh-loses-pending-damage", cmd=["godot","--headless","--path",".","--editor","--quit-after","300"])`
+- Focused test: `run_project_cmd(project="godot-td", workspace="poke-defense-godot/issue-elemental-attunement", cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/elemental_attunement.json"])`
+- Full test: `run_project_cmd(project="godot-td", workspace="poke-defense-godot/issue-elemental-attunement", cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/floodgate_saltwater_purge.json"])`
+- Typecheck/build: `run_project_cmd(project="godot-td", workspace="poke-defense-godot/issue-elemental-attunement", cmd=["godot","--headless","--path",".","--editor","--quit-after","300"])`
 
 ## Clusters
 
-1. burn-refresh-preserves-pending-float — files: `scripts/game/status/BurnStatus.gd` — depends on: none
-- Refreshing the burn on an already-burning enemy preserves the accumulated fractional damage carry instead of zeroing it, so the next integer damage tick accounts for it.
-- Re-applying burn to an already-burning enemy never delivers less total burn damage than letting the original application run to expiry unrefreshed, under identical timing and payload.
-- A fresh burn applied to a previously unburned enemy still starts with no carried-over fractional damage and delivers exactly its configured per-tick schedule.
-- Debug-build [BURN] log line per burn refresh naming the preserved pending fractional amount and the new tick schedule.
-2. refresh-regression-scenario — files: `tests/scenarios/burn_status_refresh_pending_damage.json` — depends on: 1
-- A headless harness scenario applies two overlapping burn payloads to the same enemy through the same public apply entry point a tower uses and asserts total delivered burn damage is monotonically non-decreasing relative to a single-application baseline run of the same seed and timing.
-- The same scenario asserts the refreshed burn still terminates after its refreshed duration and flushes any remaining fractional damage at expiry rather than dropping it.
-
-manual_testing: none
+1. attunement-perk-and-effectiveness — files: `scripts/progression/global.json`, `scripts/config/Balance.gd`, `autoload/ProgressionManager.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — depends on: none
+- A new Unique progression named `elemental_attunement` exists in the global progression pool (`scripts/progression/global.json`), is eligible for chest/cave draws under the same rules as other Uniques, and reaches level 1 after being applied through the progression manager.
+- With no attunement owned, every attacker/defender pair resolves exactly as before the change: fire/fire stays 0.5x, water/water stays 0.5x, electric/electric keeps its 0.3x self-resistance, and no other entry in the effectiveness path shifts.
+- Owning the fire attunement makes fire-attributed damage resolve as super-effective (2.0x) against Water-typed and Electric-typed enemies, while fire damage against Fire-typed enemies keeps its 0.5x self-resistance.
+- Owning the water attunement makes water-attributed damage resolve as super-effective (2.0x) against Fire-typed and Electric-typed enemies, while water damage against Water-typed enemies keeps its 0.5x self-resistance.
+- Owning the electric attunement makes electric-attributed damage resolve as super-effective (2.0x) against Fire-typed and Water-typed enemies, while electric damage against Electric-typed enemies keeps its 0.3x self-resistance.
+- Owning `elemental_attunement` grants extended coverage for exactly one chosen element (fire, water, or electric); the two unchosen elements' towers gain no new multiplier, and the perk never removes any self-resistance.
+- The attunement perk can be selected from the player-facing progression pick flow (it appears as a choosable option and choosing it applies the perk), matching how existing Unique perks are presented.
+- Debug-build `[ELEMENTAL_ATTUNEMENT]` log line per application event, naming which element was chosen.
+2. attunement-gameplay-verification — files: `tests/scenarios/elemental_attunement.json` — depends on: 1
+- In a live map, one scripted fire-typed direct hit on a Water-typed enemy removes exactly twice the baseline HP when the fire attunement is owned compared to the same hit without the perk (deterministic harness arithmetic, no projectile flight involved).
+- In a live map, once the water attunement is owned, a scripted water-typed direct hit on a Fire-typed enemy resolves at 2.0x while a scripted water-typed direct hit on a Water-typed enemy still resolves at its 0.5x self-resistance.
+- The existing effectiveness-path gameplay regression (`floodgate_saltwater_purge`) still passes end-to-end after the change.
 
 ## Criteria
 
-- Refreshing the burn on an already-burning enemy preserves the accumulated fractional damage carry instead of zeroing it, so the next integer damage tick accounts for it.
-- Re-applying burn to an already-burning enemy never delivers less total burn damage than letting the original application run to expiry unrefreshed, under identical timing and payload.
-- A fresh burn applied to a previously unburned enemy still starts with no carried-over fractional damage and delivers exactly its configured per-tick schedule.
-- Debug-build [BURN] log line per burn refresh naming the preserved pending fractional amount and the new tick schedule.
-- A headless harness scenario applies two overlapping burn payloads to the same enemy through the same public apply entry point a tower uses and asserts total delivered burn damage is monotonically non-decreasing relative to a single-application baseline run of the same seed and timing.
-- The same scenario asserts the refreshed burn still terminates after its refreshed duration and flushes any remaining fractional damage at expiry rather than dropping it.
+- A new Unique progression named `elemental_attunement` exists in the global progression pool (`scripts/progression/global.json`), is eligible for chest/cave draws under the same rules as other Uniques, and reaches level 1 after being applied through the progression manager.
+- With no attunement owned, every attacker/defender pair resolves exactly as before the change: fire/fire stays 0.5x, water/water stays 0.5x, electric/electric keeps its 0.3x self-resistance, and no other entry in the effectiveness path shifts.
+- Owning the fire attunement makes fire-attributed damage resolve as super-effective (2.0x) against Water-typed and Electric-typed enemies, while fire damage against Fire-typed enemies keeps its 0.5x self-resistance.
+- Owning the water attunement makes water-attributed damage resolve as super-effective (2.0x) against Fire-typed and Electric-typed enemies, while water damage against Water-typed enemies keeps its 0.5x self-resistance.
+- Owning the electric attunement makes electric-attributed damage resolve as super-effective (2.0x) against Fire-typed and Water-typed enemies, while electric damage against Electric-typed enemies keeps its 0.3x self-resistance.
+- Owning `elemental_attunement` grants extended coverage for exactly one chosen element (fire, water, or electric); the two unchosen elements' towers gain no new multiplier, and the perk never removes any self-resistance.
+- The attunement perk can be selected from the player-facing progression pick flow (it appears as a choosable option and choosing it applies the perk), matching how existing Unique perks are presented.
+- Debug-build `[ELEMENTAL_ATTUNEMENT]` log line per application event, naming which element was chosen.
+- In a live map, one scripted fire-typed direct hit on a Water-typed enemy removes exactly twice the baseline HP when the fire attunement is owned compared to the same hit without the perk (deterministic harness arithmetic, no projectile flight involved).
+- In a live map, once the water attunement is owned, a scripted water-typed direct hit on a Fire-typed enemy resolves at 2.0x while a scripted water-typed direct hit on a Water-typed enemy still resolves at its 0.5x self-resistance.
+- The existing effectiveness-path gameplay regression (`floodgate_saltwater_purge`) still passes end-to-end after the change.

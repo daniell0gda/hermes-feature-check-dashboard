@@ -1,35 +1,30 @@
-# Request: BurnStatus._reset zeroes accumulated pending sub-integer DoT damage on refresh
+# Request: #33 Systemic: Elemental Attunement
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/53
-Workspace: /workspace/git-workspaces/poke-defense-godot/issue-burn-status-refresh-loses-pending-damage
-Branch: issue/burn-status-refresh-loses-pending-damage (from origin/master)
+Project: poke-defense-godot (runner key `godot-td`)
+Workspace: `poke-defense-godot/issue-elemental-attunement`
+Branch: `issue/elemental-attunement`
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/33
+Slug: `elemental-attunement`
 
 ## Problem
 
-`scripts/game/status/BurnStatus.gd`'s `_reset()` path (used by `apply_or_refresh` whenever a
-burning enemy is hit by another fire-typed source before its current burn expires) zeroes the
-instance's `_pending_float` sub-integer damage carry when refreshing the DoT. Fractional damage
-accumulated toward the next tick is silently discarded.
-
-This makes re-applying burn to an already-burning enemy strictly *less* effective than letting it
-run out, and makes aggregate `damage_by_type.fire` assertions in headless scenarios unreliable.
+`Balance.type_effectiveness` (`scripts/config/Balance.gd`) makes fire/water/electric each resist themselves (`"fire": {"Fire": 0.5}`, `"water": {"Water": 0.5}`, `"electric": {"Electric": 0.5}`). A player who commits heavily to one element has no progression-side recourse if a level leans on that element's resistant enemy type.
 
 ## Done when
 
-- `BurnStatus._reset()` (or `apply_or_refresh`) preserves or properly flushes `_pending_float`
-  when a burn is refreshed.
-- Re-applying burn to an already-burning target never results in less total delivered damage than
-  letting the existing burn run out unrefreshed.
-- Verified by a headless scenario that hits the same enemy with two overlapping burn applications
-  and asserts total delivered burn damage is monotonically non-decreasing relative to a
-  single-application baseline.
+New Unique `elemental_attunement`: pick one of fire/water/electric; that element's towers also gain the super-effective multiplier normally reserved for the other two elements against their respective resistant types.
 
-## Notes
+No new visual required — pure stat modifier: extends an existing invisible damage-multiplier table (`Balance.type_effectiveness`) with no new visible mechanic of its own.
 
-- A prior abandoned attempt exists as commit e5a0538 on the old branch state ("fix(burn):
-  preserve pending float on BurnStatus refresh", touching BurnStatus.gd, HarnessActions.gd, and
-  tests/scenarios/burn_status_refresh_pending_damage.json). The worktree was reset to
-  origin/master; that commit is historical reference only — do not assume it was verified. It may
-  be consulted or re-derived, but all acceptance criteria must be freshly implemented and
-  verified.
-- Runner key for project commands: `godot-td`. Use run_project_cmd; never local godot/npm.
+It only ever restores coverage on the other two elements. It never removes the self-resistance.
+
+Example of intended coverage (fire pick): Fire towers keep `Fire` enemies at 0.5, but also gain the super-effective multipliers the other two elements normally have against *their* resistant types (water vs Water, electric vs Electric), applied from the chosen element's towers.
+
+## Constraints
+
+- Use `run_project_cmd` with project `godot-td` and workspace `poke-defense-godot/issue-elemental-attunement`.
+- Follow `/opt/data/coding_rules.md`.
+- Do not commit, push, merge, or close the issue.
+- Native Linux Godot verification through the runner.
+- Visible UI for picking the element is only required if the existing Unique perk flow already has a player-facing pick; otherwise keep it a stat/table modifier and prove it with a focused harness.
+- Planner: still-captureable perk-select / type-multiplier user story should get a generic `.gen/ui_scenario.md`. If the perk is pickable in a modal, `manual_testing: required`.
