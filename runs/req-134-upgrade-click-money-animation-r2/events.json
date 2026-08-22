@@ -61,5 +61,14 @@
     "duration_ms": 331004,
     "summary": "Check complete. All gates ran through run_project_cmd (never host shell): runner probe, editor parse gate, headless harness, and windowed harness \u2014 all exit 0, harness status=pass with all 3 expectations green (money 1460 < 1500, tower leve\u2026",
     "error": null
+  },
+  {
+    "sequence": 8,
+    "timestamp": "2026-08-22T18:13:57.825Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 49288,
+    "summary": "Gate decision complete.\n\n- Check status: pass (revision-check-2), all acceptance criteria verified with harness + windowed screenshots.\n- Decision: manual_testing: required \u2014 this is a new player-visible story (upgrade click spawns the floa\u2026",
+    "error": null
   }
 ]
