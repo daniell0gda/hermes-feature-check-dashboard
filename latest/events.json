@@ -34,5 +34,14 @@
     "duration_ms": 58455,
     "summary": "Manual testing gate complete.\n\n- Check status: pass (fresh verification, all suites green per .gen/check.md).\n- Decision: manual_testing: required \u2014 the change is a new player-visible UI story (closable panels now reserve padding so content\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-22T19:53:27.905Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 244884,
+    "summary": "Manual-test result: PASSED. Scenario: tests/scenarios/hud_other_panels.json (windowed run via run_project_cmd, status=pass exit 0).\n\nReport: /workspace/git-workspaces/poke-defense-godot/issue-padding-closable-panels-close-button/.gen/manual\u2026",
+    "error": null
   }
 ]
