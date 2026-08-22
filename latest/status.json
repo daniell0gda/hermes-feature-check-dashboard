@@ -1,47 +1,22 @@
 {
-  "run_id": "issue138-norocktree-1787411442",
-  "feature": "no-rock-or-tree-same-position-as-building",
+  "run_id": "req-136-padding-closable-panels-close-button",
+  "feature": "padding closable panels close button",
   "status": "running",
-  "started_at": "2026-08-22T17:39:03.349Z",
+  "started_at": "2026-08-22T19:03:06.297Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue138-norocktree-1787411442/",
-  "heartbeat_at": "2026-08-22T19:03:41.925Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T19:03:41.925Z",
-  "process_id": 655555,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
+  "heartbeat_at": "2026-08-22T19:05:53.487Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-22T19:05:53.487Z",
+  "process_id": 682907,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T19:03:46.278883+00:00",
-    "last_success_at": "2026-08-22T19:03:46.278270+00:00",
+    "last_attempt_at": "2026-08-22T19:05:53.487614+00:00",
+    "last_success_at": "2026-08-22T19:03:15.853193+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 97512,
-        "output_tokens": 2222
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 241023,
-        "output_tokens": 7770
-      }
-    ]
-  }
+  "metrics": {}
 }

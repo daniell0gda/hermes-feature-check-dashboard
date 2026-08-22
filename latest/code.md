@@ -1,29 +1,30 @@
-# Coder report: implementation\n\n# Coder report: implementation
+# Coder report: implementation\n\n# Coder report: implementation (closable-panel-content-padding)
 
 ## Changed files
-- `scripts/game/NatureDecoration.gd` — modified: buildings now placed before large nature; building clearance check for trees/dead trees/rocks; debug `[NATURE]` reject log; harness overlap counter.
-- `scripts/game/Game.gd` — modified: exposes `nature_large_nature_building_overlaps` after nature generation for the harness expectation.
-- `tests/scenarios/nature_no_building_overlap.json` — new harness scenario (load map_1, wait 1s, snapshot; asserts zero overlaps + regex on `[NATURE]`/`[Harness]` log).
+- `scripts/ui/hud/TitledPanel.gd` — mod: added `_reserve_content_padding()` + `_close_chip()` helper; `_ready()` reserves padding whenever a CloseChip exists.
+- `tests/ui/test_titled_panel_close_corner.gd` — mod: 4 new padding/layout tests, await-based runner, report file output, inheritance-chain panel finder.
+- `tests/ui/test_titled_panel_close_corner.tscn` — unchanged this iteration (already present).
 
 ## Criteria
-- Trees never placed within building clearance radius of a placed building — Done (`_is_within_building_clearance` gate in `_generate_trees`).
-- Dead trees never placed within building clearance radius — Done (gate in `_generate_dead_trees`).
-- Rocks never placed within building clearance radius — Done (gate in `_generate_rocks`).
-- Bushes/flowers/grass groups may still overlap buildings — Done (no clearance check added to those generators; verified unchanged).
-- Generation terminates via existing attempt limits; path/egg/spawner clearances still respected — Done (attempt-limit loops untouched; `_is_valid_position` still runs before the building check in each generator).
-- Debug-build `[NATURE]` reject log including position — Done (`_debug_log_nature_reject`, guarded by `OS.is_debug_build()`); observed live in headless run output.
-- Harness scenario passes headless with zero overlaps — Done (see commands).
+- Closable TitledPanel reserves horizontal padding so no content control intersects CloseChip rect at any size — Done
+- Padding applies only when closable / scene-placed chip exists — Done
+- CloseChip stays flush top-right; press emits exactly one close_requested — Done
+- UpgPanel-style content clears the chip — Done (covered by leaf-rect test on built panels)
+- Manage Towers + Options keep content clear of the chip — Done
+- Debug-build `[TITLED_PANEL]` log naming panel and inset — Done
 
 ## Commands and results
-- `godot --headless --path . --editor --quit-after 300` (import preflight) — exit 0.
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/nature_no_building_overlap.json` — exit 0; `[Harness] status=pass exit=0`; 11 `[NATURE] rejected ... too close to a building at (x, z)` lines logged; result written to `.gen/harness/nature_no_building_overlap/result.json`.
-- `godot --headless --editor --quit-after 2 --path .` (typecheck/build) — exit 0.
-- Full suite attempt: ran `python3 tests/run_all_scenarios_scratch.py` inside the worker — killed at ~12 min by runner timeout (exit 137) after completing 50 of 136 scenarios (~14s each). Of those 50, 36 passed and 14 failed. Re-ran one failure, `cannon_bunker_buster`, with this cluster's changes stashed (baseline HEAD) — identical failure (status timeout, same expectations fail). Conclusion: the 14 failures are pre-existing and unrelated to nature/building placement (they are cannon/cave/fire/floodgate/curse progression scenarios; full list matches the previous worker's `tests/run_all_done.txt`). Full-suite completion is bounded out by per-scenario cost, not by this change.
+- `godot --headless --path . --import` — exit 0 (fresh-worktree import first).
+- `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit 0; "titled_panel_close_corner: 29 ok, 0 failed".
+- `godot --headless --path . res://tests/ui/test_enemy_armor_bar.tscn` — exit 0; "35 ok, 0 failed".
+- `godot --headless --path . res://tests/ui/test_enemy_health_bar_boss_icon.tscn` — exit 0; "18 ok, 0 failed".
+- `godot --headless --path . res://tests/ui/test_enemy_health_bar_oiled_icon.tscn` — exit 0; "8 ok, 0 failed".
+- `godot --headless --path . --check-only --script res://scripts/ui/hud/TitledPanel.gd` — exit 0.
 
 ## Notes
-- Building clearance is XZ-plane distance < 4.0 units (`building_clearance`); Y ignored via Vector3(x, 0, z) comparisons.
-- `building_positions` is cleared at the start of `_generate_all_decorations()` so map reloads don't accumulate stale positions.
-- Dead trees are added to `TreeDecorations`, so `get_large_nature_building_overlaps()` scanning `TreeDecorations` + `RocksDecorations` covers all three large-nature kinds.
-- The scenario's log regex alternation accepts `[Harness]` so it passes on seeds where no candidate happens to be rejected; seed 20260822 does produce rejects.
-- Pre-existing repo dirt (modified .glb binaries, deleted portal_fantasy_arch.glb, logs/balance CSV) was already present in the workspace before this iteration and was left untouched.
+- Implementation approach: pull `Frame.offset_right` in by `CLOSE_CORNER_SIZE.x` (90px) when a CloseChip exists. The chip anchors to the panel root (not the frame), so it stays flush top-right while all frame content shifts left of it. Padding fires for both grown and scene-placed chips (`if _close_chip() != null`), never for plain panels.
+- Log line only under `OS.is_debug_build()`, prints panel name and reserved inset.
+- Gotcha for tester: scene scripts extend TitledPanel by path (not class_name) for headless-fresh-checkout reasons, so `get_script() == TitledPanelScript` identity fails for ManageTowersPanel/OptionsScreen — compare through `get_base_script()` chain instead.
+- Gotcha: first run of any test scene on a fresh worktree fails with invalid-UID warnings until `--import` has run once.
+- Manual visual pass still required per plan: run `tests/scenarios/hud_other_panels.json` with `-Windowed`, inspect screenshots `panel_tower_details`, `panel_manage_towers`, `panel_options`.
 \n
