@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue138-norocktree-1787411442/",
   "heartbeat_at": "2026-08-22T23:01:40.084Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
   "process_id": 789587,
   "host": "25e0b2c49eb5",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T23:01:40.084459+00:00"
+    "last_attempt_at": "2026-08-22T23:01:45.038335+00:00",
+    "last_success_at": "2026-08-22T23:01:44.533586+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
