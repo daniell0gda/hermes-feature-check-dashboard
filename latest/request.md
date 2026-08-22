@@ -1,29 +1,21 @@
-# Request: window-modals-skip-wood-frame (#127)
+# Issue 124 follow-up: fix cave sealing regression
 
-Give RewardsModal and ProgressionModal the same wood frame and corner close as the other HUD modals.
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
+Workspace: poke-defense-godot/issue-cave-carved-path-torches
+Runner: godot-td
 
-## Issue
-https://github.com/daniell0gda/poke-defense-godot/issues/127
+## Required scope
+Preserve the existing issue-124 torch implementation, but fix the regression exposed by `tests/scenarios/cave_pending_seals_entrance_instantly.json`.
 
-## Problem
-RewardsModal and ProgressionModal are raw Window nodes with no theme. They look like a grey Godot default window. Every other modal uses ModalPanel + TitlePlate from themes/hud/HudTheme.tres and TitledPanel.gd, and dismisses via CloseChip / close_requested.
+The scenario must reliably prove:
+- A hole-to-exit route exists before the dangerous cave is discovered.
+- The instant confirmation is requested, the cave entrance is physically sealed and the route becomes unavailable.
+- Pending cave interior has zero torches.
+- Confirming yes restores the exact route and valid cave lighting.
 
-## Done when
-- Both modals use the same wood frame and name plate as PauseMenu, Options, Manage Towers, and tower details.
-- They dismiss through the same corner ✕ / close_requested contract, not a window decoration.
-- UI.open_progression_modal and UI._on_rewards_pressed still return something callers can use. CaveSystem types the return as Window. AgentHarness still matches `node is ProgressionModal` for auto-answer.
-- tests/scenarios/hud_other_panels.json panel_rewards checkpoint shows the wood frame.
-- The reward-pick modal (ProgressionModal) gets a screenshot checkpoint of its own.
+Previous check evidence: the regression failed at the initial route assertion on clean HEAD because RNG-discovered caves on map_9 carved/locked over the test corridor before the assertion. This is now required work, not an acceptable blocker. Diagnose and fix the smallest product/test-fixture boundary that makes this scenario deterministic without weakening its assertions or hiding real sealing behavior. Do not simply remove the regression scenario or reduce assertions.
 
-Visual: reuse existing ModalPanel / TitlePlate / ChipButton theme variations. No new art.
+## Verification
+Use native Godot through run_project_cmd. Run editor/import gate, issue-124 focused torch scenario, `declined_cave_torches_extinguish.json`, and `cave_pending_seals_entrance_instantly.json`. Scan raw stdout/stderr independently for script errors, parse errors, failed resources, and invalid calls. Then run the required windowed top-down issue-124 scenario and inspect fresh PNGs; stale screenshots/headless screenshot results are not proof.
 
-## Constraints
-- Project runner key: godot-td
-- Workspace: poke-defense-godot/issue-window-modals-skip-wood-frame
-- All Godot/project commands via run_project_cmd. No host godot.
-- Visible UI work: manual_testing required, windowed screenshots, never --headless for manual-tester.
-- Do not commit, push, merge, or close the issue.
-- Follow /opt/data/coding_rules.md and project CLAUDE.md.
-
-## Project path
-/workspace/git-workspaces/poke-defense-godot/issue-window-modals-skip-wood-frame
+Do not commit, push, merge, or close the issue.

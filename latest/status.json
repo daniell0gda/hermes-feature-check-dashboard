@@ -1,22 +1,47 @@
 {
-  "run_id": "issue-127-window-modals-skip-wood-frame",
-  "feature": "window-modals-skip-wood-frame",
+  "run_id": "issue-124-fix-cave-sealing-regression",
+  "feature": "issue-124-fix-cave-sealing-regression",
   "status": "running",
-  "started_at": "2026-08-22T09:57:39.112Z",
+  "started_at": "2026-08-22T09:18:07.215Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-window-modals-skip-wood-frame/",
-  "heartbeat_at": "2026-08-22T09:57:39.112Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
-  "process_id": 493943,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-fix-cave-sealing-regression/",
+  "heartbeat_at": "2026-08-22T10:02:29.548Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T10:02:29.548Z",
+  "process_id": 488246,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T09:58:26.280762+00:00",
-    "last_success_at": "2026-08-22T09:57:43.748939+00:00",
+    "last_attempt_at": "2026-08-22T10:02:29.548848+00:00",
+    "last_success_at": "2026-08-22T09:51:37.428463+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 182984,
+        "output_tokens": 9374
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 296361,
+        "output_tokens": 5575
+      }
+    ]
+  }
 }
