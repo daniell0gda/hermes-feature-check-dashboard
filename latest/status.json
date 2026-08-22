@@ -1,58 +1,22 @@
 {
-  "run_id": "issue-101-20260822T194917Z",
-  "feature": "underground-side-panel-carve-place-exit-",
+  "run_id": "req-136-padding-closable-panels-close-button",
+  "feature": "padding closable panels close button",
   "status": "running",
-  "started_at": "2026-08-22T20:21:45.912Z",
+  "started_at": "2026-08-22T20:44:12.989Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-101-20260822T194917Z/",
-  "heartbeat_at": "2026-08-22T20:46:52.666Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T20:46:52.666Z",
-  "process_id": 713831,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
+  "heartbeat_at": "2026-08-22T20:47:59.012Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-22T20:47:59.012Z",
+  "process_id": 729007,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T20:46:57.311493+00:00",
-    "last_success_at": "2026-08-22T20:46:57.310622+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T20:47:59.014915+00:00",
+    "last_success_at": "2026-08-22T20:44:17.455785+00:00",
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 81116,
-        "output_tokens": 6750
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 109592,
-        "output_tokens": 7933
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 104254,
-        "output_tokens": 5578
-      }
-    ]
-  }
+  "metrics": {}
 }
