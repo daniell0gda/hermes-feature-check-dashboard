@@ -1,11 +1,20 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T14:51:46.761Z",
-    "node": "planning",
+    "timestamp": "2026-08-22T13:23:21.656Z",
+    "node": "plan",
     "status": "completed",
-    "duration_ms": 4348,
-    "summary": "{\"task_id\": \"plan-1\", \"status\": \"ok\"}",
+    "duration_ms": 1455755,
+    "summary": "Summary of plan-worker run for issue #130 (underground carve top-down camera rotation):\n\n## Artifacts (all in place at /workspace/poke-defense-godot/.gen/)\n\n- **plan.md** \u2014 complete acceptance plan with 9 criteria in 2 clusters, `manual_tes\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-22T14:53:36.999Z",
+    "node": "code",
+    "status": "failed",
+    "duration_ms": 5410845,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/poke-defense-godot.\\\\nThe durable evidence directory is /workspace/poke-defense-godot\u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/poke-defense-godot.\\\\nThe durable evidence directory is /workspace/poke-defense-godot\u2026"
   }
 ]
