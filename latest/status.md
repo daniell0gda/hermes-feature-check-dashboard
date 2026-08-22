@@ -1,20 +1,12 @@
 ## ✅ Done
-- The `static_breach` progression exists in the Electric tower progression pool, is Electric-tower-compatible only, and offers exactly 3 levels.
-- With `static_breach` at levels 1/2/3, the exposed breach threshold is 5/4/3 hits respectively; when the perk is not owned it is disabled.
-- A chest draw restricted to non-Electric towers never offers `static_breach`.
-- Each direct or chained Electric hit on an enemy adds exactly one charge to that enemy; non-Electric damage sources add no charge.
-- When a hit raises an enemy's charge to the active threshold, that hit sets the enemy's remaining armor to zero before its HP damage is applied.
-- Reaching the threshold consumes the stack so subsequent hits start counting from zero again rather than breaching every hit.
-- An enemy that leaves all tower range / loses target lock for the documented reset duration has its charge cleared; a hit after the duration starts counting from zero.
-- Charges are tracked per enemy: two enemies hit different numbers of times keep independent counts, and breaching one does not affect the other.
-- A debug-build log line with a stable filterable `[StaticBreach]` marker records each breach event (enemy id, level, threshold) and each charge reset event (enemy id).
-- While an enemy carries at least one stacked charge, it shows a visible stacking-charge highlight built through the existing HighlightShaderUtils preset-highlight factory pattern, and the visual clears when the charge resets.
-- The triggering breach hit produces a distinct shatter flash on the enemy, distinct from the persistent charge highlight, reusing the shield-crack asset where one exists.
-- A focused harness scenario proves the threshold behavior: fewer than the threshold hits leave armor intact, and the threshold hit zeroes armor, at each of the three levels.
-- A focused harness scenario proves per-enemy isolation and the reset-duration behavior using scripted hits and timed waits.
-- A focused harness scenario proves Electric-only scope: scripted non-Electric hits accumulate no charges and never breach armor while the perk is owned.
-- A windowed harness scenario captures the stacking-charge indicator and the shatter flash, asserting the corresponding state transitions in the same run.
+- Update tests/scenarios/progression_pick.json so it places a venom tower, or otherwise owns a compatible tower, before opening the chest and selecting venom_miasma_bloom; the scenario must pass. — verified fresh this revision: run_project_cmd focused harness exit 0, "[Harness] status=pass exit=0", result.json status "pass" with all 4 expectations PASS (venom_miasma_bloom==1, get_venom_miasma_config.enabled==true, tree.paused==false, current_layer=="underground"). Log shows real chest draw force_mode=false, flagged=0, normal=2, chosen=2 (pool exhausted to the two venom perks), modal answered card 2 = venom_miasma_bloom. Timeline: _set_tower_availability(8) at action 117, place_tower kind:"venom" at 119 before chest open.
+- Preserve and verify chest_duplication is granted before carving, including the cave_chest_duplicate RNG site behavior. — verified: apply_progression(global.json, chest_duplication) at timeline actions 1–2, first carve_rectangle at action 121; carving proceeds to completion and the chest reward fires deterministically under seed 20260726.
+- Update the “Reaching a chest organically” section of .claude/skills/game-test/REFERENCE.md to match the fixed recipe and tower requirement. — verified: section rewritten (~line 350) describing the passing scenario, tower ownership/compatibility filter, pool-exhaustion recipe, and correct forceVisibility:false claim matching scripts/progression/venom_tower.json.
+- Use native Linux Godot/project-runner verification, fresh focused scenario evidence, and inspect raw diagnostics separately from harness status. — done by checker: preflight godot --version (exit 0, Godot 4.4.1.stable) then focused harness via run_project_cmd; raw log inspected separately from harness status. Pre-existing noise noted (missing wood_panel.png texture warnings, ProgressionModal/CaveDangerConfirmDialog exclusive-child window conflict) — neither blocks harness answering or the pass.
+- Do not close, merge, or push the issue. Commit is not requested. — OK: HEAD unchanged (996f282); working tree has only the two modified files.
 
 ## ⬜ Pending
+(none)
 
 ## ❌ Impossible
+(none)
