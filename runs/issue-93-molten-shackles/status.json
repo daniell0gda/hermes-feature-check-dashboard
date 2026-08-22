@@ -2,21 +2,19 @@
   "run_id": "issue-93-molten-shackles",
   "feature": "perk-molten-shackles",
   "status": "running",
-  "started_at": "2026-08-22T11:14:38.973Z",
+  "started_at": "2026-08-22T14:28:45.621Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-93-molten-shackles/",
-  "heartbeat_at": "2026-08-22T11:14:38.973Z",
+  "heartbeat_at": "2026-08-22T14:28:45.621Z",
   "last_node": null,
-  "active_node": "plan",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 514915,
+  "process_id": 589800,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T11:15:27.845853+00:00",
-    "last_success_at": "2026-08-22T11:14:43.202278+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T14:28:45.621536+00:00"
   },
   "metrics": {}
 }
