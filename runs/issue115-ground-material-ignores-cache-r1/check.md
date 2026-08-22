@@ -1,45 +1,34 @@
-# Check report — issue-ground-material-ignores-cache (iteration 1)
+# Check report: revision-check-1 — issue-ground-material-ignores-cache
 
-classification: fixable
+classification: pass
 
 ## Verdict
+All 7 acceptance criteria remain Done after fresh verification through the approved runner (`run_project_cmd`, project=poke-defense-godot, workspace=poke-defense-godot/issue-ground-material-ignores-cache). No host-shell Godot was used.
 
-pass — all 7 plan criteria verified Done via fresh `run_project_cmd` runs
-(project=poke-defense-godot, workspace=poke-defense-godot/issue-ground-material-ignores-cache).
-
-## Commands and exit codes (all via run_project_cmd)
-
-- `["godot","--version"]` — exit 0, Godot 4.4.1.stable.
+## Commands (fresh, this check)
+- `["godot","--version"]` — exit 0, Godot 4.4.1.stable (runner preflight).
 - Typecheck/build gate: `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0, no script parse errors.
-- Full test command: same editor gate — exit 0 (plan defines this as both typecheck/build and full-suite gate).
-- Focused harness: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/ground_material_map_switch.json"]` — exit 0; `[Harness] status=pass exit=0`; fresh `.gen/harness/ground_material_map_switch/result.json` has `"status": "pass"` and both expectations passing (`__ground_shader_probe == "grass=ok dirt=ok tint=0.309804,0.498039,0.309804"`; log contains `[GROUND] ground material created`). Timeline executed map_1→map_2→map_1→map_2 (double switch), all actions ok. Log shows `[GROUND] ground material created: from_cache=map_grass.jpg,underground_floor.jpg fresh=none` on every material creation event.
+- Full focused harness: `["godot","--headless","--path",".","res://scenes/Main.tscn","--quit-after","6000","--","--harness=res://tests/scenarios/ground_material_map_switch.json"]` — exit 0, `[Harness] status=pass exit=0`.
 
-## Criterion evidence
+## Harness evidence
+- Fresh `.gen/harness/ground_material_map_switch/result.json`: status `pass`; expectation `__ground_shader_probe == "grass=ok dirt=ok tint=0.309804,0.498039,0.309804"` PASS; log expectation `[GROUND] ground material created` PASS.
+- Run log shows timeline map_1→map_2→map_1→map_2 (double switch); every ground material creation logged `[GROUND] ground material created: from_cache=map_grass.jpg,underground_floor.jpg fresh=none`.
 
-1. CACHE_MODE_REUSE for ground textures — Done. `TextureAtlasUtils._load_ground_texture` loads both textures via `ResourceLoader.load(..., CACHE_MODE_REUSE)`; no `CACHE_MODE_IGNORE` remains in the ground path. Harness log confirms cache-honouring loads (`from_cache=map_grass.jpg,underground_floor.jpg`).
-2. Root cause documented + sampler reassignment fixed — Done. `EnvironmentUtils._update_ground_plane_color` now re-sets missing `grass_albedo`/`dirt_albedo` samplers (CACHE_MODE_REUSE) when absent on the blend ShaderMaterial; root cause (only tint reassigned on map switch, never samplers) documented in coder report and changes notes. Pre-existing misindented grass_tint block corrected as part of this change (it was inside the modified block).
-3. Non-empty samplers after double map switch (harness) — Done. Probe expectation `grass=ok dirt=ok` passed after 4 map loads including two switches back.
-4. grass_tint reflects newly loaded map color — Done. Post-environment probe asserts tint = Color(0.309804, 0.498039, 0.309804), the configured map grassColor applied after `_build_ground_plane`; if environment tint application regressed to the Game.gd vivid-green default, the string equality would fail. Caveat (advisory): all shipped maps share one grassColor, so the assertion cannot distinguish two distinct map colors; noted in quality-notes.
-5. Harness scenario passes headlessly with fresh result.json status pass — Done (see above).
-6. Debug `[GROUND]` log naming cached vs fresh textures — Done. Log line present per creation event in debug build, listing `from_cache=` / `fresh=` file names.
-7. Fallback paths unchanged — Done. Grass.png tile / StandardMaterial3D fallback code paths untouched in the diff; blend path exercised by the scenario; `_load_ground_texture` returns null when a texture is missing, preserving usable-material behavior.
+## Per-criterion evidence
+1. CACHE_MODE_REUSE for map_grass.jpg / underground_floor.jpg — confirmed in `scripts/utils/TextureAtlasUtils.gd` diff (`_load_ground_texture` uses CACHE_MODE_REUSE; no CACHE_MODE_IGNORE remains in the ground path); harness log shows cache-honouring loads.
+2. Root cause documented and fixed — `EnvironmentUtils._update_ground_plane_color` now re-asserts `grass_albedo`/`dirt_albedo` samplers when missing (diff inspected); rationale documented in change notes/coder report.
+3. Non-empty albedo samplers after double switch — asserted by harness expectation above (would fail if broken).
+4. grass_tint follows newly loaded map — same probe asserts tint post-environment apply on final load.
+5. Headless scenario pass with fresh result.json — verified above.
+6. Debug `[GROUND]` log per creation naming cached vs fresh — present in run log for all four creations.
+7. Fallback paths unchanged — `create_ground_plane_material` StandardMaterial3D/Grass.png fallback code untouched by the diff.
 
 ## Changed-file quality findings
-
-Diff reviewed against `/opt/data/coding_rules.md` + worktree `CLAUDE.md`: typed variables used throughout new code, guard-clause style respected, debug logging follows `OS.is_debug_build()` + `[TAG]` convention, surgical scope (3 source files + 1 scenario). No demoting violations found. Two casts present (`material as ShaderMaterial`, `(existing as Color)` in EnvironmentUtils) match pre-existing patterns in the same functions/files and are required by the engine API there — not flagged as demotions.
-
-## Test overlap check
-
-New scenario `ground_material_map_switch.json` has no existing overlap: searched `tests/scenarios/` — no prior ground-material/map-switch material scenario exists. Accepted.
+- New code follows worktree rules (typed vars, guard clauses, debug-build `[TAG]` logging). Minor advisory only: harness probe state (`__ground_shader_probe`) lives in production `Game.gd`; documented and minimal — recorded in quality-notes context, non-blocking.
+- Quality notes: existing open advisory `ground-map-tint-distinctness` re-checked — still valid (all shipped maps share one grassColor), stays open, no RESOLVED appended. No new entries.
 
 ## Blockers
-
 None.
 
-## Unverified / manual items
-
-- manual_testing: required (windowed screenshot of visible ground texture) — owned by the manual-tester profile; not run by checker. Headless evidence above covers logic/sampler state, not visual appearance.
-
-## Quality notes
-
-See `.gen/quality-notes.md` (advisory only).
+## Unverified items
+- Manual windowed screenshot evidence (player-visible ground surface, request.md criterion 3) is owned by the manual-tester profile (.gen/manual-report.md); not produced by this checker.

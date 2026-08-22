@@ -1,40 +1,36 @@
-# Request: Issue #108 — Harness cannot boot a non-game scene, so the main menu is untestable
+# Request: issue #115 — create_ground_plane_material bypasses the resource cache
 
-- Project: poke-defense-godot
-- Runner key: `godot-td` (never the folder name)
-- Runner workspace: `poke-defense-godot/issue-harness-cannot-boot-menu-scene`
-- Branch: `issue/harness-cannot-boot-menu-scene` (cut from origin/master)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/108
-- Type: harness / ui · priority:medium
+- **Project:** poke-defense-godot
+- **Git workspace:** poke-defense-godot/issue-ground-material-ignores-cache
+  (`/workspace/git-workspaces/poke-defense-godot/issue-ground-material-ignores-cache`)
+- **Branch:** `issue/ground-material-ignores-cache` (cut from fresh `origin/master`, d241462)
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/115
+- **Labels at claim:** status:ready → status:in-progress, priority:medium
+- **Request ID:** issue115-ground-material-ignores-cache-r1
 
-## Problem
+## Feature summary
 
-Every scenario runs against `res://scenes/Main.tscn`, hard-coded in
-`.claude/skills/game-test/scripts/Run-Scenario.ps1:193`, and `AgentHarness._await_game()`
-(`scripts/testing/AgentHarness.gd:171-182`) blocks until `current_scene` has a `Game` child whose
-`Placement.tower_placement` is non-null. Any non-game scene (e.g. `scenes/MainMenu.tscn`) is
-unreachable by the harness, so the main menu's live 3D backdrop cannot be asserted or screenshotted.
+`TextureAtlasUtils.create_ground_plane_material` (scripts/utils/TextureAtlasUtils.gd ~lines 145-158)
+loads both ground textures with `ResourceLoader.CACHE_MODE_IGNORE`, defeating the resource cache and
+the `AssetPreloader` startup preload of `underground_floor.jpg`. Switch to `CACHE_MODE_REUSE` — but
+first find the real cause of the "shader only" map-switch bug the comment blames on caching.
+Likely suspect: `EnvironmentUtils._update_ground_plane_color` reassigns `grass_tint` but never the
+albedo samplers.
 
-## Done when
+## Acceptance criteria
 
-1. `HarnessScenario` accepts an optional `scene` (defaulting to `res://scenes/Main.tscn`) and
-   `Run-Scenario.ps1` passes it through instead of hard-coding the path.
-2. `AgentHarness._await_game()` no longer requires a `Game` with a live `Placement` when the
-   scenario declares it does not need one — a screenshot-and-expectation-only timeline must run
-   against any scene.
-3. A value source can read a property at an arbitrary node path under the current scene, so the
-   orbit and the backdrop world are assertable without adding test-only methods to production code.
-4. A `main_menu` scenario exists that boots `scenes/MainMenu.tscn`, waits, asserts the camera moved
-   and enemies are on the field, and takes a `-Windowed` screenshot of the menu over the map.
+1. Ground plane material uses cached textures (`CACHE_MODE_REUSE`) for
+   `res://textures/nature/map_grass.jpg` and `res://textures/underground_floor.jpg`.
+2. Root cause of the original map-switch shader issue identified; if it was a missing sampler
+   reassignment, that is fixed so the ground keeps its grass/dirt textures across a map switch.
+3. Verified by switching maps twice through the game-test harness and confirming the ground still
+   shows blended grass/dirt, not flat shader output. Manual test with windowed screenshots is
+   required (visible player-facing surface).
 
-## Redo notes for resumed runs
+## Runner notes (redo reminders)
 
-- Use runner key `godot-td`, workspace `poke-defense-godot/issue-harness-cannot-boot-menu-scene`.
-- Godot on Linux: native commands via runner; windowed evidence with
-  `--rendering-method gl_compatibility --audio-driver Dummy` when Vulkan fails.
-- Manual testing is required: player-facing menu screen with live backdrop → windowed PNGs/GIF,
-  plus overall UI-sanity pass (`ui_feels_broken: yes|no`) on every final screenshot.
-
-## Historical reference
-
-None — fresh claim from origin/master at pickup time.
+- Runner key `godot-td`, workspace `poke-defense-godot/issue-ground-material-ignores-cache`.
+- Native Godot commands via run_project_cmd; explicit scene argument before user args in harnesses;
+  editor gate `godot --headless --path . --editor --quit-after 300`.
+- Windowed evidence needs `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` when Vulkan fails.
+- manual_testing: required (ground texture visible in-game).

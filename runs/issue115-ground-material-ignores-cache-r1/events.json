@@ -34,5 +34,14 @@
     "duration_ms": 155764,
     "summary": "Summary (revision-code-1, cluster 1 \u2014 implementation):\n\nStatus: All 7 criteria re-verified green; no source changes were needed this revision \u2014 the iteration-1 implementation stands.\n\nCommands run fresh via run_project_cmd (project=poke-def\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-22T22:24:55.125Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 129109,
+    "summary": "HTTP 400: This request is not valid. Check the model name and other parameters. Additional info: Provider returned error\n",
+    "error": null
   }
 ]

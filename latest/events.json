@@ -1,47 +1,47 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T22:03:16.585Z",
+    "timestamp": "2026-08-22T22:05:35.936Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 160224,
-    "summary": "Plan artifacts were already in place from prior iterations; I validated them against the current tree and re-ran all three verification commands fresh via the approved runner (`godot-td`, workspace `poke-defense-godot/issue-harness-cannot-b\u2026",
+    "duration_ms": 138098,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-ground-material-ignores-cache/.gen/plan.md\n",
     "error": null
   },
   {
     "sequence": 2,
-    "timestamp": "2026-08-22T22:10:46.238Z",
+    "timestamp": "2026-08-22T22:16:33.149Z",
     "node": "code",
     "status": "completed",
-    "duration_ms": 445072,
-    "summary": "The `release_project_worker` tool isn't exposed in this session (only `run_project_cmd`), so worker release is left to the orchestrator. Work is complete.\n\nSummary:\n\n- Implemented the last pending criterion: `AgentHarness._await_game()` now\u2026",
+    "duration_ms": 652907,
+    "summary": "The `release_project_worker` tool isn't exposed in this session's toolset (only `run_project_cmd` is), so worker release is left to the orchestrator.\n\nSummary:\n\nCluster 1 (ground-material-cache-and-map-switch) implemented and verified:\n\n- T\u2026",
     "error": null
   },
   {
     "sequence": 3,
-    "timestamp": "2026-08-22T22:14:16.280Z",
+    "timestamp": "2026-08-22T22:20:01.497Z",
     "node": "check",
     "status": "completed",
-    "duration_ms": 205094,
-    "summary": "Check complete. Summary:\n\nVerified done: 10. Pending: 1 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations (the single Pending item is the `-Windowed` screenshot criterion requiring the manual-tester prof\u2026",
+    "duration_ms": 203810,
+    "summary": "Verified done: 7. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: appended (1 advisory entry on tint-distinctness; no demotions). Verification: passed. Blocker\u2026",
     "error": null
   },
   {
     "sequence": 4,
-    "timestamp": "2026-08-22T22:19:49.524Z",
+    "timestamp": "2026-08-22T22:22:41.583Z",
     "node": "code",
     "status": "completed",
-    "duration_ms": 328744,
-    "summary": "Revision complete. Summary:\n\n- No code changes were required this revision: the check verdict was \"fixable\" only because of the manual `-Windowed` screenshot item, which is outside code scope (headless-only runner cannot render windowed). A\u2026",
+    "duration_ms": 155764,
+    "summary": "Summary (revision-code-1, cluster 1 \u2014 implementation):\n\nStatus: All 7 criteria re-verified green; no source changes were needed this revision \u2014 the iteration-1 implementation stands.\n\nCommands run fresh via run_project_cmd (project=poke-def\u2026",
     "error": null
   },
   {
     "sequence": 5,
-    "timestamp": "2026-08-22T22:23:23.271Z",
+    "timestamp": "2026-08-22T22:24:55.125Z",
     "node": "check",
     "status": "completed",
-    "duration_ms": 209284,
-    "summary": "Verification complete. Fresh runner evidence (all via run_project_cmd, project=godot-td): preflight godot --version exit 0; editor/import gate exit 0 (~9s); focused main_menu harness exit 0 with result.json status=pass \u2014 scene=res://scenes/\u2026",
+    "duration_ms": 129109,
+    "summary": "HTTP 400: This request is not valid. Check the model name and other parameters. Additional info: Provider returned error\n",
     "error": null
   }
 ]
