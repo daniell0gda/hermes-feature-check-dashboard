@@ -1,22 +1,20 @@
 {
-  "run_id": "issue-101-20260822T194917Z",
-  "feature": "underground-side-panel-carve-place-exit-",
+  "run_id": "issue137-earth-continent-map",
+  "feature": "earth-continent-map-integration",
   "status": "running",
-  "started_at": "2026-08-22T20:21:45.912Z",
+  "started_at": "2026-08-22T20:29:07.265Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-101-20260822T194917Z/",
-  "heartbeat_at": "2026-08-22T20:21:45.912Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
+  "heartbeat_at": "2026-08-22T20:29:07.265Z",
   "last_node": null,
-  "active_node": "plan",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 713831,
+  "process_id": 717779,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T20:21:50.977183+00:00",
-    "last_success_at": "2026-08-22T20:21:50.453385+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T20:29:07.265869+00:00"
   },
   "metrics": {}
 }

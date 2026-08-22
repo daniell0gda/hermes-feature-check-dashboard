@@ -1,28 +1,35 @@
-# Acceptance Plan: Underground side panel — Carve / Place Exit / Place Block fit the wooden frame
+# Acceptance Plan: earth-continent-map-integration
 
-manual_testing: required
+Manual testing: required
 
 ## Verification
 
-- Focused test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-underground-side-panel-carve-place-exit-` cmd=`["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/hud_wood_panels.json"]`
-- Full test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-underground-side-panel-carve-place-exit-` cmd=`["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_underground_visible.json"]`
-- Typecheck/build: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-underground-side-panel-carve-place-exit-` cmd=`["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+- Focused test: ["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/backdrop_earth_visible.json"]
+- Full test: ["python3", "-c", "import glob,subprocess,sys;\n[sys.exit(subprocess.call(['godot','--headless','--path','.','res://scenes/Main.tscn','--','--harness=res://'+f])) for f in [glob.glob('tests/scenarios/*.json')[0]]]"]
+- Typecheck/build: ["godot", "--headless", "--path", ".", "--editor", "--quit-after", "2"]
 
 ## Clusters
 
-1. underground-dig-buttons-layout — files: `scenes/UI.tscn`, `scripts/ui/UI.gd` — depends on: none
-- After switching to the underground layer on `map_1`, all three underground controls (Carve, Place Block, Place Exit) render entirely inside the side panel's inner box and clear of its corner brackets.
-- After switching to the underground layer on a map where Porter is unlocked, all three underground controls still render entirely inside the side panel's inner box and clear of its corner brackets.
-- The `hud_underground` checkpoint in `tests/scenarios/hud_wood_panels.json` completes with no button rect overlapping the side panel frame.
-- The Place Exit button still displays its price text without clipping or truncation after the relayout.
-- Each of the three controls keeps its existing behaviour after the relayout: Carve arms carve mode, Place Block arms block placement, and Place Exit places an exit when pressed.
-- The underground controls appear only while the game is on the underground layer and hide again when returning to the surface layer.
+1. grounded-continent-placement — files: `scripts/game/visuals/BackdropEarth.gd` — depends on: none
+- The grounded configuration targets exactly one named continent mesh (`Continent_Africa`) from `stylized_earth_in_clouds.glb`, and the chosen mesh name is recorded in code with a runtime warning if the mesh is absent.
+- After `configure_for_map` on a surface map, the earth rig pose places the chosen continent flush under the playable field at y=0 with no floating gap, and the globe's body/horizon lies close enough to the board that it is inside the normal gameplay camera's view frustum (no longer sunk a full body radius below the plane nor pushed far behind the board).
+- From the normal gameplay camera, the continent terrain fills the space around/underneath the playable field so the map no longer reads as an isolated floating tile against plain sky (windowed screenshot).
+- In the windowed screenshot from the normal gameplay camera, the continent terrain around the board blends with the map field in scale and color, with no hard seam between board and globe surface.
+- During play in the grounded configuration, the globe does not rotate: the earth body's world transform measured at two times several seconds apart is identical (spin disabled, not merely slowed).
+- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent mesh and the final rig position/scale/rotation.
+2. backdrop-regression-and-harness-contract — files: `tests/scenarios/backdrop_earth_visible.json`, `tests/scenarios/backdrop_earth_glint.json` — depends on: 1
+- The focused harness scenarios `backdrop_earth_visible` and `backdrop_earth_glint` pass headless: map loads, `backdrop_earth_present` is true, and their `backdrop_earth_center_y` expectation matches the grounded rig pose actually produced by the revised placement.
+- With the grounded configuration active, other continents, ocean, cloud banks, and the atmosphere rim remain visible from the normal gameplay camera; only the previously hidden meshes (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud` prefixed) stay hidden (windowed screenshot).
+- The windowed run of `backdrop_earth_visible` produces a surface screenshot file showing the map sitting on the continent from the default gameplay camera.
 
 ## Criteria
 
-- After switching to the underground layer on `map_1`, all three underground controls (Carve, Place Block, Place Exit) render entirely inside the side panel's inner box and clear of its corner brackets.
-- After switching to the underground layer on a map where Porter is unlocked, all three underground controls still render entirely inside the side panel's inner box and clear of its corner brackets.
-- The `hud_underground` checkpoint in `tests/scenarios/hud_wood_panels.json` completes with no button rect overlapping the side panel frame.
-- The Place Exit button still displays its price text without clipping or truncation after the relayout.
-- Each of the three controls keeps its existing behaviour after the relayout: Carve arms carve mode, Place Block arms block placement, and Place Exit places an exit when pressed.
-- The underground controls appear only while the game is on the underground layer and hide again when returning to the surface layer.
+- The grounded configuration targets exactly one named continent mesh (`Continent_Africa`) from `stylized_earth_in_clouds.glb`, and the chosen mesh name is recorded in code with a runtime warning if the mesh is absent.
+- After `configure_for_map` on a surface map, the earth rig pose places the chosen continent flush under the playable field at y=0 with no floating gap, and the globe's body/horizon lies close enough to the board that it is inside the normal gameplay camera's view frustum (no longer sunk a full body radius below the plane nor pushed far behind the board).
+- From the normal gameplay camera, the continent terrain fills the space around/underneath the playable field so the map no longer reads as an isolated floating tile against plain sky (windowed screenshot).
+- In the windowed screenshot from the normal gameplay camera, the continent terrain around the board blends with the map field in scale and color, with no hard seam between board and globe surface.
+- During play in the grounded configuration, the globe does not rotate: the earth body's world transform measured at two times several seconds apart is identical (spin disabled, not merely slowed).
+- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent mesh and the final rig position/scale/rotation.
+- The focused harness scenarios `backdrop_earth_visible` and `backdrop_earth_glint` pass headless: map loads, `backdrop_earth_present` is true, and their `backdrop_earth_center_y` expectation matches the grounded rig pose actually produced by the revised placement.
+- With the grounded configuration active, other continents, ocean, cloud banks, and the atmosphere rim remain visible from the normal gameplay camera; only the previously hidden meshes (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud` prefixed) stay hidden (windowed screenshot).
+- The windowed run of `backdrop_earth_visible` produces a surface screenshot file showing the map sitting on the continent from the default gameplay camera.
