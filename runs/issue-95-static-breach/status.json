@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-95-static-breach/",
   "heartbeat_at": "2026-08-22T08:59:07.130Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "team-leader",
   "last_event_at": "2026-08-22T08:59:07.130Z",
   "process_id": 469740,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T08:59:07.130732+00:00",
-    "last_success_at": "2026-08-22T08:53:13.262704+00:00",
+    "last_attempt_at": "2026-08-22T08:59:11.509196+00:00",
+    "last_success_at": "2026-08-22T08:59:11.508440+00:00",
     "last_error": null
   },
   "metrics": {
@@ -63,6 +63,17 @@
         "cost_status": "unknown",
         "input_tokens": 183856,
         "output_tokens": 4019
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 205904,
+        "output_tokens": 5282
       }
     ]
   }
