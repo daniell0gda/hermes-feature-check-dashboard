@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-134-upgrade-click-money-animation/",
-  "heartbeat_at": "2026-08-22T12:30:31.423Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T12:30:31.423Z",
+  "heartbeat_at": "2026-08-22T13:57:16.037Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T13:57:16.037Z",
   "process_id": 532368,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T12:30:35.728785+00:00",
-    "last_success_at": "2026-08-22T12:30:35.728169+00:00",
+    "last_attempt_at": "2026-08-22T13:57:16.037881+00:00",
+    "last_success_at": "2026-08-22T12:30:40.159343+00:00",
     "last_error": null
   },
   "metrics": {
