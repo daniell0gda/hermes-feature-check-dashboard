@@ -165,6 +165,11 @@
     "url": "runs/issue-38-trap-panel-ignores-trap-damage-perk/"
   },
   {
+    "run_id": "issue-34-overcharge-capacitors-20260822-132458",
+    "status": "running",
+    "url": "runs/issue-34-overcharge-capacitors-20260822-132458/"
+  },
+  {
     "run_id": "issue-32-team-work-20260813",
     "status": "failed",
     "url": "runs/issue-32-team-work-20260813/"
