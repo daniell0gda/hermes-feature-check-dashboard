@@ -43,5 +43,14 @@
     "duration_ms": 252380,
     "summary": "Verification complete. Revision 1 resolves all previously pending criteria.\n\nVerified done: 6. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes (no p\u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-22T21:06:31.200Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 44502,
+    "summary": "Gate decision complete.\n\nmanual_testing: required\n\n- check.md is `pass` (all 6 criteria Done, harness green on both maps).\n- The change is a new player-visible story: the underground side-panel layout fix (Carve / Place Block / Place Exit b\u2026",
+    "error": null
   }
 ]
