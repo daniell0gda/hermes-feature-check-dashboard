@@ -1,40 +1,30 @@
-# Request: Traps — Buried Ordnance Unique perk
+# Request: #33 Systemic: Elemental Attunement
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/39
-- **Project:** godot-td
-- **Git workspace:** poke-defense-godot/issue-buried-ordnance (branch `issue/buried-ordnance`, cut from `origin/master`)
-- **Request ID:** issue-39-buried-ordnance
+Project: poke-defense-godot (runner key `godot-td`)
+Workspace: `poke-defense-godot/issue-elemental-attunement`
+Branch: `issue/elemental-attunement`
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/33
+Slug: `elemental-attunement`
 
-## Feature
+## Problem
 
-New progression Unique `traps_buried_ordnance` for the Traps system: when a trap hits an
-underground enemy, it has a chance to chain a small explosion to neighboring underground
-enemies within a short radius.
-
-## Why
-
-Traps currently only hit the single enemy that steps on them, so they fall off as enemy HP
-scales. This keeps traps relevant against underground swarms late in a run by reusing the
-small-explosion logic already proven by Bazooka/Cannon.
+`Balance.type_effectiveness` (`scripts/config/Balance.gd`) makes fire/water/electric each resist themselves (`"fire": {"Fire": 0.5}`, `"water": {"Water": 0.5}`, `"electric": {"Electric": 0.5}`). A player who commits heavily to one element has no progression-side recourse if a level leans on that element's resistant enemy type.
 
 ## Done when
 
-1. New Unique perk `traps_buried_ordnance` exists and is grantable through the normal
-   progression/Unique flow used by other trap Uniques.
-2. Trap hits against **underground** enemies have a chance to chain a small explosion to
-   neighboring **underground** enemies in a short radius.
-3. The chained blast has its own readable explosion VFX cue — reuse the existing
-   small-explosion VFX from `scripts/game/actors/projectiles/BazookaProjectile.gd` or
-   `scripts/game/actors/projectiles/CannonballProjectile.gd` (whichever burst best matches
-   "small") — it must not be a silent chained damage tick.
-4. Verification covers: perk grants cleanly; chained explosion triggers on underground trap
-   hits with the expected radius/chance behavior; no chain on non-underground targets;
-   editor/import gate passes; focused harness scenario passes with fresh evidence.
+New Unique `elemental_attunement`: pick one of fire/water/electric; that element's towers also gain the super-effective multiplier normally reserved for the other two elements against their respective resistant types.
 
-## Notes for planner/coder/checker
+No new visual required — pure stat modifier: extends an existing invisible damage-multiplier table (`Balance.type_effectiveness`) with no new visible mechanic of its own.
 
-- Follow `/opt/data/coding_rules.md` and existing trap/perk patterns in the repo.
-- Underground-only targeting matters: ground-level enemies above must not be affected.
-- Visual cue is an explicit acceptance criterion — a silent damage tick is not done.
-- Manual testing: this is visible player-facing VFX work → `manual_testing: required`
-  with windowed screenshots of the chained explosion moment.
+It only ever restores coverage on the other two elements. It never removes the self-resistance.
+
+Example of intended coverage (fire pick): Fire towers keep `Fire` enemies at 0.5, but also gain the super-effective multipliers the other two elements normally have against *their* resistant types (water vs Water, electric vs Electric), applied from the chosen element's towers.
+
+## Constraints
+
+- Use `run_project_cmd` with project `godot-td` and workspace `poke-defense-godot/issue-elemental-attunement`.
+- Follow `/opt/data/coding_rules.md`.
+- Do not commit, push, merge, or close the issue.
+- Native Linux Godot verification through the runner.
+- Visible UI for picking the element is only required if the existing Unique perk flow already has a player-facing pick; otherwise keep it a stat/table modifier and prove it with a focused harness.
+- Planner: still-captureable perk-select / type-multiplier user story should get a generic `.gen/ui_scenario.md`. If the perk is pickable in a modal, `manual_testing: required`.

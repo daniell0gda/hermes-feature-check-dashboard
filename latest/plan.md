@@ -1,38 +1,39 @@
-# Acceptance Plan: buried-ordnance
+# Acceptance Plan: elemental-attunement
+
+manual_testing: required
 
 ## Verification
 
-Run via `run_project_cmd` (project=poke-defense-godot, workspace=poke-defense-godot/issue-buried-ordnance):
-
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/traps_buried_ordnance_progression.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/display_damage_surface_parity.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
-
-manual_testing: required — the chained blast is player-visible VFX; capture windowed screenshots of the chained-explosion moment.
+- Focused test: `run_project_cmd(project="godot-td", workspace="poke-defense-godot/issue-elemental-attunement", cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/elemental_attunement.json"])`
+- Full test: `run_project_cmd(project="godot-td", workspace="poke-defense-godot/issue-elemental-attunement", cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/floodgate_saltwater_purge.json"])`
+- Typecheck/build: `run_project_cmd(project="godot-td", workspace="poke-defense-godot/issue-elemental-attunement", cmd=["godot","--headless","--path",".","--editor","--quit-after","300"])`
 
 ## Clusters
 
-1. buried-ordnance-perk-and-chain — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `scripts/game/actors/Trap.gd` — depends on: none
-- The `traps_buried_ordnance` perk is defined in the trap progression file as a Unique progression and is eligible and grantable through the normal progression flow used by other Uniques (eligible on a fresh run, level applied idempotently on load/replay).
-- With the perk owned at a given level, when a trap hits an underground enemy there is a chance (the level's `chance` value) for the trap to also deal explosion damage to every other underground enemy within the level's `radius` world units of the hit position.
-- Without the perk owned, a trap hit on an underground enemy deals no chained explosion damage to neighboring enemies (behavior identical to today).
-- Enemies that are not underground never receive chained explosion damage from a trap hit, regardless of distance or perk ownership.
-- Each chained blast produces a visible small-explosion effect at the affected location by reusing the existing small-explosion VFX pattern (`ExplosionFX.spawn_bazooka_explosion`, the small burst used by Bazooka/Cannon); a chained kill with no visible cue is not acceptable.
-- The chain is deterministic under a fixed seed through the game's seeded RNG sites, so a harness scenario can assert chance behavior reproducibly.
-- Debug-build `[BURIED_ORDNANCE]` log line per chained explosion event naming the triggering trap id, chance roll outcome, and number of enemies caught in the blast; absent in release builds.
-
-2. buried-ordnance-harness-scenario — files: `tests/scenarios/traps_buried_ordnance_progression.json` — depends on: 1
-- A focused harness scenario passes headless with fresh evidence (`status: pass` in `.gen/harness/traps_buried_ordnance_progression/result.json`), covering: perk eligibility/grant, chained explosion triggering on an underground trap hit within radius, and no chain on non-underground targets.
-- Windowed run of the same scenario captures screenshot checkpoint(s) at the chained-explosion moment showing the visible small-explosion VFX at the blast site.
+1. attunement-perk-and-effectiveness — files: `scripts/progression/global.json`, `scripts/config/Balance.gd`, `autoload/ProgressionManager.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — depends on: none
+- A new Unique progression named `elemental_attunement` exists in the global progression pool (`scripts/progression/global.json`), is eligible for chest/cave draws under the same rules as other Uniques, and reaches level 1 after being applied through the progression manager.
+- With no attunement owned, every attacker/defender pair resolves exactly as before the change: fire/fire stays 0.5x, water/water stays 0.5x, electric/electric keeps its 0.3x self-resistance, and no other entry in the effectiveness path shifts.
+- Owning the fire attunement makes fire-attributed damage resolve as super-effective (2.0x) against Water-typed and Electric-typed enemies, while fire damage against Fire-typed enemies keeps its 0.5x self-resistance.
+- Owning the water attunement makes water-attributed damage resolve as super-effective (2.0x) against Fire-typed and Electric-typed enemies, while water damage against Water-typed enemies keeps its 0.5x self-resistance.
+- Owning the electric attunement makes electric-attributed damage resolve as super-effective (2.0x) against Fire-typed and Water-typed enemies, while electric damage against Electric-typed enemies keeps its 0.3x self-resistance.
+- Owning `elemental_attunement` grants extended coverage for exactly one chosen element (fire, water, or electric); the two unchosen elements' towers gain no new multiplier, and the perk never removes any self-resistance.
+- The attunement perk can be selected from the player-facing progression pick flow (it appears as a choosable option and choosing it applies the perk), matching how existing Unique perks are presented.
+- Debug-build `[ELEMENTAL_ATTUNEMENT]` log line per application event, naming which element was chosen.
+2. attunement-gameplay-verification — files: `tests/scenarios/elemental_attunement.json` — depends on: 1
+- In a live map, one scripted fire-typed direct hit on a Water-typed enemy removes exactly twice the baseline HP when the fire attunement is owned compared to the same hit without the perk (deterministic harness arithmetic, no projectile flight involved).
+- In a live map, once the water attunement is owned, a scripted water-typed direct hit on a Fire-typed enemy resolves at 2.0x while a scripted water-typed direct hit on a Water-typed enemy still resolves at its 0.5x self-resistance.
+- The existing effectiveness-path gameplay regression (`floodgate_saltwater_purge`) still passes end-to-end after the change.
 
 ## Criteria
 
-- The `traps_buried_ordnance` perk is defined in the trap progression file as a Unique progression and is eligible and grantable through the normal progression flow used by other Uniques (eligible on a fresh run, level applied idempotently on load/replay).
-- With the perk owned at a given level, when a trap hits an underground enemy there is a chance (the level's `chance` value) for the trap to also deal explosion damage to every other underground enemy within the level's `radius` world units of the hit position.
-- Without the perk owned, a trap hit on an underground enemy deals no chained explosion damage to neighboring enemies (behavior identical to today).
-- Enemies that are not underground never receive chained explosion damage from a trap hit, regardless of distance or perk ownership.
-- Each chained blast produces a visible small-explosion effect at the affected location by reusing the existing small-explosion VFX pattern (`ExplosionFX.spawn_bazooka_explosion`, the small burst used by Bazooka/Cannon); a chained kill with no visible cue is not acceptable.
-- The chain is deterministic under a fixed seed through the game's seeded RNG sites, so a harness scenario can assert chance behavior reproducibly.
-- Debug-build `[BURIED_ORDNANCE]` log line per chained explosion event naming the triggering trap id, chance roll outcome, and number of enemies caught in the blast; absent in release builds.
-- A focused harness scenario passes headless with fresh evidence (`status: pass` in `.gen/harness/traps_buried_ordnance_progression/result.json`), covering: perk eligibility/grant, chained explosion triggering on an underground trap hit within radius, and no chain on non-underground targets.
-- Windowed run of the same scenario captures screenshot checkpoint(s) at the chained-explosion moment showing the visible small-explosion VFX at the blast site.
+- A new Unique progression named `elemental_attunement` exists in the global progression pool (`scripts/progression/global.json`), is eligible for chest/cave draws under the same rules as other Uniques, and reaches level 1 after being applied through the progression manager.
+- With no attunement owned, every attacker/defender pair resolves exactly as before the change: fire/fire stays 0.5x, water/water stays 0.5x, electric/electric keeps its 0.3x self-resistance, and no other entry in the effectiveness path shifts.
+- Owning the fire attunement makes fire-attributed damage resolve as super-effective (2.0x) against Water-typed and Electric-typed enemies, while fire damage against Fire-typed enemies keeps its 0.5x self-resistance.
+- Owning the water attunement makes water-attributed damage resolve as super-effective (2.0x) against Fire-typed and Electric-typed enemies, while water damage against Water-typed enemies keeps its 0.5x self-resistance.
+- Owning the electric attunement makes electric-attributed damage resolve as super-effective (2.0x) against Fire-typed and Water-typed enemies, while electric damage against Electric-typed enemies keeps its 0.3x self-resistance.
+- Owning `elemental_attunement` grants extended coverage for exactly one chosen element (fire, water, or electric); the two unchosen elements' towers gain no new multiplier, and the perk never removes any self-resistance.
+- The attunement perk can be selected from the player-facing progression pick flow (it appears as a choosable option and choosing it applies the perk), matching how existing Unique perks are presented.
+- Debug-build `[ELEMENTAL_ATTUNEMENT]` log line per application event, naming which element was chosen.
+- In a live map, one scripted fire-typed direct hit on a Water-typed enemy removes exactly twice the baseline HP when the fire attunement is owned compared to the same hit without the perk (deterministic harness arithmetic, no projectile flight involved).
+- In a live map, once the water attunement is owned, a scripted water-typed direct hit on a Fire-typed enemy resolves at 2.0x while a scripted water-typed direct hit on a Water-typed enemy still resolves at its 0.5x self-resistance.
+- The existing effectiveness-path gameplay regression (`floodgate_saltwater_purge`) still passes end-to-end after the change.
