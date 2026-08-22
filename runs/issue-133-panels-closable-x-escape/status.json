@@ -6,17 +6,17 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-133-panels-closable-x-escape/",
-  "heartbeat_at": "2026-08-22T14:05:27.756Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T14:05:27.756Z",
+  "heartbeat_at": "2026-08-22T14:14:40.948Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T14:14:40.948Z",
   "process_id": 569006,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T14:05:32.233940+00:00",
+    "last_attempt_at": "2026-08-22T14:14:40.948488+00:00",
     "last_success_at": "2026-08-22T14:05:32.233100+00:00",
-    "last_error": null
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
   "metrics": {
     "invocations": [

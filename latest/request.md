@@ -1,21 +1,26 @@
-# Request: Systemic: Overcharge Capacitors
+# Request: #133 panels-closable-x-escape
 
-- **Issue:** #34 — https://github.com/daniell0gda/poke-defense-godot/issues/34
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/133
 - **Project:** poke-defense-godot
-- **Git workspace:** /workspace/git-workspaces/poke-defense-godot/issue-overcharge-capacitors
-- **Branch:** issue/overcharge-capacitors
-- **Requested by:** Daniel ("find new issue" — claim top eligible ready issue, implement via team-work)
-- **Claimed:** 2026-08-22T12:45:00Z
+- **Git workspace:** poke-defense-godot/issue-panels-closable-x-escape (branch `issue/panels-closable-x-escape`, rebased on origin/master)
+- **Claimed:** 2026-08-22, assigned daniell0gda, label `status:in-progress`
 
-## Issue summary
+## Issue body
 
-New Common progression perk `overcharge_capacitors`: for every 3 towers of the same type owned
-simultaneously, all towers of that type gain a damage bonus (see issue body for exact tiers).
-Purely numeric, composes with existing per-tower Unique trees; reinforces specialization.
+### Problem
+Not all UI panels are closable, and there is no consistent close affordance or Escape handling.
 
-## Acceptance criteria
+### Requirements
+- All panels except the Menu (pause) panel must be closable and show an "X" close button.
+- Pressing Escape should close any open panel.
+- If no panels are open, pressing Escape opens the Menu (pause game) panel.
 
-Per issue "Done when": new Common `overcharge_capacitors` perk registered in the progression/perk
-system, applied to all towers of a type per every 3 same-type towers owned, with tests proving the
-per-type stacking math (including boundary cases: fewer than 3, exactly 3, 6+ towers) through the
-project's standard harness scenarios. Follow /opt/data/coding_rules.md and project conventions.
+### Done when
+- [ ] Every non-menu panel has a working "X" button
+- [ ] Escape closes any open non-menu panel
+- [ ] Escape with no panels open shows the Menu (pause) panel
+
+## Notes for the team
+- Visible player-facing UI work → manual testing with windowed screenshots is expected to be required.
+- Project commands must go through the runner (`run_project_cmd`, project `godot-td`).
+- Follow /opt/data/coding_rules.md and project context files in the worktree.
