@@ -1,14 +1,32 @@
-# Request: req-136-padding-closable-panels-close-button
+# Request: no-rock-or-tree-same-position-as-building
 
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/136
-- Project: poke-defense-godot (runner key: godot-td)
-- Workspace: /workspace/git-workspaces/poke-defense-godot/issue-padding-closable-panels-close-button (branch issue/padding-closable-panels-close-button, base origin/master 5042d9f)
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/138
+Project: poke-defense-godot
+Workspace: poke-defense-godot/issue-no-rock-or-tree-same-position-as-building
+Branch: issue/no-rock-or-tree-same-position-as-building
 
-## Acceptance criteria (from issue)
-- Closable panels reserve horizontal padding so the "x" button never overlaps content.
-- Tower details panel shows all its content clear of the "x" button.
-- Verified visually that no other closable panel (e.g. shop, settings) has the overlap either.
+## Goal
+In `scripts/game/NatureDecoration.gd`, trees, dead trees, and rocks must never be placed
+at the same XZ position as an already-placed building. Grass and other small vegetation
+remain allowed at the same position as a building.
 
-## Notes
-- Visible UI change: manual_testing expected required (windowed screenshots).
-- Workers must use runner key `godot-td` and workspace `poke-defense-godot/issue-padding-closable-panels-close-button`.
+## Context
+- `_generate_all_decorations()` generates buildings (`_generate_building`) before trees,
+  dead trees, and rocks — so building positions can be recorded and checked.
+- Each generator currently only checks path/egg/spawner clearance via `_is_valid_position`;
+  only trees check distance from other trees.
+- Buildings are placed in `buildings_container` ("buildings_container" node).
+
+## Acceptance criteria
+1. Trees, dead trees, and rocks are never placed at the same position (or overlapping)
+   as an already-placed building.
+2. Grass (and other small vegetation: bushes, flowers) may still share a position with
+   a building.
+3. Placement still respects existing path/egg/spawner clearances and attempt limits
+   (no infinite loops when space runs out).
+4. Editor import/parse gate passes (`godot --headless --editor --quit-after` style check)
+   and any existing nature-decoration-related tests still pass.
+
+## Manual testing
+manual_testing: required — visible placement; take windowed top-down screenshots showing
+buildings with no tree/rock intersecting them, grass allowed near buildings.
