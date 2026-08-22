@@ -1,22 +1,40 @@
-# Request: req-136-padding-closable-panels-close-button
+# Request: towers-bar-slot-row-overflow-margin (issue #105)
 
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/136
-- Project: poke-defense-godot (runner key: godot-td)
-- Workspace: /workspace/git-workspaces/poke-defense-godot/issue-padding-closable-panels-close-button (branch issue/padding-closable-panels-close-button, base origin/master 5042d9f)
+- Project: poke-defense-godot
+- Git workspace: /workspace/git-workspaces/poke-defense-godot/issue-towers-bar-slot-row-overflow-margin
+- Runner key: `godot-td`, workspace `poke-defense-godot/issue-towers-bar-slot-row-overflow-margin` (never invent other workspace names — wrong names cause HTTP 422)
+- Branch: issue/towers-bar-slot-row-overflow-margin (cut from origin/master d241462)
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/105
 
-## Acceptance criteria (from issue)
-- Closable panels reserve horizontal padding so the "x" button never overlaps content.
-- Tower details panel shows all its content clear of the "x" button.
-- Verified visually that no other closable panel (e.g. shop, settings) has the overlap either.
+## Problem
+
+The surface tower slot row (Root/ButtonsContainer/Panel/BarRow/TowerButtons, an HBoxContainer by
+design — must NOT become a flow container; see comment on `tower_buttons_container` in
+`scripts/ui/UI.gd`) fits 12 towers with only 14px of headroom at the 1920 logical viewport:
+
+- 12 slots x 112 (TowerShopSlot.custom_minimum_size) = 1344
+- 11 x 4 separation = 44
+- UpdateTowersBtn = 118
+- 2 x 10 BarRow separation = 20
+- needed 1526 vs available 1540 (1920 - 16 left - 304 right - 60 TowersBarPanel margins)
+
+TowerShopSlot has size_flags_horizontal = 4 (SHRINK_CENTER) so slots cannot shrink. A 13th tower
+(or wider button/slots) silently overflows and clips — no error, no test failure. TowersConfig
+drives the roster, so the next tower addition breaks the HUD quietly.
+
+## Done when
+
+1. The slot row degrades predictably when the roster outgrows the bar: slots shrink to a floor,
+   or the row scrolls, or the bar reserves a second line by design. Flow container is not an
+   option (caused a permanent-growth layout bug after underground trips).
+2. A `game-test` scenario loads a map with the full roster unlocked, screenshots the bar, and
+   asserts no slot is clipped (or the row's width is within the bar's).
+3. The pixel budget above is recorded next to whatever constant governs it, so future changes
+   see the headroom.
+4. No new visual required; the bar keeps its current look at 12 towers.
 
 ## Notes
-- Visible UI change: manual_testing expected required (windowed screenshots).
-- Workers must use runner key `godot-td` and workspace `poke-defense-godot/issue-padding-closable-panels-close-button`.
 
-## Revision note (2026-08-22 20:45 UTC)
-- Fix changed at ~20:00 UTC: `_reserve_content_padding` now widens the frame PanelContainer's
-  panel stylebox `content_margin_right` (+90px) instead of shrinking `frame.offset_right`.
-- Existing `.gen/screenshots/*.png` and `.gen/harness/hud_other_panels/shots/*.png` are STALE
-  (19:52, pre-fix). The manual tester MUST capture fresh windowed screenshots after this change.
-- Acceptance addition: ✕ must sit flush INSIDE the frame's top-right corner (not floating outside
-  the panel art). Report `ui_feels_broken: yes|no` per final screenshot.
+- Manual testing: visible HUD work — windowed screenshots required (never --headless for the
+  manual pass); include an overall UI-sanity judgment per screenshot.
+- Preserve exact acceptance criteria; do not weaken the no-clip assertion to a count.
