@@ -1,58 +1,20 @@
 {
   "run_id": "issue-39-buried-ordnance",
   "feature": "Traps Buried Ordnance unique perk",
-  "status": "failed",
-  "started_at": "2026-08-22T14:11:03.477Z",
-  "ended_at": "2026-08-22T15:17:52.189Z",
+  "status": "running",
+  "started_at": "2026-08-22T15:31:33.688Z",
+  "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-39-buried-ordnance/",
-  "heartbeat_at": "2026-08-22T15:17:52.189Z",
-  "last_node": "check",
+  "heartbeat_at": "2026-08-22T15:31:33.688Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-22T15:17:47.960Z",
-  "process_id": 582323,
+  "last_event_at": null,
+  "process_id": 620754,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:17:52.189180+00:00",
-    "last_success_at": "2026-08-22T15:17:52.188162+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T15:31:33.688760+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 99446,
-        "output_tokens": 5434
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      }
-    ]
-  }
+  "metrics": {}
 }

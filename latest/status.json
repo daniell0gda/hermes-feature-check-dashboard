@@ -1,36 +1,20 @@
 {
-  "run_id": "issue-34-overcharge-capacitors-cont2-20260822-151808",
-  "feature": "overcharge-capacitors",
+  "run_id": "issue-39-buried-ordnance",
+  "feature": "Traps Buried Ordnance unique perk",
   "status": "running",
-  "started_at": "2026-08-22T15:18:09.019Z",
+  "started_at": "2026-08-22T15:31:33.688Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-cont2-20260822-151808/",
-  "heartbeat_at": "2026-08-22T15:24:59.653Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T15:24:59.653Z",
-  "process_id": 614296,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-39-buried-ordnance/",
+  "heartbeat_at": "2026-08-22T15:31:33.688Z",
+  "last_node": null,
+  "active_node": null,
+  "last_event_at": null,
+  "process_id": 620754,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:25:04.036944+00:00",
-    "last_success_at": "2026-08-22T15:25:04.036098+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T15:31:33.688760+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 108662,
-        "output_tokens": 3223
-      }
-    ]
-  }
+  "metrics": {}
 }

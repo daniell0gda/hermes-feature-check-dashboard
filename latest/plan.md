@@ -1,40 +1,38 @@
-# Acceptance Plan: overcharge-capacitors
+# Acceptance Plan: buried-ordnance
 
 ## Verification
 
-All commands run via `run_project_cmd` (project=poke-defense-godot, workspace=poke-defense-godot/issue-overcharge-capacitors):
+Run via `run_project_cmd` (project=poke-defense-godot, workspace=poke-defense-godot/issue-buried-ordnance):
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/overcharge_capacitors_progression.json"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/traps_buried_ordnance_progression.json"]`
 - Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/display_damage_surface_parity.json"]`
 - Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
-manual_testing: none — purely numeric/stat-modifier perk; the issue explicitly requires no new visual (pure stat modifier), and the harness scenario covers all observable behaviour headlessly.
+manual_testing: required — the chained blast is player-visible VFX; capture windowed screenshots of the chained-explosion moment.
 
 ## Clusters
 
-1. overcharge-perk-registration-and-damage-bonus — files: `scripts/progression/global.json`, `autoload/ProgressionManager.gd` — depends on: none
-- The `overcharge_capacitors` perk is registered as a Common progression perk in the global progression pool: on a fresh run it is eligible and can appear in `draw_choices_for_chest` draws.
-- With fewer than 3 towers of a type owned, the damage multiplier for that tower type is unchanged by the perk (no partial bonus below the 3-tower threshold).
-- With exactly 3 towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-1 bonus value from its definition.
-- With 6 or more towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-2 bonus value (one tier per complete group of 3 same-type towers, per the issue's tier table).
-- The bonus is per type: owning 3 towers of type A and 3 of type B gives each type its own bonus, while a type with fewer than 3 towers gets none.
-- The overcharge bonus composes with the existing damage pipeline: `get_tower_damage_multiplier_for(kind)` returns the global damage bonus and the overcharge bonus combined for the given kind.
-- When the count of same-type towers drops back below a threshold (tower removed or destroyed), the corresponding bonus tier stops applying.
-- After `reset_for_new_game()`, no overcharge bonus applies and the perk selection is cleared.
-- Debug-build `[OVERCHARGE]` log line per bonus recompute, naming the tower type, same-type tower count, applied tier, and resulting multiplier; absent in release builds.
+1. buried-ordnance-perk-and-chain — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `scripts/game/actors/Trap.gd` — depends on: none
+- The `traps_buried_ordnance` perk is defined in the trap progression file as a Unique progression and is eligible and grantable through the normal progression flow used by other Uniques (eligible on a fresh run, level applied idempotently on load/replay).
+- With the perk owned at a given level, when a trap hits an underground enemy there is a chance (the level's `chance` value) for the trap to also deal explosion damage to every other underground enemy within the level's `radius` world units of the hit position.
+- Without the perk owned, a trap hit on an underground enemy deals no chained explosion damage to neighboring enemies (behavior identical to today).
+- Enemies that are not underground never receive chained explosion damage from a trap hit, regardless of distance or perk ownership.
+- Each chained blast produces a visible small-explosion effect at the affected location by reusing the existing small-explosion VFX pattern (`ExplosionFX.spawn_bazooka_explosion`, the small burst used by Bazooka/Cannon); a chained kill with no visible cue is not acceptable.
+- The chain is deterministic under a fixed seed through the game's seeded RNG sites, so a harness scenario can assert chance behavior reproducibly.
+- Debug-build `[BURIED_ORDNANCE]` log line per chained explosion event naming the triggering trap id, chance roll outcome, and number of enemies caught in the blast; absent in release builds.
 
-2. overcharge-harness-scenario — files: `tests/scenarios/overcharge_capacitors_progression.json` — depends on: 1
-- A harness scenario proves the per-type stacking math through the progression API and placed towers, covering the boundary cases fewer than 3 (no bonus), exactly 3 (tier 1), and 6+ (tier 2) same-type towers, with all expectations passing.
+2. buried-ordnance-harness-scenario — files: `tests/scenarios/traps_buried_ordnance_progression.json` — depends on: 1
+- A focused harness scenario passes headless with fresh evidence (`status: pass` in `.gen/harness/traps_buried_ordnance_progression/result.json`), covering: perk eligibility/grant, chained explosion triggering on an underground trap hit within radius, and no chain on non-underground targets.
+- Windowed run of the same scenario captures screenshot checkpoint(s) at the chained-explosion moment showing the visible small-explosion VFX at the blast site.
 
 ## Criteria
 
-- The `overcharge_capacitors` perk is registered as a Common progression perk in the global progression pool: on a fresh run it is eligible and can appear in `draw_choices_for_chest` draws.
-- With fewer than 3 towers of a type owned, the damage multiplier for that tower type is unchanged by the perk (no partial bonus below the 3-tower threshold).
-- With exactly 3 towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-1 bonus value from its definition.
-- With 6 or more towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-2 bonus value (one tier per complete group of 3 same-type towers, per the issue's tier table).
-- The bonus is per type: owning 3 towers of type A and 3 of type B gives each type its own bonus, while a type with fewer than 3 towers gets none.
-- The overcharge bonus composes with the existing damage pipeline: `get_tower_damage_multiplier_for(kind)` returns the global damage bonus and the overcharge bonus combined for the given kind.
-- When the count of same-type towers drops back below a threshold (tower removed or destroyed), the corresponding bonus tier stops applying.
-- After `reset_for_new_game()`, no overcharge bonus applies and the perk selection is cleared.
-- Debug-build `[OVERCHARGE]` log line per bonus recompute, naming the tower type, same-type tower count, applied tier, and resulting multiplier; absent in release builds.
-- A harness scenario proves the per-type stacking math through the progression API and placed towers, covering the boundary cases fewer than 3 (no bonus), exactly 3 (tier 1), and 6+ (tier 2) same-type towers, with all expectations passing.
+- The `traps_buried_ordnance` perk is defined in the trap progression file as a Unique progression and is eligible and grantable through the normal progression flow used by other Uniques (eligible on a fresh run, level applied idempotently on load/replay).
+- With the perk owned at a given level, when a trap hits an underground enemy there is a chance (the level's `chance` value) for the trap to also deal explosion damage to every other underground enemy within the level's `radius` world units of the hit position.
+- Without the perk owned, a trap hit on an underground enemy deals no chained explosion damage to neighboring enemies (behavior identical to today).
+- Enemies that are not underground never receive chained explosion damage from a trap hit, regardless of distance or perk ownership.
+- Each chained blast produces a visible small-explosion effect at the affected location by reusing the existing small-explosion VFX pattern (`ExplosionFX.spawn_bazooka_explosion`, the small burst used by Bazooka/Cannon); a chained kill with no visible cue is not acceptable.
+- The chain is deterministic under a fixed seed through the game's seeded RNG sites, so a harness scenario can assert chance behavior reproducibly.
+- Debug-build `[BURIED_ORDNANCE]` log line per chained explosion event naming the triggering trap id, chance roll outcome, and number of enemies caught in the blast; absent in release builds.
+- A focused harness scenario passes headless with fresh evidence (`status: pass` in `.gen/harness/traps_buried_ordnance_progression/result.json`), covering: perk eligibility/grant, chained explosion triggering on an underground trap hit within radius, and no chain on non-underground targets.
+- Windowed run of the same scenario captures screenshot checkpoint(s) at the chained-explosion moment showing the visible small-explosion VFX at the blast site.
