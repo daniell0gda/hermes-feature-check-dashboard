@@ -1,12 +1,12 @@
 {
   "run_id": "issue130-underground-carve-topdown-camera-rotation",
   "feature": "underground-carve-topdown-camera-rotation",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-22T12:59:00.654Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-22T14:53:41.347Z",
+  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/poke-defense-godot.\\nThe durable evidence directory is /workspace/poke-defense-godot/.g\u2026",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue130-underground-carve-topdown-camera-rotation/",
-  "heartbeat_at": "2026-08-22T14:53:36.999Z",
+  "heartbeat_at": "2026-08-22T14:53:41.347Z",
   "last_node": "code",
   "active_node": null,
   "last_event_at": "2026-08-22T14:53:36.999Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T14:53:37.000047+00:00",
-    "last_success_at": "2026-08-22T13:23:30.655928+00:00",
+    "last_attempt_at": "2026-08-22T14:53:41.347540+00:00",
+    "last_success_at": "2026-08-22T14:53:41.346742+00:00",
     "last_error": null
   },
   "metrics": {
