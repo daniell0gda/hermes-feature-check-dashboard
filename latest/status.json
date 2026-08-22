@@ -1,21 +1,21 @@
 {
-  "run_id": "issue130-underground-carve-topdown-camera-rotation",
-  "feature": "underground-carve-topdown-camera-rotation",
+  "run_id": "issue-107-hud-theme-missing-wood-panel",
+  "feature": "hud-theme-missing-wood-panel",
   "status": "running",
-  "started_at": "2026-08-22T11:47:11.684Z",
+  "started_at": "2026-08-22T11:25:54.026Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue130-underground-carve-topdown-camera-rotation/",
-  "heartbeat_at": "2026-08-22T12:21:29.465Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T12:21:29.465Z",
-  "process_id": 524640,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-107-hud-theme-missing-wood-panel/",
+  "heartbeat_at": "2026-08-22T12:21:52.828Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T12:21:52.828Z",
+  "process_id": 517868,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T12:21:34.020537+00:00",
-    "last_success_at": "2026-08-22T12:21:34.019748+00:00",
+    "last_attempt_at": "2026-08-22T12:21:52.828849+00:00",
+    "last_success_at": "2026-08-22T11:40:30.523470+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 80780,
-        "output_tokens": 6254
+        "input_tokens": 50024,
+        "output_tokens": 1677
       },
       {
         "task_id": "code",
@@ -39,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 168182,
-        "output_tokens": 29406
+        "input_tokens": 155366,
+        "output_tokens": 4483
       }
     ]
   }

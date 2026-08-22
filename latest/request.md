@@ -1,17 +1,20 @@
-# Request: Underground carve top-down camera rotation (issue #130)
+# Request: #107 HudTheme missing wood_panel.png
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/130
-Branch: issue/underground-carve-topdown-camera-rotation
+Project: poke-defense-godot (runner `godot-td`)
+Workspace: poke-defense-godot/issue-hud-theme-missing-wood-panel
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/107
+Slug: hud-theme-missing-wood-panel
 
-## Goal
-When the carve tool is activated in the underground layer, the camera should automatically rotate to a top-down "bird view" angle so carved paths are visible from above.
+## Problem
 
-## Acceptance criteria
-- Entering carve mode on the underground layer rotates the camera to a top-down bird's-eye angle.
-- Only the rotation changes — camera position/zoom are untouched.
-- Canceling carve restores the previous camera angle.
-- If the user manually changed the camera angle while carving, canceling does NOT restore the old angle (keep the user's new angle).
+`themes/hud/HudTheme.tres` declares `res://textures/ui/hud/wood_panel.png`, but that PNG is not in the repo. Only an orphan `.import` remains. That texture is the base `Panel`/`PanelContainer` style. Fresh clones lose HUD panel backing.
 
-## Notes
-- Visible player-facing UI/camera behavior → manual testing with windowed screenshots is required; underground views need top-down camera shots (side angles hide carved-path lighting).
-- Follow /opt/data/coding_rules.md.
+## Done when
+
+- `res://textures/ui/hud/wood_panel.png` resolves — regenerate via `tools/gen_hud_textures.py` and commit, or repoint `StyleBoxTexture_panel` at an existing slice such as `wood_panel_wide.png` and remove the dead ext_resource.
+- No `.import` file under `textures/ui/hud/` lacks a source PNG. Clean orphans: `icon_speed.png.import`, `wide_panel.png.import`, `woden_panel_wide_lightonly.png.import`, `wood_chip_on.png.import`.
+- The `hud_wood_panels` scenario passes after deleting `.godot/imported`, proving the theme loads without the stale cache.
+
+Visible HUD work: windowed screenshots required (manual-tester windowed, not headless-only).
+
+Do not commit, push, merge, or close the issue.

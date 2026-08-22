@@ -1,35 +1,29 @@
-# Acceptance Plan: underground-carve-topdown-camera-rotation
-
-## Verification
-
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/carve_camera_topdown.json"]`
-- Full test: `["bash", "-lc", "fail=0; for f in tests/scenarios/*.json; do godot --headless --path . res://scenes/Main.tscn -- \"--harness=res://$f\" || fail=1; done; exit $fail"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "3"]`
+# Acceptance Plan: hud-theme-missing-wood-panel
 
 manual_testing: required
 
+## Verification
+
+- Focused test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-hud-theme-missing-wood-panel` cmd=["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/hud_wood_panels.json"]
+- Full test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-hud-theme-missing-wood-panel` cmd=["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_placement.json"]
+- Typecheck/build: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-hud-theme-missing-wood-panel` cmd=["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]
+
 ## Clusters
 
-1. carve-camera-lifecycle — files: `scripts/game/Game.gd`, `scripts/ui/UI.gd`, `scripts/config/CameraConfig.gd` — depends on: none
-- When carve mode is activated while on the underground layer, the active camera's rotation becomes a top-down bird's-eye view (camera forward pointing straight down at the underground board) without changing the camera's position or zoom.
-- Activating carve mode changes only the camera's rotation: the camera's position and its distance/zoom relative to the view target are exactly what they were immediately before activation.
-- Canceling carve mode (ESC, right-click cancel path, or any existing cancel route that ends carve mode) restores the camera rotation that was active immediately before carve mode was entered, when the player did not rotate the camera manually during carving.
-- If the player manually rotated the camera while carve mode was active, canceling carve mode leaves the camera at the player's current angle instead of restoring the pre-carve angle.
-- While carve mode is active on the underground layer, the player's normal camera rotation input (right-mouse drag or shift+left drag) still rotates the camera.
-- Entering dig-hole, place-exit, place-block, or tower-selection modes does not rotate the camera to the top-down angle; only carve mode triggers the rotation.
-- Debug-build `[CARVE_CAMERA]` log line per rotation event: one when the top-down angle is applied (with the pre-carve angles captured) and one when a cancel restores or deliberately skips restoring them (with which of the two happened).
-2. carve-camera-harness — files: `scripts/testing/HarnessValues.gd`, `tests/scenarios/carve_camera_topdown.json` — depends on: 1
-- A harness value source exposes the active camera's rotation basis (and position/zoom-equivalent) so scenarios can compare camera orientation before, during, and after carve mode.
-- The focused scenario asserts, under the harness: top-down orientation after entering carve mode on the underground layer, unchanged position/zoom across the transition, exact restoration after plain cancel, and retained player angle after a scripted manual rotation followed by cancel.
+1. hud-theme-panel-texture — files: `themes/hud/HudTheme.tres`, `textures/ui/hud/` — depends on: none
+- The HUD theme Panel style texture path resolves to a PNG that exists in the repository (not only under `.godot/imported`).
+- After `.godot/imported` is deleted, loading the HUD theme does not fail to load the Panel style texture.
+- `textures/ui/hud/icon_speed.png.import`, `textures/ui/hud/wide_panel.png.import`, `textures/ui/hud/woden_panel_wide_lightonly.png.import`, and `textures/ui/hud/wood_chip_on.png.import` are absent.
+- Every `.import` file under `textures/ui/hud/` has a matching source image in the same directory.
+2. hud-wood-panels-harness — files: `tests/scenarios/hud_wood_panels.json` — depends on: 1
+- After `.godot/imported` is deleted, the `hud_wood_panels` harness scenario finishes with status pass.
+- HUD panels that use the HUD theme show a wood panel backing rather than a missing or empty panel fill.
 
 ## Criteria
 
-- When carve mode is activated while on the underground layer, the active camera's rotation becomes a top-down bird's-eye view (camera forward pointing straight down at the underground board) without changing the camera's position or zoom.
-- Activating carve mode changes only the camera's rotation: the camera's position and its distance/zoom relative to the view target are exactly what they were immediately before activation.
-- Canceling carve mode (ESC, right-click cancel path, or any existing cancel route that ends carve mode) restores the camera rotation that was active immediately before carve mode was entered, when the player did not rotate the camera manually during carving.
-- If the player manually rotated the camera while carve mode was active, canceling carve mode leaves the camera at the player's current angle instead of restoring the pre-carve angle.
-- While carve mode is active on the underground layer, the player's normal camera rotation input (right-mouse drag or shift+left drag) still rotates the camera.
-- Entering dig-hole, place-exit, place-block, or tower-selection modes does not rotate the camera to the top-down angle; only carve mode triggers the rotation.
-- Debug-build `[CARVE_CAMERA]` log line per rotation event: one when the top-down angle is applied (with the pre-carve angles captured) and one when a cancel restores or deliberately skips restoring them (with which of the two happened).
-- A harness value source exposes the active camera's rotation basis (and position/zoom-equivalent) so scenarios can compare camera orientation before, during, and after carve mode.
-- The focused scenario asserts, under the harness: top-down orientation after entering carve mode on the underground layer, unchanged position/zoom across the transition, exact restoration after plain cancel, and retained player angle after a scripted manual rotation followed by cancel.
+- The HUD theme Panel style texture path resolves to a PNG that exists in the repository (not only under `.godot/imported`).
+- After `.godot/imported` is deleted, loading the HUD theme does not fail to load the Panel style texture.
+- `textures/ui/hud/icon_speed.png.import`, `textures/ui/hud/wide_panel.png.import`, `textures/ui/hud/woden_panel_wide_lightonly.png.import`, and `textures/ui/hud/wood_chip_on.png.import` are absent.
+- Every `.import` file under `textures/ui/hud/` has a matching source image in the same directory.
+- After `.godot/imported` is deleted, the `hud_wood_panels` harness scenario finishes with status pass.
+- HUD panels that use the HUD theme show a wood panel backing rather than a missing or empty panel fill.
