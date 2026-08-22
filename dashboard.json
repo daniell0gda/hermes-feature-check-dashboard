@@ -255,6 +255,11 @@
     "url": "runs/issue-135-upgrade-button-20260822T123636Z/"
   },
   {
+    "run_id": "issue-133-panels-fix-pause-and-x-close",
+    "status": "running",
+    "url": "runs/issue-133-panels-fix-pause-and-x-close/"
+  },
+  {
     "run_id": "issue-133-panels-closable-x-escape",
     "status": "failed",
     "url": "runs/issue-133-panels-closable-x-escape/"

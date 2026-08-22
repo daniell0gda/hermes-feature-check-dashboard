@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation
+# Coder report: implementation
 
 ## Changed files
 - `scripts/ui/UI.gd` — modified
@@ -27,4 +27,3 @@
 - Options is closed through its own `_on_close` (queue_free) since it owns its lifetime; Manage Towers and tower details are hidden.
 - Closing any panel unpauses the tree and sets game_state to playing - required because Options can be opened over a paused tree from the pause menu.
 - [PANELS] details-open logging only fires on visibility *transitions*: `on_tower_selected` polls every 0.2 s and would otherwise spam phantom events.
-\n
