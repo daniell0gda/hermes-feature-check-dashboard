@@ -1,4 +1,4 @@
-# Coder report: 1-upgrade-button-affordability-gating\n\n# Coder report: 1-upgrade-button-affordability-gating
+# Coder report: 1-upgrade-button-affordability-gating
 
 ## Changed files
 - `scripts/ui/UI.gd` — modified
@@ -28,4 +28,3 @@
 - Scenario costs are fixed: generic tower 20 (200→180 on placement), upgrade cost at level 1 = 20; funding to 9999 / draining to 5 straddles any threshold.
 - Manual testing required (player-visible UI): see `.gen/ui_scenario.md` — windowed screenshots of the Upgrade button in both states while the panel stays open.
 - classification: pass
-\n

@@ -1,17 +1,21 @@
-# Request: Water Tower — Water Pressure perk (#46)
+# Request: Upgrade tower button disabled without money (issue #135)
 
-Source issue: https://github.com/daniell0gda/poke-defense-godot/issues/46
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/135
+- **Slug:** upgrade-button-disabled-without-money
+- **Project:** poke-defense-godot
+- **Workspace:** poke-defense-godot/issue-upgrade-button-disabled-without-money
+- **Branch:** issue/upgrade-button-disabled-without-money
 
-## Summary
-Add a new Common progression perk `water_pressure` (levels 1–3) for the Water tower:
-Water's own damage against already-Wet targets is increased by +20% / +35% / +50%.
+## Problem
+The upgrade tower button stays clickable when the player has no money. It should be disabled whenever the player cannot afford the upgrade, and instantly re-enabled the moment the upgrade panel is open and the player has enough money.
 
-## Context
-- Only Electric currently benefits from Wet status (`electric_wet_conduction`); Water gets nothing.
-- Follow existing Common perk patterns (e.g. `electric_wet_conduction`) for data, unlock, UI listing, and tests.
+## Acceptance criteria (from the issue)
+1. Upgrade tower button is disabled while the player has less money than the upgrade cost.
+2. When the upgrade panel is opened and the player has enough money, the button is enabled immediately (no need to reopen or click elsewhere).
+3. Button state updates live as money changes while the panel is open (spend below cost → disables again).
+4. Harness verification covers both states: no-money → disabled, affordable → enabled instantly on panel open.
 
-## Done when
-- New Common `water_pressure` (L1–3): Water's own damage vs already-Wet targets +20%/+35%/+50%.
-- No new visual required — pure conditional damage% modifier against the existing Wet status.
-
-manual_testing: none (pure stat modifier; no new visible mechanic). Headless harness verification is sufficient unless implementation adds visible UI beyond standard perk listing.
+## Notes
+- This is visible UI work: per Daniel's standing expectation, visible chest/UI/gameplay behavior requires team-work manual-tester with windowed screenshots (never headless-only). Manual testing must be `required`.
+- Use native Linux Godot via runner commands (`run_project_cmd`), explicit scene argument before harness user args.
+- Checker classification line required: `classification: pass|fixable|design_failure|blocked`.
