@@ -1,20 +1,22 @@
 {
-  "run_id": "req-136-padding-closable-panels-close-button",
-  "feature": "padding closable panels close button",
+  "run_id": "heart-hud-beat-139-1787422828",
+  "feature": "heart-hud-beat-on-egg-damage",
   "status": "running",
-  "started_at": "2026-08-22T18:20:38.202Z",
+  "started_at": "2026-08-22T18:20:29.149Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
-  "heartbeat_at": "2026-08-22T18:20:38.202Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/heart-hud-beat-139-1787422828/",
+  "heartbeat_at": "2026-08-22T18:20:29.149Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
-  "process_id": 666624,
+  "process_id": 666532,
   "host": "25e0b2c49eb5",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T18:20:38.202657+00:00"
+    "last_attempt_at": "2026-08-22T18:21:31.115123+00:00",
+    "last_success_at": "2026-08-22T18:20:33.990859+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
