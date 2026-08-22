@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-22T13:01:47.842Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 923441,
+    "summary": "Plan verified. Summary:\n\n- **Plan & clusters**: already complete and consistent in `.gen/plan.md` + `.gen/clusters/` (3 clusters: perk-core, data-and-harness, tooltip; 9 criteria; `manual_testing: none`). No changes needed.\n- **Runner coord\u2026",
+    "error": null
+  }
+]
