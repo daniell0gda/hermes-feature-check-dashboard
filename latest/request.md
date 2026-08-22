@@ -1,22 +1,33 @@
-# Request: req-136-padding-closable-panels-close-button
+# Request: Issue #106 — Harness cannot reach runtime-instanced modals
 
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/136
-- Project: poke-defense-godot (runner key: godot-td)
-- Workspace: /workspace/git-workspaces/poke-defense-godot/issue-padding-closable-panels-close-button (branch issue/padding-closable-panels-close-button, base origin/master 5042d9f)
+- Repo: daniell0gda/poke-defense-godot
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/106
+- Workspace: poke-defense-godot/issue-harness-cannot-reach-runtime-modals
+- Branch: issue/harness-cannot-reach-runtime-modals (cut fresh from origin/master, d241462)
+- Labels: status:in-progress, priority:medium, type:coverage-gap, type:harness
 
-## Acceptance criteria (from issue)
-- Closable panels reserve horizontal padding so the "x" button never overlaps content.
-- Tower details panel shows all its content clear of the "x" button.
-- Verified visually that no other closable panel (e.g. shop, settings) has the overlap either.
+## Problem
 
-## Notes
-- Visible UI change: manual_testing expected required (windowed screenshots).
-- Workers must use runner key `godot-td` and workspace `poke-defense-godot/issue-padding-closable-panels-close-button`.
+`HarnessActions._resolve_target()` (scripts/testing/HarnessActions.gd:585-610) only matches a fixed
+name list (`game`, `ui`, `underground`, `cave_system`, `progression`, `towers`, `hole_placement`,
+`gamestate`, `strategy_record`). Runtime-instanced modals like the Options screen
+(`UI.gd._on_pause_options()` → `preload(...).instantiate()`, reference never kept) are unreachable.
+So scenarios cannot: switch Options to the Sound tab (themed HSliders never seen rendered), open a
+WoodDropdown picker to screenshot its floating list / name plate / SpeedOption rows, or assert which
+resolution/UI-scale row is checked.
 
-## Revision note (2026-08-22 20:45 UTC)
-- Fix changed at ~20:00 UTC: `_reserve_content_padding` now widens the frame PanelContainer's
-  panel stylebox `content_margin_right` (+90px) instead of shrinking `frame.offset_right`.
-- Existing `.gen/screenshots/*.png` and `.gen/harness/hud_other_panels/shots/*.png` are STALE
-  (19:52, pre-fix). The manual tester MUST capture fresh windowed screenshots after this change.
-- Acceptance addition: ✕ must sit flush INSIDE the frame's top-right corner (not floating outside
-  the panel art). Report `ui_feels_broken: yes|no` per final screenshot.
+## Done when (either approach)
+
+- `UI.gd` keeps the instantiated options modal in a field (like `_setup_manage_towers_popup()`
+  keeps `manage_towers_popup`) plus small `ui`-callable methods (e.g. options-tab setter,
+  picker-opener); **or**
+- `_resolve_target` gains a generic node-path target (e.g. `{"target":"node","path":"UI/OptionsScreen/..."}`).
+
+Then extend `tests/scenarios/hud_other_panels.json` with checkpoints for the Sound tab and one open
+WoodDropdown; inspect the PNGs.
+
+## Redo notes (learned from prior runs)
+
+- Runner names are exact: project key `godot-td`, workspace `poke-defense-godot/issue-harness-cannot-reach-runtime-modals`. Never invent variants (HTTP 422).
+- Checker classification line must be exactly `classification: pass|fixable|blocked|design_failure` (no bold value).
+- Manual testing: this issue is about rendered UI theming — windowed screenshots required (never `--headless` for manual evidence). Use runner flags `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` when Vulkan fails in worker. Overall UI-sanity pass on each final screenshot (`ui_feels_broken: yes|no`).

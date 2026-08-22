@@ -1,45 +1,37 @@
-# Acceptance Plan: req-136-padding-closable-panels-close-button
-
-Closable `TitledPanel` panels reserve horizontal padding so the painted corner "x" (`CloseChip`, 90x103, flush top-right *inside* the frame art) never overlaps panel content; verified on tower details and every other closable panel (Manage Towers, Options).
+# Acceptance Plan: Harness cannot reach runtime-instanced modals (issue #106)
 
 manual_testing: required
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://tests/ui/test_titled_panel_close_corner.tscn"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_armor_bar.tscn"]` then `["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_health_bar_boss_icon.tscn"]` then `["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_health_bar_oiled_icon.tscn"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]`
+- Focused test: `["godot","--rendering-method","gl_compatibility","--rendering-driver","opengl3","--audio-driver","Dummy","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/hud_other_panels.json"]`
+- Full test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/hud_other_panels.json"]`
+- Typecheck/build: `["godot","--headless","--editor","--quit-after","100"]`
 
-Note: the visual overlap claim itself cannot be proven headless. Run the existing
-`tests/scenarios/hud_other_panels.json` scenario windowed (fresh screenshots of tower details,
-Manage Towers and Options taken AFTER the 20:00 UTC padding fix — pre-fix `.gen/screenshots/*.png`
-and `.gen/harness/hud_other_panels/shots/*.png` are stale) via
-`["godot", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/hud_other_panels.json"]`
-and report `ui_feels_broken: yes|no` per final screenshot. This is the manual path below.
+Notes: the focused command must run windowed (real X display in the worker) because headless captures no pixels and every screenshot checkpoint reports skipped; if Vulkan fails in the worker the gl_compatibility flags above are required. The typecheck gate also regenerates the global class cache, which is mandatory before any scenario run that references new class_name scripts (a plain game run otherwise dies with "Could not find type").
 
 ## Clusters
 
-1. closable-panel-content-padding — files: `scripts/ui/hud/TitledPanel.gd`, `tests/ui/test_titled_panel_close_corner.gd`, `tests/ui/test_titled_panel_close_corner.tscn` — depends on: none
-- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
-- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
-- The CloseChip sits flush INSIDE the frame's top-right corner (enclosed by the full-size frame art, not floating outside it) and pressing it still emits exactly one `close_requested` (existing contract preserved).
-- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
-- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
-- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
+1. runtime-modal-harness-access — files: `scripts/ui/UI.gd`, `scripts/testing/HarnessActions.gd`, `scripts/testing/AgentHarness.gd` — depends on: none
+- After the UI opens its Options screen at runtime, a scenario `call` action can reach that live modal instance as a call/expression target (the reference is kept, not dropped), and the action returns ok:true with the modal reachable.
+- A scenario can switch the opened Options modal to its Sound tab through a UI-callable method, and a subsequent screenshot shows the Sound tab active with its themed sliders rendered.
+- A scenario can open one of the Options screen's WoodDropdown pickers through a UI-callable method so its floating row list, name plate and rows are visible for a screenshot.
+- A scenario can assert which resolution/UI-scale dropdown row is currently selected on the opened Options modal via an expectation or call detail, and the assertion passes against the actual selection.
+- Opening the Options screen twice does not leave two live modal instances; only one instance exists afterwards.
+- Resolving an unknown target name or a node-path target that matches nothing returns ok:false with a descriptive detail instead of crashing the harness or aborting the scenario timeline.
+- Debug-build [HARNESS] log line per runtime-modal resolution, naming the requested target/path and whether a live node was found.
+2. options-scenario-checkpoints — files: `tests/scenarios/hud_other_panels.json` — depends on: 1
+- The extended `hud_other_panels` scenario passes end-to-end (harness status=pass) with added checkpoints covering the Options Sound tab and one open WoodDropdown picker.
+- The scenario's result.json records screenshots of the Sound tab and the open dropdown, each captured while the panel is actually visible (outcome not skipped/headless).
 
 ## Criteria
 
-- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
-- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
-- The CloseChip sits flush INSIDE the frame's top-right corner (enclosed by the full-size frame art, not floating outside it) and pressing it still emits exactly one `close_requested` (existing contract preserved).
-- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
-- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
-- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
-
-## Manual testing (required)
-
-Windowed screenshot run of `tests/scenarios/hud_other_panels.json` through the godot-td runner:
-inspect fresh post-fix shots of tower details / pause menu / Manage Towers / Options for any
-content/"x" overlap and for the ✕ sitting flush inside the frame corner (not floating outside the
-panel art). Report `ui_feels_broken: yes|no` per final screenshot. Pre-fix screenshots are stale —
-recapture.
+- After the UI opens its Options screen at runtime, a scenario `call` action can reach that live modal instance as a call/expression target (the reference is kept, not dropped), and the action returns ok:true with the modal reachable.
+- A scenario can switch the opened Options modal to its Sound tab through a UI-callable method, and a subsequent screenshot shows the Sound tab active with its themed sliders rendered.
+- A scenario can open one of the Options screen's WoodDropdown pickers through a UI-callable method so its floating row list, name plate and rows are visible for a screenshot.
+- A scenario can assert which resolution/UI-scale dropdown row is currently selected on the opened Options modal via an expectation or call detail, and the assertion passes against the actual selection.
+- Opening the Options screen twice does not leave two live modal instances; only one instance exists afterwards.
+- Resolving an unknown target name or a node-path target that matches nothing returns ok:false with a descriptive detail instead of crashing the harness or aborting the scenario timeline.
+- Debug-build [HARNESS] log line per runtime-modal resolution, naming the requested target/path and whether a live node was found.
+- The extended `hud_other_panels` scenario passes end-to-end (harness status=pass) with added checkpoints covering the Options Sound tab and one open WoodDropdown picker.
+- The scenario's result.json records screenshots of the Sound tab and the open dropdown, each captured while the panel is actually visible (outcome not skipped/headless).
