@@ -25,5 +25,14 @@
     "duration_ms": 553916,
     "summary": "Check complete. All verification ran through `run_project_cmd` (project=poke-defense-godot, workspace=poke-defense-godot/issue-progression-modal-close-resume); no host Godot was used.\n\nVerified done: 8. Pending: 0. Impossible: 0.\nQuality no\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-22T07:13:16.569Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 115665,
+    "summary": "Manual-testing gate decision complete.\n\n- Check verdict: pass (all harness gates green, windowed visual evidence already captured in .gen/manual/frame_01/02.png).\n- Story: new user-visible change \u2014 ProgressionModal closes (close button / re\u2026",
+    "error": null
   }
 ]
