@@ -8,8 +8,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 69203,
-      "output_tokens": 4293
+      "input_tokens": 102215,
+      "output_tokens": 6755
     },
     {
       "task_id": "code",
@@ -19,8 +19,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 87721,
-      "output_tokens": 4070
+      "input_tokens": 191744,
+      "output_tokens": 6931
     }
   ]
 }
