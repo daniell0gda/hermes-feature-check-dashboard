@@ -1,34 +1,32 @@
-# Request: issue #109 — nature-decoration-counts
+# Request: no-rock-or-tree-same-position-as-building
 
-- Project: poke-defense-godot (runner key: `godot-td`)
-- Workspace: `/workspace/git-workspaces/poke-defense-godot/issue-nature-decoration-counts`
-  (runner workspace: `poke-defense-godot/issue-nature-decoration-counts`)
-- Branch: `issue/nature-decoration-counts` (cut fresh from `origin/master`)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/109
-- Labels: status:in-progress, priority:medium, type:nature
-- Request ID: nature-decoration-counts-r1
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/138
+Project: poke-defense-godot
+Workspace: poke-defense-godot/issue-no-rock-or-tree-same-position-as-building
+Branch: issue/no-rock-or-tree-same-position-as-building
 
-## Feature
+## Goal
+In `scripts/game/NatureDecoration.gd`, trees, dead trees, and rocks must never be placed
+at the same XZ position as an already-placed building. Grass and other small vegetation
+remain allowed at the same position as a building.
 
-Nature decoration counts are hard-coded for 20x20 maps (`scripts/world/NatureDecoration.gd:51-54`:
-tree_count=4, bush_count=6, flower_group_count=5, dead_tree_count=2), so the 50x50 maps
-(`scripts/config/maps/custom_map.json`, `main_menu_map.json`) read as bare grass fields.
+## Context
+- `_generate_all_decorations()` generates buildings (`_generate_building`) before trees,
+  dead trees, and rocks — so building positions can be recorded and checked.
+- Each generator currently only checks path/egg/spawner clearance via `_is_valid_position`;
+  only trees check distance from other trees.
+- Buildings are placed in `buildings_container` ("buildings_container" node).
 
-## Acceptance criteria (from issue)
+## Acceptance criteria
+1. Trees, dead trees, and rocks are never placed at the same position (or overlapping)
+   as an already-placed building.
+2. Grass (and other small vegetation: bushes, flowers) may still share a position with
+   a building.
+3. Placement still respects existing path/egg/spawner clearances and attempt limits
+   (no infinite loops when space runs out).
+4. Editor import/parse gate passes (`godot --headless --editor --quit-after` style check)
+   and any existing nature-decoration-related tests still pass.
 
-1. The four counts scale with map area; factor must be exactly 1.0 at 400 m² (20x20 keeps today's
-   density exactly — no re-balance of shipped maps) and a 50x50 map gets proportionally more.
-2. Map config can still override the resulting counts explicitly under `environment.decorations`.
-3. `custom_map` and `main_menu_map` visibly carry trees and bushes across the whole board —
-   verified on windowed screenshots (manual test), not by arithmetic.
-
-No new visual assets required.
-
-## Redo notes / pitfalls (from prior sessions)
-
-- Runner key is `godot-td`, workspace `poke-defense-godot/issue-nature-decoration-counts`. Do NOT
-  invent workspace names (HTTP 422 chdir).
-- Manual tester must be windowed (no `--headless`), PNGs required; use
-  `--rendering-method gl_compatibility --audio-driver Dummy` if Vulkan fails on llvmpipe.
-- Checker classification line must be the literal lowercase `classification: pass|fixable|...`.
-- Manual-testing gate must state the overall UI-sanity criterion (`ui_feels_broken: yes|no`).
+## Manual testing
+manual_testing: required — visible placement; take windowed top-down screenshots showing
+buildings with no tree/rock intersecting them, grass allowed near buildings.

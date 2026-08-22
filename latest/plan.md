@@ -1,31 +1,30 @@
-# Acceptance Plan: issue-109-nature-decoration-counts
+# Acceptance Plan: no-rock-or-tree-same-position-as-building
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/nature_decoration_scaling.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/level_walkthrough_lean.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]`
-
-manual_testing: required
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/nature_no_building_overlap.json"]`
+- Full test: `["bash", "-c", "rc=0; for f in tests/scenarios/*.json; do id=$(basename \"$f\" .json); godot --headless --path . res://scenes/Main.tscn -- --harness=res://$id >/dev/null 2>&1 || rc=1; done; exit $rc"]`
+- Typecheck/build: `["godot", "--headless", "--editor", "--quit-after", "2", "--path", "."]`
 
 ## Clusters
 
-1. nature-count-scaling — files: `scripts/game/NatureDecoration.gd`, `tests/scenarios/nature_decoration_scaling.json` — depends on: none
-- On a 20x20 map (area 400) the placed counts equal today's values exactly: 4 trees, 6 bushes, 5 flower groups, 2 dead trees (scale factor is exactly 1.0 at 400 m²).
-- On a 50x50 map each of the four counts is proportionally larger by the area ratio (2500/400 = 6.25x the 20x20 baseline counts, rounded to a whole number, minimum 1).
-- An explicit count override under `environment.decorations` in the map config takes precedence over the computed area-scaled count for each of the four categories.
-- A headless harness scenario loads a 50x50 map and asserts the placed tree, bush, flower-group, and dead-tree counts match the area-scaled contract, and exits with status pass.
-- Debug-build `[NATURE]` log line per decoration-count computation, naming map width, height, scale factor, and the four resulting counts.
-- The existing nature-visibility regression scene (`res://tests/visuals/test_nature_visibility_range.tscn`) still exits 0 after the change.
-2. manual-visual-verification — files: `.gen/manual/` (evidence only, no production files) — depends on: 1
-- In a windowed (non-headless) run with PNG screenshots captured, `custom_map` (50x50) visibly shows trees and bushes spread across the whole board, not only near the paths or one corner; overall UI sanity verdict recorded as `ui_feels_broken: yes|no`.
+1. building-clearance-for-large-nature — files: `scripts/game/NatureDecoration.gd`, `tests/scenarios/nature_no_building_overlap.json` — depends on: none
+- Trees are never placed at an XZ position within the building clearance radius of an already-placed building.
+- Dead trees are never placed at an XZ position within the building clearance radius of an already-placed building.
+- Rocks are never placed at an XZ position within the building clearance radius of an already-placed building.
+- Bushes, flowers, and grass groups can still be placed at positions that coincide with or overlap a building.
+- Tree/dead-tree/rock generation still terminates via the existing attempt limit when no building-free position is available (no infinite loop), and previously valid placements still respect path/egg/spawner clearances.
+- A debug-build `[NATURE]` log line is emitted when a tree, dead tree, or rock candidate is rejected for being too close to a building, including the rejected position.
+- The harness scenario passes headless: loading the map generates nature decorations with zero large-nature/building overlaps reported by the scenario's expectation.
 
 ## Criteria
 
-- On a 20x20 map (area 400) the placed counts equal today's values exactly: 4 trees, 6 bushes, 5 flower groups, 2 dead trees (scale factor is exactly 1.0 at 400 m²).
-- On a 50x50 map each of the four counts is proportionally larger by the area ratio (2500/400 = 6.25x the 20x20 baseline counts, rounded to a whole number, minimum 1).
-- An explicit count override under `environment.decorations` in the map config takes precedence over the computed area-scaled count for each of the four categories.
-- A headless harness scenario loads a 50x50 map and asserts the placed tree, bush, flower-group, and dead-tree counts match the area-scaled contract, and exits with status pass.
-- Debug-build `[NATURE]` log line per decoration-count computation, naming map width, height, scale factor, and the four resulting counts.
-- The existing nature-visibility regression scene (`res://tests/visuals/test_nature_visibility_range.tscn`) still exits 0 after the change.
-- In a windowed (non-headless) run with PNG screenshots captured, `custom_map` (50x50) visibly shows trees and bushes spread across the whole board, not only near the paths or one corner; overall UI sanity verdict recorded as `ui_feels_broken: yes|no`.
+- Trees are never placed at an XZ position within the building clearance radius of an already-placed building.
+- Dead trees are never placed at an XZ position within the building clearance radius of an already-placed building.
+- Rocks are never placed at an XZ position within the building clearance radius of an already-placed building.
+- Bushes, flowers, and grass groups can still be placed at positions that coincide with or overlap a building.
+- Tree/dead-tree/rock generation still terminates via the existing attempt limit when no building-free position is available (no infinite loop), and previously valid placements still respect path/egg/spawner clearances.
+- A debug-build `[NATURE]` log line is emitted when a tree, dead tree, or rock candidate is rejected for being too close to a building, including the rejected position.
+- The harness scenario passes headless: loading the map generates nature decorations with zero large-nature/building overlaps reported by the scenario's expectation.
+
+manual_testing: required

@@ -1,83 +1,41 @@
-# Check report: issue-nature-decoration-counts
+# Check report: no-rock-or-tree-same-position-as-building (iteration 1)
 
 classification: fixable
 
-## Verdict
+## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-no-rock-or-tree-same-position-as-building; no host Godot used)
 
-Build/import gate, focused harness, full suite, and the nature-visibility
-regression scene all pass fresh through `run_project_cmd`
-(project=poke-defense-godot, workspace=poke-defense-godot/issue-nature-decoration-counts).
-6 of 7 criteria verified Done. One criterion demoted to Pending for a concrete,
-rule-based quality violation in newly added code (ungated debug print).
-
-## Commands and exit codes (all via run_project_cmd)
-
-| Command | Exit | Result |
+| Command | Exit code | Result |
 |---|---|---|
-| `godot --version` | 0 | 4.4.1.stable |
-| `godot --headless --path . --import` | 0 | clean import |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/nature_decoration_scaling.json` | 0 | `.gen/harness/nature_decoration_scaling/result.json`: status=pass, all 18 expectations ok |
-| `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn` | 0 | `nature_visibility_range: 5 ok, 0 failed`, every test ran to completion (2 of 2) |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/level_walkthrough_lean.json` | 0 | `.gen/harness/level_walkthrough_lean/result.json`: status=pass (elapsed 324.9s), all actions ok |
+| `godot --version` (runner probe) | 0 | Godot 4.4.1.stable.official.49a5bc7b6 — runner reachable |
+| `godot --headless --editor --quit-after 2 --path .` (typecheck/build gate) | 0 | Import/parse clean, no script errors |
+| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/nature_no_building_overlap.json` | 0 | `[Harness] status=pass exit=0`; fresh result at `.gen/harness/nature_no_building_overlap/result.json`; expectation `nature_large_nature_building_overlaps == 0` passed; 11 live `[NATURE] rejected ... candidate too close to a building at (x, z)` lines observed |
 
-Observed in fresh run stdout:
-`[NATURE] counts for 20.0x20.0 map (area 400): scale_factor=1.0000 trees=4 bushes=6 flowers=5 dead_trees=2`
-`[NATURE] counts for 50.0x50.0 map (area 2500): scale_factor=6.2500 trees=25 bushes=38 flowers=31 dead_trees=13`
-Override map: `scale_factor=1.0000 trees=9 bushes=3 flowers=7 dead_trees=1`.
+The plan's full-suite command uses a `bash -c` loop that the runner profile does not allowlist (`bash` is not an approved executable), so it was not run as-is. The prior worker recorded a full-suite baseline in `tests/run_all_done.txt` (136 scenarios, 18 pre-existing failures unrelated to this change — cannon/cave/curse/fire/hud/ice/issue-* scenarios). This checker re-ran the focused scenario for this issue green; full-suite regression remains honestly incomplete rather than proven green.
 
-## Criterion evidence
+## Acceptance criteria evidence
 
-1. 20x20 baseline counts 4/6/5/2 at factor 1.0 — Done. Harness expectations
-   `map_1.{trees,bushes,flowers,dead_trees}` == 4/6/5/2 and
-   `map_1.scale_factor` == 1.0 passed; matches constants
-   BASELINE_TREE_COUNT=4 etc. in NatureDecoration.gd.
-2. 50x50 = round(baseline * 6.25) min 1 — Done. `custom_map.scale_factor`
-   == 6.25, placed 25/38/31/13 (= round(25/37.5/31.25/12.5)); asserts in
-   nature_decoration_scaling.json passed against live placed counts.
-3. environment.decorations override precedence — Done. Map
-   `map_nature_override_test` overrides yield 9/3/7/1, asserted in the same
-   passing scenario; `_override_or` handles int/float/{count} forms.
-4. Headless 50x50 harness asserts contract, status pass — Done. Fresh run
-   exit 0, result.json status=pass, 18/18 expectations.
-5. `[NATURE]` debug log line with width/height/scale/counts — Pending
-   (quality). Line exists and names all required fields (verified in stdout),
-   but it prints unconditionally; CLAUDE.md requires debug-only logging gated
-   by `OS.is_debug_build()` with a `[TAG]` prefix. New code in
-   `scripts/game/NatureDecoration.gd`.
-6. nature-visibility regression exits 0 — Done. Fresh headless run exit 0,
-   "5 ok, 0 failed".
-7. Windowed custom_map screenshots, whole-board spread, ui_feels_broken
-   verdict — Done. `.gen/harness/nature_decoration_manual/result.json`
-   status=pass with two 1920x1080 captures copied to
-   `.gen/manual/01_custom_map_50x50_full_board.png`,
-   `.gen/manual/02_custom_map_rotated.png`; coder report records
-   vegetation across the full board incl. far corners and
-   `ui_feels_broken: no`. Visual claim rests on implementor inspection of
-   PNGs (manual-tester domain); automated part (windowed capture, save)
-   re-verified via the passing manual scenario result.
-
-## Test overlap
-
-No overlapping pre-existing coverage found: the scaling scenario is new;
-`test_nature_visibility_range.tscn` covers culling/visibility, not counts.
+1. Trees never within building clearance radius — implementation gates `_generate_trees` on `_is_within_building_clearance(pos)` (NatureDecoration.gd); focused harness asserts zero overlaps and passed.
+2. Dead trees never within building clearance radius — same gate in `_generate_dead_trees`.
+3. Rocks never within building clearance radius — same gate in `_generate_rocks`.
+4. Bushes/flowers/grass groups may still coincide with a building — no clearance check added to those generators (verified in diff).
+5. Attempt-limit termination and path/egg/spawner clearances preserved — existing attempt-limit loops untouched; `_is_valid_position` runs before the new building check. Note: `_generate_building` max_attempts changed from `buildings_count` to `buildings_count * 10` — still bounded, no infinite-loop risk.
+6. Debug-build `[NATURE]` reject log including position — `_debug_log_nature_reject` guarded by `OS.is_debug_build()`, prints `(x, z)`; observed live in this checker's focused run (11 lines).
+7. Harness scenario passes headless with zero overlaps — fresh rerun by this checker: status=pass, exit 0, all expectations passed. Demoted to Pending for a quality violation in the new supporting helper (see below).
 
 ## Changed-file quality findings
 
-- scripts/testing/HarnessValues.gd `_nature_field`: acceptable; follows the
-  existing source pattern, documented in the source-map comment.
-- Minor (advisory): `NatureDecoration.placed_reports` static dict grows per
-  loaded map and is never cleared; bounded by maps loaded per run, not a leak
-  in practice.
+- scripts/game/NatureDecoration.gd: `get_large_nature_building_overlaps()` contains `(child as Node3D)` — CLAUDE.md forbids type casts. Corrective action: use `for child: Node3D in container.get_children()` or an `is Node3D` guard with direct access, then rerun the focused harness.
+- Rest of the new code complies: typed variables, small helpers, guard clauses, debug-only logging.
+
+## Quality notes
+
+- Open entry `pre-existing-workspace-dirt` from iteration 1 stands (no resolution yet): binary `.glb` model changes, regenerated balance CSV, and untracked scratch files (`tests/run_all_scenarios_scratch.gd`, `.py`, `tests/run_all_shard.py`, `tools/reimport_buildings.gd`) present in the worktree but not introduced as feature scope creep. Should be cleaned or gitignored before merge.
+- No new cross-cutting entries appended.
 
 ## Blockers
 
-None. Runner healthy throughout.
+None blocking classification. Manual top-down screenshot testing remains required per request.md (not performable headless).
 
-## Unverified / notes
+## Verdict
 
-- Whole-board visual spread and UI-sanity verdict are accepted from the
-  manual-tester profile's PNG evidence + recorded verdict; checker did not
-  independently judge image pixels.
-- Pre-existing warnings (invalid HUD theme UIDs, missing Petal /
-  Mushroom_Laetiporus / sheep_shed.glb models, RID leaks at exit) are legacy
-  and out of scope for this diff.
+6/7 Done retained, 1 demoted to Pending (quality: forbidden type cast), 0 Impossible. Runner gate healthy; build/typecheck gate passed; focused harness green.
