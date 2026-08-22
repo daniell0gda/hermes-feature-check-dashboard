@@ -8,8 +8,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 81116,
-      "output_tokens": 6750
+      "input_tokens": 44604,
+      "output_tokens": 3731
     },
     {
       "task_id": "code",
@@ -19,52 +19,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 109592,
-      "output_tokens": 7933
-    },
-    {
-      "task_id": "check",
-      "cluster_id": null,
-      "role": "check",
-      "model": "stealth/ox-alpha",
-      "model_tier": null,
-      "cost_usd": 0.0,
-      "cost_status": "unknown",
-      "input_tokens": 104254,
-      "output_tokens": 5578
-    },
-    {
-      "task_id": "revision-code-1",
-      "cluster_id": "implementation",
-      "role": "code",
-      "model": "stealth/ox-alpha",
-      "model_tier": null,
-      "cost_usd": 0.0,
-      "cost_status": "unknown",
-      "input_tokens": 241160,
-      "output_tokens": 13299
-    },
-    {
-      "task_id": "revision-check-1",
-      "cluster_id": null,
-      "role": "check",
-      "model": "stealth/ox-alpha",
-      "model_tier": null,
-      "cost_usd": 0.0,
-      "cost_status": "unknown",
-      "input_tokens": 139023,
-      "output_tokens": 3433
-    },
-    {
-      "task_id": "manual-testing-gate",
-      "cluster_id": null,
-      "role": "team-leader",
-      "model": "stealth/ox-alpha",
-      "model_tier": null,
-      "cost_usd": 0.0,
-      "cost_status": "unknown",
-      "input_tokens": 39462,
-      "output_tokens": 600
+      "input_tokens": 175634,
+      "output_tokens": 20478
     }
   ]
 }
