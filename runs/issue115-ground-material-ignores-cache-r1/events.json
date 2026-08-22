@@ -52,5 +52,14 @@
     "duration_ms": 58094,
     "summary": "Manual-testing gate complete.\n\n- Check status is `pass`; all 7 criteria verified via fresh harness runs (per .gen/check.md), with only manual screenshot evidence outstanding.\n- Decision: `manual_testing: required` \u2014 the change is player-vis\u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-22T22:31:55.375Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 353091,
+    "summary": "Manual-test result: PASSED. Scenario: .gen/ui_scenario.md (windowed, via tests/scenarios/manual_ground_material_map_switch.json).\nReport: .gen/manual-report.md. Escalation: no.\n\nSummary of what was done:\n- Read plan/changes/manual_testing f\u2026",
+    "error": null
   }
 ]

@@ -1,4 +1,4 @@
-# Coder report: 1-ground-material-cache-and-map-switch\n\n# Coder report: 1-ground-material-cache-and-map-switch (revision-code-1, revision 1)
+# Coder report: 1-ground-material-cache-and-map-switch (revision-code-1, revision 1)
 
 ## Changed files
 - No source changes this revision. Iteration-1 implementation re-verified as-is:
@@ -25,4 +25,3 @@
 - Revision pass only: no code edits were required; all 7 criteria already satisfied by the iteration-1 implementation and re-proven with fresh runs above.
 - Advisory quality note still open (non-blocking): all shipped maps share one grassColor, so the tint assertion cannot distinguish two distinct map colors (`.gen/quality-notes.md` ground-map-tint-distinctness).
 - Pre-existing engine noise unrelated to this change: invalid UID warnings for HUD theme textures, missing GLB imports in headless dummy renderer, RID leak warnings at exit. Present before this feature too.
-\n
