@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-39-buried-ordnance/",
-  "heartbeat_at": "2026-08-22T17:25:40.404Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T17:25:40.404Z",
+  "heartbeat_at": "2026-08-22T17:29:47.315Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T17:29:47.315Z",
   "process_id": 641033,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T17:25:44.816824+00:00",
-    "last_success_at": "2026-08-22T17:25:44.816259+00:00",
+    "last_attempt_at": "2026-08-22T17:29:47.315869+00:00",
+    "last_success_at": "2026-08-22T17:25:49.194797+00:00",
     "last_error": null
   },
   "metrics": {
