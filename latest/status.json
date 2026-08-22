@@ -1,12 +1,12 @@
 {
   "run_id": "issue130-underground-carve-topdown-camera-rotation",
   "feature": "underground-carve-topdown-camera-rotation",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-22T14:56:55.786Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T16:49:58.542Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue130-underground-carve-topdown-camera-rotation/",
-  "heartbeat_at": "2026-08-22T16:49:54.164Z",
+  "heartbeat_at": "2026-08-22T16:49:58.542Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-22T16:49:54.164Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T16:49:54.165741+00:00",
-    "last_success_at": "2026-08-22T16:27:25.581985+00:00",
+    "last_attempt_at": "2026-08-22T16:49:58.542917+00:00",
+    "last_success_at": "2026-08-22T16:49:58.541648+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 122040,
         "output_tokens": 2464
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 193238,
+        "output_tokens": 8391
       }
     ]
   }
