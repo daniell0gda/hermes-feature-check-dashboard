@@ -1,20 +1,20 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T10:05:21.602Z",
+    "timestamp": "2026-08-22T10:24:19.884Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 583186,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-perk-frozen-fracture/.gen/plan.md\n",
+    "duration_ms": 1035566,
+    "summary": "The typecheck/build gate fails on a real defect in this worktree's cherry-pick merge, so I cannot honestly pass verification. Per my role boundary (\"Do not edit production source\"), I record it as a blocker rather than patching it myself.\n\n\u2026",
     "error": null
   },
   {
     "sequence": 2,
-    "timestamp": "2026-08-22T10:35:04.929Z",
+    "timestamp": "2026-08-22T10:39:15.829Z",
     "node": "code",
     "status": "completed",
-    "duration_ms": 1778605,
-    "summary": "Implementation complete. Summary:\n\n**Feature: `frozen_fracture` perk (all 3 clusters)**\n\n- **Perk definition** \u2014 added to `scripts/progression/global.json`: Common type, exactly 3 levels (10%/20%/30% armor-damage bonus stated in description\u2026",
+    "duration_ms": 891616,
+    "summary": "Cluster 1 complete. Summary:\n\n**Fixed**\n- `scripts/testing/HarnessValues.gd` \u2014 the cherry-pick left a duplicate `\"harness\":` match arm and two conflicting `_harness_field()` definitions, breaking the parse of HarnessValues \u2192 AgentHarness \u2192 \u2026",
     "error": null
   }
 ]

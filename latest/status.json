@@ -1,21 +1,21 @@
 {
-  "run_id": "perk-frozen-fracture-94",
-  "feature": "perk-frozen-fracture",
+  "run_id": "issue-63-20260822",
+  "feature": "clear-previous-map-tower-effects",
   "status": "running",
-  "started_at": "2026-08-22T09:54:36.569Z",
+  "started_at": "2026-08-22T10:06:15.301Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-frozen-fracture-94/",
-  "heartbeat_at": "2026-08-22T10:35:04.929Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-63-20260822/",
+  "heartbeat_at": "2026-08-22T10:39:15.829Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T10:35:04.929Z",
-  "process_id": 493095,
+  "active_node": null,
+  "last_event_at": "2026-08-22T10:39:15.829Z",
+  "process_id": 496635,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T10:35:09.336115+00:00",
-    "last_success_at": "2026-08-22T10:35:09.334582+00:00",
+    "last_attempt_at": "2026-08-22T10:39:15.829975+00:00",
+    "last_success_at": "2026-08-22T10:24:28.638296+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,19 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 60575,
-        "output_tokens": 5175
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 519053,
-        "output_tokens": 23980
+        "input_tokens": 143653,
+        "output_tokens": 8044
       }
     ]
   }
