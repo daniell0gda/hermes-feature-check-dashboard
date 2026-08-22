@@ -1,35 +1,33 @@
-# Acceptance Plan: req-136-padding-closable-panels-close-button
-
-Closable `TitledPanel` panels reserve horizontal padding so the painted corner "x" (`CloseChip`, 90x103, flush top-right) never overlaps panel content; verified on tower details and every other closable panel (Manage Towers, Options).
-
-## Verification
-
-- Focused test: `["godot", "--headless", "--path", ".", "res://tests/ui/test_titled_panel_close_corner.tscn"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_armor_bar.tscn"] && ["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_health_bar_boss_icon.tscn"] && ["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_health_bar_oiled_icon.tscn"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]` followed by `["godot", "--headless", "--path", ".", "--check-only", "--script", "res://scripts/ui/hud/TitledPanel.gd"]`
-
-Note: the visual overlap claim itself cannot be proven headless. Run the existing
-`tests/scenarios/hud_other_panels.json` scenario with `-Windowed` (screenshots
-`panel_tower_details`, `panel_manage_towers`, `panel_options`) — this is the
-`manual_testing: required` path below.
+# Acceptance Plan: Underground side panel — Carve / Place Exit / Place Block fit the wooden frame
 
 manual_testing: required
 
+## Verification
+
+- Focused test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-underground-side-panel-carve-place-exit-` cmd=`["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/hud_wood_panels.json"]`
+- Full test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-underground-side-panel-carve-place-exit-` cmd=`["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_underground_visible.json"]`
+- Typecheck/build: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-underground-side-panel-carve-place-exit-` cmd=`["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+
+Note: `hud_wood_panels.json` is screenshot-based; run it windowed (never `--headless`) for the
+manual pixel check of the `hud_underground` shot. The headless invocation above verifies the
+timeline and expectations execute cleanly; the frame-overlap verdict comes from the windowed
+screenshot review recorded under `.gen/harness/hud_wood_panels/shots/`.
+
 ## Clusters
 
-1. closable-panel-content-padding — files: `scripts/ui/hud/TitledPanel.gd`, `tests/ui/test_titled_panel_close_corner.gd`, `tests/ui/test_titled_panel_close_corner.tscn` — depends on: none
-- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
-- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
-- The CloseChip remains flush in the frame's top-right corner and pressing it still emits exactly one `close_requested` (existing contract preserved).
-- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
-- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
-- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
+1. underground-dig-buttons-layout — files: `scenes/UI.tscn`, `scripts/ui/UI.gd`, `tests/scenarios/hud_wood_panels.json` — depends on: none
+- After switching to the underground layer on `map_1`, all three underground controls (Carve, Place Block, Place Exit) render entirely inside the side panel's inner box, clear of its corner brackets.
+- After switching to the underground layer on a map where Porter is unlocked, all three underground controls still render entirely inside the side panel's inner box, clear of its corner brackets.
+- The Place Exit button displays its name and price text fully, without clipping or truncation, at the new layout size.
+- The `hud_underground` screenshot captured by the `hud_wood_panels` scenario shows no button rect overlapping the side panel frame or its corner brackets.
+- Each of the three controls keeps its existing behaviour after the relayout: Carve arms carve mode, Place Block arms block placement, and Place Exit starts exit placement when pressed.
+- The underground controls appear when entering the underground layer and hide again when returning to the surface layer.
 
 ## Criteria
 
-- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
-- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
-- The CloseChip remains flush in the frame's top-right corner and pressing it still emits exactly one `close_requested` (existing contract preserved).
-- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
-- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
-- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
+- After switching to the underground layer on `map_1`, all three underground controls (Carve, Place Block, Place Exit) render entirely inside the side panel's inner box, clear of its corner brackets.
+- After switching to the underground layer on a map where Porter is unlocked, all three underground controls still render entirely inside the side panel's inner box, clear of its corner brackets.
+- The Place Exit button displays its name and price text fully, without clipping or truncation, at the new layout size.
+- The `hud_underground` screenshot captured by the `hud_wood_panels` scenario shows no button rect overlapping the side panel frame or its corner brackets.
+- Each of the three controls keeps its existing behaviour after the relayout: Carve arms carve mode, Place Block arms block placement, and Place Exit starts exit placement when pressed.
+- The underground controls appear when entering the underground layer and hide again when returning to the surface layer.
