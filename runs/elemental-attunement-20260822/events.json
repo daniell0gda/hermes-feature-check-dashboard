@@ -25,5 +25,14 @@
     "duration_ms": 338154,
     "summary": "Verified done: 11. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes (no open entries; no cross-cutting issues in the feature diff). Verification: pas\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-22T14:51:05.824Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 67458,
+    "summary": "Manual-testing gate complete.\n\n- Read request/plan/check/status; check classification is pass (all 11 criteria verified via fresh harness runs).\n- Decision: `manual_testing: none` \u2014 the change is a pure stat modifier on the type-effectivene\u2026",
+    "error": null
   }
 ]
