@@ -1,37 +1,39 @@
-# Acceptance Plan: Harness cannot reach runtime-instanced modals (issue #106)
-
-manual_testing: required
+# Acceptance Plan: perk-undermining
 
 ## Verification
 
-- Focused test: `["godot","--rendering-method","gl_compatibility","--rendering-driver","opengl3","--audio-driver","Dummy","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/hud_other_panels.json"]`
-- Full test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/hud_other_panels.json"]`
-- Typecheck/build: `["godot","--headless","--editor","--quit-after","100"]`
-
-Notes: the focused command must run windowed (real X display in the worker) because headless captures no pixels and every screenshot checkpoint reports skipped; if Vulkan fails in the worker the gl_compatibility flags above are required. The typecheck gate also regenerates the global class cache, which is mandatory before any scenario run that references new class_name scripts (a plain game run otherwise dies with "Could not find type").
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/undermining_progression.json"]`
+- Full test: `["bash", "-lc", "for f in tests/scenarios/undermining_*.json tests/scenarios/enemy_armor_trap.json tests/scenarios/traps_serrated_edges_progression.json tests/scenarios/trap_stats_attribution.json; do id=$(basename \"$f\" .json); godot --headless --path . res://scenes/Main.tscn -- \"--harness=res://$f\" > /dev/null 2>&1; s=$(python3 -c \"import json;print(json.load(open('.gen/harness/$id/result.json'))['status'])\" 2>/dev/null); echo \"$id: $s\"; [ \"$s\" = pass ] || exit 1; done"]`
+- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "120"]`
 
 ## Clusters
 
-1. runtime-modal-harness-access — files: `scripts/ui/UI.gd`, `scripts/testing/HarnessActions.gd`, `scripts/testing/AgentHarness.gd` — depends on: none
-- After the UI opens its Options screen at runtime, a scenario `call` action can reach that live modal instance as a call/expression target (the reference is kept, not dropped), and the action returns ok:true with the modal reachable.
-- A scenario can switch the opened Options modal to its Sound tab through a UI-callable method, and a subsequent screenshot shows the Sound tab active with its themed sliders rendered.
-- A scenario can open one of the Options screen's WoodDropdown pickers through a UI-callable method so its floating row list, name plate and rows are visible for a screenshot.
-- A scenario can assert which resolution/UI-scale dropdown row is currently selected on the opened Options modal via an expectation or call detail, and the assertion passes against the actual selection.
-- Opening the Options screen twice does not leave two live modal instances; only one instance exists afterwards.
-- Resolving an unknown target name or a node-path target that matches nothing returns ok:false with a descriptive detail instead of crashing the harness or aborting the scenario timeline.
-- Debug-build [HARNESS] log line per runtime-modal resolution, naming the requested target/path and whether a live node was found.
-2. options-scenario-checkpoints — files: `tests/scenarios/hud_other_panels.json` — depends on: 1
-- The extended `hud_other_panels` scenario passes end-to-end (harness status=pass) with added checkpoints covering the Options Sound tab and one open WoodDropdown picker.
-- The scenario's result.json records screenshots of the Sound tab and the open dropdown, each captured while the panel is actually visible (outcome not skipped/headless).
+1. undermining-perk-definition — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `autoload/ProgressionManager.gd` — depends on: none
+- A progression named `undermining` exists in the trap progression pool with type Common, exactly 3 levels, and is offered only for traps (never for any surface tower).
+- With `undermining` at levels 1/2/3, the exposed trap armor-damage bonus is 8/15/25 respectively; when the perk is not owned it is 0.
+2. undermining-trap-runtime — files: `scripts/game/actors/Trap.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — depends on: 1
+- Each hit from any of the four traps (`trap_01`, `trap_02`, `trap_03`, `trap_05`) on an armored enemy removes exactly the current `undermining` level's armor amount (8/15/25), clamped so armor never goes below zero, in addition to normal HP damage.
+- Without the perk owned, a trap hit changes enemy armor by exactly zero (existing behaviour preserved).
+- Surface tower hits are unchanged by `undermining`: owning it does not add armor damage to any non-trap tower's hits.
+- Debug-build `[Undermining]` log line per armor-stripping trap hit
+3. undermining-hit-vfx — files: `scripts/game/actors/Trap.gd`, `scripts/game/actors/effects/EffectsManager.gd` — depends on: 2
+- When an owned-perk trap hit actually strips armor, the trap's existing hit-impact effect shows a distinct tint signalling the armor-strip portion, and the tint is absent on trap hits while the perk is unowned.
+4. undermining-game-test-coverage — files: `tests/scenarios/undermining_progression.json`, `tests/scenarios/undermining_trap_armor.json`, `tests/scenarios/undermining_scope_isolation.json` — depends on: 1, 2, 3
+- A focused harness scenario proves definition and persistence: `undermining` resolves as Common/traps-only with 3 levels, applying levels yields the 8/15/25 armor values through the same accessor Ballista uses, re-applying past level 3 stays at 25, and save/reload restores the level and value.
+- A focused harness scenario proves live trap behavior: a real trap hit on an armored underground enemy reduces armor by exactly the perk amount at each level, and by zero when unowned.
+- A focused harness scenario proves scope isolation: while `undermining` is owned, scripted surface-tower hits apply no perk-derived armor damage.
 
 ## Criteria
 
-- After the UI opens its Options screen at runtime, a scenario `call` action can reach that live modal instance as a call/expression target (the reference is kept, not dropped), and the action returns ok:true with the modal reachable.
-- A scenario can switch the opened Options modal to its Sound tab through a UI-callable method, and a subsequent screenshot shows the Sound tab active with its themed sliders rendered.
-- A scenario can open one of the Options screen's WoodDropdown pickers through a UI-callable method so its floating row list, name plate and rows are visible for a screenshot.
-- A scenario can assert which resolution/UI-scale dropdown row is currently selected on the opened Options modal via an expectation or call detail, and the assertion passes against the actual selection.
-- Opening the Options screen twice does not leave two live modal instances; only one instance exists afterwards.
-- Resolving an unknown target name or a node-path target that matches nothing returns ok:false with a descriptive detail instead of crashing the harness or aborting the scenario timeline.
-- Debug-build [HARNESS] log line per runtime-modal resolution, naming the requested target/path and whether a live node was found.
-- The extended `hud_other_panels` scenario passes end-to-end (harness status=pass) with added checkpoints covering the Options Sound tab and one open WoodDropdown picker.
-- The scenario's result.json records screenshots of the Sound tab and the open dropdown, each captured while the panel is actually visible (outcome not skipped/headless).
+- A progression named `undermining` exists in the trap progression pool with type Common, exactly 3 levels, and is offered only for traps (never for any surface tower).
+- With `undermining` at levels 1/2/3, the exposed trap armor-damage bonus is 8/15/25 respectively; when the perk is not owned it is 0.
+- Each hit from any of the four traps (`trap_01`, `trap_02`, `trap_03`, `trap_05`) on an armored enemy removes exactly the current `undermining` level's armor amount (8/15/25), clamped so armor never goes below zero, in addition to normal HP damage.
+- Without the perk owned, a trap hit changes enemy armor by exactly zero (existing behaviour preserved).
+- Surface tower hits are unchanged by `undermining`: owning it does not add armor damage to any non-trap tower's hits.
+- Debug-build `[Undermining]` log line per armor-stripping trap hit
+- When an owned-perk trap hit actually strips armor, the trap's existing hit-impact effect shows a distinct tint signalling the armor-strip portion, and the tint is absent on trap hits while the perk is unowned.
+- A focused harness scenario proves definition and persistence: `undermining` resolves as Common/traps-only with 3 levels, applying levels yields the 8/15/25 armor values through the same accessor Ballista uses, re-applying past level 3 stays at 25, and save/reload restores the level and value.
+- A focused harness scenario proves live trap behavior: a real trap hit on an armored underground enemy reduces armor by exactly the perk amount at each level, and by zero when unowned.
+- A focused harness scenario proves scope isolation: while `undermining` is owned, scripted surface-tower hits apply no perk-derived armor damage.
+
+manual_testing: required

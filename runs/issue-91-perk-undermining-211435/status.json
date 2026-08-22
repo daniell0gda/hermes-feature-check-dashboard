@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-91-perk-undermining-211435/",
-  "heartbeat_at": "2026-08-22T21:36:58.805Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T21:36:58.805Z",
+  "heartbeat_at": "2026-08-22T21:40:32.416Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T21:40:32.416Z",
   "process_id": 747159,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:37:03.415565+00:00",
-    "last_success_at": "2026-08-22T21:37:03.414864+00:00",
+    "last_attempt_at": "2026-08-22T21:40:32.416457+00:00",
+    "last_success_at": "2026-08-22T21:37:07.725005+00:00",
     "last_error": null
   },
   "metrics": {
