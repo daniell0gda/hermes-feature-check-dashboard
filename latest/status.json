@@ -1,12 +1,12 @@
 {
   "run_id": "issue-123-progression-pick-scenario-stale",
   "feature": "progression_pick scenario compatible tower recipe",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-22T08:06:37.179Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T09:19:28.952Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-123-progression-pick-scenario-stale/",
-  "heartbeat_at": "2026-08-22T09:19:24.799Z",
+  "heartbeat_at": "2026-08-22T09:19:28.952Z",
   "last_node": "team-leader",
   "active_node": null,
   "last_event_at": "2026-08-22T09:19:24.799Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T09:19:24.799580+00:00",
-    "last_success_at": "2026-08-22T09:18:43.292311+00:00",
+    "last_attempt_at": "2026-08-22T09:19:28.952441+00:00",
+    "last_success_at": "2026-08-22T09:19:28.950733+00:00",
     "last_error": null
   },
   "metrics": {
@@ -96,6 +96,17 @@
         "cost_status": "unknown",
         "input_tokens": 111707,
         "output_tokens": 3413
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 46388,
+        "output_tokens": 490
       }
     ]
   }
