@@ -1,113 +1,87 @@
-# Manual Test Report – Buried Ordnance chained explosion (issue #39)
+# Manual Test Report – req-136-padding-closable-panels-close-button
 
 ## Summary
 
-- Result: FAILED
-- Tested on: 2026-08-22, Godot 4.4.1 windowed (gl_compatibility, llvmpipe), map_1, harness scenario
-- Scenario: `.gen/ui_scenario.md` (beat 2–3 of the chained-explosion story)
+- Result: PASSED
+- Tested on: 2026-08-22, windowed Godot run (1920x1080) via project runner, scenario `tests/scenarios/hud_other_panels.json`
+- Scenario: .gen/ui_scenario.md
 - Tester: Manual-tester profile
 
-Overall: The Buried Ordnance chain logic works — with the perk owned, a trap hit on an
-underground enemy rolled the chance, dealt blast damage to 2 neighbors, logged
-`[BURIED_ORDNANCE] trap=trap_01 chain=1 rolled=true caught=2`, and called
-`ExplosionFX.spawn_bazooka_explosion` twice (log lines `[ExplosionFX] blast radius=0.60 ...`).
-However the required visual evidence is NOT visible in any captured frame: the explosion
-particles are parented under `Game/Surface`, which is hidden while viewing the underground
-layer — exactly where this perk always fires. Three windowed runs (including a slow-motion
-0.05x variant and a run that waited out the scene fade) all show an empty cave floor at the
-blast moment; blast frame and aftermath frame are pixel-identical. This is a player-visible
-bug: the acceptance criterion "each chained blast produces a visible small-explosion effect"
-is not met.
+Overall: Ran the windowed `hud_other_panels` scenario through the approved project runner
+(`godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/hud_other_panels.json`,
+no --headless). The harness placed a tower, selected it, and opened each panel in turn,
+capturing four fresh PNGs. I inspected every image. All closable panels show visible
+horizontal breathing room between their rightmost content and the corner "x"; nothing is
+clipped or overlapped. One expected nuance: in the live game the tower details panel does not
+carry an "x" at all (it is not closable at runtime), so there is nothing there to collide —
+which matches the fix design (padding applies only when a CloseChip exists).
+
+Harness run evidence: `.gen/harness/hud_other_panels/result.json` — status: pass, all 17 actions ok,
+expectation game_state==paused passed, headless:false, finished 2026-08-22T19:18:14.
+Fresh screenshots copied to `.gen/screenshots/`.
 
 ## Scenario Walkthrough
 
-### Step 1 – Perk grant + trap hit setup (harness-driven)
+### Step 1 – Tower details panel open
 
-- Action: Ran the focused scenario windowed:
-  `godot --path . --rendering-method gl_compatibility --audio-driver Dummy res://scenes/Main.tscn -- --harness=res://tests/scenarios/traps_buried_ordnance_progression.json`
-- Expected: `traps_buried_ordnance` eligible on fresh run, granted to level 1
-  (chance 0.5, radius 2.0), idempotent on save/reload.
-- Observed: All progression actions ok; log shows
-  `[TrapProgression] traps_buried_ordnance -> chance 0.50 radius 2.00`. Result `status: pass`.
-- Status: PASS (logic)
+- Action: Placed a generic tower at (-6, 0, 2), selected it via select_at + on_tower_selected, screenshot.
+- Expected: Panel content (name header, Lv badge, stats, upgrade/sell buttons) clear of any top-right "x".
+- Observed: Panel shows Generic Tower, Lv.1 badge, Damage/Range/Interval/DPS stat rows with green next-level values, UPGRADE and SELL buttons, Target dropdown, Active checkbox. The panel carries NO painted "x" in its top-right corner (not closable at runtime), so no overlap is possible; layout is clean and unclipped.
+- Status: PASS
 
-### Step 2 – Underground enemy steps on the trap
 
-- Action: Two cave enemies force-spawned next to a placed trap_01 at (0.25,-3.0,0.25);
-  game set to playing; chance roll forced true via `set_buried_ordnance_next_roll(0.0)`.
-- Expected: Trap hits one enemy; chain decision rolls.
-- Observed: `[BURIED_ORDNANCE] trap=trap_01 chain=1 rolled=true caught=2` plus two
-  `[ExplosionFX] blast radius=0.60 particles=300 ... life=0.150` lines — the chain fired
-  and spawned two burst effects.
-- Status: PASS (logic)
 
-### Step 3 – Capture the chained-blast VFX moment (windowed)
 
-- Action: Harness `then_screenshot` captured the viewport on the first frame the chain log
-  line appeared (`buried_ordnance_chain_blast.png`). Re-ran twice more with a dedicated
-  visual scenario: once at 0.05x engine time scale (blast stretched from 0.15 s to ~3 s)
-  and once waiting 5 s for the scene fade-in overlay to finish before arming the roll.
-- Expected: A red/orange particle burst visible on the underground floor at the blast site,
-  with the trap and neighboring enemies in frame.
-- Observed: In every run the cave floor is empty at the capture frame — no burst, no sparks,
-  no enemies (cave enemies also render nothing because their GLB models fail to import).
-  The blast frame and the aftermath frame are pixel-identical (ffmpeg difference YMAX=67,
-  no reddish pixels above background). Root cause found by code inspection:
-  `scripts/game/effects/ExplosionFX.gd` parents particles under `Game/Surface`
-  ("Prefer parenting under Surface for correct layer visibility"), but
-  `Game._on_layer_changed()` sets `$Surface.visible = false` when the layer is
-  `underground`. So the chained explosion renders only while the player is looking at the
-  surface layer — invisible exactly when/where Buried Ordnance triggers.
-- Status: FAIL
+### Step 2 – Pause menu overlay
+
+- Action: Opened pause menu via ui.show_pause_menu, screenshot.
+- Expected: Buttons clear of the corner ornament; pause menu has no close button — nothing regressed.
+- Observed: No "x" chip in the top-right corner; Resume / Options / Quit to Menu / Quit Game buttons are centered with empty space at the corners. No clipping or regression.
+- Status: PASS
+
+
+
+
+### Step 3 – Manage Towers overlay
+
+- Action: Opened Manage Towers via ui._on_update_towers_pressed, screenshot.
+- Expected: Group list and cost text not running under the "x"; visible breathing room from the corner "x".
+- Observed: The stylized "x" close chip sits in the ornate frame's top-right. Rightmost content ("Raise to Highest" button) ends well left of it, with clearly visible dark inner-panel gap between them. No text or list item touches or overlaps the chip.
+- Status: PASS
+
+
+
+
+### Step 4 – Options screen
+
+- Action: Opened Options via ui._on_pause_options, screenshot.
+- Expected: Rows/toggles clear of the "x"; breathing room between rightmost content and the chip.
+- Observed: The decorative "x" is in the outer frame's top-right. All settings rows/toggles/sliders and the Apply/Close buttons end left of it with a distinct gap. Nothing overlaps or touches the chip.
+- Status: PASS
 
 ## Criteria
 
-- The `traps_buried_ordnance` perk is defined as a Unique progression, eligible/grantable through the normal flow, level applied idempotently on load/replay
-  - Proven by fresh headless+windowed harness result (48/48 actions ok): `.gen/harness/traps_buried_ordnance_progression/result.json` (status pass). No still can prove eligibility alone; log expectation `\u005bTrapProgression\u005d traps_buried_ordnance -> chance 0.50 radius 2.00` passed.
-- With the perk owned, a trap hit on an underground enemy has a chance to deal explosion damage to other underground enemies within radius
-  - Verified logically (caught=2 within radius 2.0); no screenshot needed for damage itself.
-- Without the perk owned, no chained damage (behavior unchanged)
-  - Second arm passed headless: `[BURIED_ORDNANCE] trap=trap_03 chain=1` never appears; `chain=0 rolled=false caught=0` logged. Unverified visually (nothing visible even with perk — see failure below).
-- Non-underground enemies never receive chained explosion damage
-  - Structural per `Trap.gd::_apply_chain_blast` iterating `get_all_underground_enemies` + per-enemy `is_enemy_underground` check. Code-reviewed only.
-- Each chained blast produces a VISIBLE small-explosion effect at the affected location — **FAILED**
-  - Blast-moment frame, empty floor, no burst anywhere:
-    ![chain blast moment](screenshots/chain_blast_moment.png)
-  - Aftermath frame seconds later — pixel-identical to the blast frame (no transient was caught or exists):
-    ![aftermath](screenshots/aftermath.png)
-  - Same region side-by-side (top = blast moment, bottom = aftermath), showing zero visual difference:
-    ![blast vs aftermath region](screenshots/blast_trap_region_pair.png)
-- Chain deterministic under fixed seed / debug `[BURIED_ORDNANCE]` log lines
-  - Log expectations passed in both runs; marker names trap id, roll outcome, caught count. Release-build absence not separately verified (debug build only here).
+- Closable TitledPanel reserves horizontal padding so no content intersects the CloseChip rect (visual claim)
+  - ![manage towers clear](screenshots/panel_manage_towers.png)
+  - ![options clear](screenshots/panel_options.png)
+  - Headless proof: focused test `titled_panel_close_corner` 31 ok / 0 failed per .gen/changes.md (rect-intersection assertions incl. UpgPanel at two sizes).
+- Reserved padding only when closable; non-closable panels unchanged
+  - ![tower details no x](screenshots/panel_tower_details.png) — tower details panel shows no "x" at runtime and normal layout.
+- CloseChip flush top-right, close contract preserved
+  - ![manage towers chip position](screenshots/panel_manage_towers.png) (chip flush in frame corner); press-contract covered by headless tests (31 ok).
+- Tower details panel content clear of the chip
+  - ![tower details](screenshots/panel_tower_details.png) — no chip present in-game; headless UpgPanel assertions cover the closable variant.
+- Manage Towers and Options: no content intersects the CloseChip after layout
+  - ![manage towers](screenshots/panel_manage_towers.png)
+  - ![options](screenshots/panel_options.png)
+- Debug `[TITLED_PANEL]` log line naming panel and reserved inset
+  - Unverified visually (log-line claim, not pixel-provable); covered by headless test suite per .gen/changes.md.
 
 ## Issues and Observations
 
-- **High — chained-explosion VFX is invisible in play**: `ExplosionFX.spawn_bazooka_explosion`
-  parents its GPUParticles3D under `Game/Surface`; `Game._on_layer_changed` hides `$Surface`
-  on the underground layer, so Buried Ordnance blasts (which only ever happen underground)
-  are never seen by a player watching the tunnel view. Affects step 3; violates the explicit
-  acceptance criterion "a chained kill with no visible cue is not acceptable".
-  Suggested fix: parent the particles under the layer-appropriate node
-  (`Game/Underground` when the hit is underground), or under a node not toggled by layer.
-- **Medium — cave enemies have no visible model**: every Cactoro spawn logs
-  `res://models/glb/Cactoro.glb ... failed to load ... No fallback mesh (cone) will be created`,
-  so even without the FX bug the blast site would show no enemies in screenshots. Import or
-  fallback issue affects all cave enemies in this worktree's imported cache.
-- **Low — Trap_03.tscn fails to parse** (`Invalid parameter ... Trap_03.tscn:14`): the second
-  arm's trap still functions via script fallback but loads with errors each run.
-- **Low — pre-existing GL import warnings** (HUD UIDs, ruined_house, portal arch, backdrop
-  earth) — unrelated to this feature.
+- Low: The ui_scenario's beat 1 assumed the tower details panel would show an "x". In the live game it is not closable (no chip renders). Not a defect — matches the implementation (padding/chip only when closable) and changes.md notes this. Scenario wording could be updated for future runs.
+- No other issues found; no clipped or overlapping content on any panel.
 
 ## Recommendation
 
-Not ready for release. Send back for a code fix: make `spawn_bazooka_explosion` (or the
-Buried Ordnance call site in `Trap._apply_chain_blast`) attach the particles so they are
-visible from the underground camera, then re-run this manual check. The logic/perk/data side
-is solid and needs no rework.
-
-## Evidence artifacts
-
-- Windowed visual run result: `.gen/harness/manual_buried_ordnance_visual/result.json` (status pass — logic only)
-- Fresh focused run result: `.gen/harness/traps_buried_ordnance_progression/result.json` (status pass)
-- Screenshots: `.gen/screenshots/chain_blast_moment.png`, `.gen/screenshots/aftermath.png`,
-  `.gen/screenshots/blast_trap_region_pair.png`, `.gen/screenshots/blast_vs_aftermath.png`
+Ready for release. The windowed screenshots prove the player-visible story: closable panels keep clear horizontal breathing room from the corner "x", and non-closable panels are unchanged.
