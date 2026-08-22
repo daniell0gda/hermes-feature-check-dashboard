@@ -1,47 +1,22 @@
 {
-  "run_id": "issue137-earth-continent-map",
-  "feature": "earth-continent-map-integration",
+  "run_id": "issue126-harness-press-button",
+  "feature": "harness-cannot-inject-gui-input",
   "status": "running",
-  "started_at": "2026-08-22T22:56:15.876Z",
+  "started_at": "2026-08-22T23:20:19.286Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-22T23:24:25.317Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T23:24:25.317Z",
-  "process_id": 788449,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue126-harness-press-button/",
+  "heartbeat_at": "2026-08-22T23:24:55.054Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-22T23:24:55.054Z",
+  "process_id": 793373,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T23:24:29.660220+00:00",
-    "last_success_at": "2026-08-22T23:24:29.659456+00:00",
+    "last_attempt_at": "2026-08-22T23:24:55.054573+00:00",
+    "last_success_at": "2026-08-22T23:21:25.201826+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 109661,
-        "output_tokens": 5803
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 268146,
-        "output_tokens": 5224
-      }
-    ]
-  }
+  "metrics": {}
 }
