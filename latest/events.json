@@ -1,11 +1,20 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T21:45:05.566Z",
+    "timestamp": "2026-08-22T21:44:48.631Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 240027,
-    "summary": "All planning artifacts are in place and verified. Summary:\n\n**Artifacts (already present, reviewed and confirmed consistent with issue #91 and request.md):**\n- /workspace/git-workspaces/poke-defense-godot/issue-perk-undermining/.gen/plan.md\u2026",
+    "duration_ms": 170360,
+    "summary": "All three verification commands ran successfully via run_project_cmd:\n\n- Focused (main_menu.json on MainMenu.tscn): `[Harness] status=pass exit=0` \u2014 orbit probes, surface-enemy wait, node-path Play-button expectation, screenshot checkpoint \u2026",
+    "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-22T21:48:35.284Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 222276,
+    "summary": "The `release_project_worker` call isn't available as a separate tool in this session (only `run_project_cmd` with a required `cmd`), so the worker was left running rather than force-released \u2014 noting that for the orchestrator.\n\n## Summary\n\n\u2026",
     "error": null
   }
 ]

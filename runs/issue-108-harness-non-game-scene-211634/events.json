@@ -7,5 +7,14 @@
     "duration_ms": 170360,
     "summary": "All three verification commands ran successfully via run_project_cmd:\n\n- Focused (main_menu.json on MainMenu.tscn): `[Harness] status=pass exit=0` \u2014 orbit probes, surface-enemy wait, node-path Play-button expectation, screenshot checkpoint \u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-22T21:48:35.284Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 222276,
+    "summary": "The `release_project_worker` call isn't available as a separate tool in this session (only `run_project_cmd` with a required `cmd`), so the worker was left running rather than force-released \u2014 noting that for the orchestrator.\n\n## Summary\n\n\u2026",
+    "error": null
   }
 ]
