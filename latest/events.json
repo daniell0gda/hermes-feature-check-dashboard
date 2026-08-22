@@ -1,11 +1,1 @@
-[
-  {
-    "sequence": 1,
-    "timestamp": "2026-08-22T15:11:08.011Z",
-    "node": "plan",
-    "status": "completed",
-    "duration_ms": 847353,
-    "summary": "All gates that could be run are green. The existing `.gen/plan.md`, cluster files, and `ui_scenario.md` are already present, accurate, and consistent with the implemented diff \u2014 no rewrites needed. Final verification state:\n\n**Runner probe*\u2026",
-    "error": null
-  }
-]
+[]

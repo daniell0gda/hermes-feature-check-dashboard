@@ -1,36 +1,22 @@
 {
-  "run_id": "issue130-underground-carve-topdown-camera-rotation",
-  "feature": "underground-carve-topdown-camera-rotation",
+  "run_id": "issue138-norocktree-1787411442",
+  "feature": "no-rock-or-tree-same-position-as-building",
   "status": "running",
-  "started_at": "2026-08-22T14:56:55.786Z",
+  "started_at": "2026-08-22T15:10:43.314Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue130-underground-carve-topdown-camera-rotation/",
-  "heartbeat_at": "2026-08-22T15:11:08.011Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T15:11:08.011Z",
-  "process_id": 603064,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue138-norocktree-1787411442/",
+  "heartbeat_at": "2026-08-22T15:10:43.315Z",
+  "last_node": null,
+  "active_node": "plan",
+  "last_event_at": null,
+  "process_id": 608659,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:11:12.610881+00:00",
-    "last_success_at": "2026-08-22T15:11:12.610079+00:00",
+    "last_attempt_at": "2026-08-22T15:12:05.555158+00:00",
+    "last_success_at": "2026-08-22T15:10:47.497117+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 194989,
-        "output_tokens": 5773
-      }
-    ]
-  }
+  "metrics": {}
 }
