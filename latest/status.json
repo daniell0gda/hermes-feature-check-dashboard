@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-106-20260822-203808",
-  "feature": "harness-cannot-reach-runtime-modals",
+  "run_id": "issue-91-perk-undermining-211435",
+  "feature": "perk-undermining",
   "status": "running",
-  "started_at": "2026-08-22T20:38:08.751Z",
+  "started_at": "2026-08-22T21:14:36.281Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-106-20260822-203808/",
-  "heartbeat_at": "2026-08-22T21:35:33.482Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-91-perk-undermining-211435/",
+  "heartbeat_at": "2026-08-22T21:36:58.805Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T21:35:33.482Z",
-  "process_id": 725819,
+  "active_node": null,
+  "last_event_at": "2026-08-22T21:36:58.805Z",
+  "process_id": 747159,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:35:37.824712+00:00",
-    "last_success_at": "2026-08-22T21:35:37.823997+00:00",
+    "last_attempt_at": "2026-08-22T21:36:58.806350+00:00",
+    "last_success_at": "2026-08-22T21:20:18.735327+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,19 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 84732,
-        "output_tokens": 5742
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 229590,
-        "output_tokens": 25619
+        "input_tokens": 81290,
+        "output_tokens": 6366
       }
     ]
   }
