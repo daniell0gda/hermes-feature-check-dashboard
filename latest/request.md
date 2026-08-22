@@ -1,39 +1,35 @@
-# Request: window-modals-skip-wood-frame (#127)
+# Request: BurnStatus._reset zeroes accumulated pending sub-integer DoT damage on refresh
 
-Give RewardsModal and ProgressionModal the same wood frame and corner close as the other HUD modals.
-
-## Issue
-https://github.com/daniell0gda/poke-defense-godot/issues/127
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/53
+Workspace: /workspace/git-workspaces/poke-defense-godot/issue-burn-status-refresh-loses-pending-damage
+Branch: issue/burn-status-refresh-loses-pending-damage (from origin/master)
 
 ## Problem
-RewardsModal and ProgressionModal are raw Window nodes with no theme. They look like a grey Godot default window. Every other modal uses ModalPanel + TitlePlate from themes/hud/HudTheme.tres and TitledPanel.gd, and dismisses via CloseChip / close_requested.
+
+`scripts/game/status/BurnStatus.gd`'s `_reset()` path (used by `apply_or_refresh` whenever a
+burning enemy is hit by another fire-typed source before its current burn expires) zeroes the
+instance's `_pending_float` sub-integer damage carry when refreshing the DoT. Fractional damage
+accumulated toward the next tick is silently discarded.
+
+This makes re-applying burn to an already-burning enemy strictly *less* effective than letting it
+run out, and makes aggregate `damage_by_type.fire` assertions in headless scenarios unreliable.
 
 ## Done when
-- Both modals use the same wood frame and name plate as PauseMenu, Options, Manage Towers, and tower details.
-- They dismiss through the same corner ✕ / close_requested contract, not a window decoration.
-- UI.open_progression_modal and UI._on_rewards_pressed still return something callers can use. CaveSystem types the return as Window. AgentHarness still matches `node is ProgressionModal` for auto-answer.
-- tests/scenarios/hud_other_panels.json panel_rewards checkpoint shows the wood frame.
-- The reward-pick modal (ProgressionModal) gets a screenshot checkpoint of its own.
 
-Visual: reuse existing ModalPanel / TitlePlate / ChipButton theme variations. No new art.
+- `BurnStatus._reset()` (or `apply_or_refresh`) preserves or properly flushes `_pending_float`
+  when a burn is refreshed.
+- Re-applying burn to an already-burning target never results in less total delivered damage than
+  letting the existing burn run out unrefreshed.
+- Verified by a headless scenario that hits the same enemy with two overlapping burn applications
+  and asserts total delivered burn damage is monotonically non-decreasing relative to a
+  single-application baseline.
 
-## Follow-up (Daniel, not satisfied)
-Each reward card inside ProgressionModal must use the same background treatment as
-the tower-details panel's stats area (`Root/UpgPanel/Frame/VBox/Stats`, theme type
-variation `ModalWell` from themes/hud/HudTheme.tres) — not the current plain grey
-default PanelContainer style. The Unique rarity accent must not rely on the invalid
-`add_theme_color_override("panel", ...)` call (PanelContainer has no such color
-item); tint via a duplicated StyleBoxFlat border instead if kept.
-Verify visually with a windowed screenshot of the opened modal showing ModalWell-
-styled cards.
+## Notes
 
-## Constraints
-- Project runner key: godot-td
-- Workspace: poke-defense-godot/issue-window-modals-skip-wood-frame
-- All Godot/project commands via run_project_cmd. No host godot.
-- Visible UI work: manual_testing required, windowed screenshots, never --headless for manual-tester.
-- Do not commit, push, merge, or close the issue.
-- Follow /opt/data/coding_rules.md and project CLAUDE.md.
-
-## Project path
-/workspace/git-workspaces/poke-defense-godot/issue-window-modals-skip-wood-frame
+- A prior abandoned attempt exists as commit e5a0538 on the old branch state ("fix(burn):
+  preserve pending float on BurnStatus refresh", touching BurnStatus.gd, HarnessActions.gd, and
+  tests/scenarios/burn_status_refresh_pending_damage.json). The worktree was reset to
+  origin/master; that commit is historical reference only — do not assume it was verified. It may
+  be consulted or re-derived, but all acceptance criteria must be freshly implemented and
+  verified.
+- Runner key for project commands: `godot-td`. Use run_project_cmd; never local godot/npm.
