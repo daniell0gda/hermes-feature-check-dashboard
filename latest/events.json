@@ -34,5 +34,14 @@
     "duration_ms": 115665,
     "summary": "Manual-testing gate decision complete.\n\n- Check verdict: pass (all harness gates green, windowed visual evidence already captured in .gen/manual/frame_01/02.png).\n- Story: new user-visible change \u2014 ProgressionModal closes (close button / re\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-22T07:18:19.611Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 298750,
+    "summary": "Manual-test result: PASSED. Scenario: .gen/ui_scenario.md.\nReport: .gen/manual-report.md. Escalation: no.\n\nSummary of what was done:\n- Ran the focused harness scenario progression_modal_close_resume.json (status=pass: modal gone from tree, \u2026",
+    "error": null
   }
 ]
