@@ -54,6 +54,17 @@
       "cost_status": "unknown",
       "input_tokens": 92004,
       "output_tokens": 3832
+    },
+    {
+      "task_id": "revision-code-2",
+      "cluster_id": "implementation",
+      "role": "code",
+      "model": "stealth/ox-alpha",
+      "model_tier": null,
+      "cost_usd": 0.0,
+      "cost_status": "unknown",
+      "input_tokens": 120375,
+      "output_tokens": 2858
     }
   ]
 }
