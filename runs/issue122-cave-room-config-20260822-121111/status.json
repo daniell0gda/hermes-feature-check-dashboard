@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue122-cave-room-config-20260822-121111/",
-  "heartbeat_at": "2026-08-22T12:31:22.638Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T12:31:22.638Z",
+  "heartbeat_at": "2026-08-22T12:48:07.088Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T12:48:07.088Z",
   "process_id": 533688,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T12:31:27.020571+00:00",
-    "last_success_at": "2026-08-22T12:31:27.020000+00:00",
+    "last_attempt_at": "2026-08-22T12:48:07.088472+00:00",
+    "last_success_at": "2026-08-22T12:31:31.492523+00:00",
     "last_error": null
   },
   "metrics": {

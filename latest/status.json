@@ -1,22 +1,36 @@
 {
-  "run_id": "water-pressure-46",
-  "feature": "water_pressure",
+  "run_id": "issue122-cave-room-config-20260822-121111",
+  "feature": "cave room config truncation fix (#122)",
   "status": "running",
-  "started_at": "2026-08-22T12:46:19.761Z",
+  "started_at": "2026-08-22T12:11:11.387Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/water-pressure-46/",
-  "heartbeat_at": "2026-08-22T12:46:19.761Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
-  "process_id": 551044,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue122-cave-room-config-20260822-121111/",
+  "heartbeat_at": "2026-08-22T12:48:07.088Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T12:48:07.088Z",
+  "process_id": 533688,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T12:46:24.401523+00:00",
-    "last_success_at": "2026-08-22T12:46:23.851252+00:00",
+    "last_attempt_at": "2026-08-22T12:48:07.088472+00:00",
+    "last_success_at": "2026-08-22T12:31:31.492523+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 206120,
+        "output_tokens": 11842
+      }
+    ]
+  }
 }
