@@ -1,11 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T14:37:04.228Z",
+    "timestamp": "2026-08-22T14:40:13.452Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 493819,
-    "summary": "Plan written: /workspace/git-workspaces/godot-td/issue-molten-shackles/.gen/plan.md\n",
+    "duration_ms": 374418,
+    "summary": "All required verification passed through the project runner (`godot-td` / `poke-defense-godot/issue-elemental-attunement`):\n\n- Focused harness `elemental_attunement.json`: status=pass, exit=0 (result at `.gen/harness/elemental_attunement/re\u2026",
     "error": null
   }
 ]

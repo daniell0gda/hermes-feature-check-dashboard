@@ -1,37 +1,39 @@
-# Acceptance Plan: Progression perk molten_shackles
+# Acceptance Plan: elemental-attunement
 
-manual_testing: optional
+manual_testing: required
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/molten_shackles_progression.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_tower_roster.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+- Focused test: `run_project_cmd(project="godot-td", workspace="poke-defense-godot/issue-elemental-attunement", cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/elemental_attunement.json"])`
+- Full test: `run_project_cmd(project="godot-td", workspace="poke-defense-godot/issue-elemental-attunement", cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/floodgate_saltwater_purge.json"])`
+- Typecheck/build: `run_project_cmd(project="godot-td", workspace="poke-defense-godot/issue-elemental-attunement", cmd=["godot","--headless","--path",".","--editor","--quit-after","300"])`
 
 ## Clusters
 
-1. molten-shackles perk catalog — files: `scripts/progression/fire_tower.json`, `scripts/progression/managers/FireTowerProgressionManager.gd`, `autoload/ProgressionManager.gd`, `tests/scenarios/molten_shackles_progression.json` — depends on: none
-- `molten_shackles` is a Common Fire-progression perk with 3 levels; applying it three times reaches levels 1, 2, then 3, after which it is no longer eligible, and after `reset_for_new_game()` it is back at level 0 with its config inactive.
-- At any `molten_shackles` level, when no Fire burn perk (`get_fire_burn_config()`) is active, the molten-shackles config reports inactive/zero effect.
-- When a Fire burn perk is active together with `molten_shackles`, the exposed armor-strip config carries a flat per-tick base armor amount of 1 / 2 / 3 for shackles levels 1 / 2 / 3, scaled by the burn config's level multiplier.
-2. burn-tick armor shred — files: `scripts/game/status/BurnStatus.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd`, `tests/scenarios/molten_shackles_armor_shred.json` — depends on: 1
-- On an armored enemy with an active Fire burn perk and `molten_shackles` at level 1, burn ticks reduce the enemy's `armor` by the configured flat base amount scaled by the burn config's level multiplier, while the enemy stays alive.
-- With a higher Fire burn perk level and the same `molten_shackles` level, each burn tick strips more armor than at the lower burn perk level.
-- When no Fire burn perk is owned, burn ticks leave an armored enemy's `armor` unchanged (expected behaviour, covered by a dedicated game-test scenario).
-- With a Fire burn perk owned but `molten_shackles` not taken, burn ticks leave an armored enemy's `armor` unchanged.
-- Burn ticks under `molten_shackles` never reduce `armor` below 0, and do not change the HP damage dealt by those ticks compared with the same burn without the perk.
-- Reusing existing burn visuals, no new VFX is introduced: burning an enemy with `molten_shackles` produces the same BurnStatus/BurnVFX presentation as burning without it.
-- Debug-build [MOLTEN_SHACKLES] log line per burn tick that strips armor, naming the enemy, the armor before/after, and the applied strip amount.
+1. attunement-perk-and-effectiveness — files: `scripts/progression/global.json`, `scripts/config/Balance.gd`, `autoload/ProgressionManager.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — depends on: none
+- A new Unique progression named `elemental_attunement` exists in the global progression pool (`scripts/progression/global.json`), is eligible for chest/cave draws under the same rules as other Uniques, and reaches level 1 after being applied through the progression manager.
+- With no attunement owned, every attacker/defender pair resolves exactly as before the change: fire/fire stays 0.5x, water/water stays 0.5x, electric/electric keeps its 0.3x self-resistance, and no other entry in the effectiveness path shifts.
+- Owning the fire attunement makes fire-attributed damage resolve as super-effective (2.0x) against Water-typed and Electric-typed enemies, while fire damage against Fire-typed enemies keeps its 0.5x self-resistance.
+- Owning the water attunement makes water-attributed damage resolve as super-effective (2.0x) against Fire-typed and Electric-typed enemies, while water damage against Water-typed enemies keeps its 0.5x self-resistance.
+- Owning the electric attunement makes electric-attributed damage resolve as super-effective (2.0x) against Fire-typed and Water-typed enemies, while electric damage against Electric-typed enemies keeps its 0.3x self-resistance.
+- Owning `elemental_attunement` grants extended coverage for exactly one chosen element (fire, water, or electric); the two unchosen elements' towers gain no new multiplier, and the perk never removes any self-resistance.
+- The attunement perk can be selected from the player-facing progression pick flow (it appears as a choosable option and choosing it applies the perk), matching how existing Unique perks are presented.
+- Debug-build `[ELEMENTAL_ATTUNEMENT]` log line per application event, naming which element was chosen.
+2. attunement-gameplay-verification — files: `tests/scenarios/elemental_attunement.json` — depends on: 1
+- In a live map, one scripted fire-typed direct hit on a Water-typed enemy removes exactly twice the baseline HP when the fire attunement is owned compared to the same hit without the perk (deterministic harness arithmetic, no projectile flight involved).
+- In a live map, once the water attunement is owned, a scripted water-typed direct hit on a Fire-typed enemy resolves at 2.0x while a scripted water-typed direct hit on a Water-typed enemy still resolves at its 0.5x self-resistance.
+- The existing effectiveness-path gameplay regression (`floodgate_saltwater_purge`) still passes end-to-end after the change.
 
 ## Criteria
 
-- `molten_shackles` is a Common Fire-progression perk with 3 levels; applying it three times reaches levels 1, 2, then 3, after which it is no longer eligible, and after `reset_for_new_game()` it is back at level 0 with its config inactive.
-- At any `molten_shackles` level, when no Fire burn perk (`get_fire_burn_config()`) is active, the molten-shackles config reports inactive/zero effect.
-- When a Fire burn perk is active together with `molten_shackles`, the exposed armor-strip config carries a flat per-tick base armor amount of 1 / 2 / 3 for shackles levels 1 / 2 / 3, scaled by the burn config's level multiplier.
-- On an armored enemy with an active Fire burn perk and `molten_shackles` at level 1, burn ticks reduce the enemy's `armor` by the configured flat base amount scaled by the burn config's level multiplier, while the enemy stays alive.
-- With a higher Fire burn perk level and the same `molten_shackles` level, each burn tick strips more armor than at the lower burn perk level.
-- When no Fire burn perk is owned, burn ticks leave an armored enemy's `armor` unchanged (expected behaviour, covered by a dedicated game-test scenario).
-- With a Fire burn perk owned but `molten_shackles` not taken, burn ticks leave an armored enemy's `armor` unchanged.
-- Burn ticks under `molten_shackles` never reduce `armor` below 0, and do not change the HP damage dealt by those ticks compared with the same burn without the perk.
-- Reusing existing burn visuals, no new VFX is introduced: burning an enemy with `molten_shackles` produces the same BurnStatus/BurnVFX presentation as burning without it.
-- Debug-build [MOLTEN_SHACKLES] log line per burn tick that strips armor, naming the enemy, the armor before/after, and the applied strip amount.
+- A new Unique progression named `elemental_attunement` exists in the global progression pool (`scripts/progression/global.json`), is eligible for chest/cave draws under the same rules as other Uniques, and reaches level 1 after being applied through the progression manager.
+- With no attunement owned, every attacker/defender pair resolves exactly as before the change: fire/fire stays 0.5x, water/water stays 0.5x, electric/electric keeps its 0.3x self-resistance, and no other entry in the effectiveness path shifts.
+- Owning the fire attunement makes fire-attributed damage resolve as super-effective (2.0x) against Water-typed and Electric-typed enemies, while fire damage against Fire-typed enemies keeps its 0.5x self-resistance.
+- Owning the water attunement makes water-attributed damage resolve as super-effective (2.0x) against Fire-typed and Electric-typed enemies, while water damage against Water-typed enemies keeps its 0.5x self-resistance.
+- Owning the electric attunement makes electric-attributed damage resolve as super-effective (2.0x) against Fire-typed and Water-typed enemies, while electric damage against Electric-typed enemies keeps its 0.3x self-resistance.
+- Owning `elemental_attunement` grants extended coverage for exactly one chosen element (fire, water, or electric); the two unchosen elements' towers gain no new multiplier, and the perk never removes any self-resistance.
+- The attunement perk can be selected from the player-facing progression pick flow (it appears as a choosable option and choosing it applies the perk), matching how existing Unique perks are presented.
+- Debug-build `[ELEMENTAL_ATTUNEMENT]` log line per application event, naming which element was chosen.
+- In a live map, one scripted fire-typed direct hit on a Water-typed enemy removes exactly twice the baseline HP when the fire attunement is owned compared to the same hit without the perk (deterministic harness arithmetic, no projectile flight involved).
+- In a live map, once the water attunement is owned, a scripted water-typed direct hit on a Fire-typed enemy resolves at 2.0x while a scripted water-typed direct hit on a Water-typed enemy still resolves at its 0.5x self-resistance.
+- The existing effectiveness-path gameplay regression (`floodgate_saltwater_purge`) still passes end-to-end after the change.
