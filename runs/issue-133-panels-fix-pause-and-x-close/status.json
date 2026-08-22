@@ -6,17 +6,31 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-133-panels-fix-pause-and-x-close/",
-  "heartbeat_at": "2026-08-22T14:47:17.814Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-22T14:56:57.519Z",
+  "last_node": "plan",
+  "active_node": "code",
+  "last_event_at": "2026-08-22T14:56:57.519Z",
   "process_id": 597871,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T14:48:13.456228+00:00",
-    "last_success_at": "2026-08-22T14:47:22.505316+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T14:57:01.529905+00:00",
+    "last_success_at": "2026-08-22T14:48:17.851397+00:00",
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 127288,
+        "output_tokens": 5681
+      }
+    ]
+  }
 }

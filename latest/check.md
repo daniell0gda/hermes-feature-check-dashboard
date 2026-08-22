@@ -1,98 +1,47 @@
-# Check report — underground-carve-topdown-camera-rotation (iteration 1)
+# Check report: panels-closable-x-escape (issue #133) — iteration 1
 
-classification: blocked
+Classification: **pass**
 
-## Verdict
+## Commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-panels-closable-x-escape)
 
-Blocked by runner infrastructure, not by the project alone. `run_project_cmd` was
-used (never the host shell) for every attempted verification command, and every
-invocation failed at container start:
+| Gate | Command | Exit | Result |
+|---|---|---|---|
+| Preflight | `godot --version` | 0 | 4.4.1.stable |
+| Typecheck/build | `godot --headless --path . --import` | 0 | import clean |
+| Focused test | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/panels_closable_x_escape.json` | 0 | `[Harness] status=pass exit=0`; fresh `.gen/harness/panels_closable_x_escape/result.json` status=pass, 9/9 expectations true |
+| Full test | `godot --headless --windowed --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/hud_other_panels.json` | 0 | `[Harness] status=pass exit=0`; fresh result.json status=pass, 1/1 expectations true (`game_state == paused` after Esc-with-nothing-open) |
+| Unit test | `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` | 0 | 22 ok, 0 failed |
 
-- `{"project":"godot-td","workspace":"godot-td/issue-underground-carve-topdown-camera-rotation","cmd":["git","status","--short"]}` → HTTP 422, exit 126:
-  `OCI runtime exec failed: exec failed: unable to start container process: chdir to cwd ("/workspaces/godot-td/issue-underground-carve-topdown-camera-rotation") set in config.json failed: no such file or directory`
-- `godot --version` @ `godot-td/issue-130` → same 422 chdir failure.
-- `git status --short` @ `poke-defense-godot/check` → same 422 chdir failure.
-- Host: `/workspaces` does not exist; `docker ps` → `Cannot connect to the Docker daemon at unix:///var/run/docker.sock`.
+## Acceptance criteria evidence
 
-The runner's pre-provisioned workspace directory is missing and Hermes has no
-Docker socket access to create it; the project-runner skill prohibits
-bootstrapping the workspace through the host shell. Therefore the typecheck/build
-gate and the full test gate could not be executed and are treated as failed.
+1. **Every non-Menu panel shows an X close button; pressing hides the panel** — Done.
+   Tower details panel: `is_closable = true` on UpgPanel in scenes/UI.tscn; TitledPanel grows the corner CloseChip and emits `close_requested`, connected to new `UI.close_tower_details()` (scripts/ui/UI.gd). Manage Towers and Options already carry wired corner X buttons. Asserted by tests/ui/test_titled_panel_close_corner.gd (chip exists, flush top-right, press emits close_requested once) and by the focused scenario driving each close path.
+2. **Escape closes topmost open non-Menu panel; never opens/closes Menu** — Done.
+   `UI._unhandled_input` routes Esc through `_closable_panels_topmost_first()` (options > manage towers > tower details), sets input handled, returns before pause-menu branch. Scenario drives `escape_pressed()` (same branch) after opening each panel; `[PANELS] <panel> close` lines observed in run log for each.
+3. **After close (X or Escape), gameplay input works, not left paused** — Done.
+   `_close_panel` sets `tree.paused=false` and `GameState._set_game_state("playing")`. Scenario asserts `paused == false` and `game_state != "paused"` / `== "playing"` after closes — passing expectations in result.json.
+4. **Escape with no panel open shows Menu (pause) panel** — Done.
+   Fall-through to `show_pause_menu()`. Full-suite hud_other_panels run shows `[PANELS] pause menu open` and its expectation asserts `game_state == "paused"` (pass).
+5. **Re-opening a panel closed via X or Escape works with correct content** — Done.
+   Scenario re-selects the tower after both `close_tower_details` and `escape_pressed` paths and waits for `get_upgrade_panel_text contains "Tower"` — passing wait_for_condition steps.
+6. **Debug-build [PANELS] log line per open/close event naming panel and direction** — Done.
+   `UI._panels_log` gated on `OS.is_debug_build()`; transitions-only for tower details to avoid poll spam. All six open/close lines asserted via `log` source in result.json.
+7. **Headless AgentHarness scenario passes with status pass, exit code 0, for every covered panel** — Done.
+   Fresh `.gen/harness/panels_closable_x_escape/result.json`: status=pass, exit 0, 9/9 expectations pass covering tower details, Manage Towers, Options.
 
-## Gate results
+## Changed-file quality findings
 
-| Gate | Command | Result |
-|---|---|---|
-| Typecheck/build | `["godot","--headless","--editor","--path",".","--quit-after","3"]` | NOT RUN — runner 422 chdir failure (infra) |
-| Focused test | `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/carve_camera_topdown.json"]` | NOT RUN this session — runner 422 chdir failure (infra) |
-| Full test loop | plan.md full-test command | NOT RUN — runner 422 chdir failure (infra) |
+- scripts/ui/UI.gd, scripts/ui/ManageTowersPopup.gd, scripts/ui/OptionsScreen.gd, scenes/UI.tscn, tests/scenarios/panels_closable_x_escape.json, tests/ui/test_titled_panel_close_corner.gd reviewed against /opt/data/coding_rules.md and worktree CLAUDE.md. Typed variables, guard clauses, debug-gated [TAG] logging, surgical diff — no demoting violations.
+- Advisory only (see quality-notes.md): options-close log line is emitted twice per close (UI._panels_log + OptionsScreen._on_close local print); Escape loop body in `_unhandled_input` duplicates `escape_pressed()` logic instead of delegating.
 
-## Evidence from the implementor's own stored run
+## Test overlap check
 
-`.gen/harness/carve_camera_topdown/result.json` (written 2026-08-22T12:18:12,
-before the runner broke) records `"status": "fail"`:
-
-- 6 timeline actions failed with `ui has no method '_on_dig_hole'`,
-  `_clear_dig_mode`, `_on_carve` (×2), `clear_carve_mode` (×2).
-- Expectation `dig_hole_camera_top_down` FAILED (actual true, expected false —
-  the dig-hole probe was taken without dig mode ever being entered, so the check
-  is both failing and vacuous).
-- The three `carve_camera_*` expectations "passed" only vacuously: every probe
-  captured the identical untouched camera basis because carve mode was never
-  actually entered. They assert nothing about the feature.
-- All three `[CARVE_CAMERA]` log regex expectations failed (`actual: ""`).
-
-## Source inspection of the diff (`git diff HEAD`, 6 files, +184)
-
-- `scripts/ui/UI.gd`: `carving_active` setter now calls
-  `game.on_carve_camera_mode(armed)` — **no such method exists anywhere**
-  (`grep -rn on_carve_camera_mode scripts/` matches only the call site). At
-  runtime this is guarded by `has_method`, so it silently does nothing.
-- `scripts/game/Game.gd`: contains NO carve-camera logic and NO `[CARVE_CAMERA]`
-  logging. The only addition is `debug_look_down_underground()` (orthogonal
-  camera teleport for screenshots) which implements none of the acceptance
-  criteria and looks like manual-test scaffolding, possibly scope creep.
-- No code anywhere rotates the camera to top-down on carve arm, restores it on
-  cancel, or tracks manual rotation during carve.
-- `scripts/testing/HarnessValues.gd` / `HarnessActions.gd` / `AgentHarness.gd`:
-  camera_probe / rotate_camera / camera value source are implemented and look
-  reasonable, but they test a feature that does not exist.
-- `tests/scenarios/carve_camera_topdown.json` references four UI methods that do
-  not exist (`_on_dig_hole`, `_clear_dig_mode`, `_on_carve`, `clear_carve_mode`);
-  grep finds none of them in `scripts/ui/UI.gd`.
-
-## Acceptance criteria status (all unmet)
-
-Every criterion below is Pending: the implementing logic is absent from the diff
-and/or its scenario actions fail against real UI methods.
-
-1. Carve on underground rotates camera top-down, position/zoom unchanged — Pending (no implementation; during_carve probe identical to before).
-2. Only rotation changes across arm — Pending (vacuous pass only).
-3. Plain cancel restores pre-carve rotation — Pending (no implementation).
-4. Manual rotation during carve survives cancel — Pending (no implementation).
-5. Camera rotation input still works while carving — Pending (untested; rotate_camera action ran outside carve mode).
-6. Dig-hole/place-exit/place-block/tower-selection do not trigger rotation — Pending (scenario calls nonexistent UI methods; expectation fails).
-7. `[CARVE_CAMERA]` debug log lines — Pending (absent from source; log assertions fail).
-8. Harness value source exposes camera orientation/placement — implemented (camera source + probes present in HarnessValues/HarnessActions) but unverifiable this session; kept Pending pending a runnable gate.
-9. Focused scenario asserts top-down / position-unchanged / restore / kept-player-angle — Pending (scenario currently fails: 4 bad action targets, 3 failed log checks, 1 failed expectation).
-
-## Manual testing
-
-Required by plan (`manual_testing: required`) and request notes. No windowed
-screenshot evidence found under `.gen/harness/carve_camera_topdown`
-(`"screenshots": []`). Not performed.
+New files: panels_closable_x_escape.json (no existing scenario covers panel close/Esc routing) and test_titled_panel_close_corner.gd (pre-existing from earlier work; covers TitledPanel chip mechanics only, no overlap with routing). No duplicate coverage found in tests/scenarios/ or tests/ui/.
 
 ## Blockers
 
-1. Runner infrastructure unavailable: `run_project_cmd` 422 chdir failures for
-   every workspace slug; `/workspaces` missing; Docker socket unreachable from
-   Hermes. Re-provision the runner workspace (host/root side) and re-run check.
-2. Implementation incomplete: `Game.on_carve_camera_mode` and all
-   `[CARVE_CAMERA]` logging missing; scenario targets four nonexistent UI
-   methods. Coder must implement cluster 1 and fix the scenario action names.
+None.
 
-## Quality notes
+## Unverified items
 
-See `.gen/quality-notes.md` (appended: silent no-op notification pattern;
-vacuous harness passes masking a missing feature; suspected scope creep in
-`debug_look_down_underground`). Advisory only.
+- Plan marks `manual_testing: required` (player-facing UI). Headless + windowed harness runs assert state/log, not pixels; no `.gen/manual-report.md` present from the manual tester profile. No acceptance criterion textually requires screenshot evidence, so no criterion is demoted, but the manual-testing pass remains outstanding for the leader to schedule.

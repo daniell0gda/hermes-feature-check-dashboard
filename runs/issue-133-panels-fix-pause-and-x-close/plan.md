@@ -1,4 +1,4 @@
-# Acceptance Plan: panels-closable-x-escape
+# Acceptance Plan: panels-closable-x-escape follow-up fixes (#133 round 2)
 
 ## Verification
 
@@ -10,22 +10,28 @@ manual_testing: required
 
 ## Clusters
 
-1. closable-panels-and-escape-routing — files: `scripts/ui/UI.gd`, `scripts/ui/PauseMenu.gd`, `scripts/ui/ManageTowersPopup.gd`, `scripts/ui/OptionsScreen.gd`, `scenes/UI.tscn`, `scenes/ui/ManageTowersPanel.tscn`, `scenes/ui/OptionsScreen.tscn` — depends on: none
-- Every non-Menu panel (tower details, Manage Towers, Options, and any other overlay panel outside the Menu/pause panel) shows an "X" close button, and pressing it hides that panel.
-- Pressing Escape while any non-Menu panel is visible closes the topmost open panel and does not open or close the Menu panel.
-- After a panel is closed by its X button or by Escape, gameplay input works again and the game is not left paused.
-- Pressing Escape when no panel is open shows the Menu (pause) panel, preserving the current pause behaviour.
-- Re-opening a panel that was closed via X or Escape works (the panel becomes visible again with correct content, e.g. selecting another tower re-shows the tower details panel).
-- Debug-build [PANELS] log line per panel open/close event, naming the panel and whether it opened or closed.
-2. closable-panels-harness-scenario — files: `tests/scenarios/panels_closable_x_escape.json`, `tests/ui/test_titled_panel_close_corner.gd` — depends on: 1
-- A headless AgentHarness scenario opens each non-Menu panel through the harness API, drives its close path, and passes with status `pass` and exit code 0 on the visibility expectations for every covered panel.
+1. close-restores-state-and-clears-selection — files: `scripts/ui/UI.gd`, `scripts/game/TowerManager.gd`, `scripts/game/TrapManager.gd`, `scripts/game/Placement.gd`, `scripts/game/placement/HoleManagementModule.gd`, `scripts/game/placement/ExitManagementModule.gd` — depends on: none
+- Opening a panel (Options, Manage Towers, or tower details) over a paused game — pause menu opened first via Escape — and closing that panel with its X or Escape leaves the tree paused and the pause-menu state intact (the pause menu is still showing and the game does not resume).
+- Opening and closing any non-Menu panel during normal play leaves the game playing and unpaused after the close; no close path (X or Escape) forces the tree unpaused or the game state to playing on its own.
+- Clicking the tower details panel's X closes the panel and it stays closed across at least two consecutive 0.2 s selection-poll ticks while nothing else is selected (no re-open by the poll).
+- Escape-closing any non-Menu panel (tower details, Manage Towers, Options) leaves that panel closed across at least two consecutive 0.2 s selection-poll ticks.
+- Closing the tower details panel (X or Escape) clears the underlying tower/trap/hole/exit selection through the owning manager, so selecting the same tower again re-opens the details panel with its content.
+- Escape with no panels open still opens the pause menu, and Escape with the pause menu open still resumes play — existing Escape routing behaviour is unchanged.
+- Debug-build [PANELS] log line per panel close that reports the restored game/pause state (panel name, closed, and whether the game stayed paused or playing), filterable and gated on OS.is_debug_build().
+2. close-sticks-harness-scenario — files: `tests/scenarios/panels_closable_x_escape.json` — depends on: 1
+- The focused headless harness scenario's tower-details close-sticks case waits at least two full 0.2 s poll ticks after the close and asserts the details panel visibility stays false for the whole window, then the scenario finishes with status `pass` and exit code 0.
+- The focused scenario also asserts the paused-over case: with the pause menu open and a panel closed on top of it, tree.paused stays true and the pause menu remains visible; and the playing case: closing a panel during play leaves tree.paused false and game state playing.
+- The full hud_other_panels scenario still passes with status `pass` and exit code 0 (Escape with nothing open opens the pause menu; existing #133 acceptance holds).
 
 ## Criteria
 
-- Every non-Menu panel (tower details, Manage Towers, Options, and any other overlay panel outside the Menu/pause panel) shows an "X" close button, and pressing it hides that panel.
-- Pressing Escape while any non-Menu panel is visible closes the topmost open panel and does not open or close the Menu panel.
-- After a panel is closed by its X button or by Escape, gameplay input works again and the game is not left paused.
-- Pressing Escape when no panel is open shows the Menu (pause) panel, preserving the current pause behaviour.
-- Re-opening a panel that was closed via X or Escape works (the panel becomes visible again with correct content, e.g. selecting another tower re-shows the tower details panel).
-- Debug-build [PANELS] log line per panel open/close event, naming the panel and whether it opened or closed.
-- A headless AgentHarness scenario opens each non-Menu panel through the harness API, drives its close path, and passes with status `pass` and exit code 0 on the visibility expectations for every covered panel.
+- Opening a panel (Options, Manage Towers, or tower details) over a paused game — pause menu opened first via Escape — and closing that panel with its X or Escape leaves the tree paused and the pause-menu state intact (the pause menu is still showing and the game does not resume).
+- Opening and closing any non-Menu panel during normal play leaves the game playing and unpaused after the close; no close path (X or Escape) forces the tree unpaused or the game state to playing on its own.
+- Clicking the tower details panel's X closes the panel and it stays closed across at least two consecutive 0.2 s selection-poll ticks while nothing else is selected (no re-open by the poll).
+- Escape-closing any non-Menu panel (tower details, Manage Towers, Options) leaves that panel closed across at least two consecutive 0.2 s selection-poll ticks.
+- Closing the tower details panel (X or Escape) clears the underlying tower/trap/hole/exit selection through the owning manager, so selecting the same tower again re-opens the details panel with its content.
+- Escape with no panels open still opens the pause menu, and Escape with the pause menu open still resumes play — existing Escape routing behaviour is unchanged.
+- Debug-build [PANELS] log line per panel close that reports the restored game/pause state (panel name, closed, and whether the game stayed paused or playing), filterable and gated on OS.is_debug_build().
+- The focused headless harness scenario's tower-details close-sticks case waits at least two full 0.2 s poll ticks after the close and asserts the details panel visibility stays false for the whole window, then the scenario finishes with status `pass` and exit code 0.
+- The focused scenario also asserts the paused-over case: with the pause menu open and a panel closed on top of it, tree.paused stays true and the pause menu remains visible; and the playing case: closing a panel during play leaves tree.paused false and game state playing.
+- The full hud_other_panels scenario still passes with status `pass` and exit code 0 (Escape with nothing open opens the pause menu; existing #133 acceptance holds).
