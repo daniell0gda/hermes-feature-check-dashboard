@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-39-buried-ordnance",
-  "feature": "Traps Buried Ordnance unique perk",
+  "run_id": "issue137-earth-continent-map",
+  "feature": "earth-continent-map-integration",
   "status": "running",
-  "started_at": "2026-08-22T15:31:33.688Z",
+  "started_at": "2026-08-22T15:08:12.926Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-39-buried-ordnance/",
-  "heartbeat_at": "2026-08-22T15:37:24.452Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T15:37:24.452Z",
-  "process_id": 620754,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
+  "heartbeat_at": "2026-08-22T15:38:33.376Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T15:38:33.376Z",
+  "process_id": 607774,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:37:29.337214+00:00",
-    "last_success_at": "2026-08-22T15:37:29.336369+00:00",
+    "last_attempt_at": "2026-08-22T15:38:33.376904+00:00",
+    "last_success_at": "2026-08-22T15:18:52.591699+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 102822,
-        "output_tokens": 2256
+        "input_tokens": 77891,
+        "output_tokens": 5142
       }
     ]
   }
