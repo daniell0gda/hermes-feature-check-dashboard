@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue105-towers-bar-slot-row-overflow-margin-1/",
   "heartbeat_at": "2026-08-22T20:36:52.380Z",
   "last_node": "plan",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-22T20:36:52.380Z",
   "process_id": 719669,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T20:36:52.380549+00:00",
-    "last_success_at": "2026-08-22T20:32:43.430489+00:00",
+    "last_attempt_at": "2026-08-22T20:36:56.858125+00:00",
+    "last_success_at": "2026-08-22T20:36:56.857294+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 73382,
+        "output_tokens": 5279
+      }
+    ]
+  }
 }
