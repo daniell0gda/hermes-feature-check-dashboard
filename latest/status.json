@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-39-buried-ordnance/",
   "heartbeat_at": "2026-08-22T17:29:47.315Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-22T17:29:47.315Z",
   "process_id": 641033,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T17:29:47.315869+00:00",
-    "last_success_at": "2026-08-22T17:25:49.194797+00:00",
+    "last_attempt_at": "2026-08-22T17:29:51.553733+00:00",
+    "last_success_at": "2026-08-22T17:29:51.552979+00:00",
     "last_error": null
   },
   "metrics": {
@@ -63,6 +63,17 @@
         "cost_status": "unknown",
         "input_tokens": 286635,
         "output_tokens": 9784
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 103090,
+        "output_tokens": 4119
       }
     ]
   }
