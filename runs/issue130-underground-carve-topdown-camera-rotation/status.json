@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue130-underground-carve-topdown-camera-rotation/",
-  "heartbeat_at": "2026-08-22T15:11:08.011Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T15:11:08.011Z",
+  "heartbeat_at": "2026-08-22T16:27:16.786Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T16:27:16.786Z",
   "process_id": 603064,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:11:12.610881+00:00",
-    "last_success_at": "2026-08-22T15:11:12.610079+00:00",
+    "last_attempt_at": "2026-08-22T16:27:16.787247+00:00",
+    "last_success_at": "2026-08-22T15:11:16.924770+00:00",
     "last_error": null
   },
   "metrics": {

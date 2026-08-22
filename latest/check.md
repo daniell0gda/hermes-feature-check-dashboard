@@ -1,74 +1,98 @@
-# check.md — issue-overcharge-capacitors (iteration: check)
+# Check report — underground-carve-topdown-camera-rotation (iteration 1)
 
-Classification: **pass**
+classification: blocked
 
 ## Verdict
 
-All 10 acceptance criteria verified Done. Build/typecheck gate, focused harness, and full-test
-harness all pass via `run_project_cmd` (project=poke-defense-godot,
-workspace=poke-defense-godot/issue-overcharge-capacitors). No blockers.
+Blocked by runner infrastructure, not by the project alone. `run_project_cmd` was
+used (never the host shell) for every attempted verification command, and every
+invocation failed at container start:
 
-## Verification commands (all via run_project_cmd, fresh this run)
+- `{"project":"godot-td","workspace":"godot-td/issue-underground-carve-topdown-camera-rotation","cmd":["git","status","--short"]}` → HTTP 422, exit 126:
+  `OCI runtime exec failed: exec failed: unable to start container process: chdir to cwd ("/workspaces/godot-td/issue-underground-carve-topdown-camera-rotation") set in config.json failed: no such file or directory`
+- `godot --version` @ `godot-td/issue-130` → same 422 chdir failure.
+- `git status --short` @ `poke-defense-godot/check` → same 422 chdir failure.
+- Host: `/workspaces` does not exist; `docker ps` → `Cannot connect to the Docker daemon at unix:///var/run/docker.sock`.
 
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Preflight | `godot --version` | 0 | Godot 4.4.1.stable.official.49a5bc7b6 |
-| Typecheck/build | `godot --headless --path . --editor --quit-after 300` | 0 | Clean import/parse; only pre-existing asset UID warnings |
-| Focused test | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/overcharge_capacitors_progression.json` | 0 | `status=pass`; result at `.gen/harness/overcharge_capacitors_progression/result.json`, all actions ok=true, expectation pass |
-| Full test | same with `--harness=res://tests/scenarios/display_damage_surface_parity.json` | 0 | `status=pass`; `.gen/harness/display_damage_surface_parity/result.json` |
+The runner's pre-provisioned workspace directory is missing and Hermes has no
+Docker socket access to create it; the project-runner skill prohibits
+bootstrapping the workspace through the host shell. Therefore the typecheck/build
+gate and the full test gate could not be executed and are treated as failed.
 
-## Criterion evidence
+## Gate results
 
-1. **Registered Common perk / eligible / drawn** — `scripts/progression/global.json` adds
-   `overcharge_capacitors` (type Common, maxLevels 3). Harness actions 3–5 assert
-   `is_eligible == true`, `get_current_level == 0`, and `draw_choices_for_chest contains
-   overcharge_capacitors` — all ok.
-2. **< 3 towers → no bonus** — harness action 10–13: bonus generic/cannon = 0.0,
-   multiplier = 1.0 for both kinds with 2 generics placed.
-3. **Exactly 3 → tier 1** — action 17–18: bonus 0.1, multiplier 1.1 (L1 value 0.10 from JSON).
-4. **6 towers → tier 2** — action 37–38: bonus 0.2, multiplier 1.2 (`value * count/3` in
-   `get_overcharge_bonus_for_kind`). Log shows `[OVERCHARGE] type=generic towers=6 tier=2 multiplier=1.2`.
-5. **Pipeline composition** — code: overcharge added inside both branches of
-   `get_tower_damage_multiplier_for(kind)` (generic branch and bazooka branch alongside rocket
-   modifiers), so global + overcharge combine; per-tower Unique bonuses are separate and
-   unaffected. Harness asserts the combined multiplier directly (1.1 / 1.2).
-6. **Per-type isolation** — actions 47–48: cannon bonus 0.1 while generic stays 0.2.
-7. **Count drops below threshold** — sell path removes one generic; action 26 asserts bonus
-   back to 0.0. (Prior iteration-1 quality note `overcharge-scenario-sell-target-mismatch`
-   is resolved: sell now targets the placed tower at (-6,0,0).)
-8. **reset_for_new_game clears** — actions 51–53: level 0, bonus 0.0 for both kinds after reset.
-9. **Debug `[OVERCHARGE]` log** — code inspection: print behind `OS.is_debug_build()` in
-   `get_overcharge_bonus_for_kind`, naming type/towers/tier/multiplier; observed live in run log
-   (official headless build prints it here; scenario does not assert it, matching project
-   convention used by display_damage_surface_parity).
-10. **Harness scenario covers boundaries** — new scenario
-    `tests/scenarios/overcharge_capacitors_progression.json` drives <3 / ==3 / 6+ through placed
-    towers + progression API; all expectations passing (result.json status=pass).
+| Gate | Command | Result |
+|---|---|---|
+| Typecheck/build | `["godot","--headless","--editor","--path",".","--quit-after","3"]` | NOT RUN — runner 422 chdir failure (infra) |
+| Focused test | `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/carve_camera_topdown.json"]` | NOT RUN this session — runner 422 chdir failure (infra) |
+| Full test loop | plan.md full-test command | NOT RUN — runner 422 chdir failure (infra) |
 
-## Changed-file quality review (vs /opt/data/coding_rules.md + CLAUDE.md)
+## Evidence from the implementor's own stored run
 
-Files: `autoload/ProgressionManager.gd`, `scripts/progression/global.json`,
-`tests/scenarios/overcharge_capacitors_progression.json`.
+`.gen/harness/carve_camera_topdown/result.json` (written 2026-08-22T12:18:12,
+before the runner broke) records `"status": "fail"`:
 
-- Typed variables throughout (`var count: int`, `var value: float`); guard clauses keep nesting ≤ 2;
-  function sizes small; debug logging follows the CLAUDE.md `[TAG]` + `OS.is_debug_build()` convention.
-- Defensive node-path walking in `_same_type_tower_count` is justified (autoload outlives game scene)
-  and degrades to 0 — not speculative error handling.
-- No test overlap found: no existing scenario asserted overcharge behavior; the new scenario is the
-  first coverage for this perk on this code path.
+- 6 timeline actions failed with `ui has no method '_on_dig_hole'`,
+  `_clear_dig_mode`, `_on_carve` (×2), `clear_carve_mode` (×2).
+- Expectation `dig_hole_camera_top_down` FAILED (actual true, expected false —
+  the dig-hole probe was taken without dig mode ever being entered, so the check
+  is both failing and vacuous).
+- The three `carve_camera_*` expectations "passed" only vacuously: every probe
+  captured the identical untouched camera basis because carve mode was never
+  actually entered. They assert nothing about the feature.
+- All three `[CARVE_CAMERA]` log regex expectations failed (`actual: ""`).
 
-No quality violations in changed code; nothing demoted.
+## Source inspection of the diff (`git diff HEAD`, 6 files, +184)
+
+- `scripts/ui/UI.gd`: `carving_active` setter now calls
+  `game.on_carve_camera_mode(armed)` — **no such method exists anywhere**
+  (`grep -rn on_carve_camera_mode scripts/` matches only the call site). At
+  runtime this is guarded by `has_method`, so it silently does nothing.
+- `scripts/game/Game.gd`: contains NO carve-camera logic and NO `[CARVE_CAMERA]`
+  logging. The only addition is `debug_look_down_underground()` (orthogonal
+  camera teleport for screenshots) which implements none of the acceptance
+  criteria and looks like manual-test scaffolding, possibly scope creep.
+- No code anywhere rotates the camera to top-down on carve arm, restores it on
+  cancel, or tracks manual rotation during carve.
+- `scripts/testing/HarnessValues.gd` / `HarnessActions.gd` / `AgentHarness.gd`:
+  camera_probe / rotate_camera / camera value source are implemented and look
+  reasonable, but they test a feature that does not exist.
+- `tests/scenarios/carve_camera_topdown.json` references four UI methods that do
+  not exist (`_on_dig_hole`, `_clear_dig_mode`, `_on_carve`, `clear_carve_mode`);
+  grep finds none of them in `scripts/ui/UI.gd`.
+
+## Acceptance criteria status (all unmet)
+
+Every criterion below is Pending: the implementing logic is absent from the diff
+and/or its scenario actions fail against real UI methods.
+
+1. Carve on underground rotates camera top-down, position/zoom unchanged — Pending (no implementation; during_carve probe identical to before).
+2. Only rotation changes across arm — Pending (vacuous pass only).
+3. Plain cancel restores pre-carve rotation — Pending (no implementation).
+4. Manual rotation during carve survives cancel — Pending (no implementation).
+5. Camera rotation input still works while carving — Pending (untested; rotate_camera action ran outside carve mode).
+6. Dig-hole/place-exit/place-block/tower-selection do not trigger rotation — Pending (scenario calls nonexistent UI methods; expectation fails).
+7. `[CARVE_CAMERA]` debug log lines — Pending (absent from source; log assertions fail).
+8. Harness value source exposes camera orientation/placement — implemented (camera source + probes present in HarnessValues/HarnessActions) but unverifiable this session; kept Pending pending a runnable gate.
+9. Focused scenario asserts top-down / position-unchanged / restore / kept-player-angle — Pending (scenario currently fails: 4 bad action targets, 3 failed log checks, 1 failed expectation).
+
+## Manual testing
+
+Required by plan (`manual_testing: required`) and request notes. No windowed
+screenshot evidence found under `.gen/harness/carve_camera_topdown`
+(`"screenshots": []`). Not performed.
+
+## Blockers
+
+1. Runner infrastructure unavailable: `run_project_cmd` 422 chdir failures for
+   every workspace slug; `/workspaces` missing; Docker socket unreachable from
+   Hermes. Re-provision the runner workspace (host/root side) and re-run check.
+2. Implementation incomplete: `Game.on_carve_camera_mode` and all
+   `[CARVE_CAMERA]` logging missing; scenario targets four nonexistent UI
+   methods. Coder must implement cluster 1 and fix the scenario action names.
 
 ## Quality notes
 
-`.gen/quality-notes.md`: one open entry `overcharge-scenario-sell-target-mismatch` re-checked —
-resolution entry present and confirmed against fresh harness output (bonus falls to 0.0 after sell,
-action 26 ok). No new entries appended.
-
-## Scope check
-
-`git status --short`: exactly the three declared files (2 modified, 1 untracked scenario). No scope creep.
-
-## Blockers / unverified items
-
-None. All commands ran through the runner; no host-shell Godot evidence used.
+See `.gen/quality-notes.md` (appended: silent no-op notification pattern;
+vacuous harness passes masking a missing feature; suspected scope creep in
+`debug_look_down_underground`). Advisory only.

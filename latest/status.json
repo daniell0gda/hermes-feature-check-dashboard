@@ -1,22 +1,22 @@
 {
-  "run_id": "issue-34-overcharge-capacitors-cont3-20260822-154755",
-  "feature": "overcharge-capacitors",
-  "status": "failed",
-  "started_at": "2026-08-22T15:47:55.710Z",
-  "ended_at": "2026-08-22T16:21:22.915Z",
+  "run_id": "issue130-underground-carve-topdown-camera-rotation",
+  "feature": "underground-carve-topdown-camera-rotation",
+  "status": "running",
+  "started_at": "2026-08-22T14:56:55.786Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-cont3-20260822-154755/",
-  "heartbeat_at": "2026-08-22T16:21:22.915Z",
-  "last_node": "check",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue130-underground-carve-topdown-camera-rotation/",
+  "heartbeat_at": "2026-08-22T16:27:16.786Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-22T16:21:18.513Z",
-  "process_id": 628083,
+  "last_event_at": "2026-08-22T16:27:16.786Z",
+  "process_id": 603064,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T16:21:22.915572+00:00",
-    "last_success_at": "2026-08-22T16:17:15.492672+00:00",
-    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
+    "last_attempt_at": "2026-08-22T16:27:16.787247+00:00",
+    "last_success_at": "2026-08-22T15:11:16.924770+00:00",
+    "last_error": null
   },
   "metrics": {
     "invocations": [
@@ -28,30 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 184513,
-        "output_tokens": 8238
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 37683,
-        "output_tokens": 2769
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 92459,
-        "output_tokens": 3067
+        "input_tokens": 194989,
+        "output_tokens": 5773
       }
     ]
   }
