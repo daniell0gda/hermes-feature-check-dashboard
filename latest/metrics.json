@@ -8,24 +8,13 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 102822,
-      "output_tokens": 2256
+      "input_tokens": 108662,
+      "output_tokens": 3223
     },
     {
       "task_id": "code",
       "cluster_id": "implementation",
       "role": "code",
-      "model": null,
-      "model_tier": null,
-      "cost_usd": null,
-      "cost_status": "unavailable",
-      "input_tokens": null,
-      "output_tokens": null
-    },
-    {
-      "task_id": "check",
-      "cluster_id": null,
-      "role": "check",
       "model": null,
       "model_tier": null,
       "cost_usd": null,
