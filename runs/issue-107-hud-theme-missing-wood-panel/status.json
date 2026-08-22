@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-107-hud-theme-missing-wood-panel/",
   "heartbeat_at": "2026-08-22T11:40:22.062Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-22T11:40:22.062Z",
   "process_id": 517868,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T11:40:22.062885+00:00",
-    "last_success_at": "2026-08-22T11:32:28.932155+00:00",
+    "last_attempt_at": "2026-08-22T11:40:26.244354+00:00",
+    "last_success_at": "2026-08-22T11:40:26.243798+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 50024,
         "output_tokens": 1677
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 155366,
+        "output_tokens": 4483
       }
     ]
   }
