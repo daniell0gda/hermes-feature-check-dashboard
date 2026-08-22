@@ -1,54 +1,65 @@
-# Check report: burn-status-refresh-pending-damage (issue #53)
+# Check report: hud-theme-missing-wood-panel (issue #107)
 
-Classification: **pass**
+Classification: pass
 
-## Verification (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-burn-status-refresh-loses-pending-damage)
+## Verdict
 
-| Command | Exit | Result |
-|---|---|---|
-| `godot --version` | 0 | runner probe OK (4.4.1.stable) |
-| `godot --headless --path . --editor --quit-after 300` (typecheck/import gate) | 0 | clean parse, no script errors |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/burn_status_refresh_pending_damage.json` | 0 | `[Harness] status=pass exit=0`; all 5 expectations pass |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/fire_burn_on.json` | 0 | `[Harness] status=pass exit=0`; all 9 expectations pass |
+All 6 acceptance criteria verified fresh this iteration through the approved
+project runner (`run_project_cmd`, project=`godot-td`,
+workspace=`poke-defense-godot/issue-hud-theme-missing-wood-panel`). All
+commands returned exit code 0.
 
-Evidence: `.gen/harness/burn_status_refresh_pending_damage/result.json`, `.gen/harness/fire_burn_on/result.json`.
+## Verification commands and results (all via run_project_cmd, exit codes real)
 
-## Criteria evidence
+1. Preflight `["godot","--version"]` — exit 0, Godot 4.4.1.stable.
+2. Fresh-import gate: deleted `.godot/imported` host-side (gitignored cache),
+   then `["godot","--headless","--path",".","--editor","--quit-after","300"]`
+   — exit 0 (~54s), full reimport including `wood_panel.png`. Only
+   pre-existing dummy-renderer noise in the log, no HudTheme/wood_panel load
+   errors.
+3. Focused harness
+   `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/hud_wood_panels.json"]`
+   — exit 0, `[Harness] status=pass exit=0`. Result:
+   `.gen/harness/hud_wood_panels/result.json` — all 6 expectations pass:
+   source_png_exists=true, texture_path=res://textures/ui/hud/wood_panel.png,
+   texture_loaded=true, style_class=StyleBoxTexture, log !contains "Failed to
+   load resource ... wood_panel.png", game_state=paused.
+4. Full harness `["...","--harness=res://tests/scenarios/smoke_placement.json"]`
+   — exit 0, status=pass exit=0.
 
-1. Refresh preserves accumulated fractional carry instead of zeroing it — **Done**.
-   `scripts/game/status/BurnStatus.gd::_reset()` snapshots `_pending_float` when `_ticks_total > 0`
-   and restores it after recomputing the schedule. Fresh run log shows
-   `[BURN] refresh ... preserved_pending=0.25, ticks=4, per=0.75`; scenario expectation
-   `damage_by_type.fire >= 5.0` passes (actual exactly 5.0; the zeroed-carry bug would give 4).
-2. Re-applying burn never delivers less total than unrefreshed expiry under identical payload/timing — **Done**.
-   Scenario arm A baseline = exactly 3.0 (single application); arm B refreshed total = 5.0 ≥ baseline+2;
-   instrumentation shows 5 integer ticks delivered across the refresh boundary.
-3. Fresh burn starts with no carry and pays its exact configured schedule — **Done**.
-   Arm A asserts `stats.damage_by_type.fire == 3.0` exactly after one unrefreshed application,
-   then `burning == false`. `_reset` sets `preserved_pending = 0.0` when `_ticks_total == 0`.
-4. Debug [BURN] refresh log line naming preserved pending + new schedule — **Done**.
-   Log regex expectation `\[BURN\] refresh .*preserved_pending=` passes against this run's out.log
-   (`[BURN] refresh on ..., preserved_pending=0.25, ticks=4, per=0.75`), gated by `OS.is_debug_build()`.
-5. Headless scenario applies two overlapping burns through the public apply entry point and asserts non-decreasing total vs single-application baseline — **Done**.
-   Both applications go through `EffectsManager.apply_effect` (burn); expectations pass in
-   `burn_status_refresh_pending_damage/result.json`.
-6. Refreshed burn terminates after refreshed duration and flushes remaining fractional damage at expiry — **Done**.
-   Arm B asserts `Mushnub_boss.burning == false` and `burning_count == 0` after the refreshed window;
-   final fire total is exactly 5.0 (3 base + 4×0.75 ticks − rounding flush), i.e. the fractional
-   carry is paid out, not dropped.
+## Criterion evidence
 
-## Changed-file quality
+- Panel texture path resolves to a repo PNG: PASS —
+  `textures/ui/hud/wood_panel.png` exists on disk (untracked new file);
+  HudTheme.tres ext_resource points at it; expectation source_png_exists=true.
+- Theme loads after `.godot/imported` deleted: PASS — import gate + focused
+  harness ran immediately after cache delete; texture_loaded=true with a live
+  StyleBoxTexture.
+- Named orphan `.import` files absent: PASS — after fresh import,
+  `textures/ui/hud/` contains only `wood_panel.png` and `wood_panel.png.import`;
+  icon_speed/wide_panel/woden_panel_wide_lightonly/wood_chip_on imports absent.
+- Every `.import` under textures/ui/hud/ has a matching source: PASS — only
+  wood_panel.png.import, matched by wood_panel.png beside it.
+- hud_wood_panels scenario passes after imported-cache delete: PASS — see #3.
+- HUD panels show wood panel backing: PASS (automated portion) — CaveProgressPanel's
+  live stylebox resolves to a loaded StyleBoxTexture backed by the committed
+  wood_panel.png; scenes/UI.tscn Root theme = HudTheme.tres. Pixel-level visual
+  confirmation remains for the windowed manual-tester pass (headless renderer
+  skips screenshots by design; plan declares `manual_testing: required`).
 
-- `scripts/game/status/BurnStatus.gd` (+7/-1): typed locals, guard-style is_refresh branch,
-  explanatory comment, debug log follows project `[TAG]`/`OS.is_debug_build()` convention. Clean.
-- `tests/scenarios/burn_status_refresh_pending_damage.json` (new): assertions are exact and
-  jitter-proof (binary-exact payload). Clean.
-- Feature diff contains nothing else; no scope creep.
+## Changed-file quality findings
 
-## Notes
+Diff (`scenes/UI.tscn`, `scripts/ui/UI.gd` +26 lines, new
+`tests/scenarios/hud_wood_panels.json`, `themes/hud/HudTheme.tres`,
+`textures/ui/hud/wood_panel.png`): surgical scope, typed GDScript per
+CLAUDE.md, guard-clause structure, no rule violations. No demotions.
+No open quality-notes entries existed; none appended.
 
-- Pre-existing engine noise (HudTheme UID warnings / missing wood_panel.png texture) appears in
-  every headless run including on master-adjacent state; unrelated to this feature, not a regression.
-- No prior quality-notes.md entries to resolve; none appended.
+## Blockers
 
-Blockers: none. Unverified items: none.
+None.
+
+## Unverified / deferred to manual tester
+
+- Windowed screenshot/pixel inspection of the wood panel backing (request.md
+  requires windowed manual testing; headless cannot capture pixels).

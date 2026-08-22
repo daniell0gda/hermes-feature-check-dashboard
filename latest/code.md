@@ -1,25 +1,62 @@
-# Coder report: implementation\n\n# Coder report: implementation
+# Coder report: hud-theme-panel-texture\n\n# Coder report: hud-theme-panel-texture
 
 ## Changed files
-- `scripts/game/status/BurnStatus.gd` — modified (`_reset` preserves `_pending_float` on refresh; debug `[BURN] refresh` log line)
-- `tests/scenarios/burn_status_refresh_pending_damage.json` — new headless regression scenario
+- `textures/ui/hud/wood_panel.png` — new
+- `themes/hud/HudTheme.tres` — new
 
 ## Criteria
-- Refreshing burn preserves accumulated fractional damage carry — Done
-- Re-applying burn never delivers less total than unrefreshed expiry under identical payload/timing — Done
-- Fresh burn starts with no carry and pays exactly its configured per-tick schedule — Done
-- Debug-build [BURN] refresh log line naming preserved pending amount + new tick schedule — Done
-- Headless scenario applies two overlapping burns through EffectsManager.apply_burn and asserts total >= single-application baseline figure — Done
-- Same scenario asserts refreshed burn terminates after refreshed duration and flushes remaining fractional damage at expiry — Done
+- Panel style texture path resolves to a repo PNG. — Done (`res://textures/ui/hud/wood_panel.png` exists on disk)
+- Theme loads after `.godot/imported` deleted. — Done (fresh import + harness pass)
+- Named orphan `.import` files absent. — Done (verified post-import)
+- Every `.import` under `textures/ui/hud/` matches a source image. — Done (`wood_panel.png.import` ↔ `wood_panel.png`)
 
 ## Commands and results
-- `godot --headless --path . --editor --quit-after 300` — exit 0 (project import; run twice: cold import + post-fix typecheck pass)
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/burn_status_refresh_pending_damage.json` — RED before fix (timeout at action 17: actual damage_by_type.fire = 4.0 vs required >= 5), GREEN after fix (exit 0, status=pass, final fire total exactly 5)
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/fire_burn_on.json` — exit 0, status=pass, all 9 expectations pass, damage_by_type.fire = 242 (window 224–256 unchanged)
+- Import after deleting `.godot/imported` — exit 0; reimported `wood_panel.png`; no wood_panel/theme errors.
+- Focused hud_wood_panels harness — exit 0, status=pass; expectations source_png_exists=true, texture_path=res://textures/ui/hud/wood_panel.png, texture_loaded=true, style_class=StyleBoxTexture.
 
 ## Notes
-- Fix is minimal: `_reset()` snapshots `_pending_float` when called on an already-running burn (`_ticks_total > 0`) and restores it after recomputing the schedule; `_begin` path still starts at 0 because a fresh node has `_ticks_total == 0`.
-- The `[BURN] refresh` print fires only on genuine refreshes (not first `_begin`), so `fire_burn_on`'s out-of-band log check ("[BURN] begin ..." lines) is unaffected.
-- RED evidence preserved in `.gen/harness/burn_status_refresh_pending_damage/` history: pre-fix run logged tick sequence `1(acc=1.5)` then refresh restarting from acc 0; post-fix log shows `[BURN] refresh ... preserved_pending=0.5, ticks=4, per=0.75`.
-- Gotcha for tester: AgentHarness.materialize_engine_out_log skips rewriting `<id>.out.log` if it already contains this run's marker string; a stale log from an earlier run of the same scenario id will fail fresh log expectations. Delete `.gen/harness/_logs/<id>.out.log` between runs if log-source assertions change.
+- `*.import` gitignored; sidecars regenerate at import time and are not committed.
+\n\n# Coder report: hud-wood-panels-harness\n\n# Coder report: hud-wood-panels-harness
+
+## Changed files
+- `tests/scenarios/hud_wood_panels.json` — new
+
+## Criteria
+- After `.godot/imported` is deleted, `hud_wood_panels` scenario finishes status pass. — Done
+- HUD panels using the HUD theme show wood panel backing rather than missing/empty fill. — Done via StyleBoxTexture load assertions; pixel check needs windowed/manual run (headless screenshot skipped).
+
+## Commands and results
+- Focused harness after fresh import — exit 0; `[Harness] status=pass exit=0`; result written to `.gen/harness/hud_wood_panels/result.json`; all 6 expectations pass.
+- Full smoke_placement harness — exit 0; status=pass exit=0.
+
+## Notes
+- Scenario asserts through public `UI.get_hud_panel_style()` plus log scan for "Failed to load resource ... wood_panel.png".
+\n\n# Coder report: implementation\n\n# Coder report: implementation
+
+## Changed files
+- `textures/ui/hud/wood_panel.png` — new (committed source PNG)
+- `themes/hud/HudTheme.tres` — new (Panel + PanelContainer StyleBoxTexture)
+- `scenes/UI.tscn` — modified (Root theme = HudTheme.tres)
+- `scripts/ui/UI.gd` — modified (`get_hud_panel_style()`)
+- `tests/scenarios/hud_wood_panels.json` — new
+
+## Criteria
+- The HUD theme Panel style texture path resolves to a PNG that exists in the repository. — Done
+- After `.godot/imported` is deleted, loading the HUD theme does not fail to load the Panel style texture. — Done
+- Named orphan `.import` files (icon_speed, wide_panel, woden_panel_wide_lightonly, wood_chip_on) are absent. — Done (verified this iteration)
+- Every `.import` under `textures/ui/hud/` has a matching source image. — Done (only `wood_panel.png.import`, gitignored sidecar)
+- After `.godot/imported` is deleted, the `hud_wood_panels` harness scenario finishes with status pass. — Done
+- HUD panels show a wood panel backing rather than missing/empty fill. — Done via StyleBoxTexture load checks; pixel-level backing still requires windowed/manual inspection (headless screenshot skipped by dummy renderer).
+
+## Commands and results
+- Deleted `.godot/imported` before verification (fresh-import path).
+- `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]` project=`poke-defense-godot` workspace=`poke-defense-godot/issue-hud-theme-missing-wood-panel` — exit code 0; 52s; reimported `wood_panel.png`; no theme/texture load errors.
+- Focused `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/hud_wood_panels.json"]` — exit code 0; `[Harness] status=pass exit=0`; all 6 expectations pass (`source_png_exists`, `texture_path contains wood_panel.png`, `texture_loaded`, `style_class=StyleBoxTexture`, out.log !contains "Failed to load resource ... wood_panel.png", game_state paused).
+- Full `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_placement.json"]` — exit code 0; `[Harness] status=pass exit=0`.
+
+## Notes
+- Verification-only iteration on top of the existing implementation; no source files changed this round.
+- `*.import` is gitignored repo-wide, so the reimport sidecar cannot be committed; named orphan imports remain absent after fresh import.
+- Import log contains pre-existing unrelated errors (missing FBX texture PNGs under `res://models/fbx/`, repeated `Parameter "t" is null`) not related to the HUD theme.
+- Headless screenshot for `hud_wood_panels` skipped (dummy renderer); manual windowed visual check of CaveProgressPanel/HUD panels still recommended.
 \n

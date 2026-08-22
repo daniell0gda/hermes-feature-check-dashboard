@@ -8,8 +8,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 148329,
-      "output_tokens": 6043
+      "input_tokens": 50024,
+      "output_tokens": 1677
     },
     {
       "task_id": "code",
@@ -19,8 +19,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 310679,
-      "output_tokens": 22891
+      "input_tokens": 155366,
+      "output_tokens": 4483
     },
     {
       "task_id": "check",
@@ -30,8 +30,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 184992,
-      "output_tokens": 2769
+      "input_tokens": 125129,
+      "output_tokens": 2917
     },
     {
       "task_id": "manual-testing-gate",
@@ -41,8 +41,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 24393,
-      "output_tokens": 420
+      "input_tokens": 38443,
+      "output_tokens": 445
     }
   ]
 }
