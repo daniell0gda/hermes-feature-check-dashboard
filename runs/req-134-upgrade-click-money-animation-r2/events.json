@@ -52,5 +52,14 @@
     "duration_ms": 904396,
     "summary": "The release endpoint isn't exposed as a separate tool in this session (only `run_project_cmd` is available), so worker release is left to the orchestrator.\n\nSummary:\n\n- Criterion \"Verified in-game via windowed screenshot\" \u2014 fixed and green.\u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-22T18:13:04.187Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 331004,
+    "summary": "Check complete. All gates ran through run_project_cmd (never host shell): runner probe, editor parse gate, headless harness, and windowed harness \u2014 all exit 0, harness status=pass with all 3 expectations green (money 1460 < 1500, tower leve\u2026",
+    "error": null
   }
 ]
