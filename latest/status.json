@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-93-molten-shackles",
-  "feature": "perk-molten-shackles",
+  "run_id": "issue137-earth-continent-map",
+  "feature": "earth-continent-map-integration",
   "status": "running",
-  "started_at": "2026-08-22T14:28:45.621Z",
+  "started_at": "2026-08-22T15:08:12.926Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-93-molten-shackles/",
-  "heartbeat_at": "2026-08-22T15:43:16.638Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T15:43:16.638Z",
-  "process_id": 589800,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
+  "heartbeat_at": "2026-08-22T15:46:39.964Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T15:46:39.964Z",
+  "process_id": 607774,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:43:20.902924+00:00",
-    "last_success_at": "2026-08-22T15:43:20.902111+00:00",
+    "last_attempt_at": "2026-08-22T15:46:39.965071+00:00",
+    "last_success_at": "2026-08-22T15:38:42.910494+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,19 +28,19 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 80028,
-        "output_tokens": 4553
+        "input_tokens": 77891,
+        "output_tokens": 5142
       },
       {
         "task_id": "code",
         "cluster_id": "implementation",
         "role": "code",
-        "model": "stealth/ox-alpha",
+        "model": null,
         "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 184254,
-        "output_tokens": 3252
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
       }
     ]
   }
