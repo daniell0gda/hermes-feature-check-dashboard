@@ -1,36 +1,32 @@
-# Request: issue #101 — Underground side panel: Carve / Place Exit / Place Block overflow the wooden frame
+# Request: perk-siege-breaker (issue #92)
 
-- Project key (runner): `godot-td`
-- Git workspace: `/workspace/git-workspaces/poke-defense-godot/issue-underground-side-panel-carve-place-exit-`
-- Branch: `issue/underground-side-panel-carve-place-exit-` (fresh from origin/master @ d241462)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/101
-- Labels at claim: status:in-progress, priority:medium, type:ui
+- **Project:** poke-defense-godot
+- **Workspace:** /workspace/git-workspaces/poke-defense-godot/issue-perk-siege-breaker
+- **Branch:** issue/perk-siege-breaker (cut from origin/master @ d241462)
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/92
+- **Request ID:** perk-siege-breaker-92-run1
 
-## Problem
+## Feature
 
-`Root/ItemList/DigBtns` (`scenes/UI.tscn`) is an HBoxContainer anchored as a sibling of
-`Root/ItemList/SidePanel`, not content inside it. Its three buttons lay out over the panel and at
-287px spill past the 274px panel, covering its right corner brackets. Panel inner box is 218x119
-(margins 28/26/28/26 on 274x171). Three 48px-tall wide buttons need 164px height; side-by-side they
-get ~72px width — neither fits naively. `place_exit_btn` builds a two-line name+price child
-container at runtime (`UI.gd` `_populate_underground_buttons_with_prices`) so it needs more height.
+Progression: Siege Breaker perk (Unique, Cannon only, 3 levels) — Cannon's own hits ignore the armor damage-reduction penalty: penalty reduced from 50% to 35%/20%/0% per level.
 
-Visible in `.gen/harness/hud_wood_panels/shots/hud_underground.png`.
+## Acceptance criteria
 
-## Done when
+1. New perk `siege_breaker`, type Unique, Cannon only, 3 levels.
+2. Reduces the armor-damage-reduction multiplier applied in `EnemyHealthController.take_damage()` for Cannon's hits from 0.5 → 0.35/0.20/0.0 by level.
+3. Does NOT modify `enemy.armor` — armor drains at normal rate from other towers' hits; only the multiplier on Cannon's own hits changes.
+4. Visual: reuse the shield-crack flash effect from Exposed Plating (#87-series), no new second effect.
 
-1. The three underground controls render fully inside the side panel frame, clear of its corner
-   brackets, on both `map_1` and a map where Porter is unlocked.
-2. `place_exit_btn` still shows its price without clipping.
-3. The `hud_underground` checkpoint in `tests/scenarios/hud_wood_panels.json` shows no button
-   overlapping the panel frame.
+## Runner notes (pin correct names — redo safety)
 
-## Notes for workers
+- Runner key: `godot-td` (never folder name). Workspace: `poke-defense-godot/issue-perk-siege-breaker`.
+- Editor gate: `godot --headless --path . --editor --quit-after 300` via runner.
+- Harnesses: explicit scene arg before user args; never rely on project.godot main scene.
 
-- Use runner key `godot-td`, workspace `poke-defense-godot/issue-underground-side-panel-carve-place-exit-`.
-  Do NOT invent workspace names (HTTP 422 chdir failures).
-- Visible UI work → manual testing is required, windowed screenshots via the harness
-  (`--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan
-  fails in worker). Manual-tester must never use `--headless`.
-- The layout decision is ours: pick an arrangement of the three controls that fits the 218x119 inner
-  well (e.g. two stacked + one wider row, or resized buttons) while keeping price text visible.
+## Historical context
+
+Fresh claim; no prior attempt on this branch.
+
+## Manual testing expectation
+
+Visible player-facing perk → manual_testing: required with windowed PNGs/GIFs per team-work rules (no --headless-only).

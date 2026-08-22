@@ -1,36 +1,22 @@
 {
-  "run_id": "issue-101-20260822T194917Z",
-  "feature": "underground-side-panel-carve-place-exit-",
+  "run_id": "perk-siege-breaker-92-run1",
+  "feature": "perk-siege-breaker",
   "status": "running",
-  "started_at": "2026-08-22T19:49:18.222Z",
+  "started_at": "2026-08-22T19:55:11.096Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-101-20260822T194917Z/",
-  "heartbeat_at": "2026-08-22T19:56:18.512Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-siege-breaker-92-run1/",
+  "heartbeat_at": "2026-08-22T20:05:43.014Z",
   "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T19:56:18.512Z",
-  "process_id": 702048,
+  "active_node": null,
+  "last_event_at": "2026-08-22T20:05:43.014Z",
+  "process_id": 703999,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T19:57:20.033519+00:00",
-    "last_error": null,
-    "last_success_at": "2026-08-22T19:56:22.915390+00:00"
+    "last_attempt_at": "2026-08-22T20:05:43.014935+00:00",
+    "last_success_at": "2026-08-22T19:56:06.671795+00:00",
+    "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 100606,
-        "output_tokens": 3865
-      }
-    ]
-  }
+  "metrics": {}
 }
