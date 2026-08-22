@@ -1,21 +1,21 @@
 {
-  "run_id": "issue137-earth-continent-map",
-  "feature": "earth-continent-map-integration",
-  "status": "failed",
-  "started_at": "2026-08-22T19:22:39.115Z",
-  "ended_at": "2026-08-22T20:07:49.206Z",
+  "run_id": "issue138-norocktree-1787411442",
+  "feature": "no-rock-or-tree-same-position-as-building",
+  "status": "running",
+  "started_at": "2026-08-22T17:39:03.349Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-22T20:07:49.206Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue138-norocktree-1787411442/",
+  "heartbeat_at": "2026-08-22T20:09:17.406Z",
   "last_node": "check",
   "active_node": null,
-  "last_event_at": "2026-08-22T20:07:44.827Z",
-  "process_id": 690443,
+  "last_event_at": "2026-08-22T20:09:17.406Z",
+  "process_id": 655555,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T20:07:49.206482+00:00",
-    "last_success_at": "2026-08-22T20:07:49.205371+00:00",
+    "last_attempt_at": "2026-08-22T20:09:17.407396+00:00",
+    "last_success_at": "2026-08-22T19:03:50.923996+00:00",
     "last_error": null
   },
   "metrics": {
@@ -27,9 +27,9 @@
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
-        "cost_status": "estimated",
-        "input_tokens": 100823,
-        "output_tokens": 5038
+        "cost_status": "unknown",
+        "input_tokens": 97512,
+        "output_tokens": 2222
       },
       {
         "task_id": "code",
@@ -39,19 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 160390,
-        "output_tokens": 19298
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 154151,
-        "output_tokens": 7164
+        "input_tokens": 241023,
+        "output_tokens": 7770
       }
     ]
   }
