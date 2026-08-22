@@ -1,8 +1,13 @@
 ## ✅ Done
-- Clicking "Upgrade" in tower details triggers the same animation used for money increase
-- Animation visually matches the existing money-increase effect
-- Verified in-game via windowed screenshot — re-verified by checker this iteration: fresh windowed run captured both shots; independent pixel-diff found ~2,149 new yellow pixels clustered at screen ~(800–1200, 300–500) in `.gen/harness/upgrade_click_money_popup/shots/after_upgrade_click_popup_visible.png`, and a zoomed vision read identified floating yellow "+20 COINS!" text there, absent from the before shot
+- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
+- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
+- The CloseChip remains flush in the frame's top-right corner and pressing it still emits exactly one `close_requested` (existing contract preserved).
+- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
+- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
+- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
 
 ## ⬜ Pending
+- (none)
 
 ## ❌ Impossible
+- (none)

@@ -1,34 +1,22 @@
-# Request: upgrade-click-money-animation
+# Request: req-136-padding-closable-panels-close-button
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/134
-- **Project:** poke-defense-godot
-- **Git workspace:** /workspace/git-workspaces/poke-defense-godot/issue-upgrade-click-money-animation (branch issue/upgrade-click-money-animation)
-- **Request ID:** req-134-upgrade-click-money-animation-r3
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/136
+- Project: poke-defense-godot (runner key: godot-td)
+- Workspace: /workspace/git-workspaces/poke-defense-godot/issue-padding-closable-panels-close-button (branch issue/padding-closable-panels-close-button, base origin/master 5042d9f)
 
-## Goal
-
-Clicking "Upgrade" in the tower details panel must play the same floating "+N coins!" popup chest rewards use, and it must be VISIBLE on screen.
-
-## Current state (from r1/r2 runs)
-
-- Implementation exists: `UI.gd::_spawn_upgrade_money_popup` calls `ChestRewardSystem.create_reward_popup(...)` with parent `Surface`/`Underground` based on layer. Harness asserts on popup meta pass.
-- BLOCKER found by visual verification: the Tower Details panel opens centered over the selected tower (panel ≈x770–1150, y155–685 at 1920x1080; tower at ≈(830,680)). The popup floats up from the tower position BEHIND the opaque panel, so no frame shows it. Pixel scans of 10 post-click frames found zero new yellow text pixels.
-
-## Required fix
-
-Make the upgrade popup render in a visible screen area:
-- Unproject the tower position to screen coordinates, test overlap against the tower details panel rect, and if occluded offset the popup's world anchor (via camera projection) until its screen position lies outside the panel (e.g. left or below the panel).
-- Keep style/timing identical to the chest popup (same create_reward_popup, yellow Label3D, 1.5s float/fade).
-- Keep existing harness assertions working.
-
-## Acceptance criteria
-
-1. Clicking "Upgrade" triggers the same money-increase animation.
-2. Animation is provably visible: fresh windowed run captures frames immediately after click where the yellow "+20 coins!" text is present OUTSIDE the panel region — verified by pixel scan (new yellow cluster) AND visual inspection, not by harness status alone.
-3. Tower levels up and money is charged as before.
+## Acceptance criteria (from issue)
+- Closable panels reserve horizontal padding so the "x" button never overlaps content.
+- Tower details panel shows all its content clear of the "x" button.
+- Verified visually that no other closable panel (e.g. shop, settings) has the overlap either.
 
 ## Notes
+- Visible UI change: manual_testing expected required (windowed screenshots).
+- Workers must use runner key `godot-td` and workspace `poke-defense-godot/issue-padding-closable-panels-close-button`.
 
-- manual_testing: required (windowed screenshots mandatory).
-- Previous attempts archived under `.gen-blocked-req134-attempt1/`; r2 evidence under `.gen/harness/`.
-- Do not close or push unless Daniel asks.
+## Revision note (2026-08-22 20:45 UTC)
+- Fix changed at ~20:00 UTC: `_reserve_content_padding` now widens the frame PanelContainer's
+  panel stylebox `content_margin_right` (+90px) instead of shrinking `frame.offset_right`.
+- Existing `.gen/screenshots/*.png` and `.gen/harness/hud_other_panels/shots/*.png` are STALE
+  (19:52, pre-fix). The manual tester MUST capture fresh windowed screenshots after this change.
+- Acceptance addition: ✕ must sit flush INSIDE the frame's top-right corner (not floating outside
+  the panel art). Report `ui_feels_broken: yes|no` per final screenshot.

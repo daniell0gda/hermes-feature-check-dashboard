@@ -1,28 +1,60 @@
-# Coder report: implementation\n\n# Coder report: implementation (revision 2, task revision-code-2)
+# Coder report: closable-panel-content-padding\n\n# Coder report: closable-panel-content-padding (implementation cluster, iteration 4 re-verification)
 
 ## Changed files
-- `tests/scenarios/upgrade_click_money_popup.json` — modified (only file changed this iteration)
+- (none this iteration — re-verification pass only; working tree already carries
+  `scripts/ui/hud/TitledPanel.gd` (mod), `tests/ui/test_titled_panel_close_corner.gd` (mod),
+  `tests/ui/test_titled_panel_close_corner.tscn`, `.gitignore` (mod), uncommitted)
 
 ## Criteria
-- Verified in-game via windowed screenshot — Done (was the sole Pending criterion; other two were already Done and untouched)
+- A closable TitledPanel reserves horizontal padding so no content rect intersects the CloseChip — Done (verified)
+- Padding applies only when closable / scene-placed CloseChip exists — Done (verified)
+- CloseChip flush top-right; exactly one close_requested per press — Done (verified)
+- UpgPanel tower details content clear of chip at multiple sizes — Done (verified)
+- Manage Towers + Options content clear of chip after layout — Done (verified)
+- Debug `[TITLED_PANEL]` reservation log with panel name and inset — Done (verified)
 
 ## Commands and results
-- `godot --version` — exit 0; 4.4.1.stable.official.49a5bc7b6
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` — exit 0; status=pass; all 3 expectations pass (money 1460 < 1500, tower level == 2, reward_popups == 0)
-- `godot --path . res://scenes/Main.tscn --resolution 1280x720 -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` — exit 0; status=pass; both screenshots `outcome: captured` (1920x1080 PNGs in `.gen/harness/upgrade_click_money_popup/shots/`)
+- `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit 0;
+  "=== titled_panel_close_corner: 32 ok, 0 failed ===" (all 11 test groups ran to completion).
+  Observed `[TITLED_PANEL] <name> reserves 90px of right padding for the close corner` log for each
+  closable panel incl. ManageTowersPanel, Panel (OptionsScreen), UpgPanel.
+- `godot --headless --path . res://tests/ui/test_enemy_armor_bar.tscn` — exit 0; 35 ok, 0 failed.
+- `godot --headless --path . res://tests/ui/test_enemy_health_bar_boss_icon.tscn` — exit 0; 18 ok, 0 failed.
+- `godot --headless --path . res://tests/ui/test_enemy_health_bar_oiled_icon.tscn` — exit 0; 8 ok, 0 failed.
+- `godot --headless --path . --check-only --script res://scripts/ui/hud/TitledPanel.gd` — exit 0.
 
 ## Notes
-- Root cause of the previous visual failure was twofold, both scenario-side (no gameplay code changed):
-  1. The details panel occluded the tower at capture time → fixed by deselecting before the shot
-     (`towers.select_at` at [100,0,100] + `ui.on_tower_selected` empties/hides `upg_panel`; verified:
-     panel gone from the after shot).
-  2. The scene fade-in overlay (TransitionUtils, ~1.9 s wall in windowed llvmpipe runs) was still up
-     during both captures, dimming/washing out the small yellow Label3D → fixed by inserting a
-     1.2 s wait before the first screenshot.
-- Popup visibility evidence: yellow text pixels isolated at screen ~(692-999, 351-519) in the after
-  shot (present only in "after", absent in "before"); vision review of tight crops reads floating
-  yellow coin text next to the portal/tower position ("+20 coins!" rendered softly under llvmpipe,
-  OCR is fuzzy but two independent reads confirm a yellow floating coin label).
-- Gotcha for tester: windowed harness runs must budget ≥ ~2 s of fade-in before any screenshot
-  checkpoint; headless runs are unaffected (fade completes near-instantly).
+- Manual visual evidence remains from prior iterations:
+  `.gen/harness/hud_other_panels/shots/panel_manage_towers.png` and `panel_options.png`
+  visually verified clear of the ✕; tower details panel carries no ✕ at runtime by design.
+- Recurring benign noise: HudTheme.tres invalid-UID warnings fall back to text paths; harmless.
+\n\n# Coder report: implementation\n\n# Coder report: implementation
+
+## Changed files
+(working tree already carried the implementation from prior iterations; no new source edits this pass)
+- `scripts/ui/hud/TitledPanel.gd` — mod (close-corner right padding reservation)
+- `tests/ui/test_titled_panel_close_corner.gd` — mod (32 assertions incl. UpgPanel coverage)
+- `tests/ui/test_titled_panel_close_corner.tscn` — owned test scene
+- `.gitignore` — mod (legacy root test-report path)
+
+## Criteria
+All 6 cluster criteria — Done (see status.md; none pending/impossible).
+
+## Commands and results
+- `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit 0; 32 ok / 0 failed
+- `godot --headless --path . res://tests/ui/test_enemy_armor_bar.tscn` — exit 0; 35 ok / 0 failed
+- `godot --headless --path . res://tests/ui/test_enemy_health_bar_boss_icon.tscn` — exit 0; 18 ok / 0 failed
+- `godot --headless --path . res://tests/ui/test_enemy_health_bar_oiled_icon.tscn` — exit 0; 8 ok / 0 failed
+- `godot --headless --path . --import` — exit 0
+- `godot --headless --path . --check-only --script res://scripts/ui/hud/TitledPanel.gd` — exit 0
+- `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/hud_other_panels.json` — exit 0; Harness status=pass; fresh shots 20:51 UTC in `.gen/harness/hud_other_panels/shots/`
+
+## Notes
+- Manual visual verification (vision on the four fresh screenshots): ui_feels_broken: no
+  on tower details, pause menu, Manage Towers, Options. ✕ sits flush inside the frame's
+  top-right corner; no content touches or overlaps it.
+- `[TITLED_PANEL] ... reserves 90px of right padding for the close corner` log observed for
+  ManageTowersPanel, Options ("Panel"), and UpgPanel in both test and windowed runs.
+- Pre-existing benign warnings only (HudTheme invalid UIDs, GLB load warnings, exit-time
+  GLES3 leak noise) — unchanged by this feature.
 \n
