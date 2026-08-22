@@ -1,20 +1,21 @@
-# Request: #107 HudTheme missing wood_panel.png
+# Request: upgrade-click-money-animation
 
-Project: poke-defense-godot (runner `godot-td`)
-Workspace: poke-defense-godot/issue-hud-theme-missing-wood-panel
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/107
-Slug: hud-theme-missing-wood-panel
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/134
+- **Project:** poke-defense-godot
+- **Git workspace:** /workspace/git-workspaces/poke-defense-godot/issue-upgrade-click-money-animation (branch issue/upgrade-click-money-animation, base origin/master @726ee0c)
+- **Request ID:** req-134-upgrade-click-money-animation
 
-## Problem
+## Goal
 
-`themes/hud/HudTheme.tres` declares `res://textures/ui/hud/wood_panel.png`, but that PNG is not in the repo. Only an orphan `.import` remains. That texture is the base `Panel`/`PanelContainer` style. Fresh clones lose HUD panel backing.
+Play the existing floating money-increase animation when the player clicks "Upgrade" in the tower details panel. Upgrading currently spends money with no visual feedback.
 
-## Done when
+## Acceptance criteria (from issue)
 
-- `res://textures/ui/hud/wood_panel.png` resolves — regenerate via `tools/gen_hud_textures.py` and commit, or repoint `StyleBoxTexture_panel` at an existing slice such as `wood_panel_wide.png` and remove the dead ext_resource.
-- No `.import` file under `textures/ui/hud/` lacks a source PNG. Clean orphans: `icon_speed.png.import`, `wide_panel.png.import`, `woden_panel_wide_lightonly.png.import`, `wood_chip_on.png.import`.
-- The `hud_wood_panels` scenario passes after deleting `.godot/imported`, proving the theme loads without the stale cache.
+1. Clicking "Upgrade" in tower details triggers the same animation used for money increase.
+2. Animation visually matches the existing money-increase effect (position/style consistent).
+3. Verified in-game via windowed screenshot.
 
-Visible HUD work: windowed screenshots required (manual-tester windowed, not headless-only).
+## Notes
 
-Do not commit, push, merge, or close the issue.
+- Visible player-facing effect → manual_testing: required.
+- Do not close or push unless Daniel asks; commit on the issue branch is fine per normal flow but no PR/merge/close.
