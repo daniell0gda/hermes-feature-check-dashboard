@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/water-pressure-46/",
   "heartbeat_at": "2026-08-22T10:41:13.302Z",
   "last_node": "plan",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-22T10:41:13.302Z",
   "process_id": 501363,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T10:41:13.302554+00:00",
-    "last_success_at": "2026-08-22T10:30:34.251491+00:00",
+    "last_attempt_at": "2026-08-22T10:41:17.534207+00:00",
+    "last_success_at": "2026-08-22T10:41:17.533157+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 109548,
+        "output_tokens": 6808
+      }
+    ]
+  }
 }
