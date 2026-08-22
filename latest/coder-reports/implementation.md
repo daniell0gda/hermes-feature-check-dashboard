@@ -1,28 +1,27 @@
-# Coder report: implementation (revision 1)
+# Coder report: implementation (revision 2, task revision-code-2)
 
 ## Changed files
-- `scripts/ui/UI.gd` — mod: `SIDE_PANEL_TOP_UNDERGROUND` −226→−274 (+ comment), new `get_underground_panel_layout()` and `is_underground_controls_visible()` scenario-facing probes
-- `scenes/UI.tscn` — mod: PlaceExit `custom_minimum_size` 48→58
-- `tests/scenarios/hud_wood_panels.json` — mod: underground section extended with layout checkpoints, Porter-unlocked coverage, toggle-press-to-surface, updated expectations
+- `tests/scenarios/upgrade_click_money_popup.json` — modified (only file changed this iteration)
 
 ## Criteria
-- map_1 underground buttons inside panel frame clear of brackets — Done (checkpoint `ui_call get_underground_panel_layout ok == true`, windowed)
-- Porter-unlocked map, same three buttons inside panel — Done (`tower_availability` set to 4 = Porter's unlock map, `hud_underground_porter` shot + same checkpoint pass)
-- Place Exit name+price unclipped — Done (checkpoint `exit_text_lines_visible == true`: label rects enclosed by button AND text minimum sizes fit button width/height)
-- Layer toggle visible in underground; press returns to surface — Done (`toggle_visible` asserted inside layout probe; `_on_toggle_layer` call then `current_layer == "surface"` final expectation pass)
-- Windowed `hud_wood_panels` reports passing `hud_underground` rect-overlap checkpoint — Done (see commands)
-- Surface-layer side panel unchanged — Done (all surface actions ok in the same run)
+- Verified in-game via windowed screenshot — Done (was the sole Pending criterion; other two were already Done and untouched)
 
 ## Commands and results
-All via `run_project_cmd`, project=godot-td, workspace=poke-defense-godot/issue-underground-side-panel-carve-place-exit-.
-- Preflight `["godot","--version"]` — exit 0, 4.4.1.stable
-- Focused windowed: `["godot","--path",".","res://scenes/Main.tscn","--windowed","--resolution","1280x720","--","--harness=res://tests/scenarios/hud_wood_panels.json"]` — exit 0, `[Harness] status=pass exit=0`. All 9 shots captured at 1920×1080 incl. new `hud_underground.png` and `hud_underground_porter.png`; wait conditions `ui_call.ok == true` (idx 29), `ui_call.exit_text_lines_visible == true` (idx 30), `ui_call.ok == true` after Porter unlock (idx 34), `ui_call.is_underground_controls_visible == false` (idx 37) all ok. Final expectations: `current_layer == surface` pass, `is_underground_controls_visible == false` pass.
-- Full test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/smoke_underground_visible.json"]` — exit 0, status=pass, `current_layer == underground` pass.
-- Typecheck/build: `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0, clean import/scan (pre-existing invalid-UID warnings only).
+- `godot --version` — exit 0; 4.4.1.stable.official.49a5bc7b6
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` — exit 0; status=pass; all 3 expectations pass (money 1460 < 1500, tower level == 2, reward_popups == 0)
+- `godot --path . res://scenes/Main.tscn --resolution 1280x720 -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` — exit 0; status=pass; both screenshots `outcome: captured` (1920x1080 PNGs in `.gen/harness/upgrade_click_money_popup/shots/`)
 
 ## Notes
-- `get_underground_panel_layout()` compares each button's global rect against the SidePanel stylebox's content box (frame minus content margins), which also keeps the drawn corner brackets clear; hidden/missing controls report as violations so a collapsed layout cannot pass vacuously.
-- The Place Exit line check asserts both the laid-out label rect and the label's minimum text size fit inside the button — clip_contents hides overflow without moving the rect, so minimum-size checks are what catch truncation.
-- The toggle press goes through `_on_toggle_layer` (the handler the button is wired to) because a scenario cannot click a Button directly; the press is gated on Porter unlock, which is why `tower_availability` is raised to 4 before it.
-- Windowed run works through the runner on llvmpipe GL (Vulkan unavailable in worker); screenshots skipped headless by design.
-- Pre-existing engine noise unrelated to this change: invalid-UID theme warnings, ALSA no-audio fallback, GLES3 exit leak errors. Both appear in baseline runs too.
+- Root cause of the previous visual failure was twofold, both scenario-side (no gameplay code changed):
+  1. The details panel occluded the tower at capture time → fixed by deselecting before the shot
+     (`towers.select_at` at [100,0,100] + `ui.on_tower_selected` empties/hides `upg_panel`; verified:
+     panel gone from the after shot).
+  2. The scene fade-in overlay (TransitionUtils, ~1.9 s wall in windowed llvmpipe runs) was still up
+     during both captures, dimming/washing out the small yellow Label3D → fixed by inserting a
+     1.2 s wait before the first screenshot.
+- Popup visibility evidence: yellow text pixels isolated at screen ~(692-999, 351-519) in the after
+  shot (present only in "after", absent in "before"); vision review of tight crops reads floating
+  yellow coin text next to the portal/tower position ("+20 coins!" rendered softly under llvmpipe,
+  OCR is fuzzy but two independent reads confirm a yellow floating coin label).
+- Gotcha for tester: windowed harness runs must budget ≥ ~2 s of fade-in before any screenshot
+  checkpoint; headless runs are unaffected (fade completes near-instantly).
