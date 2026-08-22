@@ -52,5 +52,14 @@
     "duration_ms": 1192187,
     "summary": "he following changes, all in the scenario file:\n\n**File changed:** `tests/scenarios/traps_buried_ordnance_progression.json`\n\n1. Added extra `cave_fixture` entries per arm so enemy-count preconditions are deterministic:\n   - Arm 2a (chain): \u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-22T18:00:33.282Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 645152,
+    "summary": "Verification complete (revision-check-2), all commands via run_project_cmd.\n\nGates: runner probe `godot --version` exit 0; typecheck/build (`--editor --quit-after 300`) exit 0; full suite `display_damage_surface_parity` exit 0, status=pass;\u2026",
+    "error": null
   }
 ]

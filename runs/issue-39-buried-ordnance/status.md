@@ -1,5 +1,5 @@
 ## ✅ Done
-(none — focused harness fails at the underground-enemy spawn precondition; no criterion has a passing automated test that would fail if the criterion were broken)
+(none — focused harness still fails; the chain event never fires because the scenario's static cave enemies never enter the trap's trigger radius, so no criterion has a passing automated test that would fail if the criterion were broken)
 
 ## ⬜ Pending
 - The `traps_buried_ordnance` perk is defined in the trap progression file as a Unique progression and is eligible and grantable through the normal progression flow used by other Uniques (eligible on a fresh run, level applied idempotently on load/replay).
