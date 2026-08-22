@@ -1,31 +1,37 @@
-# Acceptance Plan: cave-position-outside-grid (issue #121)
+# Acceptance Plan: overcharge_capacitors
 
 ## Verification
 
-- Focused test: `run_project_cmd ["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/cave_spawn_within_grid.json"]`
-- Full test: `run_project_cmd ["bash", "-lc", "for s in tests/scenarios/*.json; do n=$(basename \"$s\" .json); godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/$n.json || exit 1; done"]`
-- Typecheck/build: `run_project_cmd ["godot", "--headless", "--path", ".", "--editor", "--quit-after", "3"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/overcharge_capacitors_progression.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/display_damage_surface_parity.json"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
 ## Clusters
 
-1. cave-placement-bounds — files: `scripts/utils/CaveUtils.gd`, `scripts/game/CaveSystem.gd` — depends on: none
-- A candidate cave position is rejected unless the entire cave disc (centre ± radius) fits inside the underground voxel grid bounds supplied by the caller; when all sampled candidates fail, no cave is created and the caller behaves as if no suitable position was found (discovery roll stays pending, matching the existing pending-placement contract).
-- Carving the grid edge on a `chance: 1.0` map (`map_4`) never creates a cave whose centre lies outside the underground grid bounds (x/z within [-10, 10] for the default 40x40 / 0.5 grid).
-- On a `chance: 1.0` map with edge carving repeated across the full run, the number of discovered caves still reaches the map's configured `maxCaves` — rejected candidates must not permanently burn discovery rolls or cave slots.
-- A created cave never ends up with zero carved tiles: after every successful discovery on `map_4`, at least one underground cell within the cave's radius is carved.
-- Debug-build [CAVE] log line per candidate rejected for falling outside the grid, naming the event and the candidate position plus the grid bounds checked against.
-2. harness-grid-coverage — files: `tests/scenarios/cave_spawn_within_grid.json`, `scripts/testing/HarnessValues.gd` — depends on: 1
-- The harness `cave` value source exposes whether a discovered cave's centre lies inside the underground grid bounds, so a scenario JSON can assert it without new engine code paths beyond the value reader.
-- A headless harness scenario loads `map_4`, carves at the grid edge with `chance: 1.0`, and passes with every discovered cave reported inside the grid bounds and the discovered-cave count reaching the configured maximum.
+1. overcharge-perk-logic — files: `scripts/progression/global.json`, `autoload/ProgressionManager.gd` — depends on: none
+- `overcharge_capacitors` is registered as a Common progression perk in the global progression pool: it is eligible on a fresh run and appears in `draw_choices_for_chest` draws.
+- With fewer than 3 towers of a type owned, the damage multiplier for that tower type is unchanged by the perk (no partial bonus below the 3-tower threshold).
+- With exactly 3 towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-1 bonus value from its definition.
+- With 6 or more towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-2 bonus value (one tier per complete group of 3 same-type towers, per the issue's tier table).
+- The bonus is per type: owning 3 towers of type A and 3 of type B gives each type its own bonus, while a type with fewer than 3 towers gets none.
+- The perk's type bonus composes with the existing damage pipeline: `get_tower_damage_multiplier_for(kind)` returns the global damage bonus and the overcharge bonus combined, and per-tower Unique bonuses still apply on top.
+- When the count of same-type towers drops back below a threshold (tower removed or destroyed), the corresponding bonus tier stops applying.
+- After `reset_for_new_game()`, no overcharge bonus applies and the perk selection is cleared.
+- Debug-build `[OVERCHARGE]` log line per bonus recompute, naming the tower type, same-type tower count, applied tier, and resulting multiplier; absent in release builds.
+2. overcharge-harness-scenario — files: `tests/scenarios/overcharge_capacitors_progression.json` — depends on: 1
+- A harness scenario proves the per-type stacking math through the progression API and placed towers, covering the boundary cases: fewer than 3 (no bonus), exactly 3 (tier 1), and 6+ (tier 2) same-type towers, with all expectations passing.
 
 ## Criteria
 
-- A candidate cave position is rejected unless the entire cave disc (centre ± radius) fits inside the underground voxel grid bounds supplied by the caller; when all sampled candidates fail, no cave is created and the caller behaves as if no suitable position was found (discovery roll stays pending, matching the existing pending-placement contract).
-- Carving the grid edge on a `chance: 1.0` map (`map_4`) never creates a cave whose centre lies outside the underground grid bounds (x/z within [-10, 10] for the default 40x40 / 0.5 grid).
-- On a `chance: 1.0` map with edge carving repeated across the full run, the number of discovered caves still reaches the map's configured `maxCaves` — rejected candidates must not permanently burn discovery rolls or cave slots.
-- A created cave never ends up with zero carved tiles: after every successful discovery on `map_4`, at least one underground cell within the cave's radius is carved.
-- Debug-build [CAVE] log line per candidate rejected for falling outside the grid, naming the event and the candidate position plus the grid bounds checked against.
-- The harness `cave` value source exposes whether a discovered cave's centre lies inside the underground grid bounds, so a scenario JSON can assert it without new engine code paths beyond the value reader.
-- A headless harness scenario loads `map_4`, carves at the grid edge with `chance: 1.0`, and passes with every discovered cave reported inside the grid bounds and the discovered-cave count reaching the configured maximum.
+- `overcharge_capacitors` is registered as a Common progression perk in the global progression pool: it is eligible on a fresh run and appears in `draw_choices_for_chest` draws.
+- With fewer than 3 towers of a type owned, the damage multiplier for that tower type is unchanged by the perk (no partial bonus below the 3-tower threshold).
+- With exactly 3 towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-1 bonus value from its definition.
+- With 6 or more towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-2 bonus value (one tier per complete group of 3 same-type towers, per the issue's tier table).
+- The bonus is per type: owning 3 towers of type A and 3 of type B gives each type its own bonus, while a type with fewer than 3 towers gets none.
+- The perk's type bonus composes with the existing damage pipeline: `get_tower_damage_multiplier_for(kind)` returns the global damage bonus and the overcharge bonus combined, and per-tower Unique bonuses still apply on top.
+- When the count of same-type towers drops back below a threshold (tower removed or destroyed), the corresponding bonus tier stops applying.
+- After `reset_for_new_game()`, no overcharge bonus applies and the perk selection is cleared.
+- Debug-build `[OVERCHARGE]` log line per bonus recompute, naming the tower type, same-type tower count, applied tier, and resulting multiplier; absent in release builds.
+- A harness scenario proves the per-type stacking math through the progression API and placed towers, covering the boundary cases: fewer than 3 (no bonus), exactly 3 (tier 1), and 6+ (tier 2) same-type towers, with all expectations passing.
 
-manual_testing: required
+manual_testing: optional
