@@ -6,17 +6,17 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-133-panels-fix-pause-and-x-close/",
-  "heartbeat_at": "2026-08-22T14:56:57.519Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T14:56:57.519Z",
+  "heartbeat_at": "2026-08-22T16:05:58.259Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T16:05:58.259Z",
   "process_id": 597871,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T14:57:01.529905+00:00",
-    "last_success_at": "2026-08-22T14:48:17.851397+00:00",
-    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
+    "last_attempt_at": "2026-08-22T16:05:58.260991+00:00",
+    "last_success_at": "2026-08-22T14:57:05.687390+00:00",
+    "last_error": null
   },
   "metrics": {
     "invocations": [
