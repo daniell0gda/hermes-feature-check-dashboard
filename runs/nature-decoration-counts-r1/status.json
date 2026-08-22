@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/nature-decoration-counts-r1/",
   "heartbeat_at": "2026-08-22T21:55:26.841Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
   "process_id": 769237,
   "host": "25e0b2c49eb5",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:55:26.841694+00:00"
+    "last_attempt_at": "2026-08-22T21:56:24.196594+00:00",
+    "last_success_at": "2026-08-22T21:55:31.394606+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
