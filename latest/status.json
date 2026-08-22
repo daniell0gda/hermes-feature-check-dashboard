@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-39-buried-ordnance",
-  "feature": "Traps Buried Ordnance unique perk",
+  "run_id": "heart-hud-beat-139-1787422828",
+  "feature": "heart-hud-beat-on-egg-damage",
   "status": "running",
-  "started_at": "2026-08-22T18:01:26.915Z",
+  "started_at": "2026-08-22T18:20:29.149Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-39-buried-ordnance/",
-  "heartbeat_at": "2026-08-22T18:39:51.788Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T18:39:51.788Z",
-  "process_id": 660756,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/heart-hud-beat-139-1787422828/",
+  "heartbeat_at": "2026-08-22T18:40:18.331Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T18:40:18.331Z",
+  "process_id": 666532,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T18:39:56.539094+00:00",
-    "last_success_at": "2026-08-22T18:39:56.537989+00:00",
+    "last_attempt_at": "2026-08-22T18:40:18.331655+00:00",
+    "last_success_at": "2026-08-22T18:30:57.654001+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,30 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 229675,
-        "output_tokens": 7974
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 202332,
-        "output_tokens": 14025
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 110652,
-        "output_tokens": 3328
+        "input_tokens": 101497,
+        "output_tokens": 6759
       }
     ]
   }

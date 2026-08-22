@@ -1,38 +1,31 @@
-# Acceptance Plan: buried-ordnance
+# Acceptance Plan: heart-hud-beat-on-egg-damage
+
+manual_testing: required
 
 ## Verification
 
-Run via `run_project_cmd` (project=poke-defense-godot, workspace=poke-defense-godot/issue-buried-ordnance):
-
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/traps_buried_ordnance_progression.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/display_damage_surface_parity.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
-
-manual_testing: required — the chained blast is player-visible VFX; capture windowed screenshots of the chained-explosion moment.
+- Focused test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-heart-hud-beat-on-egg-damage` cmd=["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/hud_heart_beat_on_egg_damage.json"]
+- Full test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-heart-hud-beat-on-egg-damage` cmd=["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_placement.json"]
+- Typecheck/build: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-heart-hud-beat-on-egg-damage` cmd=["godot", "--headless", "--editor", "--quit-after", "300", "--path", "."]
 
 ## Clusters
 
-1. buried-ordnance-perk-and-chain — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `scripts/game/actors/Trap.gd` — depends on: none
-- The `traps_buried_ordnance` perk is defined in the trap progression file as a Unique progression and is eligible and grantable through the normal progression flow used by other Uniques (eligible on a fresh run, level applied idempotently on load/replay).
-- With the perk owned at a given level, when a trap hits an underground enemy there is a chance (the level's `chance` value) for the trap to also deal explosion damage to every other underground enemy within the level's `radius` world units of the hit position.
-- Without the perk owned, a trap hit on an underground enemy deals no chained explosion damage to neighboring enemies (behavior identical to today).
-- Enemies that are not underground never receive chained explosion damage from a trap hit, regardless of distance or perk ownership.
-- Each chained blast produces a visible small-explosion effect at the affected location by reusing the existing small-explosion VFX pattern (`ExplosionFX.spawn_bazooka_explosion`, the small burst used by Bazooka/Cannon); a chained kill with no visible cue is not acceptable.
-- The chain is deterministic under a fixed seed through the game's seeded RNG sites, so a harness scenario can assert chance behavior reproducibly.
-- Debug-build `[BURIED_ORDNANCE]` log line per chained explosion event naming the triggering trap id, chance roll outcome, and number of enemies caught in the blast; absent in release builds.
-
-2. buried-ordnance-harness-scenario — files: `tests/scenarios/traps_buried_ordnance_progression.json` — depends on: 1
-- A focused harness scenario passes headless with fresh evidence (`status: pass` in `.gen/harness/traps_buried_ordnance_progression/result.json`), covering: perk eligibility/grant, chained explosion triggering on an underground trap hit within radius, and no chain on non-underground targets.
-- Windowed run of the same scenario captures screenshot checkpoint(s) at the chained-explosion moment showing the visible small-explosion VFX at the blast site.
+1. hud-heart-beat-animation — files: `scripts/ui/UI.gd`, `scenes/UI.tscn` — depends on: none
+- Each decrease of GameState egg HP triggers a scale-up-and-return "beat" animation on the HUD egg/heart icon.
+- After every beat animation completes, the HUD heart icon is exactly back at its original base scale (no drift).
+- Rapid consecutive egg HP decreases do not stack or break the animation: each hit restarts cleanly from the base scale and the icon still settles at the exact original scale.
+- An egg_changed emission that is not a decrease (value equal or higher, e.g. map load/reset/restore) does not trigger a beat.
+- Debug-build [HUD] log line per heart-beat trigger naming the old and new egg HP values
+2. harness-scenario-heart-beat — files: `scripts/testing/HarnessValues.gd`, `scripts/testing/HarnessActions.gd`, `tests/scenarios/hud_heart_beat_on_egg_damage.json` — depends on: 1
+- The harness can read the HUD heart icon's current scale during a run so a headless scenario can assert the beat behaviour.
+- A focused headless harness scenario applies two egg HP decreases, observes the icon scale rise above its base and return to it, and finishes with status pass and all expectations green.
 
 ## Criteria
 
-- The `traps_buried_ordnance` perk is defined in the trap progression file as a Unique progression and is eligible and grantable through the normal progression flow used by other Uniques (eligible on a fresh run, level applied idempotently on load/replay).
-- With the perk owned at a given level, when a trap hits an underground enemy there is a chance (the level's `chance` value) for the trap to also deal explosion damage to every other underground enemy within the level's `radius` world units of the hit position.
-- Without the perk owned, a trap hit on an underground enemy deals no chained explosion damage to neighboring enemies (behavior identical to today).
-- Enemies that are not underground never receive chained explosion damage from a trap hit, regardless of distance or perk ownership.
-- Each chained blast produces a visible small-explosion effect at the affected location by reusing the existing small-explosion VFX pattern (`ExplosionFX.spawn_bazooka_explosion`, the small burst used by Bazooka/Cannon); a chained kill with no visible cue is not acceptable.
-- The chain is deterministic under a fixed seed through the game's seeded RNG sites, so a harness scenario can assert chance behavior reproducibly.
-- Debug-build `[BURIED_ORDNANCE]` log line per chained explosion event naming the triggering trap id, chance roll outcome, and number of enemies caught in the blast; absent in release builds.
-- A focused harness scenario passes headless with fresh evidence (`status: pass` in `.gen/harness/traps_buried_ordnance_progression/result.json`), covering: perk eligibility/grant, chained explosion triggering on an underground trap hit within radius, and no chain on non-underground targets.
-- Windowed run of the same scenario captures screenshot checkpoint(s) at the chained-explosion moment showing the visible small-explosion VFX at the blast site.
+- Each decrease of GameState egg HP triggers a scale-up-and-return "beat" animation on the HUD egg/heart icon.
+- After every beat animation completes, the HUD heart icon is exactly back at its original base scale (no drift).
+- Rapid consecutive egg HP decreases do not stack or break the animation: each hit restarts cleanly from the base scale and the icon still settles at the exact original scale.
+- An egg_changed emission that is not a decrease (value equal or higher, e.g. map load/reset/restore) does not trigger a beat.
+- Debug-build [HUD] log line per heart-beat trigger naming the old and new egg HP values
+- The harness can read the HUD heart icon's current scale during a run so a headless scenario can assert the beat behaviour.
+- A focused headless harness scenario applies two egg HP decreases, observes the icon scale rise above its base and return to it, and finishes with status pass and all expectations green.

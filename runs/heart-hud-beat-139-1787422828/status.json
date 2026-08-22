@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/heart-hud-beat-139-1787422828/",
-  "heartbeat_at": "2026-08-22T18:30:48.876Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T18:30:48.876Z",
+  "heartbeat_at": "2026-08-22T18:40:18.331Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T18:40:18.331Z",
   "process_id": 666532,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T18:30:53.471335+00:00",
-    "last_success_at": "2026-08-22T18:30:53.470703+00:00",
+    "last_attempt_at": "2026-08-22T18:40:18.331655+00:00",
+    "last_success_at": "2026-08-22T18:30:57.654001+00:00",
     "last_error": null
   },
   "metrics": {
