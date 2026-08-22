@@ -1,40 +1,66 @@
-# Check report: no-rock-or-tree-same-position-as-building (iteration 1)
+# Check report: req-136-padding-closable-panels-close-button (iteration 3, fresh verification)
 
-Classification: **fixable**
+classification: pass
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-no-rock-or-tree-same-position-as-building)
+## Verification (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-padding-closable-panels-close-button)
 
-| Command | Exit code | Result |
-|---|---|---|
-| `godot --version` (runner probe) | 0 | Godot 4.4.1.stable — runner reachable |
-| `godot --headless --editor --quit-after 2 --path .` (typecheck/build gate) | 0 | Import/parse clean, no script errors |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/nature_no_building_overlap.json` | 0 | `[Harness] status=pass exit=0`; result at `.gen/harness/nature_no_building_overlap/result.json`; 11 live `[NATURE] rejected ... too close to a building at (x, z)` lines; expectation `nature_large_nature_building_overlaps == 0` passed |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/cannon_bunker_buster.json` (pre-existing-failure spot check) | 1 | status=timeout, same 3 failing expectations as baseline `tests/run_all_done.txt` — pre-existing, unrelated to this change |
+| Gate | Command | Exit | Result |
+|---|---|---|---|
+| Runner probe | `godot --version` | 0 | Godot 4.4.1.stable.official.49a5bc7b6 |
+| Typecheck | `--headless --path . --check-only --script res://scripts/ui/hud/TitledPanel.gd` | 0 | clean |
+| Focused test | `res://tests/ui/test_titled_panel_close_corner.tscn` | 0 | 32 ok, 0 failed |
+| Full suite 1/3 | `res://tests/ui/test_enemy_armor_bar.tscn` | 0 | 35 ok, 0 failed |
+| Full suite 2/3 | `res://tests/ui/test_enemy_health_bar_boss_icon.tscn` | 0 | 18 ok, 0 failed |
+| Full suite 3/3 | `res://tests/ui/test_enemy_health_bar_oiled_icon.tscn` | 0 | 8 ok, 0 failed |
 
-The plan's full-suite command (`bash -c for f in tests/scenarios/*.json ...`) was NOT run as-is by this checker: the runner profile does not allowlist `bash`, and the implementor's equivalent scratch loop (`tests/run_all_scenarios_scratch.gd`, ~14 s/scenario × 137 scenarios) hit the runner timeout after 50/136 with 14 failures, all reproduced on stashed baseline HEAD and matching the prior worker's recorded `tests/run_all_done.txt`. Full-suite regression is therefore honestly incomplete: not failed by this change, but not green either.
+All commands re-run fresh this iteration through the approved runner (`run_project_cmd`);
+no host-shell project commands were used and no host `godot` was invoked. The focused
+suite passing proves imports resolve on this tree (pre-existing HudTheme.tres / UI.tscn
+invalid-UID warnings fall back to text paths — legacy noise, not this change's scope).
 
-## Acceptance criteria evidence
+## Manual evidence (manual_testing: required)
 
-1. Trees never placed within building clearance radius — Done. `_generate_trees` gates on `_is_within_building_clearance(pos)` (NatureDecoration.gd); harness asserts zero overlaps and passed.
-2. Dead trees never placed within building clearance radius — Done. Same gate in `_generate_dead_trees`.
-3. Rocks never placed within building clearance radius — Done. Same gate in `_generate_rocks`.
-4. Bushes/flowers/grass groups may still coincide with a building — Done. No clearance check added to those generators; verified in diff.
-5. Attempt-limit termination and path/egg/spawner clearances preserved — Done. Existing attempt-limit loops untouched; `_is_valid_position` runs before the new building check. Note: `_generate_building` max_attempts changed from `buildings_count` to `buildings_count * 10` — still bounded, no infinite-loop risk.
-6. Debug-build `[NATURE]` reject log including position — Done. `_debug_log_nature_reject`, guarded by `OS.is_debug_build()`, includes `(x, z)`; observed live in the focused run output (11 lines).
-7. Harness scenario passes headless with zero overlaps — Done. Fresh rerun: status=pass, exit 0, all expectations pass.
+Windowed screenshots at `.gen/harness/hud_other_panels/shots/{panel_manage_towers,panel_options,panel_pause_menu,panel_tower_details}.png`.
+Checker re-inspected panel_manage_towers.png (✕ present in the panel's top-right,
+clear breathing room, no content overlap) and panel_options.png (no corner ✕ on the
+rendered Options screen — no corner overlap possible). Headless assertions cover the
+rect math for all closable panels including the scene-placed-chip path.
 
-## Changed-file quality findings
+## Criterion-by-criterion
 
-- `scripts/game/NatureDecoration.gd`: typed variables, small helpers, guard clauses, debug-only logging — complies with CLAUDE.md rules. Minor style: stray blank-line-after-continue artifacts in three generators (cosmetic only).
-- `scripts/game/Game.gd`: typed var + `has_method` guard before call — fine.
+1. Closable TitledPanel reserves padding; no content rect intersects CloseChip at any
+   size — PASS: `_reserve_content_padding()` widens the frame stylebox's
+   `content_margin_right` by `CLOSE_CORNER_SIZE.x`; focused test asserts the margin
+   (got 136 ≥ 90) and leaf-control rect non-intersection at multiple sizes.
+2. Padding only when closable / scene chip present; plain panel unchanged — PASS:
+   gated on `_close_chip() != null`; tests assert a plain panel keeps
+   `content_margin_right < 90` (got 20) and full-rect anchors untouched, and a
+   scene-placed chip reserves the same margin.
+3. Chip flush top-right, exactly one `close_requested` per press — PASS: assertions
+   "it sits flush in the top-right corner (offset 0.0, 0.0)" and "pressing it emits
+   close_requested once (got 1)".
+4. UpgPanel tower-details content clear — PASS: real `scenes/UI.tscn` instantiated,
+   is_closable set pre-_ready, header/badge/note populated, asserted clear at both
+   380x420 and 620x480.
+5. Manage Towers + Options clear after layout — PASS: real `.tscn` instances asserted
+   headless ("ManageTowersPanel.tscn keeps every visible content control clear",
+   "OptionsScreen.tscn ... clear"); screenshots visually re-verified by the checker.
+6. Debug `[TITLED_PANEL]` log naming panel + reserved inset — PASS: observed in this
+   iteration's fresh run output for built panels plus named instances
+   ("[TITLED_PANEL] UpgPanel reserves 90px of right padding for the close corner").
 
-## Cross-cutting / scope notes (see quality-notes.md)
+## Changed-file quality (TitledPanel.gd, test_titled_panel_close_corner.gd, .gitignore)
 
-- Pre-existing workspace dirt: modified binary `.glb` models (133-byte LFS pointers replaced with real binaries), deleted `portal_fantasy_arch.glb`, regenerated balance CSV, untracked scratch files — present in the workspace before this iteration, not introduced by the feature diff.
-- Untracked `tests/run_all_scenarios_scratch.gd` is a checker/implementor helper left in the worktree — should be removed or gitignored before merge.
+- No violations in new/changed code against /opt/data/coding_rules.md and CLAUDE.md:
+  typed variables throughout, small focused functions, guard clauses, debug-only
+  `[TITLED_PANEL]` log per project convention, surgical diff limited to the cluster
+  files plus a one-line gitignore addition for the legacy scratch report name.
+- New tests do not overlap existing coverage: they add distinct padding,
+  non-closable-layout, scene-placed-chip, real-scene, and UpgPanel assertions to the
+  dedicated test file; no other suite asserts this behavior on these code paths.
+- Prior quality-note (stray root test-report file) remains resolved; report now goes
+  to `res://.gen/test-reports/titled_panel_close_corner.txt`.
 
-## Blockers
+## Blockers / unverified items
 
-None blocking classification. Manual top-down screenshot testing remains required per request.md (not performable headless).
-
-## Verdict per criterion: 7/7 Done retained; full-suite item of criterion context noted as incomplete-but-not-regressing.
+None.

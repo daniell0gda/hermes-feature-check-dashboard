@@ -28,34 +28,33 @@
   `.gen/harness/hud_other_panels/shots/panel_manage_towers.png` and `panel_options.png`
   visually verified clear of the ✕; tower details panel carries no ✕ at runtime by design.
 - Recurring benign noise: HudTheme.tres invalid-UID warnings fall back to text paths; harmless.
-\n\n# Coder report: implementation\n\n# Coder report: implementation (re-verification pass)
+\n\n# Coder report: implementation\n\n# Coder report: implementation
 
 ## Changed files
-- None this pass. Working tree carries the cluster's changes from prior iterations:
-  - `scripts/ui/hud/TitledPanel.gd` — modified (`_reserve_content_padding()` pulls Frame's right edge in by CLOSE_CORNER_SIZE.x = 90px whenever a CloseChip exists; debug `[TITLED_PANEL]` log)
-  - `tests/ui/test_titled_panel_close_corner.gd` / `.tscn` — modified (31 assertions incl. real UI.tscn UpgPanel coverage at two sizes)
-  - `.gitignore` — modified (legacy root `.gen-test-report.txt`)
+(working tree already carried the implementation from prior iterations; no new source edits this pass)
+- `scripts/ui/hud/TitledPanel.gd` — mod (close-corner right padding reservation)
+- `tests/ui/test_titled_panel_close_corner.gd` — mod (32 assertions incl. UpgPanel coverage)
+- `tests/ui/test_titled_panel_close_corner.tscn` — owned test scene
+- `.gitignore` — mod (legacy root test-report path)
 
 ## Criteria
-- Closable TitledPanel reserves padding; no content rect intersects the CloseChip rect at any size — Done
-- Padding only when is_closable or scene-placed chip; plain panel unchanged — Done
-- CloseChip flush top-right; exactly one close_requested per press — Done
-- UpgPanel tower-details content clear of the chip — Done
-- Manage Towers + Options content clear of the chip after layout — Done
-- Debug `[TITLED_PANEL]` log naming panel and reserved inset — Done
+All 6 cluster criteria — Done (see status.md; none pending/impossible).
 
-## Commands and results (all via run_project_cmd, project=poke-defense-godot)
-- `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit 0; "31 ok, 0 failed"
-- `godot --headless --path . res://tests/ui/test_enemy_armor_bar.tscn` — exit 0; "35 ok, 0 failed"
-- `godot --headless --path . res://tests/ui/test_enemy_health_bar_boss_icon.tscn` — exit 0; "18 ok, 0 failed"
-- `godot --headless --path . res://tests/ui/test_enemy_health_bar_oiled_icon.tscn` — exit 0; "8 ok, 0 failed"
+## Commands and results
+- `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit 0; 32 ok / 0 failed
+- `godot --headless --path . res://tests/ui/test_enemy_armor_bar.tscn` — exit 0; 35 ok / 0 failed
+- `godot --headless --path . res://tests/ui/test_enemy_health_bar_boss_icon.tscn` — exit 0; 18 ok / 0 failed
+- `godot --headless --path . res://tests/ui/test_enemy_health_bar_oiled_icon.tscn` — exit 0; 8 ok / 0 failed
+- `godot --headless --path . --import` — exit 0
 - `godot --headless --path . --check-only --script res://scripts/ui/hud/TitledPanel.gd` — exit 0
-- Manual evidence re-inspected: `.gen/harness/hud_other_panels/shots/panel_manage_towers.png` and
-  `panel_options.png` visually verified — no content touches/overlaps the ✕ on either panel;
-  tower details panel carries no ✕ by design.
+- `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/hud_other_panels.json` — exit 0; Harness status=pass; fresh shots 20:51 UTC in `.gen/harness/hud_other_panels/shots/`
 
 ## Notes
-- No new work was needed; all criteria were already implemented and passing. This pass re-ran every
-  verification command fresh through the project runner to confirm.
-- Pre-existing noise (not ours): invalid-UID ext_resource warnings for HudTheme.tres/UI.tscn on headless load.
+- Manual visual verification (vision on the four fresh screenshots): ui_feels_broken: no
+  on tower details, pause menu, Manage Towers, Options. ✕ sits flush inside the frame's
+  top-right corner; no content touches or overlaps it.
+- `[TITLED_PANEL] ... reserves 90px of right padding for the close corner` log observed for
+  ManageTowersPanel, Options ("Panel"), and UpgPanel in both test and windowed runs.
+- Pre-existing benign warnings only (HudTheme invalid UIDs, GLB load warnings, exit-time
+  GLES3 leak noise) — unchanged by this feature.
 \n
