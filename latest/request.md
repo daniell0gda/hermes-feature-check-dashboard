@@ -1,26 +1,40 @@
-# Request: #133 panels-closable-x-escape
+# Request: Traps — Buried Ordnance Unique perk
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/133
-- **Project:** poke-defense-godot
-- **Git workspace:** poke-defense-godot/issue-panels-closable-x-escape (branch `issue/panels-closable-x-escape`, rebased on origin/master)
-- **Claimed:** 2026-08-22, assigned daniell0gda, label `status:in-progress`
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/39
+- **Project:** godot-td
+- **Git workspace:** poke-defense-godot/issue-buried-ordnance (branch `issue/buried-ordnance`, cut from `origin/master`)
+- **Request ID:** issue-39-buried-ordnance
 
-## Issue body
+## Feature
 
-### Problem
-Not all UI panels are closable, and there is no consistent close affordance or Escape handling.
+New progression Unique `traps_buried_ordnance` for the Traps system: when a trap hits an
+underground enemy, it has a chance to chain a small explosion to neighboring underground
+enemies within a short radius.
 
-### Requirements
-- All panels except the Menu (pause) panel must be closable and show an "X" close button.
-- Pressing Escape should close any open panel.
-- If no panels are open, pressing Escape opens the Menu (pause game) panel.
+## Why
 
-### Done when
-- [ ] Every non-menu panel has a working "X" button
-- [ ] Escape closes any open non-menu panel
-- [ ] Escape with no panels open shows the Menu (pause) panel
+Traps currently only hit the single enemy that steps on them, so they fall off as enemy HP
+scales. This keeps traps relevant against underground swarms late in a run by reusing the
+small-explosion logic already proven by Bazooka/Cannon.
 
-## Notes for the team
-- Visible player-facing UI work → manual testing with windowed screenshots is expected to be required.
-- Project commands must go through the runner (`run_project_cmd`, project `godot-td`).
-- Follow /opt/data/coding_rules.md and project context files in the worktree.
+## Done when
+
+1. New Unique perk `traps_buried_ordnance` exists and is grantable through the normal
+   progression/Unique flow used by other trap Uniques.
+2. Trap hits against **underground** enemies have a chance to chain a small explosion to
+   neighboring **underground** enemies in a short radius.
+3. The chained blast has its own readable explosion VFX cue — reuse the existing
+   small-explosion VFX from `scripts/game/actors/projectiles/BazookaProjectile.gd` or
+   `scripts/game/actors/projectiles/CannonballProjectile.gd` (whichever burst best matches
+   "small") — it must not be a silent chained damage tick.
+4. Verification covers: perk grants cleanly; chained explosion triggers on underground trap
+   hits with the expected radius/chance behavior; no chain on non-underground targets;
+   editor/import gate passes; focused harness scenario passes with fresh evidence.
+
+## Notes for planner/coder/checker
+
+- Follow `/opt/data/coding_rules.md` and existing trap/perk patterns in the repo.
+- Underground-only targeting matters: ground-level enemies above must not be affected.
+- Visual cue is an explicit acceptance criterion — a silent damage tick is not done.
+- Manual testing: this is visible player-facing VFX work → `manual_testing: required`
+  with windowed screenshots of the chained explosion moment.

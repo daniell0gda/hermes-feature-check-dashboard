@@ -1,58 +1,22 @@
 {
-  "run_id": "issue-133-panels-closable-x-escape",
-  "feature": "panels-closable-x-escape",
-  "status": "failed",
-  "started_at": "2026-08-22T13:36:02.196Z",
-  "ended_at": "2026-08-22T14:14:45.388Z",
+  "run_id": "issue-39-buried-ordnance",
+  "feature": "Traps Buried Ordnance unique perk",
+  "status": "running",
+  "started_at": "2026-08-22T14:11:03.477Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-133-panels-closable-x-escape/",
-  "heartbeat_at": "2026-08-22T14:14:45.388Z",
-  "last_node": "check",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-39-buried-ordnance/",
+  "heartbeat_at": "2026-08-22T14:18:31.908Z",
+  "last_node": "plan",
   "active_node": null,
-  "last_event_at": "2026-08-22T14:14:40.948Z",
-  "process_id": 569006,
+  "last_event_at": "2026-08-22T14:18:31.908Z",
+  "process_id": 582323,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T14:14:45.388782+00:00",
-    "last_success_at": "2026-08-22T14:14:45.386886+00:00",
+    "last_attempt_at": "2026-08-22T14:18:31.908518+00:00",
+    "last_success_at": "2026-08-22T14:11:55.440850+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 90026,
-        "output_tokens": 6565
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 206675,
-        "output_tokens": 23728
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 155288,
-        "output_tokens": 4476
-      }
-    ]
-  }
+  "metrics": {}
 }
