@@ -1,30 +1,28 @@
-# Acceptance Plan: no-rock-or-tree-same-position-as-building
+# Acceptance Plan: Underground side panel — Carve / Place Exit / Place Block fit the wooden frame
+
+manual_testing: required
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/nature_no_building_overlap.json"]`
-- Full test: `["bash", "-c", "rc=0; for f in tests/scenarios/*.json; do id=$(basename \"$f\" .json); godot --headless --path . res://scenes/Main.tscn -- --harness=res://$id >/dev/null 2>&1 || rc=1; done; exit $rc"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--quit-after", "2", "--path", "."]`
+- Focused test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-underground-side-panel-carve-place-exit-` cmd=`["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/hud_wood_panels.json"]`
+- Full test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-underground-side-panel-carve-place-exit-` cmd=`["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_underground_visible.json"]`
+- Typecheck/build: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-underground-side-panel-carve-place-exit-` cmd=`["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
 ## Clusters
 
-1. building-clearance-for-large-nature — files: `scripts/game/NatureDecoration.gd`, `tests/scenarios/nature_no_building_overlap.json` — depends on: none
-- Trees are never placed at an XZ position within the building clearance radius of an already-placed building.
-- Dead trees are never placed at an XZ position within the building clearance radius of an already-placed building.
-- Rocks are never placed at an XZ position within the building clearance radius of an already-placed building.
-- Bushes, flowers, and grass groups can still be placed at positions that coincide with or overlap a building.
-- Tree/dead-tree/rock generation still terminates via the existing attempt limit when no building-free position is available (no infinite loop), and previously valid placements still respect path/egg/spawner clearances.
-- A debug-build `[NATURE]` log line is emitted when a tree, dead tree, or rock candidate is rejected for being too close to a building, including the rejected position.
-- The harness scenario passes headless: loading the map generates nature decorations with zero large-nature/building overlaps reported by the scenario's expectation.
+1. underground-dig-buttons-layout — files: `scenes/UI.tscn`, `scripts/ui/UI.gd` — depends on: none
+- After switching to the underground layer on `map_1`, all three underground controls (Carve, Place Block, Place Exit) render entirely inside the side panel's inner box and clear of its corner brackets.
+- After switching to the underground layer on a map where Porter is unlocked, all three underground controls still render entirely inside the side panel's inner box and clear of its corner brackets.
+- The `hud_underground` checkpoint in `tests/scenarios/hud_wood_panels.json` completes with no button rect overlapping the side panel frame.
+- The Place Exit button still displays its price text without clipping or truncation after the relayout.
+- Each of the three controls keeps its existing behaviour after the relayout: Carve arms carve mode, Place Block arms block placement, and Place Exit places an exit when pressed.
+- The underground controls appear only while the game is on the underground layer and hide again when returning to the surface layer.
 
 ## Criteria
 
-- Trees are never placed at an XZ position within the building clearance radius of an already-placed building.
-- Dead trees are never placed at an XZ position within the building clearance radius of an already-placed building.
-- Rocks are never placed at an XZ position within the building clearance radius of an already-placed building.
-- Bushes, flowers, and grass groups can still be placed at positions that coincide with or overlap a building.
-- Tree/dead-tree/rock generation still terminates via the existing attempt limit when no building-free position is available (no infinite loop), and previously valid placements still respect path/egg/spawner clearances.
-- A debug-build `[NATURE]` log line is emitted when a tree, dead tree, or rock candidate is rejected for being too close to a building, including the rejected position.
-- The harness scenario passes headless: loading the map generates nature decorations with zero large-nature/building overlaps reported by the scenario's expectation.
-
-manual_testing: required
+- After switching to the underground layer on `map_1`, all three underground controls (Carve, Place Block, Place Exit) render entirely inside the side panel's inner box and clear of its corner brackets.
+- After switching to the underground layer on a map where Porter is unlocked, all three underground controls still render entirely inside the side panel's inner box and clear of its corner brackets.
+- The `hud_underground` checkpoint in `tests/scenarios/hud_wood_panels.json` completes with no button rect overlapping the side panel frame.
+- The Place Exit button still displays its price text without clipping or truncation after the relayout.
+- Each of the three controls keeps its existing behaviour after the relayout: Carve arms carve mode, Place Block arms block placement, and Place Exit places an exit when pressed.
+- The underground controls appear only while the game is on the underground layer and hide again when returning to the surface layer.
