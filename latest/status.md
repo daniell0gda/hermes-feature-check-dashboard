@@ -1,10 +1,17 @@
 ## ✅ Done
-- (none — the focused scenario fails its own final expectation and the windowed-screenshot criterion is unverified)
+- (none)
 
 ## ⬜ Pending
-- Clicking "Upgrade" in tower details triggers the same animation used for money increase — feature implemented and proven live by harness actions 7–11 (popup count 1, text "+20 coins!", tower level 2), but the scenario `upgrade_click_money_popup` exits status=fail: final expectation `enemies.reward_popups == 0` sees actual 1 because the 1.5 s popup is still alive ~0.55 s after the click. Fix the scenario timing (wait out the popup or make the last expectation a wait_for_condition), then rerun.
-- Animation visually matches the existing money-increase effect — reuses `ChestRewardSystem.create_reward_popup` (same effect as chest payouts), but full confirmation rides on the failing scenario above.
-- Verified in-game via windowed screenshot — both screenshot checkpoints report `skipped (headless)`; no windowed run was performed.
+- `overcharge_capacitors` is registered as a Common progression perk in the global progression pool: it is eligible on a fresh run and appears in `draw_choices_for_chest` draws.
+- With fewer than 3 towers of a type owned, the damage multiplier for that tower type is unchanged by the perk (no partial bonus below the 3-tower threshold).
+- With exactly 3 towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-1 bonus value from its definition.
+- With 6 or more towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-2 bonus value (one tier per complete group of 3 same-type towers, per the issue's tier table).
+- The perk's type bonus composes with the existing damage pipeline: `get_tower_damage_multiplier_for(kind)` returns the global damage bonus and the overcharge bonus combined, and per-tower Unique bonuses still apply on top.
+- The bonus is per type: owning 3 towers of type A and 3 of type B gives each type its own bonus, while a type with fewer than 3 towers gets none.
+- When the count of same-type towers drops back below a threshold (tower removed or destroyed), the corresponding bonus tier stops applying.
+- After `reset_for_new_game()`, no overcharge bonus applies and the perk selection is cleared.
+- Debug-build `[OVERCHARGE]` log line per bonus recompute, naming the tower type, same-type tower count, applied tier, and resulting multiplier; absent in release builds.
+- A harness scenario proves the per-type stacking math through the progression API and placed towers, covering the boundary cases: fewer than 3 (no bonus), exactly 3 (tier 1), and 6+ (tier 2) same-type towers, with all expectations passing.
 
 ## ❌ Impossible
 - (none)

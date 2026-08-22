@@ -1,58 +1,22 @@
 {
-  "run_id": "req-134-upgrade-click-money-animation-r2",
-  "feature": "upgrade-click-money-animation",
+  "run_id": "issue-34-overcharge-capacitors-cont3-20260822-154755",
+  "feature": "overcharge-capacitors",
   "status": "running",
-  "started_at": "2026-08-22T14:28:55.188Z",
+  "started_at": "2026-08-22T15:47:55.710Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-134-upgrade-click-money-animation-r2/",
-  "heartbeat_at": "2026-08-22T16:12:50.604Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T16:12:50.604Z",
-  "process_id": 589947,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-cont3-20260822-154755/",
+  "heartbeat_at": "2026-08-22T16:14:14.485Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-22T16:14:14.485Z",
+  "process_id": 628083,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T16:12:54.847799+00:00",
-    "last_success_at": "2026-08-22T16:12:54.846503+00:00",
+    "last_attempt_at": "2026-08-22T16:14:14.485588+00:00",
+    "last_success_at": "2026-08-22T15:49:34.873978+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 184651,
-        "output_tokens": 8159
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 152112,
-        "output_tokens": 8590
-      }
-    ]
-  }
+  "metrics": {}
 }
