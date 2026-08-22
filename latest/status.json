@@ -1,21 +1,36 @@
 {
-  "run_id": "req-136-padding-closable-panels-close-button",
-  "feature": "padding closable panels close button",
+  "run_id": "perk-siege-breaker-92-run1",
+  "feature": "perk-siege-breaker",
   "status": "running",
-  "started_at": "2026-08-22T21:26:40.387Z",
+  "started_at": "2026-08-22T20:44:15.820Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
-  "heartbeat_at": "2026-08-22T21:26:40.387Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
-  "process_id": 756827,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-siege-breaker-92-run1/",
+  "heartbeat_at": "2026-08-22T21:26:56.571Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T21:26:56.571Z",
+  "process_id": 729055,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:26:44.268625+00:00",
-    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
+    "last_attempt_at": "2026-08-22T21:26:56.572179+00:00",
+    "last_success_at": "2026-08-22T21:09:06.594012+00:00",
+    "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 133143,
+        "output_tokens": 14081
+      }
+    ]
+  }
 }
