@@ -110,6 +110,11 @@
     "url": "runs/issue130-underground-carve-topdown-camera-rotation/"
   },
   {
+    "run_id": "issue126-harness-press-button",
+    "status": "running",
+    "url": "runs/issue126-harness-press-button/"
+  },
+  {
     "run_id": "issue122-cave-room-config-20260822-121111",
     "status": "failed",
     "url": "runs/issue122-cave-room-config-20260822-121111/"
