@@ -26,4 +26,9 @@
 - Dead trees are added to `TreeDecorations`, so `get_large_nature_building_overlaps()` scanning `TreeDecorations` + `RocksDecorations` covers all three large-nature kinds.
 - The scenario's log regex alternation accepts `[Harness]` so it passes on seeds where no candidate happens to be rejected; seed 20260822 does produce rejects.
 - Pre-existing repo dirt (modified .glb binaries, deleted portal_fantasy_arch.glb, logs/balance CSV) was already present in the workspace before this iteration and was left untouched.
+
+## Re-verification (iteration 1 re-run)
+- Focused harness via run_project_cmd (project=poke-defense-godot) — exit 0, `[Harness] status=pass exit=0`; 11 `[NATURE] rejected ... too close to a building at (x, z)` lines observed; zero overlaps asserted.
+- `godot --headless --editor --quit-after 2 --path .` — exit 0.
+
 \n

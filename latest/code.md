@@ -1,42 +1,34 @@
-# Coder report: 1-grounded-continent-placement\n\n# Coder report: 1-grounded-continent-placement
+# Coder report: implementation\n\n# Coder report: implementation
 
 ## Changed files
-- `scripts/game/visuals/BackdropEarth.gd` — modified
+- `scripts/game/NatureDecoration.gd` — modified: buildings now placed before large nature; building clearance check for trees/dead trees/rocks; debug `[NATURE]` reject log; harness overlap counter.
+- `scripts/game/Game.gd` — modified: exposes `nature_large_nature_building_overlaps` after nature generation for the harness expectation.
+- `tests/scenarios/nature_no_building_overlap.json` — new harness scenario (load map_1, wait 1s, snapshot; asserts zero overlaps + regex on `[NATURE]`/`[Harness]` log).
 
 ## Criteria
-- Grounded config names exactly one continent mesh (`Continent_Africa`) with debug-build warning when absent — Done
-- After `configure_for_map`, continent apex flush at playable plane (`center_y == 0`) — Done
-- Globe rig pose keeps horizon inside normal gameplay camera frustum — Done in code (rig center (-21.2, -83.78, -51.76), body radius 83.2 → limb rises through the board plane left of the board); windowed visual confirmation left to manual pass
-- Grounded spin never starts (world transform identical across seconds) — Done
-- Debug-build `[BACKDROP EARTH]` grounding log line with continent name + pos/scale/rot — Done
+- Trees never placed within building clearance radius of a placed building — Done (`_is_within_building_clearance` gate in `_generate_trees`).
+- Dead trees never placed within building clearance radius — Done (gate in `_generate_dead_trees`).
+- Rocks never placed within building clearance radius — Done (gate in `_generate_rocks`).
+- Bushes/flowers/grass groups may still overlap buildings — Done (no clearance check added to those generators; verified unchanged).
+- Generation terminates via existing attempt limits; path/egg/spawner clearances still respected — Done (attempt-limit loops untouched; `_is_valid_position` still runs before the building check in each generator).
+- Debug-build `[NATURE]` reject log including position — Done (`_debug_log_nature_reject`, guarded by `OS.is_debug_build()`); observed live in headless run output.
+- Harness scenario passes headless with zero overlaps — Done (see commands).
 
 ## Commands and results
-- Focused `backdrop_earth_visible.json` — exit code 0, `status=pass`; log line `[BACKDROP EARTH] grounded continent=Continent_Africa pos=(-21.2, -83.7824, -51.76) scale=41.5999984741211 rot_deg=(15.38803, 21.66841, 83.15345)`; `center_y = -0.00001279449464` (≈ 0); `rotation_invariant = true`.
-- Typecheck/build `godot --headless --path . --editor --quit-after 300` — exit code 0, import clean.
+- `godot --headless --path . --editor --quit-after 300` (import preflight) — exit 0.
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/nature_no_building_overlap.json` — exit 0; `[Harness] status=pass exit=0`; 11 `[NATURE] rejected ... too close to a building at (x, z)` lines logged; result written to `.gen/harness/nature_no_building_overlap/result.json`.
+- `godot --headless --editor --quit-after 2 --path .` (typecheck/build) — exit 0.
+- Full suite attempt: ran `python3 tests/run_all_scenarios_scratch.py` inside the worker — killed at ~12 min by runner timeout (exit 137) after completing 50 of 136 scenarios (~14s each). Of those 50, 36 passed and 14 failed. Re-ran one failure, `cannon_bunker_buster`, with this cluster's changes stashed (baseline HEAD) — identical failure (status timeout, same expectations fail). Conclusion: the 14 failures are pre-existing and unrelated to nature/building placement (they are cannon/cave/fire/floodgate/curse progression scenarios; full list matches the previous worker's `tests/run_all_done.txt`). Full-suite completion is bounded out by per-scenario cost, not by this change.
 
 ## Notes
-- Root cause of iteration-2 failure (`center_y = -81.768`, scale ≈ 1.0): the rig scale was assigned via `earth_rig.scale` and then overwritten by the rotation-only basis, resetting the transform to unit scale. Fix: bake scale into the basis — `earth_rig.basis = yaw_basis.scaled(Vector3.ONE * scale_factor)` with `yaw_basis` a pure rotation — and set `position.y = -(GROUNDED_CONTINENT_APEX * scale_factor)` so the measured GLB apex (2.014 native) sits exactly at y=0 at scale 41.6.
-- `center_y` is computed as `earth_rig.position.y + GROUNDED_CONTINENT_APEX * earth_rig.scale.y`; with the baked scale it evaluates to ~-1.3e-05 (float noise), satisfying the harness `== 0` comparison (harness compares with tolerance).
-- Grounded path never calls `_start_earth_spin()`; spin only starts in floating mode.
-- `_verify_continent_mesh()` emits `push_warning("[BACKDROP EARTH] grounded continent mesh not found: ...")` in debug builds when `Continent_Africa` is missing from the instantiated GLB.
-\n\n# Coder report: 2-backdrop-regression-and-harness-contract\n\n# Coder report: 2-backdrop-regression-and-harness-contract
+- Building clearance is XZ-plane distance < 4.0 units (`building_clearance`); Y ignored via Vector3(x, 0, z) comparisons.
+- `building_positions` is cleared at the start of `_generate_all_decorations()` so map reloads don't accumulate stale positions.
+- Dead trees are added to `TreeDecorations`, so `get_large_nature_building_overlaps()` scanning `TreeDecorations` + `RocksDecorations` covers all three large-nature kinds.
+- The scenario's log regex alternation accepts `[Harness]` so it passes on seeds where no candidate happens to be rejected; seed 20260822 does produce rejects.
+- Pre-existing repo dirt (modified .glb binaries, deleted portal_fantasy_arch.glb, logs/balance CSV) was already present in the workspace before this iteration and was left untouched.
 
-## Changed files
-- `tests/scenarios/backdrop_earth_visible.json` — modified
-- `tests/scenarios/backdrop_earth_glint.json` — modified
-- (supporting, from earlier iterations in this branch) `scripts/game/Game.gd`, `scripts/testing/HarnessValues.gd`
+## Re-verification (iteration 1 re-run)
+- Focused harness via run_project_cmd (project=poke-defense-godot) — exit 0, `[Harness] status=pass exit=0`; 11 `[NATURE] rejected ... too close to a building at (x, z)` lines observed; zero overlaps asserted.
+- `godot --headless --editor --quit-after 2 --path .` — exit 0.
 
-## Criteria
-- Both focused harness scenarios pass headless with present/grounded/flush/rotation-invariant green — Done (headless)
-- Windowed build: other continents/ocean/cloud banks/atmosphere visible, only prior hidden prefixes hidden — Pending manual evidence (headless cannot produce screenshots)
-- Windowed run of `backdrop_earth_visible` produces surface screenshot showing map on chosen continent blending into map field — Pending manual evidence
-
-## Commands and results
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/backdrop_earth_visible.json` — exit code 0; `status=pass`; all expectations green including `backdrop_earth_center_y == 0` (actual -0.0000128) and `rotation_invariant == true`.
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/backdrop_earth_glint.json` — exit code 0; `status=pass`; same center_y value.
-
-## Notes
-- Scenario contracts updated this iteration: `center_y` expectation pinned to literal `0` matching the flush-at-plane contract; visible scenario samples the earth body world transform twice (~3 s apart via layer switch waits) and asserts `rotation_invariant`.
-- Headless runs skip the screenshot step (`reason: "headless"`). A manual tester must run `backdrop_earth_visible` windowed once and save the screenshot under `.gen/` plus `.gen/manual-report.md`; the two windowed criteria above remain open for that pass.
-- Hidden mesh prefixes unchanged (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud`) — no backdrop-look regressions expected from the placement-only change.
 \n
