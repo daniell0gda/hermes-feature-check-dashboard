@@ -52,5 +52,14 @@
     "duration_ms": 183282,
     "summary": "Revision-code-2 complete. Summary:\n\nStatus: All implementation criteria for clusters 1\u20133 re-verified green with zero source changes \u2014 the working tree is unchanged from the prior iteration.\n\nFresh verification via run_project_cmd (project=p\u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-22T22:30:19.351Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 223508,
+    "summary": "Done. Summary:\n\nVerified done: 10. Pending: 1 \u2014 0 due to build/test failures, 1 due to missing evidence (the `-Windowed` screenshot + `ui_feels_broken` sanity pass, which is manual-tester-profile work per the plan's manual_testing note), 0 \u2026",
+    "error": null
   }
 ]
