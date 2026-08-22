@@ -1,7 +1,4 @@
 ## ✅ Done
-- (none)
-
-## ⬜ Pending
 - `overcharge_capacitors` is registered as a Common progression perk in the global progression pool: it is eligible on a fresh run and appears in `draw_choices_for_chest` draws.
 - With fewer than 3 towers of a type owned, the damage multiplier for that tower type is unchanged by the perk (no partial bonus below the 3-tower threshold).
 - With exactly 3 towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-1 bonus value from its definition.
@@ -12,6 +9,9 @@
 - After `reset_for_new_game()`, no overcharge bonus applies and the perk selection is cleared.
 - Debug-build `[OVERCHARGE]` log line per bonus recompute, naming the tower type, same-type tower count, applied tier, and resulting multiplier; absent in release builds.
 - A harness scenario proves the per-type stacking math through the progression API and placed towers, covering the boundary cases: fewer than 3 (no bonus), exactly 3 (tier 1), and 6+ (tier 2) same-type towers, with all expectations passing.
+
+## ⬜ Pending
+- (none)
 
 ## ❌ Impossible
 - (none)

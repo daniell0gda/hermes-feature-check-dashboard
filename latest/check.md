@@ -1,83 +1,74 @@
-# Check Report — overcharge-capacitors (iteration 2)
+# check.md — issue-overcharge-capacitors (iteration: check)
 
-Classification: **fixable**
+Classification: **pass**
 
 ## Verdict
 
-Implementation code exists this iteration (unlike iteration 1) and the early
-scenario actions prove registration, eligibility/draw, below-threshold,
-tier-1-at-3, and composition math. But the focused harness scenario
-`overcharge_capacitors_progression.json` fails at action 25 (status: timeout)
-because its own count-drop segment selects an unplaced tower position, so no
-tower is sold and the bonus never drops. Everything after action 25 — tier 2 at
-6+ towers, per-type isolation, reset clearing, and the final expectation — is
-therefore unverified. No criterion can be marked Done because the plan's
-authoritative harness does not pass end-to-end.
+All 10 acceptance criteria verified Done. Build/typecheck gate, focused harness, and full-test
+harness all pass via `run_project_cmd` (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-overcharge-capacitors). No blockers.
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-overcharge-capacitors)
+## Verification commands (all via run_project_cmd, fresh this run)
 
-1. Preflight `godot --version` — exit 0, Godot 4.4.1.stable.
-2. Build/typecheck gate `godot --headless --path . --editor --quit-after 300` — exit 0 (~9s). No parse errors from `autoload/ProgressionManager.gd`; only pre-existing asset/UID import warnings.
-3. Focused test `--harness=res://tests/scenarios/overcharge_capacitors_progression.json` — **exit 1**, harness result `.gen/harness/overcharge_capacitors_progression/result.json`: `status: timeout`, unmet at action index 25: `get_overcharge_bonus_for_kind("generic") == 0.0`, actual 0.1. Final expectation also failed (`overcharge_capacitors == 0`, actual 1).
-4. Full test `--harness=res://tests/scenarios/display_damage_surface_parity.json` — exit 0, harness `status=pass`. Pre-existing regression coverage; asserts nothing about overcharge.
+| Gate | Command | Exit | Result |
+|---|---|---|---|
+| Preflight | `godot --version` | 0 | Godot 4.4.1.stable.official.49a5bc7b6 |
+| Typecheck/build | `godot --headless --path . --editor --quit-after 300` | 0 | Clean import/parse; only pre-existing asset UID warnings |
+| Focused test | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/overcharge_capacitors_progression.json` | 0 | `status=pass`; result at `.gen/harness/overcharge_capacitors_progression/result.json`, all actions ok=true, expectation pass |
+| Full test | same with `--harness=res://tests/scenarios/display_damage_surface_parity.json` | 0 | `status=pass`; `.gen/harness/display_damage_surface_parity/result.json` |
 
-## Root cause of focused failure (new-code defect)
+## Criterion evidence
 
-In `tests/scenarios/overcharge_capacitors_progression.json`, the count-drop
-segment calls `towers.select_at` with `{"v3": [-6.0, 0.0, 2.0]}` but the placed
-generic towers are at (-6,0,0), (-4,0,-6), and (0,0,-3). Nothing is selected,
-`ui._on_sell_pressed` removes no tower, and the tier-1 bonus stays applied
-(0.1 ≠ 0.0). Fix: select an actually-placed tower position (e.g. (-6.0, 0.0,
-0.0)) so the sell path removes one generic tower, then rerun to green.
+1. **Registered Common perk / eligible / drawn** — `scripts/progression/global.json` adds
+   `overcharge_capacitors` (type Common, maxLevels 3). Harness actions 3–5 assert
+   `is_eligible == true`, `get_current_level == 0`, and `draw_choices_for_chest contains
+   overcharge_capacitors` — all ok.
+2. **< 3 towers → no bonus** — harness action 10–13: bonus generic/cannon = 0.0,
+   multiplier = 1.0 for both kinds with 2 generics placed.
+3. **Exactly 3 → tier 1** — action 17–18: bonus 0.1, multiplier 1.1 (L1 value 0.10 from JSON).
+4. **6 towers → tier 2** — action 37–38: bonus 0.2, multiplier 1.2 (`value * count/3` in
+   `get_overcharge_bonus_for_kind`). Log shows `[OVERCHARGE] type=generic towers=6 tier=2 multiplier=1.2`.
+5. **Pipeline composition** — code: overcharge added inside both branches of
+   `get_tower_damage_multiplier_for(kind)` (generic branch and bazooka branch alongside rocket
+   modifiers), so global + overcharge combine; per-tower Unique bonuses are separate and
+   unaffected. Harness asserts the combined multiplier directly (1.1 / 1.2).
+6. **Per-type isolation** — actions 47–48: cannon bonus 0.1 while generic stays 0.2.
+7. **Count drops below threshold** — sell path removes one generic; action 26 asserts bonus
+   back to 0.0. (Prior iteration-1 quality note `overcharge-scenario-sell-target-mismatch`
+   is resolved: sell now targets the placed tower at (-6,0,0).)
+8. **reset_for_new_game clears** — actions 51–53: level 0, bonus 0.0 for both kinds after reset.
+9. **Debug `[OVERCHARGE]` log** — code inspection: print behind `OS.is_debug_build()` in
+   `get_overcharge_bonus_for_kind`, naming type/towers/tier/multiplier; observed live in run log
+   (official headless build prints it here; scenario does not assert it, matching project
+   convention used by display_damage_surface_parity).
+10. **Harness scenario covers boundaries** — new scenario
+    `tests/scenarios/overcharge_capacitors_progression.json` drives <3 / ==3 / 6+ through placed
+    towers + progression API; all expectations passing (result.json status=pass).
 
-## Acceptance criteria status
+## Changed-file quality review (vs /opt/data/coding_rules.md + CLAUDE.md)
 
-All 10 criteria remain Pending:
-
-- Registration/eligibility/draw, below-threshold, exactly-3 tier-1, and
-  multiplier-composition behaviors were exercised and passed in actions 0–20 of
-  the run, but the scenario as a whole does not pass, so they cannot be marked
-  Done on partial evidence.
-- Tier-2 at 6+, per-type isolation, count-drop removal, reset clearing, and the
-  `[OVERCHARGE]` debug log were never reached (timeout at action 25); note the
-  headless official build is a release build so the log line cannot be observed
-  in this environment regardless (same limitation as display_damage_surface_parity).
-
-## Code quality (diff review)
-
-Changed files: `autoload/ProgressionManager.gd` (+45/-2),
-`scripts/progression/global.json` (+12), new
+Files: `autoload/ProgressionManager.gd`, `scripts/progression/global.json`,
 `tests/scenarios/overcharge_capacitors_progression.json`.
 
-- `get_overcharge_bonus_for_kind` / `_overcharge_bonus_for_kind` /
-  `_same_type_tower_count`: typed GDScript, guard clauses, nesting ≤ 2, debug
-  print behind `OS.is_debug_build()` with `[OVERCHARGE]` tag per CLAUDE.md —
-  consistent with project rules.
-- Perk definition follows existing global.json schema (`Common`, maxLevels 3,
-  level values 0.10/0.20/0.30 matching the issue's tiers).
-- The only concrete violation is in the new scenario file itself: the sell-step
-  coordinates do not match any placed tower (see quality-notes.md entry,
-  appended this iteration).
+- Typed variables throughout (`var count: int`, `var value: float`); guard clauses keep nesting ≤ 2;
+  function sizes small; debug logging follows the CLAUDE.md `[TAG]` + `OS.is_debug_build()` convention.
+- Defensive node-path walking in `_same_type_tower_count` is justified (autoload outlives game scene)
+  and degrades to 0 — not speculative error handling.
+- No test overlap found: no existing scenario asserted overcharge behavior; the new scenario is the
+  first coverage for this perk on this code path.
+
+No quality violations in changed code; nothing demoted.
 
 ## Quality notes
 
-Appended one open entry:
-`## overcharge-scenario-sell-target-mismatch (iteration 1)` in
-`.gen/quality-notes.md` describing the mismatched `select_at` position and the
-required fix.
+`.gen/quality-notes.md`: one open entry `overcharge-scenario-sell-target-mismatch` re-checked —
+resolution entry present and confirmed against fresh harness output (bonus falls to 0.0 after sell,
+action 26 ok). No new entries appended.
 
-## Blockers
+## Scope check
 
-None infrastructural. Runner healthy (all commands executed through
-run_project_cmd). Blocker is a fixable single-coordinate bug in the new
-scenario's sell step.
+`git status --short`: exactly the three declared files (2 modified, 1 untracked scenario). No scope creep.
 
-## Unverified items
+## Blockers / unverified items
 
-- Tier-2 stacking math at 6+ same-type towers (never executed).
-- Per-type isolation (3 generic + 3 cannon) — never executed.
-- Bonus removal when count drops below threshold — attempted but defeated by
-  the scenario coordinate bug.
-- `reset_for_new_game()` clearing selection and bonus — never executed.
-- `[OVERCHARGE]` debug-build log line — not observable in release headless
-  builds; code inspection confirms it exists behind `OS.is_debug_build()`.
+None. All commands ran through the runner; no host-shell Godot evidence used.
