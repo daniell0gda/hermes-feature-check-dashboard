@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-108-harness-non-game-scene-211634/",
   "heartbeat_at": "2026-08-22T21:48:35.284Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-22T21:48:35.284Z",
   "process_id": 764606,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:48:35.284999+00:00",
-    "last_success_at": "2026-08-22T21:44:57.384620+00:00",
+    "last_attempt_at": "2026-08-22T21:48:39.668498+00:00",
+    "last_success_at": "2026-08-22T21:48:39.667841+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 54364,
         "output_tokens": 3825
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 169086,
+        "output_tokens": 4475
       }
     ]
   }
