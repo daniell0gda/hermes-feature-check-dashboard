@@ -1,21 +1,21 @@
 {
-  "run_id": "issue138-norocktree-1787411442",
-  "feature": "no-rock-or-tree-same-position-as-building",
+  "run_id": "req-134-upgrade-click-money-animation-r3",
+  "feature": "upgrade-click-money-animation",
   "status": "running",
-  "started_at": "2026-08-22T20:10:17.337Z",
+  "started_at": "2026-08-22T21:00:31.935Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue138-norocktree-1787411442/",
-  "heartbeat_at": "2026-08-22T21:23:47.408Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T21:23:47.408Z",
-  "process_id": 710129,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-134-upgrade-click-money-animation-r3/",
+  "heartbeat_at": "2026-08-22T21:24:03.736Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T21:24:03.736Z",
+  "process_id": 739919,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:23:51.785517+00:00",
-    "last_success_at": "2026-08-22T21:23:51.784906+00:00",
+    "last_attempt_at": "2026-08-22T21:24:03.740650+00:00",
+    "last_success_at": "2026-08-22T21:15:22.262454+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 53165,
-        "output_tokens": 1620
+        "input_tokens": 119133,
+        "output_tokens": 5236
       },
       {
         "task_id": "code",
@@ -38,9 +38,9 @@
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
-        "cost_status": "estimated",
-        "input_tokens": 87368,
-        "output_tokens": 1651
+        "cost_status": "unknown",
+        "input_tokens": 201578,
+        "output_tokens": 5242
       }
     ]
   }
