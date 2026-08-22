@@ -34,5 +34,14 @@
     "duration_ms": 980614,
     "summary": "Summary of investigation (iteration budget reached \u2014 no further tool calls):\n\n## What I found\n\n**Root cause of the progression_pick failure (two stacked problems):**\n\n1. **Modal draw is RNG-dependent, not deterministic.** `venom_miasma_bloo\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-22T09:05:12.085Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 248700,
+    "summary": "Verified done: 0. Pending: 2 \u2014 1 due to build/test failures (focused harness), 1 due to missing evidence (REFERENCE.md untouched). Impossible: 0. Quality notes: no changes (data-only diff). Verification: failed. Blockers: none.\n\nFresh run_p\u2026",
+    "error": null
   }
 ]

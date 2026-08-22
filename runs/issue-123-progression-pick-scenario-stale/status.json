@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-123-progression-pick-scenario-stale/",
-  "heartbeat_at": "2026-08-22T09:00:59.877Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T09:00:59.877Z",
+  "heartbeat_at": "2026-08-22T09:05:12.085Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T09:05:12.085Z",
   "process_id": 472003,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T09:01:03.384836+00:00",
-    "last_success_at": "2026-08-22T09:01:03.383990+00:00",
+    "last_attempt_at": "2026-08-22T09:05:12.085269+00:00",
+    "last_success_at": "2026-08-22T09:01:07.098252+00:00",
     "last_error": null
   },
   "metrics": {
