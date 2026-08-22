@@ -2,35 +2,19 @@
   "run_id": "issue-107-hud-theme-missing-wood-panel",
   "feature": "hud-theme-missing-wood-panel",
   "status": "running",
-  "started_at": "2026-08-20T11:01:37.072Z",
+  "started_at": "2026-08-22T11:25:54.026Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-107-hud-theme-missing-wood-panel/",
-  "heartbeat_at": "2026-08-20T11:06:21.484Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-20T11:06:21.484Z",
-  "process_id": 354747,
+  "heartbeat_at": "2026-08-22T11:25:54.026Z",
+  "last_node": null,
+  "active_node": null,
+  "last_event_at": null,
+  "process_id": 517868,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-20T11:06:25.961424+00:00",
-    "last_success_at": "2026-08-20T11:06:25.960639+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T11:25:54.026661+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "grok-4.6",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 386283,
-        "output_tokens": 10895
-      }
-    ]
-  }
+  "metrics": {}
 }

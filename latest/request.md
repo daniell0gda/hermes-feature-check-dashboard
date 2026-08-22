@@ -1,17 +1,20 @@
-# Request: Water Tower — Water Pressure perk (#46)
+# Request: #107 HudTheme missing wood_panel.png
 
-Source issue: https://github.com/daniell0gda/poke-defense-godot/issues/46
+Project: poke-defense-godot (runner `godot-td`)
+Workspace: poke-defense-godot/issue-hud-theme-missing-wood-panel
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/107
+Slug: hud-theme-missing-wood-panel
 
-## Summary
-Add a new Common progression perk `water_pressure` (levels 1–3) for the Water tower:
-Water's own damage against already-Wet targets is increased by +20% / +35% / +50%.
+## Problem
 
-## Context
-- Only Electric currently benefits from Wet status (`electric_wet_conduction`); Water gets nothing.
-- Follow existing Common perk patterns (e.g. `electric_wet_conduction`) for data, unlock, UI listing, and tests.
+`themes/hud/HudTheme.tres` declares `res://textures/ui/hud/wood_panel.png`, but that PNG is not in the repo. Only an orphan `.import` remains. That texture is the base `Panel`/`PanelContainer` style. Fresh clones lose HUD panel backing.
 
 ## Done when
-- New Common `water_pressure` (L1–3): Water's own damage vs already-Wet targets +20%/+35%/+50%.
-- No new visual required — pure conditional damage% modifier against the existing Wet status.
 
-manual_testing: none (pure stat modifier; no new visible mechanic). Headless harness verification is sufficient unless implementation adds visible UI beyond standard perk listing.
+- `res://textures/ui/hud/wood_panel.png` resolves — regenerate via `tools/gen_hud_textures.py` and commit, or repoint `StyleBoxTexture_panel` at an existing slice such as `wood_panel_wide.png` and remove the dead ext_resource.
+- No `.import` file under `textures/ui/hud/` lacks a source PNG. Clean orphans: `icon_speed.png.import`, `wide_panel.png.import`, `woden_panel_wide_lightonly.png.import`, `wood_chip_on.png.import`.
+- The `hud_wood_panels` scenario passes after deleting `.godot/imported`, proving the theme loads without the stale cache.
+
+Visible HUD work: windowed screenshots required (manual-tester windowed, not headless-only).
+
+Do not commit, push, merge, or close the issue.

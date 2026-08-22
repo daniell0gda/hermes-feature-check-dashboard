@@ -1,22 +1,20 @@
 {
-  "run_id": "water-pressure-46",
-  "feature": "water_pressure",
+  "run_id": "issue-107-hud-theme-missing-wood-panel",
+  "feature": "hud-theme-missing-wood-panel",
   "status": "running",
-  "started_at": "2026-08-22T11:23:11.201Z",
+  "started_at": "2026-08-22T11:25:54.026Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/water-pressure-46/",
-  "heartbeat_at": "2026-08-22T11:23:11.201Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-107-hud-theme-missing-wood-panel/",
+  "heartbeat_at": "2026-08-22T11:25:54.026Z",
   "last_node": null,
-  "active_node": "plan",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 517150,
+  "process_id": 517868,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T11:23:16.298118+00:00",
-    "last_success_at": "2026-08-22T11:23:15.761366+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T11:25:54.026661+00:00"
   },
   "metrics": {}
 }
