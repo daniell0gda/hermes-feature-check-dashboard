@@ -1,47 +1,98 @@
-# Check Report: elemental-attunement
+# Check report — underground-carve-topdown-camera-rotation (iteration 1)
 
-Classification: **fixable**
+classification: blocked
 
 ## Verdict
 
-The implementor produced no code. The worktree is at the base commit `4dec450`
-(`issue/elemental-attunement`), `git status` clean, `git diff 4dec450..HEAD`
-empty, and no untracked files. There is no trace of the feature anywhere:
-`grep -rn elemental_attunement scripts/ autoload/ tests/` returns nothing, and
-the required scenario file `tests/scenarios/elemental_attunement.json` does not
-exist. All 11 criteria are Pending.
+Blocked by runner infrastructure, not by the project alone. `run_project_cmd` was
+used (never the host shell) for every attempted verification command, and every
+invocation failed at container start:
 
-## Verification (all via run_project_cmd, project=godot-td,
-workspace=poke-defense-godot/issue-elemental-attunement)
+- `{"project":"godot-td","workspace":"godot-td/issue-underground-carve-topdown-camera-rotation","cmd":["git","status","--short"]}` → HTTP 422, exit 126:
+  `OCI runtime exec failed: exec failed: unable to start container process: chdir to cwd ("/workspaces/godot-td/issue-underground-carve-topdown-camera-rotation") set in config.json failed: no such file or directory`
+- `godot --version` @ `godot-td/issue-130` → same 422 chdir failure.
+- `git status --short` @ `poke-defense-godot/check` → same 422 chdir failure.
+- Host: `/workspaces` does not exist; `docker ps` → `Cannot connect to the Docker daemon at unix:///var/run/docker.sock`.
 
-| Command | Exit | Result |
+The runner's pre-provisioned workspace directory is missing and Hermes has no
+Docker socket access to create it; the project-runner skill prohibits
+bootstrapping the workspace through the host shell. Therefore the typecheck/build
+gate and the full test gate could not be executed and are treated as failed.
+
+## Gate results
+
+| Gate | Command | Result |
 |---|---|---|
-| `godot --version` | 0 | 4.4.1.stable.official — runner healthy |
-| Editor/import gate: `godot --headless --path . --editor --quit-after 300` | 0 | Import/parse gate passes |
-| Focused: `--harness=res://tests/scenarios/elemental_attunement.json` | 1 | FAIL — scenario file missing (`Resource file not found`) |
-| Full: `--harness=res://tests/scenarios/floodgate_saltwater_purge.json` | 0 | `[Harness] status=pass exit=0`, result at `.gen/harness/floodgate_saltwater_purge/result.json` |
+| Typecheck/build | `["godot","--headless","--editor","--path",".","--quit-after","3"]` | NOT RUN — runner 422 chdir failure (infra) |
+| Focused test | `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/carve_camera_topdown.json"]` | NOT RUN this session — runner 422 chdir failure (infra) |
+| Full test loop | plan.md full-test command | NOT RUN — runner 422 chdir failure (infra) |
 
-## Criterion evidence
+## Evidence from the implementor's own stored run
 
-All criteria lack implementing source files and tests — nothing was written.
-The full-suite regression passing is pre-existing baseline behavior, not
-evidence for any attunement criterion (it would pass identically on an untouched
-tree, which this is).
+`.gen/harness/carve_camera_topdown/result.json` (written 2026-08-22T12:18:12,
+before the runner broke) records `"status": "fail"`:
 
-## Changed-file quality findings
+- 6 timeline actions failed with `ui has no method '_on_dig_hole'`,
+  `_clear_dig_mode`, `_on_carve` (×2), `clear_carve_mode` (×2).
+- Expectation `dig_hole_camera_top_down` FAILED (actual true, expected false —
+  the dig-hole probe was taken without dig mode ever being entered, so the check
+  is both failing and vacuous).
+- The three `carve_camera_*` expectations "passed" only vacuously: every probe
+  captured the identical untouched camera basis because carve mode was never
+  actually entered. They assert nothing about the feature.
+- All three `[CARVE_CAMERA]` log regex expectations failed (`actual: ""`).
 
-None — there are no changed or new files to review against coding rules.
-No quality-notes.md entry warranted (no feature diff exists).
+## Source inspection of the diff (`git diff HEAD`, 6 files, +184)
+
+- `scripts/ui/UI.gd`: `carving_active` setter now calls
+  `game.on_carve_camera_mode(armed)` — **no such method exists anywhere**
+  (`grep -rn on_carve_camera_mode scripts/` matches only the call site). At
+  runtime this is guarded by `has_method`, so it silently does nothing.
+- `scripts/game/Game.gd`: contains NO carve-camera logic and NO `[CARVE_CAMERA]`
+  logging. The only addition is `debug_look_down_underground()` (orthogonal
+  camera teleport for screenshots) which implements none of the acceptance
+  criteria and looks like manual-test scaffolding, possibly scope creep.
+- No code anywhere rotates the camera to top-down on carve arm, restores it on
+  cancel, or tracks manual rotation during carve.
+- `scripts/testing/HarnessValues.gd` / `HarnessActions.gd` / `AgentHarness.gd`:
+  camera_probe / rotate_camera / camera value source are implemented and look
+  reasonable, but they test a feature that does not exist.
+- `tests/scenarios/carve_camera_topdown.json` references four UI methods that do
+  not exist (`_on_dig_hole`, `_clear_dig_mode`, `_on_carve`, `clear_carve_mode`);
+  grep finds none of them in `scripts/ui/UI.gd`.
+
+## Acceptance criteria status (all unmet)
+
+Every criterion below is Pending: the implementing logic is absent from the diff
+and/or its scenario actions fail against real UI methods.
+
+1. Carve on underground rotates camera top-down, position/zoom unchanged — Pending (no implementation; during_carve probe identical to before).
+2. Only rotation changes across arm — Pending (vacuous pass only).
+3. Plain cancel restores pre-carve rotation — Pending (no implementation).
+4. Manual rotation during carve survives cancel — Pending (no implementation).
+5. Camera rotation input still works while carving — Pending (untested; rotate_camera action ran outside carve mode).
+6. Dig-hole/place-exit/place-block/tower-selection do not trigger rotation — Pending (scenario calls nonexistent UI methods; expectation fails).
+7. `[CARVE_CAMERA]` debug log lines — Pending (absent from source; log assertions fail).
+8. Harness value source exposes camera orientation/placement — implemented (camera source + probes present in HarnessValues/HarnessActions) but unverifiable this session; kept Pending pending a runnable gate.
+9. Focused scenario asserts top-down / position-unchanged / restore / kept-player-angle — Pending (scenario currently fails: 4 bad action targets, 3 failed log checks, 1 failed expectation).
+
+## Manual testing
+
+Required by plan (`manual_testing: required`) and request notes. No windowed
+screenshot evidence found under `.gen/harness/carve_camera_topdown`
+(`"screenshots": []`). Not performed.
 
 ## Blockers
 
-None infrastructural. The runner, worker image, workspace, and Godot all work.
+1. Runner infrastructure unavailable: `run_project_cmd` 422 chdir failures for
+   every workspace slug; `/workspaces` missing; Docker socket unreachable from
+   Hermes. Re-provision the runner workspace (host/root side) and re-run check.
+2. Implementation incomplete: `Game.on_carve_camera_mode` and all
+   `[CARVE_CAMERA]` logging missing; scenario targets four nonexistent UI
+   methods. Coder must implement cluster 1 and fix the scenario action names.
 
-## Unverified items / next step
+## Quality notes
 
-Everything. The implementation must be redone by the code worker:
-1. Add `elemental_attunement` Unique to `scripts/progression/global.json`,
-   extend `scripts/config/Balance.gd` effectiveness resolution +
-   `autoload/ProgressionManager.gd` + `EnemyHealthController.gd` per plan.
-2. Create `tests/scenarios/elemental_attunement.json`.
-3. Rerun focused harness + editor gate; regression already green.
+See `.gen/quality-notes.md` (appended: silent no-op notification pattern;
+vacuous harness passes masking a missing feature; suspected scope creep in
+`debug_look_down_underground`). Advisory only.
