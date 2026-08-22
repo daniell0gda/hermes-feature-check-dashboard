@@ -1,15 +1,15 @@
 # Cluster 1: scenario-scene-selection
 
-owned file scope: `scripts/testing/HarnessScenario.gd`, `scripts/testing/AgentHarness.gd`, `.claude/skills/game-test/scripts/Run-Scenario.ps1`
-dependencies: none
-parallel: true
+- owned file scope: `scripts/testing/HarnessScenario.gd`, `.claude/skills/game-test/scripts/Run-Scenario.ps1`, `scripts/testing/AgentHarness.gd`
+- dependencies: none
+- parallel: true
 
 ## Acceptance criteria
 
-- A scenario JSON may declare an optional top-level `scene` res:// path; when absent the harness boots the current default (`res://scenes/Main.tscn`), so every existing scenario runs unchanged.
-- When a scenario declares a scene, the runner launches that scene and the harness's boot wait succeeds against it without requiring a `Game` child.
-- A scenario that does not need a game completes its timeline, expectations, screenshots, and writes `result.json` with `status: pass` against any booted scene; a game-dependent action or expectation in such a scenario still fails rather than silently passing.
-- The PowerShell wrapper forwards the scenario's declared scene to Godot instead of hard-coding `res://scenes/Main.tscn`; a `-DryRun` invocation prints that scene path in its argument list.
+- A scenario JSON with no top-level `scene` key boots `res://scenes/Main.tscn`, preserving all existing game-scenario behaviour.
+- A scenario JSON that declares a `scene` value boots that scene as the harness's current scene.
+- The PowerShell wrapper forwards the scenario's declared scene to Godot instead of always launching `res://scenes/Main.tscn`.
+- When the declared scene is loaded, the harness stops waiting for boot once the declared scene is current and does not require a `Game` child with live placement; game-dependent actions on such a run fail their own action rather than timing out the whole run at boot.
 
 ## Verification commands
 
