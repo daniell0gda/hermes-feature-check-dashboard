@@ -1,84 +1,67 @@
-# Check Report — earth-continent-map-integration (issue #137)
+# Check report: issue-39-buried-ordnance
 
-Iteration: 1 · Classification: **fixable**
+classification: fixable
+date: 2026-08-22
+iteration: revision-check-3
+checker: check worker (fresh verification via run_project_cmd)
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-earth-continent-map-integration)
+## Commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-buried-ordnance)
 
-| Command | Exit | Result |
-|---|---|---|
-| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner reachable |
-| `godot --headless --path . --editor --quit-after 300` (import/build gate) | 0 | Import completed; stylized_earth_in_clouds.glb reimported |
-| Focused harness `backdrop_earth_visible.json` | 1 | status: fail — `backdrop_earth_center_y == -83.2`, expected 0 |
-| Harness `backdrop_earth_glint.json` | 1 | status: fail — same center_y failure |
-| Full suite loop (`bash -c for f in tests/scenarios/*.json ...`) | n/a | `bash` not on profile allowlist ("cmd executable is not allowed"); not run |
-| Windowed screenshots / manual visual pass | not run | manual-tester owns `.gen/manual-report.md`; none present |
+| Gate | Command | Exit | Result |
+|---|---|---|---|
+| Runner probe | `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 |
+| Typecheck/build | `godot --headless --path . --editor --quit-after 300` | 0 | import/parse clean |
+| Focused test | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/traps_buried_ordnance_progression.json` | **1** | **fail** — timeout at action 29 (see below) |
+| Full test | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/display_damage_surface_parity.json` | 0 | `[Harness] status=pass exit=0` |
 
-Fresh harness evidence: `.gen/harness/backdrop_earth_visible/result.json`
-(finished_at 2026-08-22T15:41:57), log `.gen/harness/_logs/backdrop_earth_visible.out.log`.
+## Fresh evidence
 
-## Acceptance criteria
+- `.gen/harness/display_damage_surface_parity/result.json` — status pass.
+- `.gen/harness/traps_buried_ordnance_progression/result.json` — status timeout; last passing action index 29's predecessor chain: actions 0–28 ok, action 29 unmet (`log regex \[BURIED_ORDNANCE\] trap=trap_01 chain=1 rolled=true caught=[1-9]`).
+- `.gen/harness/_logs/traps_buried_ordnance_progression.out.log` — contains zero `[BURIED_ORDNANCE]` lines.
 
-### Cluster 1: grounded-continent-placement
+## Failure analysis (unchanged from revision-check-2)
 
-- Continent mesh named and recorded — **verified in code**:
-  `GROUNDED_CONTINENT = "Continent_Africa"` in `scripts/game/visuals/BackdropEarth.gd`,
-  with the full GLB node list in a comment. Checker independently parsed
-  `models/stylized_earth_in_clouds.glb`: node/mesh `Continent_Africa` exists. PASS.
-- Flush placement from gameplay camera (windowed screenshot) — **NOT VERIFIED**.
-  No windowed run or screenshot exists in this workspace; headless screenshots are
-  skipped (`reason: "headless"`). Manual report absent. PENDING.
-- Terrain continuity / no hard seam (windowed screenshot) — NOT VERIFIED. Same reason. PENDING.
-- Globe does not rotate during play — **partially verified by code inspection only**:
-  grounded path never calls `_start_earth_spin()`. No automated test asserts
-  rotation equality at two times. PENDING (missing evidence).
-- Debug `[BACKDROP EARTH]` log per grounding event naming mesh + pos/scale/rot —
-  **verified**: fresh log line `[BACKDROP EARTH] grounded continent=Continent_Africa
-  pos=(-21.2, -83.2, -51.76) scale=0.9999… rot_deg=(15.39, 21.67, 83.15)`. PASS.
+The scenario-side blocker is NOT fixed. `cave_fixture` enemies spawn statically at
+fixture positions (0,-3,0)/(0.3,-3,0.1) while the trap_01 sits at (0.25,-3,0.25)
+with trigger_radius 0.3. The trap's step-on overlap never registered a hit within
+the 10 s window, so the forced roll was consumed by nothing: no chain blast, no
+`[BURIED_ORDNANCE]` debug line, no screenshot checkpoint, and the no-chain arm
+(actions 31–46) never executed because the timeline aborted at 29.
 
-### Cluster 2: backdrop-regression-coverage
+Required fix (scenario side, per prior check): place the trap exactly on an enemy
+position or force/teleport an underground enemy into the trigger radius, then rerun.
+Implementation code need not change for this step.
 
-- Other continents/ocean/clouds/atmosphere visible; hidden prefixes unchanged
-  (windowed screenshot) — NOT VERIFIED. No windowed run. PENDING.
-- Existing focused scenario `backdrop_earth_visible` still passes — **FAILS**.
-  `backdrop_earth_present` is true but `backdrop_earth_center_y` equals −83.2
-  instead of 0. The grounded rig sinks the globe by body_radius below y=0, so
-  center_y is now negative by design of the change — but the plan requires the
-  existing expectation to still hold and it was neither updated nor satisfied.
-  This is a real regression against the plan's own criterion. FAIL → Pending.
+## Acceptance criteria evidence
 
-## Build/test gate
+All 9 criteria remain Pending:
 
-Import/editor gate passes. The full test suite was NOT run: the plan's full-suite
-command uses `bash`, which is rejected by the runner profile allowlist
-("cmd executable is not allowed by the project profile"). A python3-based loop
-was attempted as substitute and also failed to produce green results because the
-focused earth scenarios fail (see above). Since the build/test gate is not green,
-no item may remain Done; all criteria go to Pending.
+1. Perk defined as Unique, eligible/grantable/idempotent — arm-1 actions 0–17 pass,
+   but kept Pending until the focused scenario passes end-to-end.
+2. Chance/radius chain damage on underground hit — code present in
+   Trap.gd `_apply_chain_blast`; never exercised (no hit fired). PENDING.
+3. No chain without perk — no-chain arm (trap_03) never ran. PENDING.
+4. Non-underground immunity — structural only; no runtime assertion ran. PENDING.
+5. Visible small-explosion VFX — code calls ExplosionFX.spawn_bazooka_explosion;
+   screenshot action never ran; manual_testing windowed screenshots absent. PENDING.
+6. Determinism under fixed seed — `set_buried_ordnance_next_roll` override exists;
+   roll site never consumed. PENDING.
+7. Debug `[BURIED_ORDNANCE]` log line — implemented behind OS.is_debug_build();
+   expectation never met. PENDING.
+8. Focused harness scenario passes with fresh evidence — FAILED (timeout, action 29).
+   PENDING.
+9. Windowed screenshot at chained-explosion moment — never captured. PENDING.
 
-## Changed-file quality findings
+## Quality notes
 
-- `models/stylized_earth_in_clouds.glb`: replaced via Git LFS pointer update
-  (9.58 MB new object). Content itself unreviewable here; noted, no violation.
-- `scripts/game/visuals/BackdropEarth.gd`: typed variables used throughout, small
-  focused functions, guard clauses, debug-only `[TAG]` logging — complies with
-  CLAUDE.md and coding_rules.md. No quality violation found in changed code.
-- Scope creep: none beyond the two intended files.
-
-## Blockers
-
-- None infrastructural. Runner healthy. Failures are implementation-level.
-
-## Unverified items
-
-- Windowed screenshots (flush fit, seam blend, backdrop regression view).
-- Rotation-invariance measurement at two times.
-- Full test suite (allowlist blocks `bash`; needs a python3-loop variant command
-  in the plan or an updated profile allowlist).
+Open entry `typed-vars-new-code` (revision-check-1): untyped locals
+(`cfg_any`, `ug`, loop var `e`) in autoload/ProgressionManager.gd and
+scripts/game/actors/Trap.gd remain — advisory, mirrors legacy style. No change this
+iteration; entry stays open. No new cross-cutting issues found in the diff
+(4 modified files + 1 new scenario JSON, matching declared cluster scope).
 
 ## Verdict
 
-fixable — the grounding code is present and partially evidenced, but the focused
-harness regressed (`backdrop_earth_center_y = -83.2 ≠ 0`), the full suite could not
-run under the profile allowlist, and all windowed/manual visual criteria have no
-evidence.
+fixable — scenario fixture geometry must be corrected so the trap actually hits an
+underground enemy; then rerun focused harness + windowed screenshots before next check.
