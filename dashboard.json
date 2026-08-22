@@ -410,6 +410,11 @@
     "url": "runs/issue-107-hud-theme-missing-wood-panel/"
   },
   {
+    "run_id": "issue-106-20260822-203808",
+    "status": "running",
+    "url": "runs/issue-106-20260822-203808/"
+  },
+  {
     "run_id": "issue-103-duplicate-display-damage-math",
     "status": "completed",
     "url": "runs/issue-103-duplicate-display-damage-math/"
