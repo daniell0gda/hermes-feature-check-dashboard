@@ -51,7 +51,7 @@
   },
   {
     "run_id": "leader-smoke",
-    "status": "completed",
+    "status": "running",
     "url": "runs/leader-smoke/"
   },
   {
