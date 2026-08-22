@@ -1,40 +1,34 @@
-# Request: Issue #108 — Harness cannot boot a non-game scene, so the main menu is untestable
+# Request: issue #109 — nature-decoration-counts
 
-- Project: poke-defense-godot
-- Runner key: `godot-td` (never the folder name)
-- Runner workspace: `poke-defense-godot/issue-harness-cannot-boot-menu-scene`
-- Branch: `issue/harness-cannot-boot-menu-scene` (cut from origin/master)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/108
-- Type: harness / ui · priority:medium
+- Project: poke-defense-godot (runner key: `godot-td`)
+- Workspace: `/workspace/git-workspaces/poke-defense-godot/issue-nature-decoration-counts`
+  (runner workspace: `poke-defense-godot/issue-nature-decoration-counts`)
+- Branch: `issue/nature-decoration-counts` (cut fresh from `origin/master`)
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/109
+- Labels: status:in-progress, priority:medium, type:nature
+- Request ID: nature-decoration-counts-r1
 
-## Problem
+## Feature
 
-Every scenario runs against `res://scenes/Main.tscn`, hard-coded in
-`.claude/skills/game-test/scripts/Run-Scenario.ps1:193`, and `AgentHarness._await_game()`
-(`scripts/testing/AgentHarness.gd:171-182`) blocks until `current_scene` has a `Game` child whose
-`Placement.tower_placement` is non-null. Any non-game scene (e.g. `scenes/MainMenu.tscn`) is
-unreachable by the harness, so the main menu's live 3D backdrop cannot be asserted or screenshotted.
+Nature decoration counts are hard-coded for 20x20 maps (`scripts/world/NatureDecoration.gd:51-54`:
+tree_count=4, bush_count=6, flower_group_count=5, dead_tree_count=2), so the 50x50 maps
+(`scripts/config/maps/custom_map.json`, `main_menu_map.json`) read as bare grass fields.
 
-## Done when
+## Acceptance criteria (from issue)
 
-1. `HarnessScenario` accepts an optional `scene` (defaulting to `res://scenes/Main.tscn`) and
-   `Run-Scenario.ps1` passes it through instead of hard-coding the path.
-2. `AgentHarness._await_game()` no longer requires a `Game` with a live `Placement` when the
-   scenario declares it does not need one — a screenshot-and-expectation-only timeline must run
-   against any scene.
-3. A value source can read a property at an arbitrary node path under the current scene, so the
-   orbit and the backdrop world are assertable without adding test-only methods to production code.
-4. A `main_menu` scenario exists that boots `scenes/MainMenu.tscn`, waits, asserts the camera moved
-   and enemies are on the field, and takes a `-Windowed` screenshot of the menu over the map.
+1. The four counts scale with map area; factor must be exactly 1.0 at 400 m² (20x20 keeps today's
+   density exactly — no re-balance of shipped maps) and a 50x50 map gets proportionally more.
+2. Map config can still override the resulting counts explicitly under `environment.decorations`.
+3. `custom_map` and `main_menu_map` visibly carry trees and bushes across the whole board —
+   verified on windowed screenshots (manual test), not by arithmetic.
 
-## Redo notes for resumed runs
+No new visual assets required.
 
-- Use runner key `godot-td`, workspace `poke-defense-godot/issue-harness-cannot-boot-menu-scene`.
-- Godot on Linux: native commands via runner; windowed evidence with
-  `--rendering-method gl_compatibility --audio-driver Dummy` when Vulkan fails.
-- Manual testing is required: player-facing menu screen with live backdrop → windowed PNGs/GIF,
-  plus overall UI-sanity pass (`ui_feels_broken: yes|no`) on every final screenshot.
+## Redo notes / pitfalls (from prior sessions)
 
-## Historical reference
-
-None — fresh claim from origin/master at pickup time.
+- Runner key is `godot-td`, workspace `poke-defense-godot/issue-nature-decoration-counts`. Do NOT
+  invent workspace names (HTTP 422 chdir).
+- Manual tester must be windowed (no `--headless`), PNGs required; use
+  `--rendering-method gl_compatibility --audio-driver Dummy` if Vulkan fails on llvmpipe.
+- Checker classification line must be the literal lowercase `classification: pass|fixable|...`.
+- Manual-testing gate must state the overall UI-sanity criterion (`ui_feels_broken: yes|no`).
