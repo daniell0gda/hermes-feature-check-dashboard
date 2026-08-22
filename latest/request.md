@@ -1,29 +1,30 @@
-# Request: window-modals-skip-wood-frame (#127)
+# Request: #33 Systemic: Elemental Attunement
 
-Give RewardsModal and ProgressionModal the same wood frame and corner close as the other HUD modals.
-
-## Issue
-https://github.com/daniell0gda/poke-defense-godot/issues/127
+Project: poke-defense-godot (runner key `godot-td`)
+Workspace: `poke-defense-godot/issue-elemental-attunement`
+Branch: `issue/elemental-attunement`
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/33
+Slug: `elemental-attunement`
 
 ## Problem
-RewardsModal and ProgressionModal are raw Window nodes with no theme. They look like a grey Godot default window. Every other modal uses ModalPanel + TitlePlate from themes/hud/HudTheme.tres and TitledPanel.gd, and dismisses via CloseChip / close_requested.
+
+`Balance.type_effectiveness` (`scripts/config/Balance.gd`) makes fire/water/electric each resist themselves (`"fire": {"Fire": 0.5}`, `"water": {"Water": 0.5}`, `"electric": {"Electric": 0.5}`). A player who commits heavily to one element has no progression-side recourse if a level leans on that element's resistant enemy type.
 
 ## Done when
-- Both modals use the same wood frame and name plate as PauseMenu, Options, Manage Towers, and tower details.
-- They dismiss through the same corner ✕ / close_requested contract, not a window decoration.
-- UI.open_progression_modal and UI._on_rewards_pressed still return something callers can use. CaveSystem types the return as Window. AgentHarness still matches `node is ProgressionModal` for auto-answer.
-- tests/scenarios/hud_other_panels.json panel_rewards checkpoint shows the wood frame.
-- The reward-pick modal (ProgressionModal) gets a screenshot checkpoint of its own.
 
-Visual: reuse existing ModalPanel / TitlePlate / ChipButton theme variations. No new art.
+New Unique `elemental_attunement`: pick one of fire/water/electric; that element's towers also gain the super-effective multiplier normally reserved for the other two elements against their respective resistant types.
+
+No new visual required — pure stat modifier: extends an existing invisible damage-multiplier table (`Balance.type_effectiveness`) with no new visible mechanic of its own.
+
+It only ever restores coverage on the other two elements. It never removes the self-resistance.
+
+Example of intended coverage (fire pick): Fire towers keep `Fire` enemies at 0.5, but also gain the super-effective multipliers the other two elements normally have against *their* resistant types (water vs Water, electric vs Electric), applied from the chosen element's towers.
 
 ## Constraints
-- Project runner key: godot-td
-- Workspace: poke-defense-godot/issue-window-modals-skip-wood-frame
-- All Godot/project commands via run_project_cmd. No host godot.
-- Visible UI work: manual_testing required, windowed screenshots, never --headless for manual-tester.
-- Do not commit, push, merge, or close the issue.
-- Follow /opt/data/coding_rules.md and project CLAUDE.md.
 
-## Project path
-/workspace/git-workspaces/poke-defense-godot/issue-window-modals-skip-wood-frame
+- Use `run_project_cmd` with project `godot-td` and workspace `poke-defense-godot/issue-elemental-attunement`.
+- Follow `/opt/data/coding_rules.md`.
+- Do not commit, push, merge, or close the issue.
+- Native Linux Godot verification through the runner.
+- Visible UI for picking the element is only required if the existing Unique perk flow already has a player-facing pick; otherwise keep it a stat/table modifier and prove it with a focused harness.
+- Planner: still-captureable perk-select / type-multiplier user story should get a generic `.gen/ui_scenario.md`. If the perk is pickable in a modal, `manual_testing: required`.
