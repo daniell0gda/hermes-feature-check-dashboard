@@ -1,69 +1,20 @@
 {
   "run_id": "issue138-norocktree-1787411442",
   "feature": "no-rock-or-tree-same-position-as-building",
-  "status": "failed",
-  "started_at": "2026-08-22T20:10:17.337Z",
-  "ended_at": "2026-08-22T22:59:09.472Z",
-  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'check', '-z', 'You are the check worker in a team-work run.\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-no-rock-or-tree-same-position-as-building.\\nT\u2026",
+  "status": "running",
+  "started_at": "2026-08-22T23:01:40.084Z",
+  "ended_at": null,
+  "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue138-norocktree-1787411442/",
-  "heartbeat_at": "2026-08-22T22:59:09.472Z",
-  "last_node": "check",
+  "heartbeat_at": "2026-08-22T23:01:40.084Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-22T22:59:05.118Z",
-  "process_id": 710129,
+  "last_event_at": null,
+  "process_id": 789587,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T22:59:09.472777+00:00",
-    "last_success_at": "2026-08-22T22:59:09.471440+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T23:01:40.084459+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 53165,
-        "output_tokens": 1620
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "estimated",
-        "input_tokens": 87368,
-        "output_tokens": 1651
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "estimated",
-        "input_tokens": 96138,
-        "output_tokens": 3659
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 67732,
-        "output_tokens": 1567
-      }
-    ]
-  }
+  "metrics": {}
 }
