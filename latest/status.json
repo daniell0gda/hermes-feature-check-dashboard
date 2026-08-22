@@ -1,36 +1,22 @@
 {
-  "run_id": "elemental-attunement-20260822",
-  "feature": "elemental-attunement",
+  "run_id": "issue-34-overcharge-capacitors-20260822-132458",
+  "feature": "overcharge-capacitors",
   "status": "running",
-  "started_at": "2026-08-22T13:26:56.620Z",
+  "started_at": "2026-08-22T13:24:58.585Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/elemental-attunement-20260822/",
-  "heartbeat_at": "2026-08-22T13:31:49.345Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-20260822-132458/",
+  "heartbeat_at": "2026-08-22T13:34:51.108Z",
   "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T13:31:49.345Z",
-  "process_id": 564047,
+  "active_node": null,
+  "last_event_at": "2026-08-22T13:34:51.108Z",
+  "process_id": 563145,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T13:31:53.986025+00:00",
-    "last_success_at": "2026-08-22T13:31:53.985403+00:00",
+    "last_attempt_at": "2026-08-22T13:34:51.109096+00:00",
+    "last_success_at": "2026-08-22T13:26:05.971061+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 132330,
-        "output_tokens": 2281
-      }
-    ]
-  }
+  "metrics": {}
 }
