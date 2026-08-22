@@ -1,21 +1,21 @@
 {
-  "run_id": "elemental-attunement-20260822",
-  "feature": "elemental-attunement",
+  "run_id": "issue-124-fix-cave-sealing-regression-r2",
+  "feature": "issue-124-fix-cave-sealing-regression-r2",
   "status": "running",
-  "started_at": "2026-08-22T09:54:12.696Z",
+  "started_at": "2026-08-22T10:10:24.745Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/elemental-attunement-20260822/",
-  "heartbeat_at": "2026-08-22T11:14:13.700Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T11:14:13.700Z",
-  "process_id": 493005,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-fix-cave-sealing-regression-r2/",
+  "heartbeat_at": "2026-08-22T11:14:27.544Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T11:14:27.544Z",
+  "process_id": 497518,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T11:14:18.282700+00:00",
-    "last_success_at": "2026-08-22T11:14:18.281656+00:00",
+    "last_attempt_at": "2026-08-22T11:14:27.545121+00:00",
+    "last_success_at": "2026-08-22T10:47:00.031364+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 124793,
-        "output_tokens": 14212
+        "input_tokens": 144271,
+        "output_tokens": 3580
       }
     ]
   }
