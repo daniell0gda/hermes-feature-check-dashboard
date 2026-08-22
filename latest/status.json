@@ -1,58 +1,22 @@
 {
-  "run_id": "issue-124-fix-cave-sealing-regression",
-  "feature": "issue-124-fix-cave-sealing-regression",
-  "status": "failed",
-  "started_at": "2026-08-22T09:18:07.215Z",
-  "ended_at": "2026-08-22T10:02:33.806Z",
+  "run_id": "perk-frozen-fracture-94",
+  "feature": "perk-frozen-fracture",
+  "status": "running",
+  "started_at": "2026-08-22T09:54:36.569Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-fix-cave-sealing-regression/",
-  "heartbeat_at": "2026-08-22T10:02:33.806Z",
-  "last_node": "check",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-frozen-fracture-94/",
+  "heartbeat_at": "2026-08-22T10:05:21.602Z",
+  "last_node": "plan",
   "active_node": null,
-  "last_event_at": "2026-08-22T10:02:29.548Z",
-  "process_id": 488246,
+  "last_event_at": "2026-08-22T10:05:21.602Z",
+  "process_id": 493095,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T10:02:33.806188+00:00",
-    "last_success_at": "2026-08-22T10:02:33.804810+00:00",
+    "last_attempt_at": "2026-08-22T10:05:21.603644+00:00",
+    "last_success_at": "2026-08-22T09:55:42.251459+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 182984,
-        "output_tokens": 9374
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 296361,
-        "output_tokens": 5575
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 213092,
-        "output_tokens": 5985
-      }
-    ]
-  }
+  "metrics": {}
 }
