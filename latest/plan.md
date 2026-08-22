@@ -1,35 +1,38 @@
-# Acceptance Plan: req-136-padding-closable-panels-close-button
-
-Closable `TitledPanel` panels reserve horizontal padding so the painted corner "x" (`CloseChip`, 90x103, flush top-right) never overlaps panel content; verified on tower details and every other closable panel (Manage Towers, Options).
+# Acceptance Plan: buried-ordnance
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://tests/ui/test_titled_panel_close_corner.tscn"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_armor_bar.tscn"] && ["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_health_bar_boss_icon.tscn"] && ["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_health_bar_oiled_icon.tscn"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]` followed by `["godot", "--headless", "--path", ".", "--check-only", "--script", "res://scripts/ui/hud/TitledPanel.gd"]`
+Run via `run_project_cmd` (project=poke-defense-godot, workspace=poke-defense-godot/issue-buried-ordnance):
 
-Note: the visual overlap claim itself cannot be proven headless. Run the existing
-`tests/scenarios/hud_other_panels.json` scenario with `-Windowed` (screenshots
-`panel_tower_details`, `panel_manage_towers`, `panel_options`) — this is the
-`manual_testing: required` path below.
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/traps_buried_ordnance_progression.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/display_damage_surface_parity.json"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
-manual_testing: required
+manual_testing: required — the chained blast is player-visible VFX; capture windowed screenshots of the chained-explosion moment.
 
 ## Clusters
 
-1. closable-panel-content-padding — files: `scripts/ui/hud/TitledPanel.gd`, `tests/ui/test_titled_panel_close_corner.gd`, `tests/ui/test_titled_panel_close_corner.tscn` — depends on: none
-- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
-- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
-- The CloseChip remains flush in the frame's top-right corner and pressing it still emits exactly one `close_requested` (existing contract preserved).
-- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
-- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
-- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
+1. buried-ordnance-perk-and-chain — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `scripts/game/actors/Trap.gd` — depends on: none
+- The `traps_buried_ordnance` perk is defined in the trap progression file as a Unique progression and is eligible and grantable through the normal progression flow used by other Uniques (eligible on a fresh run, level applied idempotently on load/replay).
+- With the perk owned at a given level, when a trap hits an underground enemy there is a chance (the level's `chance` value) for the trap to also deal explosion damage to every other underground enemy within the level's `radius` world units of the hit position.
+- Without the perk owned, a trap hit on an underground enemy deals no chained explosion damage to neighboring enemies (behavior identical to today).
+- Enemies that are not underground never receive chained explosion damage from a trap hit, regardless of distance or perk ownership.
+- Each chained blast produces a visible small-explosion effect at the affected location by reusing the existing small-explosion VFX pattern (`ExplosionFX.spawn_bazooka_explosion`, the small burst used by Bazooka/Cannon); a chained kill with no visible cue is not acceptable.
+- The chain is deterministic under a fixed seed through the game's seeded RNG sites, so a harness scenario can assert chance behavior reproducibly.
+- Debug-build `[BURIED_ORDNANCE]` log line per chained explosion event naming the triggering trap id, chance roll outcome, and number of enemies caught in the blast; absent in release builds.
+
+2. buried-ordnance-harness-scenario — files: `tests/scenarios/traps_buried_ordnance_progression.json` — depends on: 1
+- A focused harness scenario passes headless with fresh evidence (`status: pass` in `.gen/harness/traps_buried_ordnance_progression/result.json`), covering: perk eligibility/grant, chained explosion triggering on an underground trap hit within radius, and no chain on non-underground targets.
+- Windowed run of the same scenario captures screenshot checkpoint(s) at the chained-explosion moment showing the visible small-explosion VFX at the blast site.
 
 ## Criteria
 
-- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
-- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
-- The CloseChip remains flush in the frame's top-right corner and pressing it still emits exactly one `close_requested` (existing contract preserved).
-- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
-- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
-- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
+- The `traps_buried_ordnance` perk is defined in the trap progression file as a Unique progression and is eligible and grantable through the normal progression flow used by other Uniques (eligible on a fresh run, level applied idempotently on load/replay).
+- With the perk owned at a given level, when a trap hits an underground enemy there is a chance (the level's `chance` value) for the trap to also deal explosion damage to every other underground enemy within the level's `radius` world units of the hit position.
+- Without the perk owned, a trap hit on an underground enemy deals no chained explosion damage to neighboring enemies (behavior identical to today).
+- Enemies that are not underground never receive chained explosion damage from a trap hit, regardless of distance or perk ownership.
+- Each chained blast produces a visible small-explosion effect at the affected location by reusing the existing small-explosion VFX pattern (`ExplosionFX.spawn_bazooka_explosion`, the small burst used by Bazooka/Cannon); a chained kill with no visible cue is not acceptable.
+- The chain is deterministic under a fixed seed through the game's seeded RNG sites, so a harness scenario can assert chance behavior reproducibly.
+- Debug-build `[BURIED_ORDNANCE]` log line per chained explosion event naming the triggering trap id, chance roll outcome, and number of enemies caught in the blast; absent in release builds.
+- A focused harness scenario passes headless with fresh evidence (`status: pass` in `.gen/harness/traps_buried_ordnance_progression/result.json`), covering: perk eligibility/grant, chained explosion triggering on an underground trap hit within radius, and no chain on non-underground targets.
+- Windowed run of the same scenario captures screenshot checkpoint(s) at the chained-explosion moment showing the visible small-explosion VFX at the blast site.

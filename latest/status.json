@@ -1,21 +1,21 @@
 {
-  "run_id": "req-136-padding-closable-panels-close-button",
-  "feature": "padding closable panels close button",
+  "run_id": "issue-39-buried-ordnance",
+  "feature": "Traps Buried Ordnance unique perk",
   "status": "running",
-  "started_at": "2026-08-22T19:03:06.297Z",
+  "started_at": "2026-08-22T18:01:26.915Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
-  "heartbeat_at": "2026-08-22T19:05:53.487Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T19:05:53.487Z",
-  "process_id": 682907,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-39-buried-ordnance/",
+  "heartbeat_at": "2026-08-22T19:18:08.139Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T19:18:08.139Z",
+  "process_id": 660756,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T19:05:58.158807+00:00",
-    "last_success_at": "2026-08-22T19:05:58.158011+00:00",
+    "last_attempt_at": "2026-08-22T19:18:08.140844+00:00",
+    "last_success_at": "2026-08-22T18:40:01.141971+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,30 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 68713,
-        "output_tokens": 1857
+        "input_tokens": 229675,
+        "output_tokens": 7974
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 202332,
+        "output_tokens": 14025
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 110652,
+        "output_tokens": 3328
       }
     ]
   }
