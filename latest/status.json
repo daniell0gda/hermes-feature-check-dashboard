@@ -1,21 +1,21 @@
 {
-  "run_id": "req-136-padding-closable-panels-close-button",
-  "feature": "padding closable panels close button",
+  "run_id": "issue137-earth-continent-map",
+  "feature": "earth-continent-map-integration",
   "status": "running",
-  "started_at": "2026-08-22T19:38:13.668Z",
+  "started_at": "2026-08-22T19:22:39.115Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
-  "heartbeat_at": "2026-08-22T19:44:02.822Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
+  "heartbeat_at": "2026-08-22T19:46:56.117Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T19:44:02.822Z",
-  "process_id": 697063,
+  "active_node": null,
+  "last_event_at": "2026-08-22T19:46:56.117Z",
+  "process_id": 690443,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T19:44:07.417570+00:00",
-    "last_success_at": "2026-08-22T19:44:07.416711+00:00",
+    "last_attempt_at": "2026-08-22T19:46:56.118887+00:00",
+    "last_success_at": "2026-08-22T19:26:28.683621+00:00",
     "last_error": null
   },
   "metrics": {
@@ -27,20 +27,9 @@
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 60396,
-        "output_tokens": 1595
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 83715,
-        "output_tokens": 2787
+        "cost_status": "estimated",
+        "input_tokens": 100823,
+        "output_tokens": 5038
       }
     ]
   }
