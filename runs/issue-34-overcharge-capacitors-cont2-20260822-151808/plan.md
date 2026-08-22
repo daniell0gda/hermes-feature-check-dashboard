@@ -2,13 +2,13 @@
 
 ## Verification
 
-Run via `run_project_cmd` (project=poke-defense-godot, workspace=poke-defense-godot/issue-overcharge-capacitors):
+All commands run via `run_project_cmd` (project=poke-defense-godot, workspace=poke-defense-godot/issue-overcharge-capacitors):
 
 - Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/overcharge_capacitors_progression.json"]`
 - Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/display_damage_surface_parity.json"]`
 - Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
-manual_testing: none — pure numeric/stat modifier perk with no player-visible change beyond damage numbers (explicitly no new visual required).
+manual_testing: none — purely numeric/stat-modifier perk; the issue explicitly requires no new visual (pure stat modifier), and the harness scenario covers all observable behaviour headlessly.
 
 ## Clusters
 
