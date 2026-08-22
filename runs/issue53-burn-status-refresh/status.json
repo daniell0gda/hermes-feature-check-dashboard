@@ -1,12 +1,12 @@
 {
   "run_id": "issue53-burn-status-refresh",
   "feature": "burn-status-refresh-pending-damage",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-22T11:44:11.093Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T12:23:55.385Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue53-burn-status-refresh/",
-  "heartbeat_at": "2026-08-22T12:23:50.703Z",
+  "heartbeat_at": "2026-08-22T12:23:55.385Z",
   "last_node": "team-leader",
   "active_node": null,
   "last_event_at": "2026-08-22T12:23:50.703Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T12:23:50.703742+00:00",
-    "last_success_at": "2026-08-22T12:23:20.898481+00:00",
+    "last_attempt_at": "2026-08-22T12:23:55.385695+00:00",
+    "last_success_at": "2026-08-22T12:23:55.384441+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 184992,
         "output_tokens": 2769
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 24393,
+        "output_tokens": 420
       }
     ]
   }
