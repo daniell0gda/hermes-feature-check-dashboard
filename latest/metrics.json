@@ -8,8 +8,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 66237,
-      "output_tokens": 3889
+      "input_tokens": 50024,
+      "output_tokens": 1677
     }
   ]
 }
