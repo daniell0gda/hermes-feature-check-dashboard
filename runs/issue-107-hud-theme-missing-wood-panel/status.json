@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-107-hud-theme-missing-wood-panel/",
   "heartbeat_at": "2026-08-22T11:25:54.026Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
   "process_id": 517868,
   "host": "25e0b2c49eb5",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T11:25:54.026661+00:00"
+    "last_attempt_at": "2026-08-22T11:25:59.161027+00:00",
+    "last_success_at": "2026-08-22T11:25:58.543542+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
