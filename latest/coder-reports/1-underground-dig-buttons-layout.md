@@ -1,4 +1,4 @@
-# Coder report: 1-underground-dig-buttons-layout\n\n# Coder report: 1-underground-dig-buttons-layout
+# Coder report: 1-underground-dig-buttons-layout
 
 ## Changed files
 - `scripts/ui/UI.gd` — mod: `SIDE_PANEL_TOP_UNDERGROUND` -226.0 → -274.0 (underground side panel grows 48px taller upward) + comment updates.
@@ -23,4 +23,3 @@
 - Geometry: panel inner box = ItemList height minus 2×26px SidePanel content margins. Old underground height 212 − 52 = 160px inner could not fit ToggleLayer(48) + CarveRow(48) + PlaceExit(58) + separations(6+6) = 166px → buttons spilled onto the bottom frame/brackets. New top offset -274 gives 260 − 52 = 208px inner ≥ 166px.
 - The frame-overlap verdict above came from a real windowed run inside the runner (llvmpipe GL fallback), not headless.
 - Worker left running intentionally for the checker's verification pass.
-\n

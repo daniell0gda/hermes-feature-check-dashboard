@@ -1,21 +1,22 @@
-# Request: issue #101 — Underground side panel: Carve / Place Exit / Place Block overflow the wooden frame
+# Request: issue #101 — underground-side-panel-carve-place-exit-
 
-- Project key (runner): `godot-td`
-- Git workspace: `/workspace/git-workspaces/poke-defense-godot/issue-underground-side-panel-carve-place-exit-`
-- Branch: `issue/underground-side-panel-carve-place-exit-` (fresh from origin/master @ d241462)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/101
-- Labels at claim: status:in-progress, priority:medium, type:ui
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/101
+- **Project:** poke-defense-godot (runner key `godot-td`)
+- **Workspace:** `poke-defense-godot/issue-underground-side-panel-carve-place-exit-`
+  (`/workspace/git-workspaces/poke-defense-godot/issue-underground-side-panel-carve-place-exit-`)
+- **Branch:** `issue/underground-side-panel-carve-place-exit-` (cut fresh from origin/master @ d241462)
+- **Claimed:** 2026-08-22T20:26Z, assigned @me, label `status:in-progress`
 
 ## Problem
 
 `Root/ItemList/DigBtns` (`scenes/UI.tscn`) is an HBoxContainer anchored as a sibling of
-`Root/ItemList/SidePanel`, not content inside it. Its three buttons lay out over the panel and at
-287px spill past the 274px panel, covering its right corner brackets. Panel inner box is 218x119
-(margins 28/26/28/26 on 274x171). Three 48px-tall wide buttons need 164px height; side-by-side they
-get ~72px width — neither fits naively. `place_exit_btn` builds a two-line name+price child
-container at runtime (`UI.gd` `_populate_underground_buttons_with_prices`) so it needs more height.
+`Root/ItemList/SidePanel`, not content inside it. Its three buttons lay out over the panel,
+spill past the 274px frame, and cover the right-hand corner brackets. Additionally (comment 1)
+in the underground layer `DigBtns` completely covers `SideColumn/ToggleLayer` — there is no
+visible/clickable control to switch back to surface.
 
-Visible in `.gen/harness/hud_wood_panels/shots/hud_underground.png`.
+Note: `place_exit_btn` builds a two-line name+price child at runtime (`UI.gd`
+`_populate_underground_buttons_with_prices`) and needs extra height.
 
 ## Done when
 
@@ -24,13 +25,19 @@ Visible in `.gen/harness/hud_wood_panels/shots/hud_underground.png`.
 2. `place_exit_btn` still shows its price without clipping.
 3. The `hud_underground` checkpoint in `tests/scenarios/hud_wood_panels.json` shows no button
    overlapping the panel frame.
+4. The layer toggle ("Surface") remains visible and clickable in the underground layer.
 
-## Notes for workers
+## Runner notes (redo guards)
 
-- Use runner key `godot-td`, workspace `poke-defense-godot/issue-underground-side-panel-carve-place-exit-`.
-  Do NOT invent workspace names (HTTP 422 chdir failures).
-- Visible UI work → manual testing is required, windowed screenshots via the harness
-  (`--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan
-  fails in worker). Manual-tester must never use `--headless`.
-- The layout decision is ours: pick an arrangement of the three controls that fits the 218x119 inner
-  well (e.g. two stacked + one wider row, or resized buttons) while keeping price text visible.
+- Runner key is `godot-td`; workspace name is exactly
+  `poke-defense-godot/issue-underground-side-panel-carve-place-exit-`. Do not invent workspace names.
+- Windowed evidence via runner; manual testing must not be headless. Manual testing expected:
+  **required** (visible UI layout fix) with windowed PNGs of `hud_idle` + `hud_underground`,
+  plus overall ui_feels_broken sanity pass on each final screenshot.
+
+## Historical context (not implementation)
+
+An earlier unclaimed attempt fixed this same layout (DigBtns moved into SideColumn as a VBox;
+ItemList grew to 274x206) but was never merged or verified through team-work. Treat as design
+reference only; re-implement and verify from scratch on the fresh worktree. A previous pickup
+run was killed by cron inactivity timeout before implementation; the watchdog reset the claim.

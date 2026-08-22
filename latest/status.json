@@ -1,22 +1,22 @@
 {
-  "run_id": "req-136-padding-closable-panels-close-button",
-  "feature": "padding closable panels close button",
+  "run_id": "issue-101-20260822T194917Z",
+  "feature": "underground-side-panel-carve-place-exit-",
   "status": "running",
-  "started_at": "2026-08-22T20:33:24.676Z",
+  "started_at": "2026-08-22T20:21:45.912Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
-  "heartbeat_at": "2026-08-22T20:39:41.559Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-101-20260822T194917Z/",
+  "heartbeat_at": "2026-08-22T20:41:23.360Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T20:39:41.559Z",
-  "process_id": 721304,
+  "active_node": null,
+  "last_event_at": "2026-08-22T20:41:23.360Z",
+  "process_id": 713831,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T20:39:45.824138+00:00",
-    "last_success_at": "2026-08-22T20:39:45.823299+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T20:41:23.360775+00:00",
+    "last_success_at": "2026-08-22T20:32:38.904932+00:00",
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
   "metrics": {
     "invocations": [
@@ -28,19 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 58210,
-        "output_tokens": 1934
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 77949,
-        "output_tokens": 2031
+        "input_tokens": 81116,
+        "output_tokens": 6750
       }
     ]
   }
