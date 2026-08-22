@@ -1,28 +1,20 @@
-# Coder report: 1-ground-material-cache-and-map-switch\n\n# Coder report: 1-ground-material-cache-and-map-switch (revision-code-1, revision 1)
+# Coder report: implementation\n\n# Coder report: implementation (revision-code-2)
 
 ## Changed files
-- No source changes this revision. Iteration-1 implementation re-verified as-is:
-  - `scripts/utils/TextureAtlasUtils.gd` (mod, existing)
-  - `scripts/utils/EnvironmentUtils.gd` (mod, existing)
-  - `scripts/game/Game.gd` (mod, existing)
-  - `tests/scenarios/ground_material_map_switch.json` (new, existing)
+- none — no source changes this revision; all criteria were already implemented in prior iterations and re-verified green.
 
 ## Criteria
-- CACHE_MODE_REUSE for ground textures — verified (no CACHE_MODE_IGNORE in ground path).
-- Root cause documented + sampler reassignment fixed — verified (see changes.md iteration 1).
-- Non-empty grass_albedo/dirt_albedo after double map switch — verified via harness probe.
-- grass_tint reflects newly loaded map color — verified (tint = 0.309804,0.498039,0.309804 post-environment).
-- Harness scenario passes headlessly with fresh result.json status pass — verified.
-- Debug [GROUND] log per creation event naming cached vs fresh — verified in run log.
-- Fallback paths unchanged — verified (code untouched this revision).
+- All cluster 1/2/3 implementation criteria — Done (fresh verification below).
+- `-Windowed` screenshot criterion — Pending: headless-only runner cannot render windowed; requires manual-tester profile per plan's `manual_testing` note.
 
-## Commands and results
-- `["godot","--version"]` — exit 0; Godot 4.4.1.stable.
-- Focused harness: `["godot","--headless","--path",".","res://scenes/Main.tscn","--quit-after","6000","--","--harness=res://tests/scenarios/ground_material_map_switch.json"]` — exit 0; `[Harness] status=pass exit=0`; fresh `.gen/harness/ground_material_map_switch/result.json` has `"status": "pass"`, timeline map_1→map_2→map_1→map_2 all ok, expectation `__ground_shader_probe == "grass=ok dirt=ok tint=0.309804,0.498039,0.309804"` pass, log contains `[GROUND] ground material created`; every creation event logged `from_cache=map_grass.jpg,underground_floor.jpg fresh=none`.
-- Typecheck/build + full-suite gate: `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0, no script parse errors.
+## Commands and results (all via run_project_cmd, project=poke-defense-godot)
+- `["godot","--version"]` — exit 0; Godot 4.4.1.stable.official.49a5bc7b6.
+- Focused `["godot","--headless","--path",".","res://scenes/MainMenu.tscn","--","--harness=res://tests/scenarios/main_menu.json"]` — exit 0 (~14s); `.gen/harness/main_menu/result.json` rewritten fresh: status=pass, scene=res://scenes/MainMenu.tscn. Expectations all pass: menu_orbit_moving=true (source=harness), enemies.surface=2 >= 1, PlayButton.disabled=false via source=node. Boot log line observed live: `[HARNESS] booted declared scene=res://scenes/MainMenu.tscn embedded_game=true`.
+- Full regression `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/menu_backdrop_map.json"]` — exit 0 (~6s); `[Harness] status=pass exit=0`; scenario has no top-level `scene` key and boots Main.tscn unchanged.
+- Build/import gate `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0 (~10s); clean import scan, no script errors.
 
 ## Notes
-- Revision pass only: no code edits were required; all 7 criteria already satisfied by the iteration-1 implementation and re-proven with fresh runs above.
-- Advisory quality note still open (non-blocking): all shipped maps share one grassColor, so the tint assertion cannot distinguish two distinct map colors (`.gen/quality-notes.md` ground-map-tint-distinctness).
-- Pre-existing engine noise unrelated to this change: invalid UID warnings for HUD theme textures, missing GLB imports in headless dummy renderer, RID leak warnings at exit. Present before this feature too.
+- No code edits were needed for revision 2; the working tree is unchanged from the previous iteration.
+- Pre-existing benign noise in runs (not introduced by this work): invalid-UID warnings for HudTheme/UI textures, missing GLB model load errors (dummy renderer), exit-time RID leak messages from the headless dummy renderer.
+- The only outstanding item remains the manual `-Windowed` screenshot + `ui_feels_broken` sanity pass.
 \n

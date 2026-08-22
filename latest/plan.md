@@ -1,43 +1,41 @@
-# Acceptance Plan: issue-ground-material-ignores-cache
-
-Issue #115 — `TextureAtlasUtils.create_ground_plane_material` loads both ground
-textures with `ResourceLoader.CACHE_MODE_IGNORE`, bypassing the resource cache
-and defeating the `AssetPreloader` startup preload of
-`res://textures/underground_floor.jpg`. Switch to `CACHE_MODE_REUSE`, but only
-after finding the real cause of the "shader-only" map-switch bug the current
-comment blames on caching (likely `EnvironmentUtils._update_ground_plane_color`
-reassigning only `grass_tint`, never the albedo samplers).
-
-manual_testing: required
+# Acceptance Plan: issue-108-harness-non-game-scene
 
 ## Verification
 
-- Focused test: `run_project_cmd ["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/ground_material_map_switch.json"]`
-- Full test: `run_project_cmd ["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
-- Typecheck/build: `run_project_cmd ["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+- Focused test: `run_project_cmd project=godot-td workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene cmd=["godot","--headless","--path",".","res://scenes/MainMenu.tscn","--","--harness=res://tests/scenarios/main_menu.json"]`
+- Full test: `run_project_cmd project=godot-td workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/menu_backdrop_map.json"]`
+- Typecheck/build: `run_project_cmd project=godot-td workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene cmd=["godot","--headless","--path",".","--editor","--quit-after","300"]`
 
-(The focused-test scenario `ground_material_map_switch.json` is created by this
-feature under `tests/scenarios/`; it loads a map, switches maps at least twice,
-and asserts the ground ShaderMaterial still carries non-empty `grass_albedo`,
-`dirt_albedo`, and `grass_tint` shader parameters after each switch.)
+manual_testing: required — player-facing main menu over the live 3D backdrop needs a `-Windowed` screenshot plus a UI-sanity pass (`ui_feels_broken: yes|no`).
 
 ## Clusters
 
-1. ground-material-cache-and-map-switch — files: `scripts/utils/TextureAtlasUtils.gd`, `scripts/utils/EnvironmentUtils.gd`, `tests/scenarios/ground_material_map_switch.json` — depends on: none
-- Ground plane material textures are loaded with `ResourceLoader.CACHE_MODE_REUSE` (cache-honouring), not `CACHE_MODE_IGNORE`.
-- The root cause of the original "shader-only" ground appearance on map switch is documented (in the PR/change notes) and, if it is missing sampler reassignment in `EnvironmentUtils._update_ground_plane_color`, fixed.
-- After loading a map whose ground uses the grass/dirt blend shader material, switching to another map and back twice leaves the ground plane's ShaderMaterial with non-empty `grass_albedo` and `dirt_albedo` texture parameters (asserted via the AgentHarness scenario).
-- After the same double map switch, the `grass_tint` parameter reflects the newly loaded map's configured grass color rather than a stale color from the previous map.
-- The harness scenario passes headlessly with fresh `.gen/harness/ground_material_map_switch/result.json` status `pass`.
-- Debug-build `[GROUND]` log line per ground material creation event, naming which textures were assigned from cache versus freshly loaded.
-- No regression in the fallback paths: when either texture or the blend shader is absent, `create_ground_plane_material` still returns a usable material (existing Grass.png tile / StandardMaterial3D fallbacks unchanged).
+1. scenario-scene-selection — files: `scripts/testing/HarnessScenario.gd`, `.claude/skills/game-test/scripts/Run-Scenario.ps1`, `scripts/testing/AgentHarness.gd` — depends on: none
+- A scenario JSON with no top-level `scene` key boots `res://scenes/Main.tscn`, preserving all existing game-scenario behaviour.
+- A scenario JSON that declares a `scene` value boots that scene as the harness's current scene.
+- The PowerShell wrapper forwards the scenario's declared scene to Godot instead of always launching `res://scenes/Main.tscn`.
+- When the declared scene is loaded, the harness stops waiting for boot once the declared scene is current and does not require a `Game` child with live placement; game-dependent actions on such a run fail their own action rather than timing out the whole run at boot.
+2. node-path-value-source — files: `scripts/testing/HarnessValues.gd` — depends on: none
+- A value source resolves a named property of any node addressed by NodePath relative to the current scene root.
+- A dotted field name digs into the returned property value (e.g. transform components) instead of failing.
+- A missing node path, missing property, or failed dig produces an explicit failed expectation record, never a silent default value.
+3. main-menu-scenario — files: `tests/scenarios/main_menu.json` — depends on: 1, 2
+- A `main_menu` scenario boots `res://scenes/MainMenu.tscn` headlessly and finishes with status `pass`.
+- After two camera probes separated by a multi-second wait, the menu backdrop camera's orbit is reported as moving.
+- The menu backdrop world reports at least one enemy on the surface layer within the scenario budget.
+- The menu Play button is reported enabled via the node-path value source, without adding test-only methods to production code.
 
 ## Criteria
 
-- Ground plane material textures are loaded with `ResourceLoader.CACHE_MODE_REUSE` (cache-honouring), not `CACHE_MODE_IGNORE`.
-- The root cause of the original "shader-only" ground appearance on map switch is documented (in the PR/change notes) and, if it is missing sampler reassignment in `EnvironmentUtils._update_ground_plane_color`, fixed.
-- After loading a map whose ground uses the grass/dirt blend shader material, switching to another map and back twice leaves the ground plane's ShaderMaterial with non-empty `grass_albedo` and `dirt_albedo` texture parameters (asserted via the AgentHarness scenario).
-- After the same double map switch, the `grass_tint` parameter reflects the newly loaded map's configured grass color rather than a stale color from the previous map.
-- The harness scenario passes headlessly with fresh `.gen/harness/ground_material_map_switch/result.json` status `pass`.
-- Debug-build `[GROUND]` log line per ground material creation event, naming which textures were assigned from cache versus freshly loaded.
-- No regression in the fallback paths: when either texture or the blend shader is absent, `create_ground_plane_material` still returns a usable material (existing Grass.png tile / StandardMaterial3D fallbacks unchanged).
+- A scenario JSON with no top-level `scene` key boots `res://scenes/Main.tscn`, preserving all existing game-scenario behaviour.
+- A scenario JSON that declares a `scene` value boots that scene as the harness's current scene.
+- The PowerShell wrapper forwards the scenario's declared scene to Godot instead of always launching `res://scenes/Main.tscn`.
+- When the declared scene is loaded, the harness stops waiting for boot once the declared scene is current and does not require a `Game` child with live placement; game-dependent actions on such a run fail their own action rather than timing out the whole run at boot.
+- A value source resolves a named property of any node addressed by NodePath relative to the current scene root.
+- A dotted field name digs into the returned property value (e.g. transform components) instead of failing.
+- A missing node path, missing property, or failed dig produces an explicit failed expectation record, never a silent default value.
+- A `main_menu` scenario boots `res://scenes/MainMenu.tscn` headlessly and finishes with status `pass`.
+- After two camera probes separated by a multi-second wait, the menu backdrop camera's orbit is reported as moving.
+- The menu backdrop world reports at least one enemy on the surface layer within the scenario budget.
+- The menu Play button is reported enabled via the node-path value source, without adding test-only methods to production code.
+- Debug-build [HARNESS] log line per declared-scene boot, naming the booted scene path and whether an embedded Game world was found.
