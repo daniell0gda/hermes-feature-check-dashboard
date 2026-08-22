@@ -1,22 +1,20 @@
 {
-  "run_id": "issue137-earth-continent-map",
-  "feature": "earth-continent-map-integration",
+  "run_id": "perk-siege-breaker-92-run1",
+  "feature": "perk-siege-breaker",
   "status": "running",
-  "started_at": "2026-08-22T20:29:07.265Z",
+  "started_at": "2026-08-22T20:30:16.359Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-22T20:29:07.265Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-siege-breaker-92-run1/",
+  "heartbeat_at": "2026-08-22T20:30:16.359Z",
   "last_node": null,
-  "active_node": "plan",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 717779,
+  "process_id": 718602,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T20:29:12.067719+00:00",
-    "last_success_at": "2026-08-22T20:29:11.566456+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T20:30:16.359655+00:00"
   },
   "metrics": {}
 }

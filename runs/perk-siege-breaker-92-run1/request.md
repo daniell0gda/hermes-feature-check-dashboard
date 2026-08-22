@@ -4,7 +4,7 @@
 - **Workspace:** /workspace/git-workspaces/poke-defense-godot/issue-perk-siege-breaker
 - **Branch:** issue/perk-siege-breaker (cut from origin/master @ d241462)
 - **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/92
-- **Request ID:** perk-siege-breaker-92-run1
+- **Request ID:** perk-siege-breaker-92-run1 (restarted after external workspace wipe at 20:22; prior run's plan artifacts were destroyed, not superseded)
 
 ## Feature
 
@@ -25,7 +25,7 @@ Progression: Siege Breaker perk (Unique, Cannon only, 3 levels) — Cannon's own
 
 ## Historical context
 
-Fresh claim; no prior attempt on this branch.
+First run (same request-id) was aborted when the workspace directory was externally wiped mid-run (~20:22 UTC) while plan/code phases were underway. Worktree was recreated fresh from origin/master. Treat all earlier artifacts as lost.
 
 ## Manual testing expectation
 
