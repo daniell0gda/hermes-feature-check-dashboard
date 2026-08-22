@@ -1,22 +1,47 @@
 {
-  "run_id": "issue137-earth-continent-map",
-  "feature": "earth-continent-map-integration",
+  "run_id": "nature-decoration-counts-r1",
+  "feature": "nature-decoration-counts",
   "status": "running",
-  "started_at": "2026-08-22T22:56:15.876Z",
+  "started_at": "2026-08-22T21:55:26.841Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-22T22:56:15.876Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
-  "process_id": 788449,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/nature-decoration-counts-r1/",
+  "heartbeat_at": "2026-08-22T22:58:48.730Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T22:58:48.730Z",
+  "process_id": 769237,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T22:56:21.030115+00:00",
-    "last_success_at": "2026-08-22T22:56:20.520604+00:00",
+    "last_attempt_at": "2026-08-22T22:58:48.730930+00:00",
+    "last_success_at": "2026-08-22T22:49:15.089133+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 108619,
+        "output_tokens": 4368
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 135730,
+        "output_tokens": 7737
+      }
+    ]
+  }
 }
