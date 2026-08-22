@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-128-tower-details-blinks-on-mode-arm/",
-  "heartbeat_at": "2026-08-22T08:15:55.682Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T08:15:55.682Z",
+  "heartbeat_at": "2026-08-22T08:26:29.974Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T08:26:29.974Z",
   "process_id": 469202,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T08:15:59.958131+00:00",
-    "last_success_at": "2026-08-22T08:15:59.957110+00:00",
+    "last_attempt_at": "2026-08-22T08:26:29.975814+00:00",
+    "last_success_at": "2026-08-22T08:16:04.422382+00:00",
     "last_error": null
   },
   "metrics": {
