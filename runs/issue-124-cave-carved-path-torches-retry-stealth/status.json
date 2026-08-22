@@ -1,12 +1,12 @@
 {
   "run_id": "issue-124-cave-carved-path-torches-retry-stealth",
   "feature": "cave-carved-path-torches-retry-stealth",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-22T05:55:27.428Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T06:59:55.289Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-cave-carved-path-torches-retry-stealth/",
-  "heartbeat_at": "2026-08-22T06:59:50.223Z",
+  "heartbeat_at": "2026-08-22T06:59:55.289Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-22T06:59:50.223Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T06:59:50.223736+00:00",
-    "last_success_at": "2026-08-22T06:51:48.789053+00:00",
+    "last_attempt_at": "2026-08-22T06:59:55.289066+00:00",
+    "last_success_at": "2026-08-22T06:59:55.287216+00:00",
     "last_error": null
   },
   "metrics": {
@@ -63,6 +63,17 @@
         "cost_status": "unknown",
         "input_tokens": 40806,
         "output_tokens": 431
+      },
+      {
+        "task_id": "manual-tester",
+        "cluster_id": null,
+        "role": "manual-tester",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 170702,
+        "output_tokens": 6364
       }
     ]
   }
