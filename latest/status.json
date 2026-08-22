@@ -1,12 +1,12 @@
 {
   "run_id": "issue-106-20260822-203808",
   "feature": "harness-cannot-reach-runtime-modals",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-22T20:38:08.751Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T21:39:53.070Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-106-20260822-203808/",
-  "heartbeat_at": "2026-08-22T21:39:48.545Z",
+  "heartbeat_at": "2026-08-22T21:39:53.070Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-22T21:39:48.545Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:39:48.545277+00:00",
-    "last_success_at": "2026-08-22T21:35:42.050957+00:00",
+    "last_attempt_at": "2026-08-22T21:39:53.070277+00:00",
+    "last_success_at": "2026-08-22T21:39:53.069037+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 229590,
         "output_tokens": 25619
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 125462,
+        "output_tokens": 5326
       }
     ]
   }
