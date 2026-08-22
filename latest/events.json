@@ -16,5 +16,14 @@
     "duration_ms": 986709,
     "summary": "## Summary\n\n**Task:** Cluster `1-underground-dig-buttons-layout` \u2014 make the three underground side-panel controls (Carve, Place Block, Place Exit) fit inside the wooden frame on `/workspace/git-workspaces/poke-defense-godot/issue-undergroun\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-22T20:20:58.712Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 427592,
+    "summary": "Check complete. Classification: **fixable**.\n\nVerified done: 0. Pending: 6 \u2014 6 due to build/test failures (the single implementation change, `scripts/ui/UI.gd`, has four GDScript parse errors: `Control.SIDE_LEFT/TOP/RIGHT/BOTTOM` don't exis\u2026",
+    "error": null
   }
 ]
