@@ -47,3 +47,23 @@ planet instead of belonging to it.
 - Check `scenes/Game.tscn` / how `BackdropEarth.configure_for_map()` is invoked for map size.
 - Manual testing gate: this is visible world work → manual-tester with windowed screenshots
   is required.
+
+## Revision feedback (Daniel, after screenshot review of iteration 2)
+
+Screenshot review of the grounded build shows two defects that ARE required scope:
+
+1. **Globe not visible near the map.** `_place_earth_grounded()` places the rig at
+   `pos=(-21.2, -83.2, -51.76)` — sunk a full body radius below the plane AND pushed
+   ~52 units behind the board. It is entirely out of camera frame and buried under
+   the ground. The globe must be raised and brought close so its horizon wraps the
+   visible play area.
+2. **The issue's core goal still missing visually.** The map renders as an isolated
+   floating tile against plain sky; no continent terrain reads around/underneath the
+   board. Flush placement on Continent_Africa must be visible from the normal gameplay
+   camera: continent fills the space around/under the field, no floating gap.
+
+Also required (carried over):
+3. Update `tests/scenarios/backdrop_earth_visible.json` (+ glint scenario) expectations
+   for the grounded configuration so the harness can pass legitimately.
+4. Windowed screenshot evidence from the normal gameplay camera proving 1–2 are fixed,
+   plus rotation-invariance (globe does not rotate).

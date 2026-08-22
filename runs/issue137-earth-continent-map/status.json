@@ -1,58 +1,20 @@
 {
   "run_id": "issue137-earth-continent-map",
   "feature": "earth-continent-map-integration",
-  "status": "failed",
-  "started_at": "2026-08-22T18:13:21.089Z",
-  "ended_at": "2026-08-22T19:02:28.746Z",
+  "status": "running",
+  "started_at": "2026-08-22T19:22:39.115Z",
+  "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-22T19:02:28.746Z",
-  "last_node": "check",
+  "heartbeat_at": "2026-08-22T19:22:39.115Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-22T19:02:24.355Z",
-  "process_id": 663664,
+  "last_event_at": null,
+  "process_id": 690443,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T19:02:28.746679+00:00",
-    "last_success_at": "2026-08-22T19:02:28.745367+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T19:22:39.115096+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 102215,
-        "output_tokens": 6755
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 191744,
-        "output_tokens": 6931
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 108444,
-        "output_tokens": 4573
-      }
-    ]
-  }
+  "metrics": {}
 }
