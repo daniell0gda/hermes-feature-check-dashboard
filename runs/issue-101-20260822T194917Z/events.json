@@ -25,5 +25,14 @@
     "duration_ms": 324786,
     "summary": "Check complete. Artifacts written:\n\n- /workspace/git-workspaces/poke-defense-godot/issue-underground-side-panel-carve-place-exit-/.gen/check.md\n- /workspace/git-workspaces/poke-defense-godot/issue-underground-side-panel-carve-place-exit-/.g\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-22T21:01:25.519Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 868208,
+    "summary": "The `release_project_worker` action isn't exposed as a separate tool in this session (only `run_project_cmd` is available from the runner plugin), so I could not explicitly release the worker; all project commands completed through the runn\u2026",
+    "error": null
   }
 ]
