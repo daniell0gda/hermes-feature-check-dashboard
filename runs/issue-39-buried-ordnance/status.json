@@ -1,12 +1,12 @@
 {
   "run_id": "issue-39-buried-ordnance",
   "feature": "Traps Buried Ordnance unique perk",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-22T14:11:03.477Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T15:17:52.189Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-39-buried-ordnance/",
-  "heartbeat_at": "2026-08-22T15:17:47.960Z",
+  "heartbeat_at": "2026-08-22T15:17:52.189Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-22T15:17:47.960Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:17:47.960782+00:00",
-    "last_success_at": "2026-08-22T15:17:31.951576+00:00",
+    "last_attempt_at": "2026-08-22T15:17:52.189180+00:00",
+    "last_success_at": "2026-08-22T15:17:52.188162+00:00",
     "last_error": null
   },
   "metrics": {
@@ -35,6 +35,17 @@
         "task_id": "code",
         "cluster_id": "implementation",
         "role": "code",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
         "model": null,
         "model_tier": null,
         "cost_usd": null,
