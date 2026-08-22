@@ -16,5 +16,14 @@
     "duration_ms": 1987463,
     "summary": "Implementation cluster work is complete. Summary:\n\n**State:** The full static_breach implementation (perk definition, charge runtime, VFX, and 4 harness scenarios) was already present in the worktree from iteration 1; this pass re-verified \u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-22T08:44:43.718Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 361760,
+    "summary": "Check complete. Artifacts written to .gen/check.md, .gen/status.md, and .gen/quality-notes.md.\n\nVerified done: 14. Pending: 1 \u2014 0 due to build/test failures (typecheck/build gate exit 0; all four static_breach harness scenarios plus enemy_a\u2026",
+    "error": null
   }
 ]
