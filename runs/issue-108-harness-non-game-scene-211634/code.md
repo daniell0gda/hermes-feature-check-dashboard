@@ -1,19 +1,38 @@
-# Coder report: implementation\n\n# Coder report: implementation (iteration 3 — pending criterion fix)
+# Coder report: implementation\n\n# Coder report: implementation (revision 1)
 
 ## Changed files
-- `scripts/testing/AgentHarness.gd` — `_await_game()` prints a debug-build `[HARNESS] booted declared scene=<path> embedded_game=<bool>` line once a scenario-declared scene is current, reporting whether `HarnessScenario.find_game_world()` found an embedded Game world.
+- None — no source changes this revision. Working tree diff unchanged from the
+  previous iteration:
+  - `scripts/testing/HarnessScenario.gd` (mod)
+  - `scripts/testing/AgentHarness.gd` (mod)
+  - `scripts/testing/HarnessValues.gd` (mod)
+  - `.claude/skills/game-test/scripts/Run-Scenario.ps1` (mod)
+  - `tests/scenarios/main_menu.json` (new)
 
 ## Criteria
-- Debug-build [HARNESS] log line per declared-scene boot, naming the booted scene path and whether an embedded Game world was found — Done
+All cluster-implementation criteria remain Done on fresh evidence. The only
+Pending item in status.md (`-Windowed` screenshot of menu over backdrop) needs
+the manual tester profile per the plan's manual_testing note — it cannot be
+produced by the headless-only runner, so nothing to redo in code.
 
-## Commands and results
-- Preflight: `["godot","--version"]` via run_project_cmd (project=godot-td, workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene) — exit 0, Godot 4.4.1.stable.
-- Focused test: `godot --headless --path . res://scenes/MainMenu.tscn -- --harness=res://tests/scenarios/main_menu.json` — exit 0; fresh `.gen/harness/main_menu/result.json`: status=pass, scene=res://scenes/MainMenu.tscn; expectations menu_orbit_moving=true, enemies.surface=3>=1, node PlayButton.disabled=false all pass. Log contains the new line: `[HARNESS] booted declared scene=res://scenes/MainMenu.tscn embedded_game=true`.
-- Full test: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/menu_backdrop_map.json` — exit 0; `[Harness] status=pass exit=0`; no boot log line on default-scene path (by design).
-- Typecheck/build: `godot --headless --path . --editor --quit-after 300` — exit 0 (~9s), no parse errors.
+## Commands and results (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene)
+
+- Build/import gate: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
+  → exit 0 (~11s), clean scan, no parse errors.
+- Focused: `["godot","--headless","--path",".","res://scenes/MainMenu.tscn","--","--harness=res://tests/scenarios/main_menu.json"]`
+  → exit 0 (~14s); `.gen/harness/main_menu/result.json`: status=pass,
+  scene=res://scenes/MainMenu.tscn, elapsed 12.2s.
+  Expectations: menu_orbit_moving=true (harness), enemies.surface=4>=1,
+  PlayButton.disabled=false via source=node. Boot log line observed:
+  `[HARNESS] booted declared scene=res://scenes/MainMenu.tscn embedded_game=true`.
+- Full regression: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/menu_backdrop_map.json"]`
+  → exit 0 (~7s); `[Harness] status=pass exit=0`; scenario has no top-level
+  `scene` key and booted Main.tscn unchanged.
 
 ## Notes
-- The print lives only inside the declared-scene branch of `_await_game()`, gated on `OS.is_debug_build()`, so existing game-scenario runs are unchanged and stay quiet.
-- Remaining Pending item in status.md (windowed screenshot) requires a manual `-Windowed` run per plan's manual_testing note — not executable headlessly.
-- No production (non-testing) code touched; no dashboard events published.
+- No failed criteria to redo; revisions.md budget used for fresh verification
+  only.
+- Remaining work is outside code scope: manual `-Windowed` run +
+  ui_feels_broken pass (manual-report.md).
 \n

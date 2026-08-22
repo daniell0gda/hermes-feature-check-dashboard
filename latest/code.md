@@ -1,26 +1,38 @@
-# Coder report: 1-ground-material-cache-and-map-switch\n\n# Coder report: 1-ground-material-cache-and-map-switch
+# Coder report: implementation\n\n# Coder report: implementation (revision 1)
 
 ## Changed files
-- `scripts/utils/TextureAtlasUtils.gd` — modified: ground textures load via new `_load_ground_texture` helper with `ResourceLoader.CACHE_MODE_REUSE` (was `CACHE_MODE_IGNORE`); debug-build `[GROUND]` log per material creation naming cache-hit vs fresh textures; fallback paths (Grass.png tile / StandardMaterial3D) untouched.
-- `scripts/utils/EnvironmentUtils.gd` — modified: `_update_ground_plane_color` now re-asserts `grass_albedo`/`dirt_albedo` samplers (via CACHE_MODE_REUSE) when missing on the ground ShaderMaterial; fixed the pre-existing misindented grass_tint block. Root cause of "shader-only" bug: only the tint was reassigned on map switch, never the samplers — documented here and in changes.md.
-- `scripts/game/Game.gd` — modified: added harness-only probe var `__ground_shader_probe`, `_refresh_ground_shader_probe()` called after ground build and after environment visuals in `debug_load_map`.
-- `tests/scenarios/ground_material_map_switch.json` — new: loads map_1 → map_2 → map_1 → map_2, asserts probe string and `[GROUND]` log line.
+- None — no source changes this revision. Working tree diff unchanged from the
+  previous iteration:
+  - `scripts/testing/HarnessScenario.gd` (mod)
+  - `scripts/testing/AgentHarness.gd` (mod)
+  - `scripts/testing/HarnessValues.gd` (mod)
+  - `.claude/skills/game-test/scripts/Run-Scenario.ps1` (mod)
+  - `tests/scenarios/main_menu.json` (new)
 
 ## Criteria
-- CACHE_MODE_REUSE for ground textures — Done
-- Root cause documented + sampler reassignment fix in EnvironmentUtils — Done
-- Non-empty grass_albedo/dirt_albedo after double map switch (harness) — Done
-- grass_tint reflects newly loaded map color — Done
-- Harness scenario passes headlessly, result.json status pass — Done
-- Debug `[GROUND]` log per material creation — Done
-- Fallback paths unchanged / still usable — Done (code untouched; blend shader path exercised by scenario)
+All cluster-implementation criteria remain Done on fresh evidence. The only
+Pending item in status.md (`-Windowed` screenshot of menu over backdrop) needs
+the manual tester profile per the plan's manual_testing note — it cannot be
+produced by the headless-only runner, so nothing to redo in code.
 
-## Commands and results
-- `godot --headless --path . --editor --quit-after 300` — exit 0; no parse errors (typecheck/build)
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/ground_material_map_switch.json` (with `--quit-after 6000`) — exit 0; `[Harness] status=pass exit=0`; `.gen/harness/ground_material_map_switch/result.json` status `pass`; expectations: probe `grass=ok dirt=ok tint=0.309804,0.498039,0.309804` pass; log contains `[GROUND] ground material created` pass. Run logs show every creation event reports `from_cache=map_grass.jpg,underground_floor.jpg fresh=none`.
+## Commands and results (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene)
+
+- Build/import gate: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
+  → exit 0 (~11s), clean scan, no parse errors.
+- Focused: `["godot","--headless","--path",".","res://scenes/MainMenu.tscn","--","--harness=res://tests/scenarios/main_menu.json"]`
+  → exit 0 (~14s); `.gen/harness/main_menu/result.json`: status=pass,
+  scene=res://scenes/MainMenu.tscn, elapsed 12.2s.
+  Expectations: menu_orbit_moving=true (harness), enemies.surface=4>=1,
+  PlayButton.disabled=false via source=node. Boot log line observed:
+  `[HARNESS] booted declared scene=res://scenes/MainMenu.tscn embedded_game=true`.
+- Full regression: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/menu_backdrop_map.json"]`
+  → exit 0 (~7s); `[Harness] status=pass exit=0`; scenario has no top-level
+  `scene` key and booted Main.tscn unchanged.
 
 ## Notes
-- All shipped maps share grassColor 5209935 = Color(0.309804, 0.498039, 0.309804), so the tint assertion uses that value; a future map with a distinct color would need the expected string updated.
-- The probe is refreshed twice per map load: once right after `_build_ground_plane` (tint is still the Game.gd vivid-green default at that point) and again after `apply_environment_visuals_from_config` applies the map's configured grassColor. Expectations read the post-environment value.
-- Pre-existing noisy-but-harmless errors remain in the log (`Signal 'layer_changed' is already connected`, missing GLB imports) — unrelated to this change.
+- No failed criteria to redo; revisions.md budget used for fresh verification
+  only.
+- Remaining work is outside code scope: manual `-Windowed` run +
+  ui_feels_broken pass (manual-report.md).
 \n

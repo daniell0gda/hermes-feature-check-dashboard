@@ -25,5 +25,14 @@
     "duration_ms": 205094,
     "summary": "Check complete. Summary:\n\nVerified done: 10. Pending: 1 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations (the single Pending item is the `-Windowed` screenshot criterion requiring the manual-tester prof\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-22T22:19:49.524Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 328744,
+    "summary": "Revision complete. Summary:\n\n- No code changes were required this revision: the check verdict was \"fixable\" only because of the manual `-Windowed` screenshot item, which is outside code scope (headless-only runner cannot render windowed). A\u2026",
+    "error": null
   }
 ]
