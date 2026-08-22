@@ -1,20 +1,22 @@
 {
-  "run_id": "issue138-norocktree-1787411442",
-  "feature": "no-rock-or-tree-same-position-as-building",
+  "run_id": "issue130-underground-carve-topdown-camera-rotation",
+  "feature": "underground-carve-topdown-camera-rotation",
   "status": "running",
-  "started_at": "2026-08-22T15:10:43.314Z",
+  "started_at": "2026-08-22T14:56:55.786Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue138-norocktree-1787411442/",
-  "heartbeat_at": "2026-08-22T15:10:43.315Z",
-  "last_node": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue130-underground-carve-topdown-camera-rotation/",
+  "heartbeat_at": "2026-08-22T15:11:08.011Z",
+  "last_node": "plan",
   "active_node": null,
-  "last_event_at": null,
-  "process_id": 608659,
+  "last_event_at": "2026-08-22T15:11:08.011Z",
+  "process_id": 603064,
   "host": "25e0b2c49eb5",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:10:43.315067+00:00"
+    "last_attempt_at": "2026-08-22T15:11:08.012417+00:00",
+    "last_success_at": "2026-08-22T14:57:05.174281+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
