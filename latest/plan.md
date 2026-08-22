@@ -1,33 +1,28 @@
-# Acceptance Plan: earth-continent-map-integration
-
-manual_testing: required
+# Acceptance Plan: underground-side-panel-carve-place-exit-
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/backdrop_earth_visible.json"]`
-- Full test: `["python3", "-c", "\nimport glob, json, subprocess, sys\nfails = []\nfor s in sorted(glob.glob('tests/scenarios/*.json')):\n    subprocess.run(['godot', '--headless', '--path', '.', 'res://scenes/Main.tscn', '--', '--harness=res://' + s])\n    try:\n        ok = json.load(open('.gen/harness/' + json.load(open(s))['id'] + '/result.json'))['status'] == 'pass'\n    except Exception:\n        ok = False\n    print(s, 'PASS' if ok else 'FAIL')\n    if not ok:\n        fails.append(s)\nsys.exit(1 if fails else 0)\n"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+- Focused test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-underground-side-panel-carve-place-exit-` cmd=`["godot", "--path", ".", "res://scenes/Main.tscn", "--windowed", "--resolution", "1280x720", "--", "--harness=res://tests/scenarios/hud_wood_panels.json"]`
+- Full test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-underground-side-panel-carve-place-exit-` cmd=`["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_underground_visible.json"]`
+- Typecheck/build: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-underground-side-panel-carve-place-exit-` cmd=`["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
 ## Clusters
 
-1. grounded-continent-placement — files: `scripts/game/visuals/BackdropEarth.gd` — depends on: none
-- The grounded configuration names exactly one continent mesh from `models/stylized_earth_in_clouds.glb`, and a debug-build warning is emitted if that mesh is absent from the instantiated model.
-- After `configure_for_map` on a surface map, the chosen continent's terrain apex sits flush at the playable plane height (harness `backdrop_earth_center_y == 0`) with no floating gap between board and globe surface.
-- The globe rig pose places the globe body close enough to the board that its horizon lies inside the normal gameplay camera's view frustum (not sunk below the plane nor pushed far behind the board).
-- In the grounded configuration the earth spin never starts: the earth body's world transform sampled at two times several seconds apart is identical.
-- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent and the final rig position/scale/rotation.
-2. backdrop-regression-and-harness-contract — files: `tests/scenarios/backdrop_earth_visible.json`, `tests/scenarios/backdrop_earth_glint.json` — depends on: 1
-- The focused harness scenarios `backdrop_earth_visible` and `backdrop_earth_glint` both pass headless with all their expectations green (present, grounded, flush placement, rotation invariance).
-- From the normal gameplay camera in the windowed build, other continents, ocean, cloud banks, and the atmosphere rim remain visible; only the previously hidden mesh prefixes stay hidden, with no visual regressions to the backdrop look.
-- A windowed run of `backdrop_earth_visible` produces a surface screenshot from the default gameplay camera showing the map sitting on the chosen continent with surrounding continent terrain blending in scale and color into the map field.
+1. underground-side-panel-layout — files: `scenes/UI.tscn`, `scripts/ui/UI.gd`, `tests/scenarios/hud_wood_panels.json` — depends on: none
+- On map_1 with the underground layer active, the Carve, Place Block, and Place Exit buttons each render entirely inside the side panel frame, with no part extending past the frame edges or covering its corner brackets.
+- On a map where Porter is unlocked, with the underground layer active, the same three buttons render entirely inside the side panel frame clear of its corner brackets.
+- The Place Exit button displays its runtime-built name+price content fully, with neither line clipped or truncated by the button or the panel.
+- In the underground layer, the layer toggle button is visible inside the side panel and pressing it switches the game back to the surface layer (GameState.current_layer == "surface").
+- A windowed `hud_wood_panels` harness run reports a passing `hud_underground` checkpoint that verifies none of the three underground buttons' rects overlap the side panel frame or its corner brackets.
+- Surface-layer side panel behaviour is unchanged: on map_1 the surface shot checkpoints of `hud_wood_panels` still pass with the existing surface controls laid out as before.
+
+manual_testing: required
 
 ## Criteria
 
-- The grounded configuration names exactly one continent mesh from `models/stylized_earth_in_clouds.glb`, and a debug-build warning is emitted if that mesh is absent from the instantiated model.
-- After `configure_for_map` on a surface map, the chosen continent's terrain apex sits flush at the playable plane height (harness `backdrop_earth_center_y == 0`) with no floating gap between board and globe surface.
-- The globe rig pose places the globe body close enough to the board that its horizon lies inside the normal gameplay camera's view frustum (not sunk below the plane nor pushed far behind the board).
-- In the grounded configuration the earth spin never starts: the earth body's world transform sampled at two times several seconds apart is identical.
-- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent and the final rig position/scale/rotation.
-- The focused harness scenarios `backdrop_earth_visible` and `backdrop_earth_glint` both pass headless with all their expectations green (present, grounded, flush placement, rotation invariance).
-- From the normal gameplay camera in the windowed build, other continents, ocean, cloud banks, and the atmosphere rim remain visible; only the previously hidden mesh prefixes stay hidden, with no visual regressions to the backdrop look.
-- A windowed run of `backdrop_earth_visible` produces a surface screenshot from the default gameplay camera showing the map sitting on the chosen continent with surrounding continent terrain blending in scale and color into the map field.
+- On map_1 with the underground layer active, the Carve, Place Block, and Place Exit buttons each render entirely inside the side panel frame, with no part extending past the frame edges or covering its corner brackets.
+- On a map where Porter is unlocked, with the underground layer active, the same three buttons render entirely inside the side panel frame clear of its corner brackets.
+- The Place Exit button displays its runtime-built name+price content fully, with neither line clipped or truncated by the button or the panel.
+- In the underground layer, the layer toggle button is visible inside the side panel and pressing it switches the game back to the surface layer (GameState.current_layer == "surface").
+- A windowed `hud_wood_panels` harness run reports a passing `hud_underground` checkpoint that verifies none of the three underground buttons' rects overlap the side panel frame or its corner brackets.
+- Surface-layer side panel behaviour is unchanged: on map_1 the surface shot checkpoints of `hud_wood_panels` still pass with the existing surface controls laid out as before.
