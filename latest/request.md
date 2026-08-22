@@ -1,40 +1,43 @@
-# Request: towers-bar-slot-row-overflow-margin (issue #105)
+# Request: issue #101 — underground-side-panel-carve-place-exit-
 
-- Project: poke-defense-godot
-- Git workspace: /workspace/git-workspaces/poke-defense-godot/issue-towers-bar-slot-row-overflow-margin
-- Runner key: `godot-td`, workspace `poke-defense-godot/issue-towers-bar-slot-row-overflow-margin` (never invent other workspace names — wrong names cause HTTP 422)
-- Branch: issue/towers-bar-slot-row-overflow-margin (cut from origin/master d241462)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/105
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/101
+- **Project:** poke-defense-godot (runner key `godot-td`)
+- **Workspace:** `poke-defense-godot/issue-underground-side-panel-carve-place-exit-`
+  (`/workspace/git-workspaces/poke-defense-godot/issue-underground-side-panel-carve-place-exit-`)
+- **Branch:** `issue/underground-side-panel-carve-place-exit-` (cut fresh from origin/master @ d241462)
+- **Claimed:** 2026-08-22T20:26Z, assigned @me, label `status:in-progress`
 
 ## Problem
 
-The surface tower slot row (Root/ButtonsContainer/Panel/BarRow/TowerButtons, an HBoxContainer by
-design — must NOT become a flow container; see comment on `tower_buttons_container` in
-`scripts/ui/UI.gd`) fits 12 towers with only 14px of headroom at the 1920 logical viewport:
+`Root/ItemList/DigBtns` (`scenes/UI.tscn`) is an HBoxContainer anchored as a sibling of
+`Root/ItemList/SidePanel`, not content inside it. Its three buttons lay out over the panel,
+spill past the 274px frame, and cover the right-hand corner brackets. Additionally (comment 1)
+in the underground layer `DigBtns` completely covers `SideColumn/ToggleLayer` — there is no
+visible/clickable control to switch back to surface.
 
-- 12 slots x 112 (TowerShopSlot.custom_minimum_size) = 1344
-- 11 x 4 separation = 44
-- UpdateTowersBtn = 118
-- 2 x 10 BarRow separation = 20
-- needed 1526 vs available 1540 (1920 - 16 left - 304 right - 60 TowersBarPanel margins)
-
-TowerShopSlot has size_flags_horizontal = 4 (SHRINK_CENTER) so slots cannot shrink. A 13th tower
-(or wider button/slots) silently overflows and clips — no error, no test failure. TowersConfig
-drives the roster, so the next tower addition breaks the HUD quietly.
+Note: `place_exit_btn` builds a two-line name+price child at runtime (`UI.gd`
+`_populate_underground_buttons_with_prices`) and needs extra height.
 
 ## Done when
 
-1. The slot row degrades predictably when the roster outgrows the bar: slots shrink to a floor,
-   or the row scrolls, or the bar reserves a second line by design. Flow container is not an
-   option (caused a permanent-growth layout bug after underground trips).
-2. A `game-test` scenario loads a map with the full roster unlocked, screenshots the bar, and
-   asserts no slot is clipped (or the row's width is within the bar's).
-3. The pixel budget above is recorded next to whatever constant governs it, so future changes
-   see the headroom.
-4. No new visual required; the bar keeps its current look at 12 towers.
+1. The three underground controls render fully inside the side panel frame, clear of its corner
+   brackets, on both `map_1` and a map where Porter is unlocked.
+2. `place_exit_btn` still shows its price without clipping.
+3. The `hud_underground` checkpoint in `tests/scenarios/hud_wood_panels.json` shows no button
+   overlapping the panel frame.
+4. The layer toggle ("Surface") remains visible and clickable in the underground layer.
 
-## Notes
+## Runner notes (redo guards)
 
-- Manual testing: visible HUD work — windowed screenshots required (never --headless for the
-  manual pass); include an overall UI-sanity judgment per screenshot.
-- Preserve exact acceptance criteria; do not weaken the no-clip assertion to a count.
+- Runner key is `godot-td`; workspace name is exactly
+  `poke-defense-godot/issue-underground-side-panel-carve-place-exit-`. Do not invent workspace names.
+- Windowed evidence via runner; manual testing must not be headless. Manual testing expected:
+  **required** (visible UI layout fix) with windowed PNGs of `hud_idle` + `hud_underground`,
+  plus overall ui_feels_broken sanity pass on each final screenshot.
+
+## Historical context (not implementation)
+
+An earlier unclaimed attempt fixed this same layout (DigBtns moved into SideColumn as a VBox;
+ItemList grew to 274x206) but was never merged or verified through team-work. Treat as design
+reference only; re-implement and verify from scratch on the fresh worktree. A previous pickup
+run was killed by cron inactivity timeout before implementation; the watchdog reset the claim.
