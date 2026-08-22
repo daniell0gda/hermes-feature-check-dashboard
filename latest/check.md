@@ -1,84 +1,83 @@
-# Check Report — earth-continent-map-integration (issue #137)
+# Check Report — overcharge-capacitors (iteration 2)
 
-Iteration: 1 · Classification: **fixable**
-
-## Verification commands (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-earth-continent-map-integration)
-
-| Command | Exit | Result |
-|---|---|---|
-| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner reachable |
-| `godot --headless --path . --editor --quit-after 300` (import/build gate) | 0 | Import completed; stylized_earth_in_clouds.glb reimported |
-| Focused harness `backdrop_earth_visible.json` | 1 | status: fail — `backdrop_earth_center_y == -83.2`, expected 0 |
-| Harness `backdrop_earth_glint.json` | 1 | status: fail — same center_y failure |
-| Full suite loop (`bash -c for f in tests/scenarios/*.json ...`) | n/a | `bash` not on profile allowlist ("cmd executable is not allowed"); not run |
-| Windowed screenshots / manual visual pass | not run | manual-tester owns `.gen/manual-report.md`; none present |
-
-Fresh harness evidence: `.gen/harness/backdrop_earth_visible/result.json`
-(finished_at 2026-08-22T15:41:57), log `.gen/harness/_logs/backdrop_earth_visible.out.log`.
-
-## Acceptance criteria
-
-### Cluster 1: grounded-continent-placement
-
-- Continent mesh named and recorded — **verified in code**:
-  `GROUNDED_CONTINENT = "Continent_Africa"` in `scripts/game/visuals/BackdropEarth.gd`,
-  with the full GLB node list in a comment. Checker independently parsed
-  `models/stylized_earth_in_clouds.glb`: node/mesh `Continent_Africa` exists. PASS.
-- Flush placement from gameplay camera (windowed screenshot) — **NOT VERIFIED**.
-  No windowed run or screenshot exists in this workspace; headless screenshots are
-  skipped (`reason: "headless"`). Manual report absent. PENDING.
-- Terrain continuity / no hard seam (windowed screenshot) — NOT VERIFIED. Same reason. PENDING.
-- Globe does not rotate during play — **partially verified by code inspection only**:
-  grounded path never calls `_start_earth_spin()`. No automated test asserts
-  rotation equality at two times. PENDING (missing evidence).
-- Debug `[BACKDROP EARTH]` log per grounding event naming mesh + pos/scale/rot —
-  **verified**: fresh log line `[BACKDROP EARTH] grounded continent=Continent_Africa
-  pos=(-21.2, -83.2, -51.76) scale=0.9999… rot_deg=(15.39, 21.67, 83.15)`. PASS.
-
-### Cluster 2: backdrop-regression-coverage
-
-- Other continents/ocean/clouds/atmosphere visible; hidden prefixes unchanged
-  (windowed screenshot) — NOT VERIFIED. No windowed run. PENDING.
-- Existing focused scenario `backdrop_earth_visible` still passes — **FAILS**.
-  `backdrop_earth_present` is true but `backdrop_earth_center_y` equals −83.2
-  instead of 0. The grounded rig sinks the globe by body_radius below y=0, so
-  center_y is now negative by design of the change — but the plan requires the
-  existing expectation to still hold and it was neither updated nor satisfied.
-  This is a real regression against the plan's own criterion. FAIL → Pending.
-
-## Build/test gate
-
-Import/editor gate passes. The full test suite was NOT run: the plan's full-suite
-command uses `bash`, which is rejected by the runner profile allowlist
-("cmd executable is not allowed by the project profile"). A python3-based loop
-was attempted as substitute and also failed to produce green results because the
-focused earth scenarios fail (see above). Since the build/test gate is not green,
-no item may remain Done; all criteria go to Pending.
-
-## Changed-file quality findings
-
-- `models/stylized_earth_in_clouds.glb`: replaced via Git LFS pointer update
-  (9.58 MB new object). Content itself unreviewable here; noted, no violation.
-- `scripts/game/visuals/BackdropEarth.gd`: typed variables used throughout, small
-  focused functions, guard clauses, debug-only `[TAG]` logging — complies with
-  CLAUDE.md and coding_rules.md. No quality violation found in changed code.
-- Scope creep: none beyond the two intended files.
-
-## Blockers
-
-- None infrastructural. Runner healthy. Failures are implementation-level.
-
-## Unverified items
-
-- Windowed screenshots (flush fit, seam blend, backdrop regression view).
-- Rotation-invariance measurement at two times.
-- Full test suite (allowlist blocks `bash`; needs a python3-loop variant command
-  in the plan or an updated profile allowlist).
+Classification: **fixable**
 
 ## Verdict
 
-fixable — the grounding code is present and partially evidenced, but the focused
-harness regressed (`backdrop_earth_center_y = -83.2 ≠ 0`), the full suite could not
-run under the profile allowlist, and all windowed/manual visual criteria have no
-evidence.
+Implementation code exists this iteration (unlike iteration 1) and the early
+scenario actions prove registration, eligibility/draw, below-threshold,
+tier-1-at-3, and composition math. But the focused harness scenario
+`overcharge_capacitors_progression.json` fails at action 25 (status: timeout)
+because its own count-drop segment selects an unplaced tower position, so no
+tower is sold and the bonus never drops. Everything after action 25 — tier 2 at
+6+ towers, per-type isolation, reset clearing, and the final expectation — is
+therefore unverified. No criterion can be marked Done because the plan's
+authoritative harness does not pass end-to-end.
+
+## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-overcharge-capacitors)
+
+1. Preflight `godot --version` — exit 0, Godot 4.4.1.stable.
+2. Build/typecheck gate `godot --headless --path . --editor --quit-after 300` — exit 0 (~9s). No parse errors from `autoload/ProgressionManager.gd`; only pre-existing asset/UID import warnings.
+3. Focused test `--harness=res://tests/scenarios/overcharge_capacitors_progression.json` — **exit 1**, harness result `.gen/harness/overcharge_capacitors_progression/result.json`: `status: timeout`, unmet at action index 25: `get_overcharge_bonus_for_kind("generic") == 0.0`, actual 0.1. Final expectation also failed (`overcharge_capacitors == 0`, actual 1).
+4. Full test `--harness=res://tests/scenarios/display_damage_surface_parity.json` — exit 0, harness `status=pass`. Pre-existing regression coverage; asserts nothing about overcharge.
+
+## Root cause of focused failure (new-code defect)
+
+In `tests/scenarios/overcharge_capacitors_progression.json`, the count-drop
+segment calls `towers.select_at` with `{"v3": [-6.0, 0.0, 2.0]}` but the placed
+generic towers are at (-6,0,0), (-4,0,-6), and (0,0,-3). Nothing is selected,
+`ui._on_sell_pressed` removes no tower, and the tier-1 bonus stays applied
+(0.1 ≠ 0.0). Fix: select an actually-placed tower position (e.g. (-6.0, 0.0,
+0.0)) so the sell path removes one generic tower, then rerun to green.
+
+## Acceptance criteria status
+
+All 10 criteria remain Pending:
+
+- Registration/eligibility/draw, below-threshold, exactly-3 tier-1, and
+  multiplier-composition behaviors were exercised and passed in actions 0–20 of
+  the run, but the scenario as a whole does not pass, so they cannot be marked
+  Done on partial evidence.
+- Tier-2 at 6+, per-type isolation, count-drop removal, reset clearing, and the
+  `[OVERCHARGE]` debug log were never reached (timeout at action 25); note the
+  headless official build is a release build so the log line cannot be observed
+  in this environment regardless (same limitation as display_damage_surface_parity).
+
+## Code quality (diff review)
+
+Changed files: `autoload/ProgressionManager.gd` (+45/-2),
+`scripts/progression/global.json` (+12), new
+`tests/scenarios/overcharge_capacitors_progression.json`.
+
+- `get_overcharge_bonus_for_kind` / `_overcharge_bonus_for_kind` /
+  `_same_type_tower_count`: typed GDScript, guard clauses, nesting ≤ 2, debug
+  print behind `OS.is_debug_build()` with `[OVERCHARGE]` tag per CLAUDE.md —
+  consistent with project rules.
+- Perk definition follows existing global.json schema (`Common`, maxLevels 3,
+  level values 0.10/0.20/0.30 matching the issue's tiers).
+- The only concrete violation is in the new scenario file itself: the sell-step
+  coordinates do not match any placed tower (see quality-notes.md entry,
+  appended this iteration).
+
+## Quality notes
+
+Appended one open entry:
+`## overcharge-scenario-sell-target-mismatch (iteration 1)` in
+`.gen/quality-notes.md` describing the mismatched `select_at` position and the
+required fix.
+
+## Blockers
+
+None infrastructural. Runner healthy (all commands executed through
+run_project_cmd). Blocker is a fixable single-coordinate bug in the new
+scenario's sell step.
+
+## Unverified items
+
+- Tier-2 stacking math at 6+ same-type towers (never executed).
+- Per-type isolation (3 generic + 3 cannon) — never executed.
+- Bonus removal when count drops below threshold — attempted but defeated by
+  the scenario coordinate bug.
+- `reset_for_new_game()` clearing selection and bonus — never executed.
+- `[OVERCHARGE]` debug-build log line — not observable in release headless
+  builds; code inspection confirms it exists behind `OS.is_debug_build()`.

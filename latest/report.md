@@ -1,111 +1,66 @@
 # Team-leader report
 
 - **Result:** failed
-- **Classification:** unknown
-- **Feature:** earth-continent-map-integration
-- **Run:** issue137-earth-continent-map
+- **Classification:** **fixable**
+- **Feature:** overcharge-capacitors
+- **Run:** issue-34-overcharge-capacitors-20260822-132458
 - **Lifecycle:** dashboard publish only; project commit/push/close not implied
 
 ## Status
 
 ## ✅ Done
-(none — build/test gate not green)
+
+(none)
 
 ## ⬜ Pending
-- The grounded configuration targets exactly one named continent mesh from `stylized_earth_in_clouds.glb`, and the chosen mesh name is recorded in code or project documentation so it can be checked against the GLB's mesh list.
-- After `configure_for_map`, from the normal gameplay camera on a surface map, the playable field sits flush on the chosen continent with no visible gap or floating edge between the board and the globe surface (verified by windowed screenshot).
-- In the windowed screenshot from the normal gameplay camera, the continent terrain around the board reads as continuous with the map field (scale and color blend), with no hard seam between board and globe surface.
-- During play, the globe does not rotate: the earth body's world rotation measured at two times several seconds apart is identical in the grounded configuration.
-- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent mesh and the final rig position/scale/rotation.
-- With the grounded configuration active, other continents, ocean, cloud banks, and the atmosphere rim remain visible from the normal gameplay camera; only the previously hidden meshes (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud` prefixed) stay hidden (windowed screenshot).
-- The existing focused harness scenario `backdrop_earth_visible` still passes: map loads, `backdrop_earth_present` is true, `backdrop_earth_center_y` equals 0, and the surface screenshot is produced. — fails: actual `backdrop_earth_center_y` = -83.2 (fresh run 2026-08-22T15:41:57, exit 1); grounded rig sinks globe by body_radius below y=0 while the scenario still expects 0
+- `overcharge_capacitors` is registered as a Common progression perk in the global progression pool: it is eligible on a fresh run and appears in `draw_choices_for_chest` draws.
+- With fewer than 3 towers of a type owned, the damage multiplier for that tower type is unchanged by the perk (no partial bonus below the 3-tower threshold).
+- With exactly 3 towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-1 bonus value from its definition.
+- With 6 or more towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-2 bonus value (one tier per complete group of 3 same-type towers, per the issue's tier table).
+- The bonus is per type: owning 3 towers of type A and 3 of type B gives each type its own bonus, while a type with fewer than 3 towers gets none.
+- The perk's type bonus composes with the existing damage pipeline: `get_tower_damage_multiplier_for(kind)` returns the global damage bonus and the overcharge bonus combined, and per-tower Unique bonuses still apply on top.
+- When the count of same-type towers drops back below a threshold (tower removed or destroyed), the corresponding bonus tier stops applying.
+- After `reset_for_new_game()`, no overcharge bonus applies and the perk selection is cleared.
+- Debug-build `[OVERCHARGE]` log line per bonus recompute, naming the tower type, same-type tower count, applied tier, and resulting multiplier; absent in release builds.
+- A harness scenario proves the per-type stacking math through the progression API and placed towers, covering the boundary cases: fewer than 3 (no bonus), exactly 3 (tier 1), and 6+ (tier 2) same-type towers, with all expectations passing.
 
 ## ❌ Impossible
+
 (none)
 
 ## Check
 
-# Check Report — earth-continent-map-integration (issue #137)
+# Check Report — issue-34 overcharge-capacitors (iteration 1)
 
-Iteration: 1 · Classification: **fixable**
-
-## Verification commands (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-earth-continent-map-integration)
-
-| Command | Exit | Result |
-|---|---|---|
-| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner reachable |
-| `godot --headless --path . --editor --quit-after 300` (import/build gate) | 0 | Import completed; stylized_earth_in_clouds.glb reimported |
-| Focused harness `backdrop_earth_visible.json` | 1 | status: fail — `backdrop_earth_center_y == -83.2`, expected 0 |
-| Harness `backdrop_earth_glint.json` | 1 | status: fail — same center_y failure |
-| Full suite loop (`bash -c for f in tests/scenarios/*.json ...`) | n/a | `bash` not on profile allowlist ("cmd executable is not allowed"); not run |
-| Windowed screenshots / manual visual pass | not run | manual-tester owns `.gen/manual-report.md`; none present |
-
-Fresh harness evidence: `.gen/harness/backdrop_earth_visible/result.json`
-(finished_at 2026-08-22T15:41:57), log `.gen/harness/_logs/backdrop_earth_visible.out.log`.
-
-## Acceptance criteria
-
-### Cluster 1: grounded-continent-placement
-
-- Continent mesh named and recorded — **verified in code**:
-  `GROUNDED_CONTINENT = "Continent_Africa"` in `scripts/game/visuals/BackdropEarth.gd`,
-  with the full GLB node list in a comment. Checker independently parsed
-  `models/stylized_earth_in_clouds.glb`: node/mesh `Continent_Africa` exists. PASS.
-- Flush placement from gameplay camera (windowed screenshot) — **NOT VERIFIED**.
-  No windowed run or screenshot exists in this workspace; headless screenshots are
-  skipped (`reason: "headless"`). Manual report absent. PENDING.
-- Terrain continuity / no hard seam (windowed screenshot) — NOT VERIFIED. Same reason. PENDING.
-- Globe does not rotate during play — **partially verified by code inspection only**:
-  grounded path never calls `_start_earth_spin()`. No automated test asserts
-  rotation equality at two times. PENDING (missing evidence).
-- Debug `[BACKDROP EARTH]` log per grounding event naming mesh + pos/scale/rot —
-  **verified**: fresh log line `[BACKDROP EARTH] grounded continent=Continent_Africa
-  pos=(-21.2, -83.2, -51.76) scale=0.9999… rot_deg=(15.39, 21.67, 83.15)`. PASS.
-
-### Cluster 2: backdrop-regression-coverage
-
-- Other continents/ocean/clouds/atmosphere visible; hidden prefixes unchanged
-  (windowed screenshot) — NOT VERIFIED. No windowed run. PENDING.
-- Existing focused scenario `backdrop_earth_visible` still passes — **FAILS**.
-  `backdrop_earth_present` is true but `backdrop_earth_center_y` equals −83.2
-  instead of 0. The grounded rig sinks the globe by body_radius below y=0, so
-  center_y is now negative by design of the change — but the plan requires the
-  existing expectation to still hold and it was neither updated nor satisfied.
-  This is a real regression against the plan's own criterion. FAIL → Pending.
-
-## Build/test gate
-
-Import/editor gate passes. The full test suite was NOT run: the plan's full-suite
-command uses `bash`, which is rejected by the runner profile allowlist
-("cmd executable is not allowed by the project profile"). A python3-based loop
-was attempted as substitute and also failed to produce green results because the
-focused earth scenarios fail (see above). Since the build/test gate is not green,
-no item may remain Done; all criteria go to Pending.
-
-## Changed-file quality findings
-
-- `models/stylized_earth_in_clouds.glb`: replaced via Git LFS pointer update
-  (9.58 MB new object). Content itself unreviewable here; noted, no violation.
-- `scripts/game/visuals/BackdropEarth.gd`: typed variables used throughout, small
-  focused functions, guard clauses, debug-only `[TAG]` logging — complies with
-  CLAUDE.md and coding_rules.md. No quality violation found in changed code.
-- Scope creep: none beyond the two intended files.
-
-## Blockers
-
-- None infrastructural. Runner healthy. Failures are implementation-level.
-
-## Unverified items
-
-- Windowed screenshots (flush fit, seam blend, backdrop regression view).
-- Rotation-invariance measurement at two times.
-- Full test suite (allowlist blocks `bash`; needs a python3-loop variant command
-  in the plan or an updated profile allowlist).
+Classification: **fixable**
 
 ## Verdict
 
-fixable — the grounding code is present and partially evidenced, but the focused
-harness regressed (`backdrop_earth_center_y = -83.2 ≠ 0`), the full suite could not
-run under the profile allowlist, and all windowed/manual visual criteria have no
-evidence.
+The implementation was never written. The coder's own completion summary states:
+"reconnaissance complete, no code changes made yet — I ran out of tool iterations
+before writing the implementation" (.gen/team-work-dashboard/runs/issue-34-overcharge-capacitors-20260822-132458/events.json,
+code node event seq 2). Fresh verification confirms this.
+
+## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-overcharge-capacitors)
+
+1. Preflight `git status --short` — exit 0, clean tree. Branch `issue/overcharge-capacitors` has zero commits beyond master merge point; no feature diff exists.
+2. Typecheck/build gate `godot --headless --path . --editor --quit-after 300` — exit 0 after 120s. Import completed; remaining ERROR lines are pre-existing glTF/asset import noise unrelated to any change.
+3. Focused test `--harness=res://tests/scenarios/overcharge_capacitors_progression.json` — exit 1; harness wrote `.gen/harness/overcharge_capacitors_progression/result.json` with `status: error`, `"scenario file not found: res://tests/scenarios/overcharge_capacitors_progression.json"`.
+4. Full test `--harness=res://tests/scenarios/display_damage_surface_parity.json` — exit 0, harness `status=pass` (`.gen/harness/display_damage_surface_parity/result.json`). This is pre-existing regression coverage only; it asserts nothing about overcharge.
+
+## Acceptance criteria status
+
+All 10 criteria moved to Pending:
+
+- No `overcharge_capacitors` entry in `scripts/progression/global.json` or anywhere in autoload/scripts/tests (grep across repo).
+- `autoload/ProgressionManager.gd` contains no overcharge bonus logic in `get_tower_damage_multiplier_for(kind)`.
+- `tests/scenarios/overcharge_capacitors_progression.json` does not exist.
+- No `[OVERCHARGE]` debug logging present.
+
+## Quality notes
+
+No new/changed code exists to review; no quality-notes entries appended. No Impossible items — every criterion is straightforwardly implementable.
+
+## Blockers
+
+None infrastructural. Runner healthy (all four commands executed). Blocker is simply incomplete implementation: coder iteration budget exhausted during reconnaissance.

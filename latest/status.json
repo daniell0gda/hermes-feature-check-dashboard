@@ -1,21 +1,21 @@
 {
-  "run_id": "issue137-earth-continent-map",
-  "feature": "earth-continent-map-integration",
-  "status": "failed",
-  "started_at": "2026-08-22T15:08:12.926Z",
-  "ended_at": "2026-08-22T15:46:44.454Z",
+  "run_id": "issue-34-overcharge-capacitors-cont2-20260822-151808",
+  "feature": "overcharge-capacitors",
+  "status": "running",
+  "started_at": "2026-08-22T15:18:09.019Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-22T15:46:44.454Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-cont2-20260822-151808/",
+  "heartbeat_at": "2026-08-22T15:47:32.483Z",
   "last_node": "check",
   "active_node": null,
-  "last_event_at": "2026-08-22T15:46:39.964Z",
-  "process_id": 607774,
+  "last_event_at": "2026-08-22T15:47:32.483Z",
+  "process_id": 614296,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:46:44.454161+00:00",
-    "last_success_at": "2026-08-22T15:46:44.452691+00:00",
+    "last_attempt_at": "2026-08-22T15:47:32.483819+00:00",
+    "last_success_at": "2026-08-22T15:42:33.336517+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 77891,
-        "output_tokens": 5142
+        "input_tokens": 108662,
+        "output_tokens": 3223
       },
       {
         "task_id": "code",
@@ -41,17 +41,6 @@
         "cost_status": "unavailable",
         "input_tokens": null,
         "output_tokens": null
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 140485,
-        "output_tokens": 5821
       }
     ]
   }
