@@ -2,19 +2,19 @@
   "run_id": "run-3",
   "feature": "Smoke",
   "status": "running",
-  "started_at": "2026-08-22T14:48:08.806Z",
+  "started_at": "2026-08-22T14:51:37.698Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/run-3/",
-  "heartbeat_at": "2026-08-22T14:48:08.806Z",
+  "heartbeat_at": "2026-08-22T14:51:37.698Z",
   "last_node": null,
   "active_node": null,
   "last_event_at": null,
-  "process_id": 598283,
+  "process_id": 600220,
   "host": "25e0b2c49eb5",
   "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T14:48:08.806794+00:00"
+    "last_attempt_at": "2026-08-22T14:51:37.698146+00:00"
   },
   "metrics": {}
 }
