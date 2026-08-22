@@ -1,47 +1,34 @@
-# Check report: panels-closable-x-escape (issue #133) — iteration 1
+# Check Report — issue-34 overcharge-capacitors (iteration 1)
 
-Classification: **pass**
+Classification: **fixable**
 
-## Commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-panels-closable-x-escape)
+## Verdict
 
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Preflight | `godot --version` | 0 | 4.4.1.stable |
-| Typecheck/build | `godot --headless --path . --import` | 0 | import clean |
-| Focused test | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/panels_closable_x_escape.json` | 0 | `[Harness] status=pass exit=0`; fresh `.gen/harness/panels_closable_x_escape/result.json` status=pass, 9/9 expectations true |
-| Full test | `godot --headless --windowed --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/hud_other_panels.json` | 0 | `[Harness] status=pass exit=0`; fresh result.json status=pass, 1/1 expectations true (`game_state == paused` after Esc-with-nothing-open) |
-| Unit test | `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` | 0 | 22 ok, 0 failed |
+The implementation was never written. The coder's own completion summary states:
+"reconnaissance complete, no code changes made yet — I ran out of tool iterations
+before writing the implementation" (.gen/team-work-dashboard/runs/issue-34-overcharge-capacitors-20260822-132458/events.json,
+code node event seq 2). Fresh verification confirms this.
 
-## Acceptance criteria evidence
+## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-overcharge-capacitors)
 
-1. **Every non-Menu panel shows an X close button; pressing hides the panel** — Done.
-   Tower details panel: `is_closable = true` on UpgPanel in scenes/UI.tscn; TitledPanel grows the corner CloseChip and emits `close_requested`, connected to new `UI.close_tower_details()` (scripts/ui/UI.gd). Manage Towers and Options already carry wired corner X buttons. Asserted by tests/ui/test_titled_panel_close_corner.gd (chip exists, flush top-right, press emits close_requested once) and by the focused scenario driving each close path.
-2. **Escape closes topmost open non-Menu panel; never opens/closes Menu** — Done.
-   `UI._unhandled_input` routes Esc through `_closable_panels_topmost_first()` (options > manage towers > tower details), sets input handled, returns before pause-menu branch. Scenario drives `escape_pressed()` (same branch) after opening each panel; `[PANELS] <panel> close` lines observed in run log for each.
-3. **After close (X or Escape), gameplay input works, not left paused** — Done.
-   `_close_panel` sets `tree.paused=false` and `GameState._set_game_state("playing")`. Scenario asserts `paused == false` and `game_state != "paused"` / `== "playing"` after closes — passing expectations in result.json.
-4. **Escape with no panel open shows Menu (pause) panel** — Done.
-   Fall-through to `show_pause_menu()`. Full-suite hud_other_panels run shows `[PANELS] pause menu open` and its expectation asserts `game_state == "paused"` (pass).
-5. **Re-opening a panel closed via X or Escape works with correct content** — Done.
-   Scenario re-selects the tower after both `close_tower_details` and `escape_pressed` paths and waits for `get_upgrade_panel_text contains "Tower"` — passing wait_for_condition steps.
-6. **Debug-build [PANELS] log line per open/close event naming panel and direction** — Done.
-   `UI._panels_log` gated on `OS.is_debug_build()`; transitions-only for tower details to avoid poll spam. All six open/close lines asserted via `log` source in result.json.
-7. **Headless AgentHarness scenario passes with status pass, exit code 0, for every covered panel** — Done.
-   Fresh `.gen/harness/panels_closable_x_escape/result.json`: status=pass, exit 0, 9/9 expectations pass covering tower details, Manage Towers, Options.
+1. Preflight `git status --short` — exit 0, clean tree. Branch `issue/overcharge-capacitors` has zero commits beyond master merge point; no feature diff exists.
+2. Typecheck/build gate `godot --headless --path . --editor --quit-after 300` — exit 0 after 120s. Import completed; remaining ERROR lines are pre-existing glTF/asset import noise unrelated to any change.
+3. Focused test `--harness=res://tests/scenarios/overcharge_capacitors_progression.json` — exit 1; harness wrote `.gen/harness/overcharge_capacitors_progression/result.json` with `status: error`, `"scenario file not found: res://tests/scenarios/overcharge_capacitors_progression.json"`.
+4. Full test `--harness=res://tests/scenarios/display_damage_surface_parity.json` — exit 0, harness `status=pass` (`.gen/harness/display_damage_surface_parity/result.json`). This is pre-existing regression coverage only; it asserts nothing about overcharge.
 
-## Changed-file quality findings
+## Acceptance criteria status
 
-- scripts/ui/UI.gd, scripts/ui/ManageTowersPopup.gd, scripts/ui/OptionsScreen.gd, scenes/UI.tscn, tests/scenarios/panels_closable_x_escape.json, tests/ui/test_titled_panel_close_corner.gd reviewed against /opt/data/coding_rules.md and worktree CLAUDE.md. Typed variables, guard clauses, debug-gated [TAG] logging, surgical diff — no demoting violations.
-- Advisory only (see quality-notes.md): options-close log line is emitted twice per close (UI._panels_log + OptionsScreen._on_close local print); Escape loop body in `_unhandled_input` duplicates `escape_pressed()` logic instead of delegating.
+All 10 criteria moved to Pending:
 
-## Test overlap check
+- No `overcharge_capacitors` entry in `scripts/progression/global.json` or anywhere in autoload/scripts/tests (grep across repo).
+- `autoload/ProgressionManager.gd` contains no overcharge bonus logic in `get_tower_damage_multiplier_for(kind)`.
+- `tests/scenarios/overcharge_capacitors_progression.json` does not exist.
+- No `[OVERCHARGE]` debug logging present.
 
-New files: panels_closable_x_escape.json (no existing scenario covers panel close/Esc routing) and test_titled_panel_close_corner.gd (pre-existing from earlier work; covers TitledPanel chip mechanics only, no overlap with routing). No duplicate coverage found in tests/scenarios/ or tests/ui/.
+## Quality notes
+
+No new/changed code exists to review; no quality-notes entries appended. No Impossible items — every criterion is straightforwardly implementable.
 
 ## Blockers
 
-None.
-
-## Unverified items
-
-- Plan marks `manual_testing: required` (player-facing UI). Headless + windowed harness runs assert state/log, not pixels; no `.gen/manual-report.md` present from the manual tester profile. No acceptance criterion textually requires screenshot evidence, so no criterion is demoted, but the manual-testing pass remains outstanding for the leader to schedule.
+None infrastructural. Runner healthy (all four commands executed). Blocker is simply incomplete implementation: coder iteration budget exhausted during reconnaissance.

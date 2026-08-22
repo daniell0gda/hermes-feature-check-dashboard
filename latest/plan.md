@@ -1,37 +1,40 @@
-# Acceptance Plan: panels-closable-x-escape follow-up fixes (#133 round 2)
+# Acceptance Plan: overcharge-capacitors
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/panels_closable_x_escape.json"]`
-- Full test: `["godot", "--headless", "--windowed", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/hud_other_panels.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]`
+Run via `run_project_cmd` (project=poke-defense-godot, workspace=poke-defense-godot/issue-overcharge-capacitors):
 
-manual_testing: required
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/overcharge_capacitors_progression.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/display_damage_surface_parity.json"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+
+manual_testing: none — pure numeric/stat modifier perk with no player-visible change beyond damage numbers (explicitly no new visual required).
 
 ## Clusters
 
-1. close-restores-state-and-clears-selection — files: `scripts/ui/UI.gd`, `scripts/game/TowerManager.gd`, `scripts/game/TrapManager.gd`, `scripts/game/Placement.gd`, `scripts/game/placement/HoleManagementModule.gd`, `scripts/game/placement/ExitManagementModule.gd` — depends on: none
-- Opening a panel (Options, Manage Towers, or tower details) over a paused game — pause menu opened first via Escape — and closing that panel with its X or Escape leaves the tree paused and the pause-menu state intact (the pause menu is still showing and the game does not resume).
-- Opening and closing any non-Menu panel during normal play leaves the game playing and unpaused after the close; no close path (X or Escape) forces the tree unpaused or the game state to playing on its own.
-- Clicking the tower details panel's X closes the panel and it stays closed across at least two consecutive 0.2 s selection-poll ticks while nothing else is selected (no re-open by the poll).
-- Escape-closing any non-Menu panel (tower details, Manage Towers, Options) leaves that panel closed across at least two consecutive 0.2 s selection-poll ticks.
-- Closing the tower details panel (X or Escape) clears the underlying tower/trap/hole/exit selection through the owning manager, so selecting the same tower again re-opens the details panel with its content.
-- Escape with no panels open still opens the pause menu, and Escape with the pause menu open still resumes play — existing Escape routing behaviour is unchanged.
-- Debug-build [PANELS] log line per panel close that reports the restored game/pause state (panel name, closed, and whether the game stayed paused or playing), filterable and gated on OS.is_debug_build().
-2. close-sticks-harness-scenario — files: `tests/scenarios/panels_closable_x_escape.json` — depends on: 1
-- The focused headless harness scenario's tower-details close-sticks case waits at least two full 0.2 s poll ticks after the close and asserts the details panel visibility stays false for the whole window, then the scenario finishes with status `pass` and exit code 0.
-- The focused scenario also asserts the paused-over case: with the pause menu open and a panel closed on top of it, tree.paused stays true and the pause menu remains visible; and the playing case: closing a panel during play leaves tree.paused false and game state playing.
-- The full hud_other_panels scenario still passes with status `pass` and exit code 0 (Escape with nothing open opens the pause menu; existing #133 acceptance holds).
+1. overcharge-perk-registration-and-damage-bonus — files: `scripts/progression/global.json`, `autoload/ProgressionManager.gd` — depends on: none
+- The `overcharge_capacitors` perk is registered as a Common progression perk in the global progression pool: on a fresh run it is eligible and can appear in `draw_choices_for_chest` draws.
+- With fewer than 3 towers of a type owned, the damage multiplier for that tower type is unchanged by the perk (no partial bonus below the 3-tower threshold).
+- With exactly 3 towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-1 bonus value from its definition.
+- With 6 or more towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-2 bonus value (one tier per complete group of 3 same-type towers, per the issue's tier table).
+- The bonus is per type: owning 3 towers of type A and 3 of type B gives each type its own bonus, while a type with fewer than 3 towers gets none.
+- The overcharge bonus composes with the existing damage pipeline: `get_tower_damage_multiplier_for(kind)` returns the global damage bonus and the overcharge bonus combined for the given kind.
+- When the count of same-type towers drops back below a threshold (tower removed or destroyed), the corresponding bonus tier stops applying.
+- After `reset_for_new_game()`, no overcharge bonus applies and the perk selection is cleared.
+- Debug-build `[OVERCHARGE]` log line per bonus recompute, naming the tower type, same-type tower count, applied tier, and resulting multiplier; absent in release builds.
+
+2. overcharge-harness-scenario — files: `tests/scenarios/overcharge_capacitors_progression.json` — depends on: 1
+- A harness scenario proves the per-type stacking math through the progression API and placed towers, covering the boundary cases fewer than 3 (no bonus), exactly 3 (tier 1), and 6+ (tier 2) same-type towers, with all expectations passing.
 
 ## Criteria
 
-- Opening a panel (Options, Manage Towers, or tower details) over a paused game — pause menu opened first via Escape — and closing that panel with its X or Escape leaves the tree paused and the pause-menu state intact (the pause menu is still showing and the game does not resume).
-- Opening and closing any non-Menu panel during normal play leaves the game playing and unpaused after the close; no close path (X or Escape) forces the tree unpaused or the game state to playing on its own.
-- Clicking the tower details panel's X closes the panel and it stays closed across at least two consecutive 0.2 s selection-poll ticks while nothing else is selected (no re-open by the poll).
-- Escape-closing any non-Menu panel (tower details, Manage Towers, Options) leaves that panel closed across at least two consecutive 0.2 s selection-poll ticks.
-- Closing the tower details panel (X or Escape) clears the underlying tower/trap/hole/exit selection through the owning manager, so selecting the same tower again re-opens the details panel with its content.
-- Escape with no panels open still opens the pause menu, and Escape with the pause menu open still resumes play — existing Escape routing behaviour is unchanged.
-- Debug-build [PANELS] log line per panel close that reports the restored game/pause state (panel name, closed, and whether the game stayed paused or playing), filterable and gated on OS.is_debug_build().
-- The focused headless harness scenario's tower-details close-sticks case waits at least two full 0.2 s poll ticks after the close and asserts the details panel visibility stays false for the whole window, then the scenario finishes with status `pass` and exit code 0.
-- The focused scenario also asserts the paused-over case: with the pause menu open and a panel closed on top of it, tree.paused stays true and the pause menu remains visible; and the playing case: closing a panel during play leaves tree.paused false and game state playing.
-- The full hud_other_panels scenario still passes with status `pass` and exit code 0 (Escape with nothing open opens the pause menu; existing #133 acceptance holds).
+- The `overcharge_capacitors` perk is registered as a Common progression perk in the global progression pool: on a fresh run it is eligible and can appear in `draw_choices_for_chest` draws.
+- With fewer than 3 towers of a type owned, the damage multiplier for that tower type is unchanged by the perk (no partial bonus below the 3-tower threshold).
+- With exactly 3 towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-1 bonus value from its definition.
+- With 6 or more towers of the same type owned simultaneously, every tower of that type deals damage multiplied by the perk's tier-2 bonus value (one tier per complete group of 3 same-type towers, per the issue's tier table).
+- The bonus is per type: owning 3 towers of type A and 3 of type B gives each type its own bonus, while a type with fewer than 3 towers gets none.
+- The overcharge bonus composes with the existing damage pipeline: `get_tower_damage_multiplier_for(kind)` returns the global damage bonus and the overcharge bonus combined for the given kind.
+- When the count of same-type towers drops back below a threshold (tower removed or destroyed), the corresponding bonus tier stops applying.
+- After `reset_for_new_game()`, no overcharge bonus applies and the perk selection is cleared.
+- Debug-build `[OVERCHARGE]` log line per bonus recompute, naming the tower type, same-type tower count, applied tier, and resulting multiplier; absent in release builds.
+- A harness scenario proves the per-type stacking math through the progression API and placed towers, covering the boundary cases fewer than 3 (no bonus), exactly 3 (tier 1), and 6+ (tier 2) same-type towers, with all expectations passing.

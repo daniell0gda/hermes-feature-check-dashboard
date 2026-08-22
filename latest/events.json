@@ -1,11 +1,20 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T14:56:57.519Z",
+    "timestamp": "2026-08-22T14:13:10.207Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 524064,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-panels-closable-x-escape/.gen/plan.md\n\nSummary:\n- Re-planned for the two round-2 defects: close must restore pre-open paused/playing state (no forced unpause), and closing tow\u2026",
+    "duration_ms": 340300,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-overcharge-capacitors/.gen/plan.md\n\nSummary: 10 acceptance criteria across 2 clusters \u2014 (1) perk registration in scripts/progression/global.json + per-type damage bonus/compos\u2026",
+    "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-22T15:05:23.230Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 3128652,
+    "summary": "API call failed after 3 retries: HTTP 429: Too many concurrent inference requests for an account with low available credits.\n",
     "error": null
   }
 ]
