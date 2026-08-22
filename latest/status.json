@@ -1,21 +1,21 @@
 {
-  "run_id": "req-134-upgrade-click-money-animation-r2",
-  "feature": "upgrade-click-money-animation",
-  "status": "completed",
-  "started_at": "2026-08-22T14:28:55.188Z",
-  "ended_at": "2026-08-22T18:31:38.407Z",
+  "run_id": "issue-39-buried-ordnance",
+  "feature": "Traps Buried Ordnance unique perk",
+  "status": "running",
+  "started_at": "2026-08-22T18:01:26.915Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-134-upgrade-click-money-animation-r2/",
-  "heartbeat_at": "2026-08-22T18:31:38.407Z",
-  "last_node": "manual-tester",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-39-buried-ordnance/",
+  "heartbeat_at": "2026-08-22T18:36:14.036Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-22T18:31:32.927Z",
-  "process_id": 589947,
+  "last_event_at": "2026-08-22T18:36:14.036Z",
+  "process_id": 660756,
   "host": "25e0b2c49eb5",
-  "phase": "manual-tester",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T18:31:38.407531+00:00",
-    "last_success_at": "2026-08-22T18:31:38.405875+00:00",
+    "last_attempt_at": "2026-08-22T18:36:14.036768+00:00",
+    "last_success_at": "2026-08-22T18:22:23.939477+00:00",
     "last_error": null
   },
   "metrics": {
@@ -24,100 +24,12 @@
         "task_id": "plan",
         "cluster_id": null,
         "role": "plan",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 184651,
-        "output_tokens": 8159
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 152112,
-        "output_tokens": 8590
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 175024,
-        "output_tokens": 14672
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 134873,
-        "output_tokens": 6739
-      },
-      {
-        "task_id": "revision-code-2",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 204765,
-        "output_tokens": 13217
-      },
-      {
-        "task_id": "revision-check-2",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 128552,
-        "output_tokens": 3734
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 23151,
-        "output_tokens": 568
-      },
-      {
-        "task_id": "manual-tester",
-        "cluster_id": null,
-        "role": "manual-tester",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 138973,
-        "output_tokens": 7300
+        "input_tokens": 229675,
+        "output_tokens": 7974
       }
     ]
   }
