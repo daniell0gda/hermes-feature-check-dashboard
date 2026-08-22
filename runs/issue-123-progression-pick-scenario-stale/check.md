@@ -1,6 +1,6 @@
-# Check report — issue #123 progression_pick scenario (revision-check-1, iteration 2)
+# Check report — issue #123 progression_pick scenario (revision-check-2, iteration 3)
 
-Classification: **fixable**
+Classification: **pass**
 
 ## Runner gate
 
@@ -8,68 +8,65 @@ Classification: **fixable**
   workspace=poke-defense-godot/issue-progression-pick-scenario-stale → exit 0,
   Godot 4.4.1.stable.official.49a5bc7b6.
 - Focused scenario `["godot","--headless","--path",".","res://scenes/Main.tscn",
-  "--","--harness=res://tests/scenarios/progression_pick.json"]` → runner exit 1
-  (4231 ms wall). Fresh evidence: `.gen/harness/progression_pick/result.json`
-  (status: **timeout**) and `.gen/harness/_logs/progression_pick.out.log`.
-  No separate typecheck/build command is defined for this Godot data-only change;
-  the harness run doubles as the build/parse gate (project parsed and ran).
+  "--","--harness=res://tests/scenarios/progression_pick.json"]` → runner exit 0
+  (4236 ms wall). Fresh evidence: `.gen/harness/progression_pick/result.json`
+  (status: **pass**, all 4 expectations pass) and raw log inspected separately.
+  No separate typecheck/build command is defined for this Godot data-only
+  change; the harness run doubles as the build/parse gate (project parsed and
+  ran).
 
 ## Acceptance criteria
 
 1. **Scenario places a venom tower / owns a compatible tower before chest +
-   venom_miasma_bloom; scenario must pass.** — FAIL.
-   - The diff's new actions all succeed: `_set_tower_availability(8)` ok,
-     `wait_for_condition` on `draw_choices_for_chest(100)` containing
-     venom_miasma_bloom ok, `place_tower kind:"venom"` ok.
-   - But the real chest draw at open_chest remains
-     `[Progression] draw_choices_for_chest: force_mode=false, flagged=0, normal=37, chosen=2`
-     — venom_miasma_bloom has `"forceVisibility": false`
-     (scripts/progression/venom_tower.json lines 14/28/41), so it is not in the
-     2-of-37 weighted draw on seed 20260726. Action index 71 blocked:
-     "progression modal could not be answered with policy
-     {\"mode\":\"upgrade\",\"upgrade\":\"venom_miasma_bloom\"}".
-   - result.json expectations FAILED: venom_miasma_bloom == 0 (want 1),
-     get_venom_miasma_config.enabled == false (want true), tree.paused == true
-     (want false); only current_layer passed.
-   - Engine error also present: ProgressionModal cannot become exclusive child
-     while CaveDangerConfirmDialog holds exclusivity (window.cpp:992).
+   venom_miasma_bloom; scenario must pass.** — PASS.
+   - Timeline: `_set_tower_availability(8)` (action 117), venom pool
+     exhaustion via `apply_progression` (actions 3–116),
+     `place_tower kind:"venom"` at action 119, before carving/chest.
+   - Real chest draw now: `[Progression] draw_choices_for_chest:
+     force_mode=false, flagged=0, normal=2, chosen=2` — pool pinned to the two
+     venom perks, so the 2-of-2 draw deterministically offers
+     venom_miasma_bloom. Modal answered card 2 (upgrade).
+   - result.json: status pass; expectations venom_miasma_bloom == 1,
+     get_venom_miasma_config.enabled == true, tree.paused == false,
+     current_layer == "underground" — all pass.
 2. **Preserve and verify chest_duplication granted before carving, including
-   cave_chest_duplicate RNG site behavior.** — PASS as observable:
-   apply_progression(global.json, chest_duplication) is timeline action index 1,
-   before all carving; carving and open_chest proceed; reward granted
-   (money=59 at modal).
+   cave_chest_duplicate RNG site behavior.** — PASS: apply_progression(global.json,
+   chest_duplication) at timeline actions 1–2, before the first carve_rectangle
+   at action 121; carving and deterministic chest reward proceed under seed
+   20260726 (reward granted; money=59 at modal).
 3. **Update "Reaching a chest organically" in
-   .claude/skills/game-test/REFERENCE.md to match the fixed recipe and tower
-   requirement.** — FAIL. Section (~line 350) still says "That scenario is
-   currently red" and still claims venom_miasma_bloom is "the only progression
-   with forceVisibility: true", contradicting venom_tower.json
-   (forceVisibility: false). git diff touches only the scenario JSON.
+   .claude/skills/game-test/REFERENCE.md.** — PASS: section (~line 350) now
+   documents the passing scenario, tower ownership + compatibility filter,
+   pool-exhaustion recipe, and corrects the earlier claim: all venom
+   progressions have `forceVisibility: false` (matches
+   scripts/progression/venom_tower.json).
 4. **Native Linux Godot/project-runner verification, fresh focused evidence,
    raw diagnostics inspected separately from harness status.** — DONE by
-   checker: all commands via run_project_cmd; fresh result.json + .out.log read
-   separately this revision.
-5. **Do not close/merge/push; commit not requested.** — OK: working tree has
-   only the modified tests/scenarios/progression_pick.json; HEAD unchanged
-   (996f282).
+   checker: all commands via run_project_cmd; raw log read separately from
+   result.json status this revision.
+5. **Do not close/merge/push; commit not requested.** — OK: HEAD unchanged
+   (996f282); working tree dirty only in
+   tests/scenarios/progression_pick.json and
+   .claude/skills/game-test/REFERENCE.md.
 
 ## Changed-file quality
 
-Diff remains data-only (15 added JSON lines in the scenario). No coding-rule
-violations in changed lines. Same accuracy concern as iteration 1: the inline
-wait_for_condition draws 100 choices, asserting far more than the real modal
-draw (2 weighted picks), masking the actual failure mode.
+Diff is data + docs only (scenario JSON and REFERENCE.md). No
+coding-rule violations in changed lines. Prior iteration's concern (inline
+wait_for_condition drawing 100 choices masking the real draw) is mitigated:
+the real chest draw now also yields normal=2/chosen=2, and the raw log
+confirms the actual modal offer.
 
 ## Quality notes
 
-No quality-notes.md present; nothing appended (data-only diff, no scope creep;
-.gen/dashboard artifacts excluded by policy).
+No quality-notes.md present; nothing appended (data-only diff, no scope
+creep; .gen/dashboard artifacts excluded by policy).
 
 ## Blockers
 
-None infrastructural. Remaining work is implementation: make the chest draw
-actually offer venom_miasma_bloom for an owned-venom run (fix the
-forceVisibility/eligibility interplay or otherwise pin the offer), address the
-CaveDangerConfirmDialog exclusive-window conflict if it blocks modal answering,
-update REFERENCE.md, then rerun the focused scenario to green.
+None. Known pre-existing, non-blocking noise: missing
+res://textures/ui/hud/wood_panel.png texture warnings, and the
+ProgressionModal/CaveDangerConfirmDialog exclusive-child window conflict
+(does not prevent the harness from answering the modal).
 
-classification: fixable
+classification: pass

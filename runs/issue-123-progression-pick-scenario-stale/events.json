@@ -52,5 +52,14 @@
     "duration_ms": 608572,
     "summary": "Work complete. Summary:\n\n**Root cause:** `draw_choices_for_chest` is a weighted 2-of-N pick over every eligible + tower-compatible progression. The prior revision placed a venom tower (compatibility ok) but venom_miasma_bloom was still just\u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-22T09:18:34.689Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 185565,
+    "summary": "Verified done: 5. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes (data-only diff, no open entries, no scope creep). Verification: passed. Blockers:\u2026",
+    "error": null
   }
 ]
