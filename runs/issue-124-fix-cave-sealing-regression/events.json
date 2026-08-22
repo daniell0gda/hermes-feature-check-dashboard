@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-22T09:41:41.794Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 1319776,
+    "summary": "ces (`HarnessActions.gd`, `HarnessScenario.gd`, `AgentHarness.gd`).\n\n2. **Reproduced the regression live** through `run_project_cmd` (project `godot-td`, workspace `poke-defense-godot/issue-cave-carved-path-torches`):\n   - `godot --version`\u2026",
+    "error": null
+  }
+]
