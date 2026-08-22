@@ -1,22 +1,36 @@
 {
-  "run_id": "issue-135-upgrade-button-20260822T123636Z",
-  "feature": "upgrade-button-disabled-without-money",
+  "run_id": "water-pressure-46",
+  "feature": "water_pressure",
   "status": "running",
-  "started_at": "2026-08-22T12:36:36.349Z",
+  "started_at": "2026-08-22T11:23:11.201Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-135-upgrade-button-20260822T123636Z/",
-  "heartbeat_at": "2026-08-22T12:36:36.349Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
-  "process_id": 546463,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/water-pressure-46/",
+  "heartbeat_at": "2026-08-22T12:39:54.628Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T12:39:54.628Z",
+  "process_id": 517150,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T12:37:33.758709+00:00",
-    "last_success_at": "2026-08-22T12:36:40.785749+00:00",
+    "last_attempt_at": "2026-08-22T12:39:54.628464+00:00",
+    "last_success_at": "2026-08-22T11:51:12.877087+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 121497,
+        "output_tokens": 11342
+      }
+    ]
+  }
 }
