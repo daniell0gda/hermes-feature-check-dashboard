@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-22T10:06:02.258Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 455978,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-window-modals-skip-wood-frame/.gen/plan.md\n\nArtifacts:\n- .gen/plan.md \u2014 14 criteria, 3 clusters, manual_testing: required, three run_project_cmd token-array commands (focused:\u2026",
+    "error": null
+  }
+]

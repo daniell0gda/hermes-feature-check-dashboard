@@ -1,36 +1,22 @@
 {
-  "run_id": "perk-frozen-fracture-94",
-  "feature": "perk-frozen-fracture",
+  "run_id": "issue-127-window-modals-skip-wood-frame",
+  "feature": "window-modals-skip-wood-frame",
   "status": "running",
-  "started_at": "2026-08-22T09:54:36.569Z",
+  "started_at": "2026-08-22T09:57:39.112Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-frozen-fracture-94/",
-  "heartbeat_at": "2026-08-22T10:05:21.602Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-window-modals-skip-wood-frame/",
+  "heartbeat_at": "2026-08-22T10:06:02.258Z",
   "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T10:05:21.602Z",
-  "process_id": 493095,
+  "active_node": null,
+  "last_event_at": "2026-08-22T10:06:02.258Z",
+  "process_id": 493943,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T10:05:26.324300+00:00",
-    "last_success_at": "2026-08-22T10:05:26.323519+00:00",
+    "last_attempt_at": "2026-08-22T10:06:02.260073+00:00",
+    "last_success_at": "2026-08-22T09:58:30.323833+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 60575,
-        "output_tokens": 5175
-      }
-    ]
-  }
+  "metrics": {}
 }

@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-window-modals-skip-wood-frame/",
-  "heartbeat_at": "2026-08-22T09:57:39.112Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-22T10:06:02.258Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-22T10:06:02.258Z",
   "process_id": 493943,
   "host": "25e0b2c49eb5",
   "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T09:58:26.280762+00:00",
-    "last_success_at": "2026-08-22T09:57:43.748939+00:00",
+    "last_attempt_at": "2026-08-22T10:06:02.260073+00:00",
+    "last_success_at": "2026-08-22T09:58:30.323833+00:00",
     "last_error": null
   },
   "metrics": {}
