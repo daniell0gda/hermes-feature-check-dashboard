@@ -1,58 +1,22 @@
 {
-  "run_id": "issue-95-static-breach",
-  "feature": "perk-static-breach",
+  "run_id": "issue-124-cave-carved-path-torches-fresh",
+  "feature": "cave-carved-path-torches-fresh",
   "status": "running",
-  "started_at": "2026-08-22T07:58:29.722Z",
+  "started_at": "2026-08-22T08:39:56.692Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-95-static-breach/",
-  "heartbeat_at": "2026-08-22T08:44:43.718Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T08:44:43.718Z",
-  "process_id": 469740,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-cave-carved-path-torches-fresh/",
+  "heartbeat_at": "2026-08-22T08:45:25.735Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-22T08:45:25.735Z",
+  "process_id": 479551,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T08:44:48.072451+00:00",
-    "last_success_at": "2026-08-22T08:44:48.071660+00:00",
+    "last_attempt_at": "2026-08-22T08:45:25.736147+00:00",
+    "last_success_at": "2026-08-22T08:40:52.547508+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 139624,
-        "output_tokens": 6580
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 293235,
-        "output_tokens": 2693
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 307827,
-        "output_tokens": 4810
-      }
-    ]
-  }
+  "metrics": {}
 }
