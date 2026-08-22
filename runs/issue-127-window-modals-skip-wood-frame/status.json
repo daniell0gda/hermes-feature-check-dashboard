@@ -1,12 +1,12 @@
 {
   "run_id": "issue-127-window-modals-skip-wood-frame",
   "feature": "window-modals-skip-wood-frame",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-22T09:57:39.112Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T11:13:28.390Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-window-modals-skip-wood-frame/",
-  "heartbeat_at": "2026-08-22T11:13:22.965Z",
+  "heartbeat_at": "2026-08-22T11:13:28.390Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-22T11:13:22.965Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T11:13:22.965383+00:00",
-    "last_success_at": "2026-08-22T11:09:02.896839+00:00",
+    "last_attempt_at": "2026-08-22T11:13:28.390731+00:00",
+    "last_success_at": "2026-08-22T11:13:28.388479+00:00",
     "last_error": null
   },
   "metrics": {
@@ -85,6 +85,17 @@
         "cost_status": "unknown",
         "input_tokens": 45837,
         "output_tokens": 463
+      },
+      {
+        "task_id": "manual-tester",
+        "cluster_id": null,
+        "role": "manual-tester",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 57151,
+        "output_tokens": 2810
       }
     ]
   }
