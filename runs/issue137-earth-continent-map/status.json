@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-22T22:56:15.876Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-22T23:03:20.210Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-22T23:03:20.210Z",
   "process_id": 788449,
   "host": "25e0b2c49eb5",
   "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T22:56:21.030115+00:00",
-    "last_success_at": "2026-08-22T22:56:20.520604+00:00",
+    "last_attempt_at": "2026-08-22T23:03:20.210862+00:00",
+    "last_success_at": "2026-08-22T22:56:25.186826+00:00",
     "last_error": null
   },
   "metrics": {}
