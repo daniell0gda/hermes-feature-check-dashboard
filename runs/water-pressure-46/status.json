@@ -1,58 +1,20 @@
 {
   "run_id": "water-pressure-46",
   "feature": "water_pressure",
-  "status": "failed",
-  "started_at": "2026-08-22T11:23:11.201Z",
-  "ended_at": "2026-08-22T12:45:22.331Z",
+  "status": "running",
+  "started_at": "2026-08-22T12:46:19.761Z",
+  "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/water-pressure-46/",
-  "heartbeat_at": "2026-08-22T12:45:22.331Z",
-  "last_node": "check",
+  "heartbeat_at": "2026-08-22T12:46:19.761Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-22T12:45:18.005Z",
-  "process_id": 517150,
+  "last_event_at": null,
+  "process_id": 551044,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T12:45:22.331640+00:00",
-    "last_success_at": "2026-08-22T12:45:22.329784+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T12:46:19.762016+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 121497,
-        "output_tokens": 11342
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 182415,
-        "output_tokens": 10452
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 139872,
-        "output_tokens": 4542
-      }
-    ]
-  }
+  "metrics": {}
 }
