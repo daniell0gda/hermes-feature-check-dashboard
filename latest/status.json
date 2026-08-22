@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/heart-hud-beat-139-1787422828/",
   "heartbeat_at": "2026-08-22T18:44:11.339Z",
   "last_node": "team-leader",
-  "active_node": null,
+  "active_node": "manual-tester",
   "last_event_at": "2026-08-22T18:44:11.339Z",
   "process_id": 666532,
   "host": "25e0b2c49eb5",
-  "phase": "team-leader",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T18:44:11.339564+00:00",
-    "last_success_at": "2026-08-22T18:43:18.983418+00:00",
+    "last_attempt_at": "2026-08-22T18:44:16.209250+00:00",
+    "last_success_at": "2026-08-22T18:44:16.208356+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 71274,
         "output_tokens": 2856
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "estimated",
+        "input_tokens": 47531,
+        "output_tokens": 855
       }
     ]
   }
