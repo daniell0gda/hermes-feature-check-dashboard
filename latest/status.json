@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-128-tower-details-blinks-on-mode-arm/",
   "heartbeat_at": "2026-08-22T08:04:25.883Z",
   "last_node": "plan",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-22T08:04:25.883Z",
   "process_id": 469202,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T08:04:25.884111+00:00",
-    "last_success_at": "2026-08-22T07:57:54.954523+00:00",
+    "last_attempt_at": "2026-08-22T08:04:30.249894+00:00",
+    "last_success_at": "2026-08-22T08:04:30.249079+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 119291,
+        "output_tokens": 6869
+      }
+    ]
+  }
 }
