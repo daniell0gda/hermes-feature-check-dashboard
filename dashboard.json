@@ -210,6 +210,11 @@
     "url": "runs/issue-125-progression-modal-close-resume/"
   },
   {
+    "run_id": "issue-124-fix-cave-sealing-regression",
+    "status": "running",
+    "url": "runs/issue-124-fix-cave-sealing-regression/"
+  },
+  {
     "run_id": "issue-124-cave-carved-path-torches-retry-stealth",
     "status": "completed",
     "url": "runs/issue-124-cave-carved-path-torches-retry-stealth/"
