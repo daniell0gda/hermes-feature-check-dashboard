@@ -1,21 +1,21 @@
 {
-  "run_id": "issue138-norocktree-1787411442",
-  "feature": "no-rock-or-tree-same-position-as-building",
+  "run_id": "issue-34-overcharge-capacitors-cont1-20260822-140640",
+  "feature": "overcharge-capacitors",
   "status": "running",
-  "started_at": "2026-08-22T15:10:43.314Z",
+  "started_at": "2026-08-22T14:06:40.864Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue138-norocktree-1787411442/",
-  "heartbeat_at": "2026-08-22T15:15:31.288Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T15:15:31.288Z",
-  "process_id": 608659,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-cont1-20260822-140640/",
+  "heartbeat_at": "2026-08-22T15:17:13.058Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T15:17:13.058Z",
+  "process_id": 580825,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:15:35.707867+00:00",
-    "last_success_at": "2026-08-22T15:15:35.706552+00:00",
+    "last_attempt_at": "2026-08-22T15:17:13.059744+00:00",
+    "last_success_at": "2026-08-22T15:05:32.534583+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,19 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 72744,
-        "output_tokens": 2781
+        "input_tokens": 96418,
+        "output_tokens": 4500
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
       }
     ]
   }

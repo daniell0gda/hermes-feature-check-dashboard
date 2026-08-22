@@ -1,32 +1,21 @@
-# Request: no-rock-or-tree-same-position-as-building
+# Request: Systemic: Overcharge Capacitors
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/138
-Project: poke-defense-godot
-Workspace: poke-defense-godot/issue-no-rock-or-tree-same-position-as-building
-Branch: issue/no-rock-or-tree-same-position-as-building
+- **Issue:** #34 — https://github.com/daniell0gda/poke-defense-godot/issues/34
+- **Project:** poke-defense-godot
+- **Git workspace:** /workspace/git-workspaces/poke-defense-godot/issue-overcharge-capacitors
+- **Branch:** issue/overcharge-capacitors
+- **Requested by:** Daniel ("find new issue" — claim top eligible ready issue, implement via team-work)
+- **Claimed:** 2026-08-22T12:45:00Z
 
-## Goal
-In `scripts/game/NatureDecoration.gd`, trees, dead trees, and rocks must never be placed
-at the same XZ position as an already-placed building. Grass and other small vegetation
-remain allowed at the same position as a building.
+## Issue summary
 
-## Context
-- `_generate_all_decorations()` generates buildings (`_generate_building`) before trees,
-  dead trees, and rocks — so building positions can be recorded and checked.
-- Each generator currently only checks path/egg/spawner clearance via `_is_valid_position`;
-  only trees check distance from other trees.
-- Buildings are placed in `buildings_container` ("buildings_container" node).
+New Common progression perk `overcharge_capacitors`: for every 3 towers of the same type owned
+simultaneously, all towers of that type gain a damage bonus (see issue body for exact tiers).
+Purely numeric, composes with existing per-tower Unique trees; reinforces specialization.
 
 ## Acceptance criteria
-1. Trees, dead trees, and rocks are never placed at the same position (or overlapping)
-   as an already-placed building.
-2. Grass (and other small vegetation: bushes, flowers) may still share a position with
-   a building.
-3. Placement still respects existing path/egg/spawner clearances and attempt limits
-   (no infinite loops when space runs out).
-4. Editor import/parse gate passes (`godot --headless --editor --quit-after` style check)
-   and any existing nature-decoration-related tests still pass.
 
-## Manual testing
-manual_testing: required — visible placement; take windowed top-down screenshots showing
-buildings with no tree/rock intersecting them, grass allowed near buildings.
+Per issue "Done when": new Common `overcharge_capacitors` perk registered in the progression/perk
+system, applied to all towers of a type per every 3 same-type towers owned, with tests proving the
+per-type stacking math (including boundary cases: fewer than 3, exactly 3, 6+ towers) through the
+project's standard harness scenarios. Follow /opt/data/coding_rules.md and project conventions.
