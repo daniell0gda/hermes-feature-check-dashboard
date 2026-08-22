@@ -1,12 +1,12 @@
 {
   "run_id": "issue-34-overcharge-capacitors-cont1-20260822-140640",
   "feature": "overcharge-capacitors",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-22T14:06:40.864Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T15:17:17.576Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-cont1-20260822-140640/",
-  "heartbeat_at": "2026-08-22T15:17:13.058Z",
+  "heartbeat_at": "2026-08-22T15:17:17.576Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-22T15:17:13.058Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:17:13.059744+00:00",
-    "last_success_at": "2026-08-22T15:05:32.534583+00:00",
+    "last_attempt_at": "2026-08-22T15:17:17.576839+00:00",
+    "last_success_at": "2026-08-22T15:17:17.575895+00:00",
     "last_error": null
   },
   "metrics": {
@@ -35,6 +35,17 @@
         "task_id": "code",
         "cluster_id": "implementation",
         "role": "code",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
         "model": null,
         "model_tier": null,
         "cost_usd": null,
