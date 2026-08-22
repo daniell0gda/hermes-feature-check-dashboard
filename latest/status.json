@@ -1,22 +1,20 @@
 {
-  "run_id": "issue-34-overcharge-capacitors-20260822-132458",
-  "feature": "overcharge-capacitors",
+  "run_id": "elemental-attunement-20260822",
+  "feature": "elemental-attunement",
   "status": "running",
-  "started_at": "2026-08-22T13:24:58.585Z",
+  "started_at": "2026-08-22T13:26:56.620Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-20260822-132458/",
-  "heartbeat_at": "2026-08-22T13:24:58.585Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/elemental-attunement-20260822/",
+  "heartbeat_at": "2026-08-22T13:26:56.620Z",
   "last_node": null,
-  "active_node": "plan",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 563145,
+  "process_id": 564047,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T13:26:01.860311+00:00",
-    "last_success_at": "2026-08-22T13:25:02.385588+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T13:26:56.620615+00:00"
   },
   "metrics": {}
 }
