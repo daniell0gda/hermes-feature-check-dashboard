@@ -1,17 +1,17 @@
-# Request: Underground carve top-down camera rotation (issue #130)
+# Request: Water Tower — Water Pressure perk (#46)
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/130
-Branch: issue/underground-carve-topdown-camera-rotation
+Source issue: https://github.com/daniell0gda/poke-defense-godot/issues/46
 
-## Goal
-When the carve tool is activated in the underground layer, the camera should automatically rotate to a top-down "bird view" angle so carved paths are visible from above.
+## Summary
+Add a new Common progression perk `water_pressure` (levels 1–3) for the Water tower:
+Water's own damage against already-Wet targets is increased by +20% / +35% / +50%.
 
-## Acceptance criteria
-- Entering carve mode on the underground layer rotates the camera to a top-down bird's-eye angle.
-- Only the rotation changes — camera position/zoom are untouched.
-- Canceling carve restores the previous camera angle.
-- If the user manually changed the camera angle while carving, canceling does NOT restore the old angle (keep the user's new angle).
+## Context
+- Only Electric currently benefits from Wet status (`electric_wet_conduction`); Water gets nothing.
+- Follow existing Common perk patterns (e.g. `electric_wet_conduction`) for data, unlock, UI listing, and tests.
 
-## Notes
-- Visible player-facing UI/camera behavior → manual testing with windowed screenshots is required; underground views need top-down camera shots (side angles hide carved-path lighting).
-- Follow /opt/data/coding_rules.md.
+## Done when
+- New Common `water_pressure` (L1–3): Water's own damage vs already-Wet targets +20%/+35%/+50%.
+- No new visual required — pure conditional damage% modifier against the existing Wet status.
+
+manual_testing: none (pure stat modifier; no new visible mechanic). Headless harness verification is sufficient unless implementation adds visible UI beyond standard perk listing.
