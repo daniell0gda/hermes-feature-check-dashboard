@@ -1,22 +1,69 @@
 {
-  "run_id": "req-134-upgrade-click-money-animation-r3",
-  "feature": "upgrade-click-money-animation",
+  "run_id": "issue-101-20260822T194917Z",
+  "feature": "underground-side-panel-carve-place-exit-",
   "status": "running",
-  "started_at": "2026-08-22T21:00:31.935Z",
+  "started_at": "2026-08-22T20:21:45.912Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-134-upgrade-click-money-animation-r3/",
-  "heartbeat_at": "2026-08-22T21:00:31.935Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
-  "process_id": 739919,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-101-20260822T194917Z/",
+  "heartbeat_at": "2026-08-22T21:05:42.300Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T21:05:42.300Z",
+  "process_id": 713831,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:02:06.903972+00:00",
-    "last_success_at": "2026-08-22T21:00:36.849269+00:00",
+    "last_attempt_at": "2026-08-22T21:05:42.301015+00:00",
+    "last_success_at": "2026-08-22T21:01:34.555290+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 81116,
+        "output_tokens": 6750
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 109592,
+        "output_tokens": 7933
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 104254,
+        "output_tokens": 5578
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 241160,
+        "output_tokens": 13299
+      }
+    ]
+  }
 }
