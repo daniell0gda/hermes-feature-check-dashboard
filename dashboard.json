@@ -55,6 +55,11 @@
     "url": "runs/issue97-trap-armor-reduction-20260816/"
   },
   {
+    "run_id": "issue53-burn-status-refresh",
+    "status": "running",
+    "url": "runs/issue53-burn-status-refresh/"
+  },
+  {
     "run_id": "issue-99-underground-cleanup",
     "status": "completed",
     "url": "runs/issue-99-underground-cleanup/"
