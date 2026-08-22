@@ -1,4 +1,4 @@
-# Coder report: 1-map-reload-teardown-and-regression-scenario\n\n# Coder report: 1-map-reload-teardown-and-regression-scenario
+# Coder report: 1-map-reload-teardown-and-regression-scenario
 
 ## Changed files
 - `scripts/testing/HarnessValues.gd` — mod: fixed cherry-pick merge damage (duplicate `"harness"` match arm and duplicate `_harness_field()` definition that broke the whole script-class parse)
@@ -28,4 +28,3 @@
 - Other pre-existing envelope noise: `Signal 'layer_changed' is already connected`, `Signal 'pressed' is already connected`, `Condition "!is_inside_tree()"` during path building, exit-time RID/ObjectDB leak reports (both headless and GL runs).
 - The windowed run's cave RNG differs slightly from headless (cave radius/position) but both runs pass deterministically under the scenario seed.
 - Screenshot PNG: `.gen/harness/issue_63_map_reload_boundary.png` → `.gen/harness/issue_63_clear_previous_map_tower_effects/shots/issue_63_map_reload_boundary.png`. Vision inspection confirms map B, fresh fire tower on path, wave 4/4 HUD, zero Porter ring/teleport/dissolve residue, no broken UI textures.
-\n

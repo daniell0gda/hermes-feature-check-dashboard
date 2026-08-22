@@ -1,30 +1,24 @@
-# Request: Frozen Fracture perk (#94)
+# Issue #63 continuation request
 
-Project: poke-defense-godot
-Workspace: poke-defense-godot/issue-perk-frozen-fracture
-Branch: issue/perk-frozen-fracture
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/94
-Runner project key: godot-td
-Revision budget: 2
+## Goal
 
-## Feature
+Reloading a failed map must start clean: no Porter shots, beams, timers, or leftover VFX from the previous map. Re-verify on current master after cherry-picking the existing teardown/regression work.
 
-Add Common perk `frozen_fracture` (3 levels). While an enemy is under Ice Tower slow, it takes +10%/+20%/+30% increased armor-damage from any source. No effect if the enemy is not currently slowed. No new VFX.
+## Acceptance criteria
 
-## Acceptance
-
-- Perk exists as Common, 3 levels, ids/values as specified.
-- Armor-damage bonus applies only while Ice slow is active.
-- `game-test` scenario compares armor-damage on a slowed vs unslowed enemy with the perk active.
-- No new VFX.
+1. A scenario places and activates a Porter on map A, then reloads a failed map onto map B.
+2. Reload teardown cancels previous-map tower activity (projectiles, timers, Porter dissolve/target, beams, callbacks).
+3. After reload, only new-map towers may act. Porter on the old map must stay quiet.
+4. Deterministic AgentHarness scenario with pre-reload activity and post-reload zero residual action.
+5. Fresh headless focused harness plus raw Godot diagnostic scan.
+6. Windowed OpenGL-compatible screenshot after reload; inspect the PNG (Map B / new tower activity, no stale Porter VFX).
 
 ## Constraints
 
-- Use `run_project_cmd` with project `godot-td` and workspace `poke-defense-godot/issue-perk-frozen-fracture`.
-- Follow `/opt/data/coding_rules.md` and project context.
-- Visible perk/UI work needs windowed screenshots if the perk appears in progression UI.
-- Do not commit, push, merge, or close the issue.
-
-## Classification
-
-`check.md` must include `classification: pass|fixable|design_failure|blocked`.
+- Workspace: `/workspace/git-workspaces/poke-defense-godot/issue-clear-previous-map-tower-effects`
+- Branch: `issue/clear-previous-map-tower-effects` (based on current origin/master + cherry-pick `40808d9` with conflict merge).
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/63
+- Flat `.gen/` artifacts. New request id. Do not close/merge/push.
+- Project commands only via runner `godot-td` / workspace `poke-defense-godot/issue-clear-previous-map-tower-effects`.
+- Visible reload/VFX: `manual_testing: required`.
+- Follow `/opt/data/coding_rules.md`.

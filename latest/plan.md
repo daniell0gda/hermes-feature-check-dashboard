@@ -1,41 +1,43 @@
-# Acceptance Plan: perk-frozen-fracture
+# Acceptance Plan: clear-previous-map-tower-effects
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/frozen_fracture_slowed_vs_unslowed.json"]`
-- Full test: `["bash", "-lc", "for f in tests/scenarios/frozen_fracture_*.json tests/scenarios/enemy_armor_ballista.json tests/scenarios/progression_pick.json tests/scenarios/ice_rate_matched_speeds.json; do id=$(basename \"$f\" .json); godot --headless --path . res://scenes/Main.tscn -- \"--harness=res://$f\" > /dev/null 2>&1; s=$(python3 -c \"import json;print(json.load(open('.gen/harness/$id/result.json'))['status'])\" 2>/dev/null); echo \"$id: $s\"; [ \"$s\" = pass ] || exit 1; done"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "120"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/issue_63_clear_previous_map_tower_effects.json"]`
+- Full test: `["godot", "--rendering-method", "gl_compatibility", "--audio-driver", "Dummy", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/issue_63_clear_previous_map_tower_effects.json"]` (windowed/Xvfb runner so the screenshot checkpoint captures real pixels)
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+
+All project commands go through Hermes `run_project_cmd` (`project: godot-td`, `workspace: poke-defense-godot/issue-clear-previous-map-tower-effects`). A passing harness exit code alone is not enough: the fresh runner stdout/stderr must also be scanned for `Parse Error`, `Failed loading resource`, and `Invalid parameter`.
 
 ## Clusters
 
-1. frozen-fracture-perk-definition — files: `scripts/progression/global.json`, `scripts/progression/managers/CurseProgressionManager.gd` (or a sibling global-Common manager following it), `autoload/ProgressionManager.gd` — depends on: none
-- The `frozen_fracture` perk exists in the global Common progression pool as type Common with exactly 3 levels.
-- With `frozen_fracture` at levels 1/2/3, the exposed armor-damage bonus is 10%/20%/30% respectively; when the perk is not owned the bonus is disabled (no increase).
-- A chest draw that includes the pool offers `frozen_fracture` alongside other Common perks, and its level descriptions state the armor-damage bonus values.
-2. frozen-fracture-armor-runtime — files: `scripts/game/actors/enemy/parts/EnemyHealthController.gd`, `autoload/ProgressionManager.gd`, `scripts/game/actors/towers/IceTower.gd` (only if slow-source attribution needs exposing) — depends on: 1
-- While an enemy is under an active Ice Tower slow, each point of incoming armor damage from any damage source is increased by the perk's level bonus (10%/20%/30%).
-- An enemy that is not currently slowed takes unmodified armor damage even when `frozen_fracture` is owned.
-- After an enemy's Ice slow expires, subsequent hits take unmodified armor damage again.
-- The bonus scales armor damage only; the hit's HP damage is unchanged by the perk.
-- A debug-build log line with a stable filterable `[FrozenFracture]` marker records each boosted armor-damage application (enemy id, level, bonus percent).
-3. frozen-fracture-game-test-coverage — files: `tests/scenarios/frozen_fracture_slowed_vs_unslowed.json`, `tests/scenarios/frozen_fracture_levels_and_expiry.json` — depends on: 1, 2
-- A focused game-test scenario compares armor remaining after identical armor-damage hits on a slowed versus an unslowed enemy with the perk active, asserting the slowed enemy lost exactly the level-multiplied amount more.
-- A focused game-test scenario asserts the three perk levels produce 10%/20%/30% extra armor damage respectively and that behavior reverts to baseline once the slow expires.
+1. map-reload-teardown-and-regression-scenario — files: `scripts/game/Game.gd`, `scripts/game/TowerManager.gd`, `scripts/game/actors/Tower.gd`, `scripts/game/actors/towers/PorterTower.gd`, `scripts/game/actors/towers/ScifiTower.gd`, `scripts/testing/AgentHarness.gd`, `scripts/testing/HarnessActions.gd`, `scripts/testing/HarnessValues.gd`, `tests/scenarios/issue_63_clear_previous_map_tower_effects.json` — depends on: none
+- A deterministic AgentHarness scenario places and activates a Porter on map A, then reloads onto map B via `load_map`.
+- Reload teardown stops previous-map tower simulation: after reload, no tower from map A receives fixed ticks or fires projectiles.
+- After reload, Porter state from map A is fully cleared: no current target, no pending dissolve effect, no beam or teleport VFX residue.
+- After two separate post-reload waits, telemetry checkpoints record zero Porter target/shot/launch/impact/damage activity from the previous map.
+- After reload, a newly placed tower on map B produces fresh targeting activity, proving new-map towers still act normally.
+- Telemetry checkpoints retain pre-reload counters and the map-generation count across the reload, so post-reload deltas are attributable to the new map.
+- Debug-build [TOWER] log line per tower teardown event during map reload (tower kind and instance id), filterable to confirm each previous-map tower was torn down exactly once.
+- Headless focused run passes with status=pass and clean engine diagnostics (no Parse Error / Failed loading resource / Invalid parameter in the run's captured stdout/stderr).
+- Windowed OpenGL-compatibility run captures a post-reload PNG showing map B with new-tower activity and no stale Porter VFX; the PNG is inspected.
 
 ## Criteria
 
-- The `frozen_fracture` perk exists in the global Common progression pool as type Common with exactly 3 levels.
-- With `frozen_fracture` at levels 1/2/3, the exposed armor-damage bonus is 10%/20%/30% respectively; when the perk is not owned the bonus is disabled (no increase).
-- A chest draw that includes the pool offers `frozen_fracture` alongside other Common perks, and its level descriptions state the armor-damage bonus values.
-- While an enemy is under an active Ice Tower slow, each point of incoming armor damage from any damage source is increased by the perk's level bonus (10%/20%/30%).
-- An enemy that is not currently slowed takes unmodified armor damage even when `frozen_fracture` is owned.
-- After an enemy's Ice slow expires, subsequent hits take unmodified armor damage again.
-- The bonus scales armor damage only; the hit's HP damage is unchanged by the perk.
-- A debug-build log line with a stable filterable `[FrozenFracture]` marker records each boosted armor-damage application (enemy id, level, bonus percent).
-- A focused game-test scenario compares armor remaining after identical armor-damage hits on a slowed versus an unslowed enemy with the perk active, asserting the slowed enemy lost exactly the level-multiplied amount more.
-- A focused game-test scenario asserts the three perk levels produce 10%/20%/30% extra armor damage respectively and that behavior reverts to baseline once the slow expires.
+- A deterministic AgentHarness scenario places and activates a Porter on map A, then reloads onto map B via `load_map`.
+- Reload teardown stops previous-map tower simulation: after reload, no tower from map A receives fixed ticks or fires projectiles.
+- After reload, Porter state from map A is fully cleared: no current target, no pending dissolve effect, no beam or teleport VFX residue.
+- After two separate post-reload waits, telemetry checkpoints record zero Porter target/shot/launch/impact/damage activity from the previous map.
+- After reload, a newly placed tower on map B produces fresh targeting activity, proving new-map towers still act normally.
+- Telemetry checkpoints retain pre-reload counters and the map-generation count across the reload, so post-reload deltas are attributable to the new map.
+- Debug-build [TOWER] log line per tower teardown event during map reload (tower kind and instance id), filterable to confirm each previous-map tower was torn down exactly once.
+- Headless focused run passes with status=pass and clean engine diagnostics (no Parse Error / Failed loading resource / Invalid parameter in the run's captured stdout/stderr).
+- Windowed OpenGL-compatibility run captures a post-reload PNG showing map B with new-tower activity and no stale Porter VFX; the PNG is inspected.
+
+## Manual testing
+
+manual_testing: required — the reload boundary and absence of stale Porter VFX are player-visible and need human inspection of the captured PNG.
 
 ## Notes
 
-- manual_testing: optional
-- Pure numeric/stat modifier perk; issue explicitly states no new VFX, and no player-visible story exists that a still screenshot could prove beyond the standard progression draw UI, so no `ui_scenario.md` is written.
+- Branch under test already carries the teardown/regression work (cherry-pick of `40808d9`); this plan re-verifies it on the rebased tree rather than prescribing new implementation.
+- Do not close, merge, or push as part of this task.
