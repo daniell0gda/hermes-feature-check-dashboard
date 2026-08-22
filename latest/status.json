@@ -1,23 +1,23 @@
 {
   "run_id": "leader-loop",
   "feature": "Smoke",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-22T14:48:42.014Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T14:49:04.412Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-loop/",
-  "heartbeat_at": "2026-08-22T14:49:00.178Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-22T14:49:00.178Z",
+  "heartbeat_at": "2026-08-22T14:49:04.412Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-22T14:49:04.405Z",
   "process_id": 598283,
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T14:49:00.187792+00:00",
-    "last_success_at": "2026-08-22T14:49:00.177252+00:00",
+    "last_attempt_at": "2026-08-22T14:49:04.412716+00:00",
+    "last_success_at": "2026-08-22T14:49:04.404894+00:00",
     "last_error": null,
-    "last_skipped_remote_at": "2026-08-22T14:49:00.187019+00:00"
+    "last_skipped_remote_at": "2026-08-22T14:49:04.411798+00:00"
   },
   "metrics": {
     "invocations": [
@@ -47,6 +47,17 @@
         "task_id": "check",
         "cluster_id": null,
         "role": "check",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
         "model": null,
         "model_tier": null,
         "cost_usd": null,
