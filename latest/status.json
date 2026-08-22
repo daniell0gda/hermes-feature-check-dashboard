@@ -1,22 +1,47 @@
 {
-  "run_id": "issue-124-cave-carved-path-torches-fresh",
-  "feature": "cave-carved-path-torches-fresh",
+  "run_id": "issue-123-progression-pick-scenario-stale",
+  "feature": "progression_pick scenario compatible tower recipe",
   "status": "running",
-  "started_at": "2026-08-22T08:39:56.692Z",
+  "started_at": "2026-08-22T08:06:37.179Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-cave-carved-path-torches-fresh/",
-  "heartbeat_at": "2026-08-22T08:39:56.692Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
-  "process_id": 479551,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-123-progression-pick-scenario-stale/",
+  "heartbeat_at": "2026-08-22T08:44:35.006Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T08:44:35.006Z",
+  "process_id": 472003,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T08:40:48.200047+00:00",
-    "last_success_at": "2026-08-22T08:40:01.378166+00:00",
+    "last_attempt_at": "2026-08-22T08:44:35.007085+00:00",
+    "last_success_at": "2026-08-22T08:36:11.297058+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 188154,
+        "output_tokens": 13697
+      }
+    ]
+  }
 }
