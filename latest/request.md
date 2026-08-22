@@ -1,32 +1,40 @@
-# Request: no-rock-or-tree-same-position-as-building
+# Request: Traps — Buried Ordnance Unique perk
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/138
-Project: poke-defense-godot
-Workspace: poke-defense-godot/issue-no-rock-or-tree-same-position-as-building
-Branch: issue/no-rock-or-tree-same-position-as-building
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/39
+- **Project:** godot-td
+- **Git workspace:** poke-defense-godot/issue-buried-ordnance (branch `issue/buried-ordnance`, cut from `origin/master`)
+- **Request ID:** issue-39-buried-ordnance
 
-## Goal
-In `scripts/game/NatureDecoration.gd`, trees, dead trees, and rocks must never be placed
-at the same XZ position as an already-placed building. Grass and other small vegetation
-remain allowed at the same position as a building.
+## Feature
 
-## Context
-- `_generate_all_decorations()` generates buildings (`_generate_building`) before trees,
-  dead trees, and rocks — so building positions can be recorded and checked.
-- Each generator currently only checks path/egg/spawner clearance via `_is_valid_position`;
-  only trees check distance from other trees.
-- Buildings are placed in `buildings_container` ("buildings_container" node).
+New progression Unique `traps_buried_ordnance` for the Traps system: when a trap hits an
+underground enemy, it has a chance to chain a small explosion to neighboring underground
+enemies within a short radius.
 
-## Acceptance criteria
-1. Trees, dead trees, and rocks are never placed at the same position (or overlapping)
-   as an already-placed building.
-2. Grass (and other small vegetation: bushes, flowers) may still share a position with
-   a building.
-3. Placement still respects existing path/egg/spawner clearances and attempt limits
-   (no infinite loops when space runs out).
-4. Editor import/parse gate passes (`godot --headless --editor --quit-after` style check)
-   and any existing nature-decoration-related tests still pass.
+## Why
 
-## Manual testing
-manual_testing: required — visible placement; take windowed top-down screenshots showing
-buildings with no tree/rock intersecting them, grass allowed near buildings.
+Traps currently only hit the single enemy that steps on them, so they fall off as enemy HP
+scales. This keeps traps relevant against underground swarms late in a run by reusing the
+small-explosion logic already proven by Bazooka/Cannon.
+
+## Done when
+
+1. New Unique perk `traps_buried_ordnance` exists and is grantable through the normal
+   progression/Unique flow used by other trap Uniques.
+2. Trap hits against **underground** enemies have a chance to chain a small explosion to
+   neighboring **underground** enemies in a short radius.
+3. The chained blast has its own readable explosion VFX cue — reuse the existing
+   small-explosion VFX from `scripts/game/actors/projectiles/BazookaProjectile.gd` or
+   `scripts/game/actors/projectiles/CannonballProjectile.gd` (whichever burst best matches
+   "small") — it must not be a silent chained damage tick.
+4. Verification covers: perk grants cleanly; chained explosion triggers on underground trap
+   hits with the expected radius/chance behavior; no chain on non-underground targets;
+   editor/import gate passes; focused harness scenario passes with fresh evidence.
+
+## Notes for planner/coder/checker
+
+- Follow `/opt/data/coding_rules.md` and existing trap/perk patterns in the repo.
+- Underground-only targeting matters: ground-level enemies above must not be affected.
+- Visual cue is an explicit acceptance criterion — a silent damage tick is not done.
+- Manual testing: this is visible player-facing VFX work → `manual_testing: required`
+  with windowed screenshots of the chained explosion moment.

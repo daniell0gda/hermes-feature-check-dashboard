@@ -2,8 +2,8 @@
 
 - **Result:** failed
 - **Classification:** unknown
-- **Feature:** no-rock-or-tree-same-position-as-building
-- **Run:** issue138-norocktree-1787411442
+- **Feature:** Traps Buried Ordnance unique perk
+- **Run:** issue-39-buried-ordnance
 - **Lifecycle:** dashboard publish only; project commit/push/close not implied
 
 ## Status
