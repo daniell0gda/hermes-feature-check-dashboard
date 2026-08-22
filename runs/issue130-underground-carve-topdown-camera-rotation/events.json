@@ -16,5 +16,14 @@
     "duration_ms": 4564175,
     "summary": "All work is verified. Final state:\n\n## Summary \u2014 cluster `implementation` (carve-camera-lifecycle + carve-camera-harness)\n\n**Status: implemented and verified.** The working tree already contained the full implementation from this iteration;\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-22T16:49:54.164Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 1352839,
+    "summary": "Final summary (iteration limit reached before writing the .gen artifacts \u2014 see note at end).\n\nClassification: fixable\n\nVerification performed (all via run_project_cmd, project godot-td, workspace poke-defense-godot/issue-130):\n- Probe `git \u2026",
+    "error": null
   }
 ]

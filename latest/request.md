@@ -1,40 +1,20 @@
-# Request: Traps — Buried Ordnance Unique perk
+# Request: Underground carve top-down camera rotation (issue #130)
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/39
-- **Project:** godot-td
-- **Git workspace:** poke-defense-godot/issue-buried-ordnance (branch `issue/buried-ordnance`, cut from `origin/master`)
-- **Request ID:** issue-39-buried-ordnance
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/130
+Branch: issue/underground-carve-topdown-camera-rotation
 
-## Feature
+## Goal
+When the carve tool is activated in the underground layer, the camera should automatically rotate to a top-down "bird view" angle so carved paths are visible from above.
 
-New progression Unique `traps_buried_ordnance` for the Traps system: when a trap hits an
-underground enemy, it has a chance to chain a small explosion to neighboring underground
-enemies within a short radius.
+## Acceptance criteria
+- Entering carve mode on the underground layer rotates the camera to a top-down bird's-eye angle.
+- Only the rotation changes — camera position/zoom are untouched.
+- Canceling carve restores the previous camera angle.
+- If the user manually changed the camera angle while carving, canceling does NOT restore the old angle (keep the user's new angle).
 
-## Why
+## Notes
+- Visible player-facing UI/camera behavior → manual testing with windowed screenshots is required; underground views need top-down camera shots (side angles hide carved-path lighting).
+- Follow /opt/data/coding_rules.md.
 
-Traps currently only hit the single enemy that steps on them, so they fall off as enemy HP
-scales. This keeps traps relevant against underground swarms late in a run by reusing the
-small-explosion logic already proven by Bazooka/Cannon.
-
-## Done when
-
-1. New Unique perk `traps_buried_ordnance` exists and is grantable through the normal
-   progression/Unique flow used by other trap Uniques.
-2. Trap hits against **underground** enemies have a chance to chain a small explosion to
-   neighboring **underground** enemies in a short radius.
-3. The chained blast has its own readable explosion VFX cue — reuse the existing
-   small-explosion VFX from `scripts/game/actors/projectiles/BazookaProjectile.gd` or
-   `scripts/game/actors/projectiles/CannonballProjectile.gd` (whichever burst best matches
-   "small") — it must not be a silent chained damage tick.
-4. Verification covers: perk grants cleanly; chained explosion triggers on underground trap
-   hits with the expected radius/chance behavior; no chain on non-underground targets;
-   editor/import gate passes; focused harness scenario passes with fresh evidence.
-
-## Notes for planner/coder/checker
-
-- Follow `/opt/data/coding_rules.md` and existing trap/perk patterns in the repo.
-- Underground-only targeting matters: ground-level enemies above must not be affected.
-- Visual cue is an explicit acceptance criterion — a silent damage tick is not done.
-- Manual testing: this is visible player-facing VFX work → `manual_testing: required`
-  with windowed screenshots of the chained explosion moment.
+## Redo note (run 1 failed)
+Run 1 ended blocked: every worker call used wrong runner workspace names (`godot-td/issue-underground-carve-topdown-camera-rotation`, `godot-td/issue-130`, `poke-defense-godot/check`) → HTTP 422 chdir failures. Correct usage: project key `godot-td`, workspace `poke-defense-godot/issue-<slug>` (this branch slug: `poke-defense-godot/issue-130` or matching existing convention). Also: `Game.on_carve_camera_mode` does NOT exist yet while `UI._notify_carve_camera` calls it via `has_method` guard — the core carve-camera logic in Game.gd is still missing. Implement it, then re-run all gates with correctly named runner calls.
