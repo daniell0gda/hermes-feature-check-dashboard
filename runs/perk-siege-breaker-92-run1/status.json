@@ -1,12 +1,12 @@
 {
   "run_id": "perk-siege-breaker-92-run1",
   "feature": "perk-siege-breaker",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-22T20:44:15.820Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T21:32:32.001Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-siege-breaker-92-run1/",
-  "heartbeat_at": "2026-08-22T21:32:27.152Z",
+  "heartbeat_at": "2026-08-22T21:32:32.001Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-22T21:32:27.152Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:32:27.152792+00:00",
-    "last_success_at": "2026-08-22T21:27:05.105787+00:00",
+    "last_attempt_at": "2026-08-22T21:32:32.001176+00:00",
+    "last_success_at": "2026-08-22T21:32:31.999980+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 222122,
         "output_tokens": 27706
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 148057,
+        "output_tokens": 7004
       }
     ]
   }
