@@ -1,31 +1,33 @@
-# Acceptance Plan: towers-bar-slot-row-overflow-margin (issue #105)
+# Acceptance Plan: earth-continent-map-integration
+
+manual_testing: required
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/towers_bar_slot_overflow.json"]`
-- Full test: `["bash", "-lc", "for s in smoke_placement hud_controls_state hud_wood_panels hud_other_panels hud_layer_roundtrip removed_tower_kinds_no_crash; do godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/$s.json || exit 1; done"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/backdrop_earth_visible.json"]`
+- Full test: `["python3", "-c", "\nimport glob, json, subprocess, sys\nfails = []\nfor s in sorted(glob.glob('tests/scenarios/*.json')):\n    subprocess.run(['godot', '--headless', '--path', '.', 'res://scenes/Main.tscn', '--', '--harness=res://' + s])\n    try:\n        ok = json.load(open('.gen/harness/' + json.load(open(s))['id'] + '/result.json'))['status'] == 'pass'\n    except Exception:\n        ok = False\n    print(s, 'PASS' if ok else 'FAIL')\n    if not ok:\n        fails.append(s)\nsys.exit(1 if fails else 0)\n"]`
 - Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
 ## Clusters
 
-1. slot-row-overflow-guard — files: `scripts/ui/UI.gd`, `scenes/UI.tscn`, `scenes/ui/widgets/TowerShopSlot.tscn` — depends on: none
-- With the full surface roster unlocked at the 1920 logical viewport, every TowerShopSlot in Root/ButtonsContainer/Panel/BarRow/TowerButtons is fully visible inside the TowersBarPanel: no slot's rect extends past the panel's inner rect and the slot row's reported width does not exceed the panel's available width.
-- When the roster outgrows the bar (a 13th+ surface tower exists), the slot row degrades by design instead of clipping: slots shrink down to a documented floor size, or the row scrolls, or the bar reserves a second line — and in every case no slot rect extends outside the TowersBarPanel inner rect at the 1920 logical viewport.
-- The TowerButtons node remains an HBoxContainer (never converted to a flow container) after loading a map on both surface and underground layers, and after an underground round trip the bar panel's height returns to its pre-trip value (no permanent growth).
-- The pixel budget arithmetic from issue #105 (12 x slot min width + 11 x separation + UpdateTowersBtn width + 2 x BarRow separation vs the bar's available width at 1920) is recorded as a comment next to whatever constant governs it, so future edits see the remaining headroom.
-- Debug-build `[TOWERS_BAR]` log line per overflow-degradation event, naming the roster size and which degradation path engaged.
-2. overflow-harness-scenario — files: `tests/scenarios/towers_bar_slot_overflow.json` — depends on: 1
-- A `game-test` scenario loads a map with the full roster unlocked, captures a windowed screenshot checkpoint of the towers bar, and its headless assertions report pass with no slot clipped (or the slot row's width measured within the bar's inner width).
-- The same scenario leaves the underground trap row (UndergroundTraps with Trap1/Trap2/Trap3/Trap5) laid out inside its panel with no regression versus current behavior.
+1. grounded-continent-placement — files: `scripts/game/visuals/BackdropEarth.gd` — depends on: none
+- The grounded configuration names exactly one continent mesh from `models/stylized_earth_in_clouds.glb`, and a debug-build warning is emitted if that mesh is absent from the instantiated model.
+- After `configure_for_map` on a surface map, the chosen continent's terrain apex sits flush at the playable plane height (harness `backdrop_earth_center_y == 0`) with no floating gap between board and globe surface.
+- The globe rig pose places the globe body close enough to the board that its horizon lies inside the normal gameplay camera's view frustum (not sunk below the plane nor pushed far behind the board).
+- In the grounded configuration the earth spin never starts: the earth body's world transform sampled at two times several seconds apart is identical.
+- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent and the final rig position/scale/rotation.
+2. backdrop-regression-and-harness-contract — files: `tests/scenarios/backdrop_earth_visible.json`, `tests/scenarios/backdrop_earth_glint.json` — depends on: 1
+- The focused harness scenarios `backdrop_earth_visible` and `backdrop_earth_glint` both pass headless with all their expectations green (present, grounded, flush placement, rotation invariance).
+- From the normal gameplay camera in the windowed build, other continents, ocean, cloud banks, and the atmosphere rim remain visible; only the previously hidden mesh prefixes stay hidden, with no visual regressions to the backdrop look.
+- A windowed run of `backdrop_earth_visible` produces a surface screenshot from the default gameplay camera showing the map sitting on the chosen continent with surrounding continent terrain blending in scale and color into the map field.
 
 ## Criteria
 
-- With the full surface roster unlocked at the 1920 logical viewport, every TowerShopSlot in Root/ButtonsContainer/Panel/BarRow/TowerButtons is fully visible inside the TowersBarPanel: no slot's rect extends past the panel's inner rect and the slot row's reported width does not exceed the panel's available width.
-- When the roster outgrows the bar (a 13th+ surface tower exists), the slot row degrades by design instead of clipping: slots shrink down to a documented floor size, or the row scrolls, or the bar reserves a second line — and in every case no slot rect extends outside the TowersBarPanel inner rect at the 1920 logical viewport.
-- The TowerButtons node remains an HBoxContainer (never converted to a flow container) after loading a map on both surface and underground layers, and after an underground round trip the bar panel's height returns to its pre-trip value (no permanent growth).
-- The pixel budget arithmetic from issue #105 (12 x slot min width + 11 x separation + UpdateTowersBtn width + 2 x BarRow separation vs the bar's available width at 1920) is recorded as a comment next to whatever constant governs it, so future edits see the remaining headroom.
-- Debug-build `[TOWERS_BAR]` log line per overflow-degradation event, naming the roster size and which degradation path engaged.
-- A `game-test` scenario loads a map with the full roster unlocked, captures a windowed screenshot checkpoint of the towers bar, and its headless assertions report pass with no slot clipped (or the slot row's width measured within the bar's inner width).
-- The same scenario leaves the underground trap row (UndergroundTraps with Trap1/Trap2/Trap3/Trap5) laid out inside its panel with no regression versus current behavior.
-
-manual_testing: required
+- The grounded configuration names exactly one continent mesh from `models/stylized_earth_in_clouds.glb`, and a debug-build warning is emitted if that mesh is absent from the instantiated model.
+- After `configure_for_map` on a surface map, the chosen continent's terrain apex sits flush at the playable plane height (harness `backdrop_earth_center_y == 0`) with no floating gap between board and globe surface.
+- The globe rig pose places the globe body close enough to the board that its horizon lies inside the normal gameplay camera's view frustum (not sunk below the plane nor pushed far behind the board).
+- In the grounded configuration the earth spin never starts: the earth body's world transform sampled at two times several seconds apart is identical.
+- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent and the final rig position/scale/rotation.
+- The focused harness scenarios `backdrop_earth_visible` and `backdrop_earth_glint` both pass headless with all their expectations green (present, grounded, flush placement, rotation invariance).
+- From the normal gameplay camera in the windowed build, other continents, ocean, cloud banks, and the atmosphere rim remain visible; only the previously hidden mesh prefixes stay hidden, with no visual regressions to the backdrop look.
+- A windowed run of `backdrop_earth_visible` produces a surface screenshot from the default gameplay camera showing the map sitting on the chosen continent with surrounding continent terrain blending in scale and color into the map field.

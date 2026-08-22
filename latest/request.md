@@ -1,40 +1,69 @@
-# Request: towers-bar-slot-row-overflow-margin (issue #105)
+# Request: Ground the playable map on a continent of the existing stylized earth model
 
-- Project: poke-defense-godot
-- Git workspace: /workspace/git-workspaces/poke-defense-godot/issue-towers-bar-slot-row-overflow-margin
-- Runner key: `godot-td`, workspace `poke-defense-godot/issue-towers-bar-slot-row-overflow-margin` (never invent other workspace names — wrong names cause HTTP 422)
-- Branch: issue/towers-bar-slot-row-overflow-margin (cut from origin/master d241462)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/105
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/137
+Slug: `earth-continent-map-integration`
+Project: poke-defense-godot
+Workspace: `/workspace/git-workspaces/poke-defense-godot/issue-earth-continent-map-integration`
+Branch: `issue/earth-continent-map-integration`
 
 ## Problem
 
-The surface tower slot row (Root/ButtonsContainer/Panel/BarRow/TowerButtons, an HBoxContainer by
-design — must NOT become a flow container; see comment on `tower_buttons_container` in
-`scripts/ui/UI.gd`) fits 12 towers with only 14px of headroom at the 1920 logical viewport:
+The game uses the existing stylized earth model (`res://models/stylized_earth_in_clouds.glb`,
+driven by `scripts/game/visuals/BackdropEarth.gd`) only as a distant backdrop globe floating
+off to the side of the board. The playable map field floats disconnected above/beside the
+planet instead of belonging to it.
 
-- 12 slots x 112 (TowerShopSlot.custom_minimum_size) = 1344
-- 11 x 4 separation = 44
-- UpdateTowersBtn = 118
-- 2 x 10 BarRow separation = 20
-- needed 1526 vs available 1540 (1920 - 16 left - 304 right - 60 TowersBarPanel margins)
+## Requirements (from issue + follow-up comment)
 
-TowerShopSlot has size_flags_horizontal = 4 (SHRINK_CENTER) so slots cannot shrink. A 13th tower
-(or wider button/slots) silently overflows and clips — no error, no test failure. TowersConfig
-drives the roster, so the next tower addition breaks the HUD quietly.
+1. Pick **one continent** from the earth model's landmasses (the GLB contains named continent
+   meshes — see `_continent_color()` in `BackdropEarth.gd`, e.g. Africa/Asia/Americas names)
+   and position/orient the globe so the playable map's field lies flat on that continent.
+2. The gameplay plane should visually merge with the chosen continent: scale relationship,
+   terrain color continuity with the continent material, no visible gap or floating edge
+   between board and globe surface.
+3. Keep the rest of the globe (other continents, oceans, clouds, atmosphere) visible so the
+   player still reads it as Earth; no regressions to the current backdrop look.
+4. **The earth model must NOT rotate** once the map sits on it. Disable/stop the existing spin
+   (`_start_earth_spin()` / `earth_spin_seconds` in `BackdropEarth.gd`) for the grounded
+   configuration — a spinning planet would move the battlefield.
 
-## Done when
+## Acceptance criteria
 
-1. The slot row degrades predictably when the roster outgrows the bar: slots shrink to a floor,
-   or the row scrolls, or the bar reserves a second line by design. Flow container is not an
-   option (caused a permanent-growth layout bug after underground trips).
-2. A `game-test` scenario loads a map with the full roster unlocked, screenshots the bar, and
-   asserts no slot is clipped (or the row's width is within the bar's).
-3. The pixel budget above is recorded next to whatever constant governs it, so future changes
-   see the headroom.
-4. No new visual required; the bar keeps its current look at 12 towers.
+- [ ] A specific continent mesh is selected and documented (name of the GLB mesh used).
+- [ ] Earth model positioned/scaled so the playable map field sits flush on the chosen
+      continent, no floating gap, from the normal gameplay camera.
+- [ ] Continent terrain colors/material around the board blend with the map field.
+- [ ] Other continents/ocean/clouds remain visible; no visual regressions to the current
+      cloud/atmosphere backdrop.
+- [ ] Earth spin is disabled in the grounded configuration (globe does not rotate during play).
+- [ ] Verified in-game with windowed screenshots from the normal gameplay camera showing the
+      map sitting on the continent. Headless-only verification is not sufficient — this is
+      player-facing visual work (`manual_testing: required`).
 
 ## Notes
 
-- Manual testing: visible HUD work — windowed screenshots required (never --headless for the
-  manual pass); include an overall UI-sanity judgment per screenshot.
-- Preserve exact acceptance criteria; do not weaken the no-clip assertion to a count.
+- Key file: `scripts/game/visuals/BackdropEarth.gd` (placement in `_place_earth()`, spin in
+  `_start_earth_spin()` / `_stop_earth_spin()`, continent naming in `_continent_color()`).
+- Check `scenes/Game.tscn` / how `BackdropEarth.configure_for_map()` is invoked for map size.
+- Manual testing gate: this is visible world work → manual-tester with windowed screenshots
+  is required.
+
+## Revision feedback (Daniel, after screenshot review of iteration 2)
+
+Screenshot review of the grounded build shows two defects that ARE required scope:
+
+1. **Globe not visible near the map.** `_place_earth_grounded()` places the rig at
+   `pos=(-21.2, -83.2, -51.76)` — sunk a full body radius below the plane AND pushed
+   ~52 units behind the board. It is entirely out of camera frame and buried under
+   the ground. The globe must be raised and brought close so its horizon wraps the
+   visible play area.
+2. **The issue's core goal still missing visually.** The map renders as an isolated
+   floating tile against plain sky; no continent terrain reads around/underneath the
+   board. Flush placement on Continent_Africa must be visible from the normal gameplay
+   camera: continent fills the space around/under the field, no floating gap.
+
+Also required (carried over):
+3. Update `tests/scenarios/backdrop_earth_visible.json` (+ glint scenario) expectations
+   for the grounded configuration so the harness can pass legitimately.
+4. Windowed screenshot evidence from the normal gameplay camera proving 1–2 are fixed,
+   plus rotation-invariance (globe does not rotate).
