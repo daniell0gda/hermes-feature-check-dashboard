@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-34-overcharge-capacitors-cont1-20260822-140640",
-  "feature": "overcharge-capacitors",
-  "status": "failed",
-  "started_at": "2026-08-22T14:06:40.864Z",
-  "ended_at": "2026-08-22T15:17:17.576Z",
+  "run_id": "issue-39-buried-ordnance",
+  "feature": "Traps Buried Ordnance unique perk",
+  "status": "running",
+  "started_at": "2026-08-22T14:11:03.477Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-cont1-20260822-140640/",
-  "heartbeat_at": "2026-08-22T15:17:17.576Z",
-  "last_node": "check",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-39-buried-ordnance/",
+  "heartbeat_at": "2026-08-22T15:17:23.120Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-22T15:17:13.058Z",
-  "process_id": 580825,
+  "last_event_at": "2026-08-22T15:17:23.120Z",
+  "process_id": 582323,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:17:17.576839+00:00",
-    "last_success_at": "2026-08-22T15:17:17.575895+00:00",
+    "last_attempt_at": "2026-08-22T15:17:23.121267+00:00",
+    "last_success_at": "2026-08-22T14:18:41.246410+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,30 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 96418,
-        "output_tokens": 4500
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
+        "input_tokens": 99446,
+        "output_tokens": 5434
       }
     ]
   }
