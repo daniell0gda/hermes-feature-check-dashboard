@@ -1,12 +1,12 @@
 {
   "run_id": "req-121-cave-position-outside-grid",
   "feature": "cave-position-outside-grid",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-22T13:45:25.117Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T15:14:36.633Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-121-cave-position-outside-grid/",
-  "heartbeat_at": "2026-08-22T15:14:31.845Z",
+  "heartbeat_at": "2026-08-22T15:14:36.633Z",
   "last_node": "team-leader",
   "active_node": null,
   "last_event_at": "2026-08-22T15:14:31.845Z",
@@ -14,9 +14,9 @@
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:14:31.846161+00:00",
+    "last_attempt_at": "2026-08-22T15:14:36.633485+00:00",
     "last_error": null,
-    "last_success_at": "2026-08-22T15:13:46.541517+00:00"
+    "last_success_at": "2026-08-22T15:14:36.631759+00:00"
   },
   "metrics": {
     "invocations": [
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 169190,
         "output_tokens": 3819
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 44010,
+        "output_tokens": 456
       }
     ]
   }
