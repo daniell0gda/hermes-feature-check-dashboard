@@ -1,15 +1,21 @@
-# Issue #123 — progression_pick scenario is red since chest rewards require a compatible tower
+# Issue 124 follow-up: fix cave sealing regression
 
-Implement the issue requirements from https://github.com/daniell0gda/poke-defense-godot/issues/123.
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
+Workspace: poke-defense-godot/issue-cave-carved-path-torches
+Runner: godot-td
 
-Project: poke-defense-godot
-Workspace: poke-defense-godot/issue-progression-pick-scenario-stale
+## Required scope
+Preserve the existing issue-124 torch implementation, but fix the regression exposed by `tests/scenarios/cave_pending_seals_entrance_instantly.json`.
 
-Acceptance criteria:
-- Update tests/scenarios/progression_pick.json so it places a venom tower, or otherwise owns a compatible tower, before opening the chest and selecting venom_miasma_bloom; the scenario must pass.
-- Preserve and verify chest_duplication is granted before carving, including the cave_chest_duplicate RNG site behavior.
-- Update the “Reaching a chest organically” section of .claude/skills/game-test/REFERENCE.md to match the fixed recipe and tower requirement.
-- Use native Linux Godot/project-runner verification, fresh focused scenario evidence, and inspect raw diagnostics separately from harness status.
-- Do not close, merge, or push the issue. Commit is not requested.
+The scenario must reliably prove:
+- A hole-to-exit route exists before the dangerous cave is discovered.
+- The instant confirmation is requested, the cave entrance is physically sealed and the route becomes unavailable.
+- Pending cave interior has zero torches.
+- Confirming yes restores the exact route and valid cave lighting.
 
-Visible UI is not the primary change, but run any required scenario evidence according to the team-work manual-testing gate.
+Previous check evidence: the regression failed at the initial route assertion on clean HEAD because RNG-discovered caves on map_9 carved/locked over the test corridor before the assertion. This is now required work, not an acceptable blocker. Diagnose and fix the smallest product/test-fixture boundary that makes this scenario deterministic without weakening its assertions or hiding real sealing behavior. Do not simply remove the regression scenario or reduce assertions.
+
+## Verification
+Use native Godot through run_project_cmd. Run editor/import gate, issue-124 focused torch scenario, `declined_cave_torches_extinguish.json`, and `cave_pending_seals_entrance_instantly.json`. Scan raw stdout/stderr independently for script errors, parse errors, failed resources, and invalid calls. Then run the required windowed top-down issue-124 scenario and inspect fresh PNGs; stale screenshots/headless screenshot results are not proof.
+
+Do not commit, push, merge, or close the issue.
