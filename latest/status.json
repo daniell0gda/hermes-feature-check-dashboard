@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-123-progression-pick-scenario-stale/",
   "heartbeat_at": "2026-08-22T09:15:25.125Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-22T09:15:25.125Z",
   "process_id": 472003,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T09:15:25.125647+00:00",
-    "last_success_at": "2026-08-22T09:05:20.660218+00:00",
+    "last_attempt_at": "2026-08-22T09:15:29.124269+00:00",
+    "last_success_at": "2026-08-22T09:15:29.123464+00:00",
     "last_error": null
   },
   "metrics": {
@@ -74,6 +74,17 @@
         "cost_status": "unknown",
         "input_tokens": 43152,
         "output_tokens": 3064
+      },
+      {
+        "task_id": "revision-code-2",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 191660,
+        "output_tokens": 11962
       }
     ]
   }
