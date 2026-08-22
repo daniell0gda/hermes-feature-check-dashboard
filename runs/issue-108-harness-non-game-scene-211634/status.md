@@ -11,6 +11,6 @@
 - Debug-build [HARNESS] log line per declared-scene boot, naming the booted scene path and whether an embedded Game world was found.
 
 ## ⬜ Pending
-- Run with `-Windowed`, the scenario captures a PNG screenshot showing the main menu UI rendered over the 3D map backdrop; the fresh result records the screenshot entry and no skipped-headless placeholder for that checkpoint. — headless-only runner cannot render windowed; requires manual `-Windowed` run per plan's manual_testing note
+- Run with `-Windowed`, the scenario captures a PNG screenshot showing the main menu UI rendered over the 3D map backdrop; the fresh result records the screenshot entry and no skipped-headless placeholder for that checkpoint. — headless-only runner cannot render windowed; requires the manual-tester profile per the plan's manual_testing note
 
 ## ❌ Impossible

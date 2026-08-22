@@ -34,5 +34,14 @@
     "duration_ms": 328744,
     "summary": "Revision complete. Summary:\n\n- No code changes were required this revision: the check verdict was \"fixable\" only because of the manual `-Windowed` screenshot item, which is outside code scope (headless-only runner cannot render windowed). A\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-22T22:23:23.271Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 209284,
+    "summary": "Verification complete. Fresh runner evidence (all via run_project_cmd, project=godot-td): preflight godot --version exit 0; editor/import gate exit 0 (~9s); focused main_menu harness exit 0 with result.json status=pass \u2014 scene=res://scenes/\u2026",
+    "error": null
   }
 ]

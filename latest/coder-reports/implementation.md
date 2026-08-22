@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation (revision 1)
+# Coder report: implementation (revision 1)
 
 ## Changed files
 - None — no source changes this revision. Working tree diff unchanged from the
@@ -35,4 +35,3 @@ workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene)
   only.
 - Remaining work is outside code scope: manual `-Windowed` run +
   ui_feels_broken pass (manual-report.md).
-\n
