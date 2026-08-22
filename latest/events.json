@@ -1,11 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T21:19:50.688Z",
+    "timestamp": "2026-08-22T21:20:10.383Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 129975,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-harness-cannot-boot-menu-scene/.gen/plan.md\n",
+    "duration_ms": 239311,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-perk-undermining/.gen/plan.md\n",
     "error": null
   }
 ]
