@@ -6,17 +6,17 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-121-cave-position-outside-grid/",
-  "heartbeat_at": "2026-08-22T15:13:37.230Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-22T15:13:37.230Z",
+  "heartbeat_at": "2026-08-22T15:14:31.845Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-22T15:14:31.845Z",
   "process_id": 572589,
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:13:42.040267+00:00",
+    "last_attempt_at": "2026-08-22T15:14:31.846161+00:00",
     "last_error": null,
-    "last_success_at": "2026-08-22T15:13:42.038997+00:00"
+    "last_success_at": "2026-08-22T15:13:46.541517+00:00"
   },
   "metrics": {
     "invocations": [
