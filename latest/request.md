@@ -1,29 +1,30 @@
-# Request: window-modals-skip-wood-frame (#127)
+# Request: Frozen Fracture perk (#94)
 
-Give RewardsModal and ProgressionModal the same wood frame and corner close as the other HUD modals.
+Project: poke-defense-godot
+Workspace: poke-defense-godot/issue-perk-frozen-fracture
+Branch: issue/perk-frozen-fracture
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/94
+Runner project key: godot-td
+Revision budget: 2
 
-## Issue
-https://github.com/daniell0gda/poke-defense-godot/issues/127
+## Feature
 
-## Problem
-RewardsModal and ProgressionModal are raw Window nodes with no theme. They look like a grey Godot default window. Every other modal uses ModalPanel + TitlePlate from themes/hud/HudTheme.tres and TitledPanel.gd, and dismisses via CloseChip / close_requested.
+Add Common perk `frozen_fracture` (3 levels). While an enemy is under Ice Tower slow, it takes +10%/+20%/+30% increased armor-damage from any source. No effect if the enemy is not currently slowed. No new VFX.
 
-## Done when
-- Both modals use the same wood frame and name plate as PauseMenu, Options, Manage Towers, and tower details.
-- They dismiss through the same corner ✕ / close_requested contract, not a window decoration.
-- UI.open_progression_modal and UI._on_rewards_pressed still return something callers can use. CaveSystem types the return as Window. AgentHarness still matches `node is ProgressionModal` for auto-answer.
-- tests/scenarios/hud_other_panels.json panel_rewards checkpoint shows the wood frame.
-- The reward-pick modal (ProgressionModal) gets a screenshot checkpoint of its own.
+## Acceptance
 
-Visual: reuse existing ModalPanel / TitlePlate / ChipButton theme variations. No new art.
+- Perk exists as Common, 3 levels, ids/values as specified.
+- Armor-damage bonus applies only while Ice slow is active.
+- `game-test` scenario compares armor-damage on a slowed vs unslowed enemy with the perk active.
+- No new VFX.
 
 ## Constraints
-- Project runner key: godot-td
-- Workspace: poke-defense-godot/issue-window-modals-skip-wood-frame
-- All Godot/project commands via run_project_cmd. No host godot.
-- Visible UI work: manual_testing required, windowed screenshots, never --headless for manual-tester.
-- Do not commit, push, merge, or close the issue.
-- Follow /opt/data/coding_rules.md and project CLAUDE.md.
 
-## Project path
-/workspace/git-workspaces/poke-defense-godot/issue-window-modals-skip-wood-frame
+- Use `run_project_cmd` with project `godot-td` and workspace `poke-defense-godot/issue-perk-frozen-fracture`.
+- Follow `/opt/data/coding_rules.md` and project context.
+- Visible perk/UI work needs windowed screenshots if the perk appears in progression UI.
+- Do not commit, push, merge, or close the issue.
+
+## Classification
+
+`check.md` must include `classification: pass|fixable|design_failure|blocked`.

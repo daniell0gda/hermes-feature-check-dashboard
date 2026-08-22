@@ -1,20 +1,29 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T10:06:02.258Z",
+    "timestamp": "2026-08-22T10:05:21.602Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 455978,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-window-modals-skip-wood-frame/.gen/plan.md\n\nArtifacts:\n- .gen/plan.md \u2014 14 criteria, 3 clusters, manual_testing: required, three run_project_cmd token-array commands (focused:\u2026",
+    "duration_ms": 583186,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-perk-frozen-fracture/.gen/plan.md\n",
     "error": null
   },
   {
     "sequence": 2,
-    "timestamp": "2026-08-22T10:45:00.685Z",
+    "timestamp": "2026-08-22T10:35:04.929Z",
     "node": "code",
     "status": "completed",
-    "duration_ms": 2334056,
-    "summary": "The release tool isn't exposed in this session, so I'm leaving the project worker for the orchestrator to release. Work complete.\n\nSummary:\n\nImplementation (all 3 clusters, worktree `issue-window-modals-skip-wood-frame`):\n\n- Cluster 1 (moda\u2026",
+    "duration_ms": 1778605,
+    "summary": "Implementation complete. Summary:\n\n**Feature: `frozen_fracture` perk (all 3 clusters)**\n\n- **Perk definition** \u2014 added to `scripts/progression/global.json`: Common type, exactly 3 levels (10%/20%/30% armor-damage bonus stated in description\u2026",
+    "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-22T10:46:23.013Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 673677,
+    "summary": "Check complete. All verification ran fresh through run_project_cmd (project poke-defense-godot, workspace poke-defense-godot/issue-perk-frozen-fracture) \u2014 runner probe, editor/typecheck gate (exit 0), both focused frozen_fracture scenarios \u2026",
     "error": null
   }
 ]

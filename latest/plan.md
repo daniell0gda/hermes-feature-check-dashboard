@@ -1,48 +1,41 @@
-# Acceptance Plan: window-modals-skip-wood-frame (#127)
-
-manual_testing: required
+# Acceptance Plan: perk-frozen-fracture
 
 ## Verification
 
-- Focused test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-window-modals-skip-wood-frame` cmd=["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/progression_modal_close_resume.json"]
-- Full test: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-window-modals-skip-wood-frame` cmd=["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_placement.json"]
-- Typecheck/build: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-window-modals-skip-wood-frame` cmd=["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/frozen_fracture_slowed_vs_unslowed.json"]`
+- Full test: `["bash", "-lc", "for f in tests/scenarios/frozen_fracture_*.json tests/scenarios/enemy_armor_ballista.json tests/scenarios/progression_pick.json tests/scenarios/ice_rate_matched_speeds.json; do id=$(basename \"$f\" .json); godot --headless --path . res://scenes/Main.tscn -- \"--harness=res://$f\" > /dev/null 2>&1; s=$(python3 -c \"import json;print(json.load(open('.gen/harness/$id/result.json'))['status'])\" 2>/dev/null); echo \"$id: $s\"; [ \"$s\" = pass ] || exit 1; done"]`
+- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "120"]`
 
 ## Clusters
 
-1. modal-wood-frame-rework — files: `scenes/ui/RewardsModal.tscn`, `scripts/ui/RewardsModal.gd`, `scenes/ui/ProgressionModal.tscn`, `scripts/ui/ProgressionModal.gd` — depends on: none
-- Opening the rewards modal shows the same wood-framed panel with a straddling name plate as PauseMenu and Options, using existing ModalPanel / TitlePlate theme styling with no new art.
-- Opening the reward-pick modal shows the same wood-framed panel with a straddling name plate as the other HUD modals, with its reward cards laid out inside the frame.
-- Neither modal presents an OS-style window decoration or title bar; each dismisses through its in-panel corner close control and honors the engine close_requested path.
-- Closing the rewards modal through its corner close control removes the modal from the scene tree.
-- Every ProgressionModal close path (corner close control, close(), accepting a card) still removes the modal from the tree and restores the pre-open pause state.
-- The reward-pick modal keeps its existing selection contract: choosing a card emits its selection signal and dismisses the modal; an out-of-range choice leaves it open and the game paused.
-- The rewards modal still lists one entry per current progression selection, with the empty-selection header when there are none.
-- Debug-build [REWARDS_MODAL] log line per open and per close event, naming the trigger and the selection count.
-- Debug-build [PROGRESSION_MODAL] log line per open event, naming the money amount and option count (close lines already exist).
-
-2. caller-contract-compat — files: `scripts/ui/UI.gd`, `scripts/game/CaveSystem.gd`, `scripts/testing/AgentHarness.gd` — depends on: 1
-- After the rework, `open_progression_modal` still returns a live modal instance that CaveSystem's Window-typed call site can hold, query visibility on, and observe closing without errors.
-- AgentHarness auto-answer still recognizes the live reward-pick modal as a ProgressionModal and answers it, so an auto-answer chest scenario completes without timing out.
-- `_on_rewards_pressed` still instantiates the rewards modal and populates it from ProgressionManager's current selections.
-
-3. harness-checkpoints — files: `tests/scenarios/hud_other_panels.json`, `tests/scenarios/` (new progression-modal screenshot scenario) — depends on: 1
-- A windowed run of the `hud_other_panels` scenario captures a `panel_rewards` screenshot checkpoint showing the rewards modal's wood frame, and the scenario finishes with status pass.
-- A windowed screenshot scenario captures the opened reward-pick modal showing its wood frame and cards, and finishes with status pass.
+1. frozen-fracture-perk-definition — files: `scripts/progression/global.json`, `scripts/progression/managers/CurseProgressionManager.gd` (or a sibling global-Common manager following it), `autoload/ProgressionManager.gd` — depends on: none
+- The `frozen_fracture` perk exists in the global Common progression pool as type Common with exactly 3 levels.
+- With `frozen_fracture` at levels 1/2/3, the exposed armor-damage bonus is 10%/20%/30% respectively; when the perk is not owned the bonus is disabled (no increase).
+- A chest draw that includes the pool offers `frozen_fracture` alongside other Common perks, and its level descriptions state the armor-damage bonus values.
+2. frozen-fracture-armor-runtime — files: `scripts/game/actors/enemy/parts/EnemyHealthController.gd`, `autoload/ProgressionManager.gd`, `scripts/game/actors/towers/IceTower.gd` (only if slow-source attribution needs exposing) — depends on: 1
+- While an enemy is under an active Ice Tower slow, each point of incoming armor damage from any damage source is increased by the perk's level bonus (10%/20%/30%).
+- An enemy that is not currently slowed takes unmodified armor damage even when `frozen_fracture` is owned.
+- After an enemy's Ice slow expires, subsequent hits take unmodified armor damage again.
+- The bonus scales armor damage only; the hit's HP damage is unchanged by the perk.
+- A debug-build log line with a stable filterable `[FrozenFracture]` marker records each boosted armor-damage application (enemy id, level, bonus percent).
+3. frozen-fracture-game-test-coverage — files: `tests/scenarios/frozen_fracture_slowed_vs_unslowed.json`, `tests/scenarios/frozen_fracture_levels_and_expiry.json` — depends on: 1, 2
+- A focused game-test scenario compares armor remaining after identical armor-damage hits on a slowed versus an unslowed enemy with the perk active, asserting the slowed enemy lost exactly the level-multiplied amount more.
+- A focused game-test scenario asserts the three perk levels produce 10%/20%/30% extra armor damage respectively and that behavior reverts to baseline once the slow expires.
 
 ## Criteria
 
-- Opening the rewards modal shows the same wood-framed panel with a straddling name plate as PauseMenu and Options, using existing ModalPanel / TitlePlate theme styling with no new art.
-- Opening the reward-pick modal shows the same wood-framed panel with a straddling name plate as the other HUD modals, with its reward cards laid out inside the frame.
-- Neither modal presents an OS-style window decoration or title bar; each dismisses through its in-panel corner close control and honors the engine close_requested path.
-- Closing the rewards modal through its corner close control removes the modal from the scene tree.
-- Every ProgressionModal close path (corner close control, close(), accepting a card) still removes the modal from the tree and restores the pre-open pause state.
-- The reward-pick modal keeps its existing selection contract: choosing a card emits its selection signal and dismisses the modal; an out-of-range choice leaves it open and the game paused.
-- The rewards modal still lists one entry per current progression selection, with the empty-selection header when there are none.
-- Debug-build [REWARDS_MODAL] log line per open and per close event, naming the trigger and the selection count.
-- Debug-build [PROGRESSION_MODAL] log line per open event, naming the money amount and option count (close lines already exist).
-- After the rework, `open_progression_modal` still returns a live modal instance that CaveSystem's Window-typed call site can hold, query visibility on, and observe closing without errors.
-- AgentHarness auto-answer still recognizes the live reward-pick modal as a ProgressionModal and answers it, so an auto-answer chest scenario completes without timing out.
-- `_on_rewards_pressed` still instantiates the rewards modal and populates it from ProgressionManager's current selections.
-- A windowed run of the `hud_other_panels` scenario captures a `panel_rewards` screenshot checkpoint showing the rewards modal's wood frame, and the scenario finishes with status pass.
-- A windowed screenshot scenario captures the opened reward-pick modal showing its wood frame and cards, and finishes with status pass.
+- The `frozen_fracture` perk exists in the global Common progression pool as type Common with exactly 3 levels.
+- With `frozen_fracture` at levels 1/2/3, the exposed armor-damage bonus is 10%/20%/30% respectively; when the perk is not owned the bonus is disabled (no increase).
+- A chest draw that includes the pool offers `frozen_fracture` alongside other Common perks, and its level descriptions state the armor-damage bonus values.
+- While an enemy is under an active Ice Tower slow, each point of incoming armor damage from any damage source is increased by the perk's level bonus (10%/20%/30%).
+- An enemy that is not currently slowed takes unmodified armor damage even when `frozen_fracture` is owned.
+- After an enemy's Ice slow expires, subsequent hits take unmodified armor damage again.
+- The bonus scales armor damage only; the hit's HP damage is unchanged by the perk.
+- A debug-build log line with a stable filterable `[FrozenFracture]` marker records each boosted armor-damage application (enemy id, level, bonus percent).
+- A focused game-test scenario compares armor remaining after identical armor-damage hits on a slowed versus an unslowed enemy with the perk active, asserting the slowed enemy lost exactly the level-multiplied amount more.
+- A focused game-test scenario asserts the three perk levels produce 10%/20%/30% extra armor damage respectively and that behavior reverts to baseline once the slow expires.
+
+## Notes
+
+- manual_testing: optional
+- Pure numeric/stat modifier perk; issue explicitly states no new VFX, and no player-visible story exists that a still screenshot could prove beyond the standard progression draw UI, so no `ui_scenario.md` is written.

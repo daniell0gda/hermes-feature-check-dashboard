@@ -16,5 +16,14 @@
     "duration_ms": 1778605,
     "summary": "Implementation complete. Summary:\n\n**Feature: `frozen_fracture` perk (all 3 clusters)**\n\n- **Perk definition** \u2014 added to `scripts/progression/global.json`: Common type, exactly 3 levels (10%/20%/30% armor-damage bonus stated in description\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-22T10:46:23.013Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 673677,
+    "summary": "Check complete. All verification ran fresh through run_project_cmd (project poke-defense-godot, workspace poke-defense-godot/issue-perk-frozen-fracture) \u2014 runner probe, editor/typecheck gate (exit 0), both focused frozen_fracture scenarios \u2026",
+    "error": null
   }
 ]
