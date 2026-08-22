@@ -1,58 +1,22 @@
 {
-  "run_id": "issue-101-20260822T203308Z",
-  "feature": "underground-side-panel-carve-place-exit-",
-  "status": "failed",
-  "started_at": "2026-08-22T20:33:08.851Z",
-  "ended_at": "2026-08-22T21:07:54.292Z",
+  "run_id": "perk-siege-breaker-92-run1",
+  "feature": "perk-siege-breaker",
+  "status": "running",
+  "started_at": "2026-08-22T20:44:15.820Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-101-20260822T203308Z/",
-  "heartbeat_at": "2026-08-22T21:07:54.292Z",
-  "last_node": "check",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-siege-breaker-92-run1/",
+  "heartbeat_at": "2026-08-22T21:08:57.806Z",
+  "last_node": "plan",
   "active_node": null,
-  "last_event_at": "2026-08-22T21:07:49.763Z",
-  "process_id": 720947,
+  "last_event_at": "2026-08-22T21:08:57.806Z",
+  "process_id": 729055,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:07:54.292556+00:00",
-    "last_success_at": "2026-08-22T21:07:54.291273+00:00",
+    "last_attempt_at": "2026-08-22T21:08:57.808078+00:00",
+    "last_success_at": "2026-08-22T20:44:25.558118+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 44604,
-        "output_tokens": 3731
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 175634,
-        "output_tokens": 20478
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 159525,
-        "output_tokens": 9183
-      }
-    ]
-  }
+  "metrics": {}
 }
