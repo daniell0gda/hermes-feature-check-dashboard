@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-101-20260822T203308Z/",
   "heartbeat_at": "2026-08-22T20:56:58.695Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-22T20:56:58.695Z",
   "process_id": 720947,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T20:56:58.695968+00:00",
-    "last_success_at": "2026-08-22T20:37:49.550939+00:00",
+    "last_attempt_at": "2026-08-22T20:57:03.291172+00:00",
+    "last_success_at": "2026-08-22T20:57:03.290518+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 44604,
         "output_tokens": 3731
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 175634,
+        "output_tokens": 20478
       }
     ]
   }
