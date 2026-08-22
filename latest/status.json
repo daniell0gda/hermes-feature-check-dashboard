@@ -1,21 +1,21 @@
 {
-  "run_id": "issue130-underground-carve-topdown-camera-rotation",
-  "feature": "underground-carve-topdown-camera-rotation",
+  "run_id": "issue-135-upgrade-button-20260822T123636Z",
+  "feature": "upgrade-button-disabled-without-money",
   "status": "running",
-  "started_at": "2026-08-22T12:59:00.654Z",
+  "started_at": "2026-08-22T12:36:36.349Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue130-underground-carve-topdown-camera-rotation/",
-  "heartbeat_at": "2026-08-22T13:23:21.656Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T13:23:21.656Z",
-  "process_id": 555148,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-135-upgrade-button-20260822T123636Z/",
+  "heartbeat_at": "2026-08-22T13:23:46.405Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T13:23:46.405Z",
+  "process_id": 546463,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T13:23:26.154706+00:00",
-    "last_success_at": "2026-08-22T13:23:26.153905+00:00",
+    "last_attempt_at": "2026-08-22T13:23:46.405914+00:00",
+    "last_success_at": "2026-08-22T13:17:01.962563+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,19 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 191084,
-        "output_tokens": 6695
+        "input_tokens": 201331,
+        "output_tokens": 12042
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 225679,
+        "output_tokens": 16752
       }
     ]
   }

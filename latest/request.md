@@ -1,20 +1,21 @@
-# Request: Underground carve top-down camera rotation (issue #130)
+# Request: Upgrade tower button disabled without money (issue #135)
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/130
-Branch: issue/underground-carve-topdown-camera-rotation
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/135
+- **Slug:** upgrade-button-disabled-without-money
+- **Project:** poke-defense-godot
+- **Workspace:** poke-defense-godot/issue-upgrade-button-disabled-without-money
+- **Branch:** issue/upgrade-button-disabled-without-money
 
-## Goal
-When the carve tool is activated in the underground layer, the camera should automatically rotate to a top-down "bird view" angle so carved paths are visible from above.
+## Problem
+The upgrade tower button stays clickable when the player has no money. It should be disabled whenever the player cannot afford the upgrade, and instantly re-enabled the moment the upgrade panel is open and the player has enough money.
 
-## Acceptance criteria
-- Entering carve mode on the underground layer rotates the camera to a top-down bird's-eye angle.
-- Only the rotation changes — camera position/zoom are untouched.
-- Canceling carve restores the previous camera angle.
-- If the user manually changed the camera angle while carving, canceling does NOT restore the old angle (keep the user's new angle).
+## Acceptance criteria (from the issue)
+1. Upgrade tower button is disabled while the player has less money than the upgrade cost.
+2. When the upgrade panel is opened and the player has enough money, the button is enabled immediately (no need to reopen or click elsewhere).
+3. Button state updates live as money changes while the panel is open (spend below cost → disables again).
+4. Harness verification covers both states: no-money → disabled, affordable → enabled instantly on panel open.
 
 ## Notes
-- Visible player-facing UI/camera behavior → manual testing with windowed screenshots is required; underground views need top-down camera shots (side angles hide carved-path lighting).
-- Follow /opt/data/coding_rules.md.
-
-## Redo note (run 1 failed)
-Run 1 ended blocked: every worker call used wrong runner workspace names (`godot-td/issue-underground-carve-topdown-camera-rotation`, `godot-td/issue-130`, `poke-defense-godot/check`) → HTTP 422 chdir failures. Correct usage: project key `godot-td`, workspace `poke-defense-godot/issue-<slug>` (this branch slug: `poke-defense-godot/issue-130` or matching existing convention). Also: `Game.on_carve_camera_mode` does NOT exist yet while `UI._notify_carve_camera` calls it via `has_method` guard — the core carve-camera logic in Game.gd is still missing. Implement it, then re-run all gates with correctly named runner calls.
+- This is visible UI work: per Daniel's standing expectation, visible chest/UI/gameplay behavior requires team-work manual-tester with windowed screenshots (never headless-only). Manual testing must be `required`.
+- Use native Linux Godot via runner commands (`run_project_cmd`), explicit scene argument before harness user args.
+- Checker classification line required: `classification: pass|fixable|design_failure|blocked`.

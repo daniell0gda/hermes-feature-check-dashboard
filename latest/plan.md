@@ -1,35 +1,30 @@
-# Acceptance Plan: underground-carve-topdown-camera-rotation
+# Acceptance Plan: upgrade-button-disabled-without-money (issue #135)
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/carve_camera_topdown.json"]`
-- Full test: `["bash", "-lc", "fail=0; for f in tests/scenarios/*.json; do godot --headless --path . res://scenes/Main.tscn -- \"--harness=res://$f\" || fail=1; done; exit $fail"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "3"]`
-
-manual_testing: required
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/issue_135_upgrade_button_disabled.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/tower_details_panel.json"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit"]`
 
 ## Clusters
 
-1. carve-camera-lifecycle — files: `scripts/game/Game.gd`, `scripts/ui/UI.gd`, `scripts/config/CameraConfig.gd` — depends on: none
-- When carve mode is activated while on the underground layer, the active camera's rotation becomes a top-down bird's-eye view (camera forward pointing straight down at the underground board) without changing the camera's position or zoom.
-- Activating carve mode changes only the camera's rotation: the camera's position and its distance/zoom relative to the view target are exactly what they were immediately before activation.
-- Canceling carve mode (ESC, right-click cancel path, or any existing cancel route that ends carve mode) restores the camera rotation that was active immediately before carve mode was entered, when the player did not rotate the camera manually during carving.
-- If the player manually rotated the camera while carve mode was active, canceling carve mode leaves the camera at the player's current angle instead of restoring the pre-carve angle.
-- While carve mode is active on the underground layer, the player's normal camera rotation input (right-mouse drag or shift+left drag) still rotates the camera.
-- Entering dig-hole, place-exit, place-block, or tower-selection modes does not rotate the camera to the top-down angle; only carve mode triggers the rotation.
-- Debug-build `[CARVE_CAMERA]` log line per rotation event: one when the top-down angle is applied (with the pre-carve angles captured) and one when a cancel restores or deliberately skips restoring them (with which of the two happened).
-2. carve-camera-harness — files: `scripts/testing/HarnessValues.gd`, `tests/scenarios/carve_camera_topdown.json` — depends on: 1
-- A harness value source exposes the active camera's rotation basis (and position/zoom-equivalent) so scenarios can compare camera orientation before, during, and after carve mode.
-- The focused scenario asserts, under the harness: top-down orientation after entering carve mode on the underground layer, unchanged position/zoom across the transition, exact restoration after plain cancel, and retained player angle after a scripted manual rotation followed by cancel.
+1. upgrade-button-affordability-gating — files: `scripts/ui/UI.gd`, `tests/scenarios/issue_135_upgrade_button_disabled.json` — depends on: none
+- When the upgrade panel is open on a selected tower whose next-level cost exceeds current money, the Upgrade button is disabled without any further input (no reopen, no click elsewhere).
+- While the upgrade panel stays open on the same tower, granting money so it meets or exceeds the upgrade cost enables the Upgrade button within one frame of the money change.
+- While the upgrade panel stays open on the same affordable tower, spending money below the upgrade cost disables the Upgrade button again within one frame of the money change.
+- Opening the upgrade panel on a tower while money is already below its upgrade cost presents the Upgrade button in the disabled state from the first frame the panel is shown.
+- A debug-build `[UPG-BTN]` log line records each affordability state change of the Upgrade button with the tower kind, level, cost, and current money; release builds emit nothing.
+- A harness scenario drives both states end-to-end through the real game: no-money → button disabled, then funded → button enabled immediately on panel open, then re-drained → disabled again, asserting each via a `ui_call` expectation on live button state.
+- The existing single-transition discipline for the Upgrade button holds: while money crosses the threshold exactly once in each direction, the engine log shows at most one availability transition per direction (no repeated disable/enable flapping from selection polls).
+
+manual_testing: required
 
 ## Criteria
 
-- When carve mode is activated while on the underground layer, the active camera's rotation becomes a top-down bird's-eye view (camera forward pointing straight down at the underground board) without changing the camera's position or zoom.
-- Activating carve mode changes only the camera's rotation: the camera's position and its distance/zoom relative to the view target are exactly what they were immediately before activation.
-- Canceling carve mode (ESC, right-click cancel path, or any existing cancel route that ends carve mode) restores the camera rotation that was active immediately before carve mode was entered, when the player did not rotate the camera manually during carving.
-- If the player manually rotated the camera while carve mode was active, canceling carve mode leaves the camera at the player's current angle instead of restoring the pre-carve angle.
-- While carve mode is active on the underground layer, the player's normal camera rotation input (right-mouse drag or shift+left drag) still rotates the camera.
-- Entering dig-hole, place-exit, place-block, or tower-selection modes does not rotate the camera to the top-down angle; only carve mode triggers the rotation.
-- Debug-build `[CARVE_CAMERA]` log line per rotation event: one when the top-down angle is applied (with the pre-carve angles captured) and one when a cancel restores or deliberately skips restoring them (with which of the two happened).
-- A harness value source exposes the active camera's rotation basis (and position/zoom-equivalent) so scenarios can compare camera orientation before, during, and after carve mode.
-- The focused scenario asserts, under the harness: top-down orientation after entering carve mode on the underground layer, unchanged position/zoom across the transition, exact restoration after plain cancel, and retained player angle after a scripted manual rotation followed by cancel.
+- When the upgrade panel is open on a selected tower whose next-level cost exceeds current money, the Upgrade button is disabled without any further input (no reopen, no click elsewhere).
+- While the upgrade panel stays open on the same tower, granting money so it meets or exceeds the upgrade cost enables the Upgrade button within one frame of the money change.
+- While the upgrade panel stays open on the same affordable tower, spending money below the upgrade cost disables the Upgrade button again within one frame of the money change.
+- Opening the upgrade panel on a tower while money is already below its upgrade cost presents the Upgrade button in the disabled state from the first frame the panel is shown.
+- A debug-build `[UPG-BTN]` log line records each affordability state change of the Upgrade button with the tower kind, level, cost, and current money; release builds emit nothing.
+- A harness scenario drives both states end-to-end through the real game: no-money → button disabled, then funded → button enabled immediately on panel open, then re-drained → disabled again, asserting each via a `ui_call` expectation on live button state.
+- The existing single-transition discipline for the Upgrade button holds: while money crosses the threshold exactly once in each direction, the engine log shows at most one availability transition per direction (no repeated disable/enable flapping from selection polls).
