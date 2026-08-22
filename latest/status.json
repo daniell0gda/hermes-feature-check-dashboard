@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-125-progression-modal-close-resume",
-  "feature": "Issue #125: ProgressionModal close resumes with modal still visible",
+  "run_id": "issue-124-cave-carved-path-torches-retry-stealth",
+  "feature": "cave-carved-path-torches-retry-stealth",
   "status": "running",
-  "started_at": "2026-08-22T06:20:24.027Z",
+  "started_at": "2026-08-22T05:55:27.428Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-125-progression-modal-close-resume/",
-  "heartbeat_at": "2026-08-22T06:44:26.609Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T06:44:26.609Z",
-  "process_id": 462011,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-cave-carved-path-torches-retry-stealth/",
+  "heartbeat_at": "2026-08-22T06:46:30.822Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T06:46:30.822Z",
+  "process_id": 460204,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T06:44:31.064318+00:00",
-    "last_success_at": "2026-08-22T06:44:31.063504+00:00",
+    "last_attempt_at": "2026-08-22T06:46:30.822895+00:00",
+    "last_success_at": "2026-08-22T05:59:43.376804+00:00",
     "last_error": null
   },
   "metrics": {
@@ -27,9 +27,9 @@
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 195468,
-        "output_tokens": 5917
+        "cost_status": "estimated",
+        "input_tokens": 136793,
+        "output_tokens": 3350
       }
     ]
   }
