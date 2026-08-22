@@ -2,21 +2,19 @@
   "run_id": "perk-siege-breaker-92-run1",
   "feature": "perk-siege-breaker",
   "status": "running",
-  "started_at": "2026-08-22T20:30:16.359Z",
+  "started_at": "2026-08-22T20:44:15.820Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-siege-breaker-92-run1/",
-  "heartbeat_at": "2026-08-22T20:30:16.359Z",
+  "heartbeat_at": "2026-08-22T20:44:15.820Z",
   "last_node": null,
-  "active_node": "plan",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 718602,
+  "process_id": 729055,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T20:30:22.128533+00:00",
-    "last_success_at": "2026-08-22T20:30:21.141142+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T20:44:15.820112+00:00"
   },
   "metrics": {}
 }
