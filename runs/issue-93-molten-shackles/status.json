@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-93-molten-shackles/",
-  "heartbeat_at": "2026-08-22T14:37:04.228Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T14:37:04.228Z",
+  "heartbeat_at": "2026-08-22T15:43:16.638Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T15:43:16.638Z",
   "process_id": 589800,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T14:37:08.747762+00:00",
-    "last_success_at": "2026-08-22T14:37:08.746842+00:00",
+    "last_attempt_at": "2026-08-22T15:43:16.638797+00:00",
+    "last_success_at": "2026-08-22T14:37:13.119264+00:00",
     "last_error": null
   },
   "metrics": {

@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-34-overcharge-capacitors-cont2-20260822-151808",
-  "feature": "overcharge-capacitors",
+  "run_id": "issue-93-molten-shackles",
+  "feature": "perk-molten-shackles",
   "status": "running",
-  "started_at": "2026-08-22T15:18:09.019Z",
+  "started_at": "2026-08-22T14:28:45.621Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-cont2-20260822-151808/",
-  "heartbeat_at": "2026-08-22T15:42:24.922Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-93-molten-shackles/",
+  "heartbeat_at": "2026-08-22T15:43:16.638Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T15:42:24.922Z",
-  "process_id": 614296,
+  "active_node": null,
+  "last_event_at": "2026-08-22T15:43:16.638Z",
+  "process_id": 589800,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:42:29.148247+00:00",
-    "last_success_at": "2026-08-22T15:42:29.147234+00:00",
+    "last_attempt_at": "2026-08-22T15:43:16.638797+00:00",
+    "last_success_at": "2026-08-22T14:37:13.119264+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,19 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 108662,
-        "output_tokens": 3223
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
+        "input_tokens": 80028,
+        "output_tokens": 4553
       }
     ]
   }

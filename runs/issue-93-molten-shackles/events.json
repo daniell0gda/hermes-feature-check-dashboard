@@ -7,5 +7,14 @@
     "duration_ms": 493819,
     "summary": "Plan written: /workspace/git-workspaces/godot-td/issue-molten-shackles/.gen/plan.md\n",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-22T15:43:16.638Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 3967891,
+    "summary": "The `release_project_worker` tool isn't exposed in this session (only `run_project_cmd` is available), so the worker container is left running \u2014 the orchestrator should release it or I can retry if the tool becomes available.\n\nSummary:\n\nClu\u2026",
+    "error": null
   }
 ]

@@ -1,21 +1,19 @@
-# Request: Systemic: Overcharge Capacitors
+# Request: Progression perk `molten_shackles` (GitHub issue #93)
 
-- **Issue:** #34 — https://github.com/daniell0gda/poke-defense-godot/issues/34
-- **Project:** poke-defense-godot
-- **Git workspace:** /workspace/git-workspaces/poke-defense-godot/issue-overcharge-capacitors
-- **Branch:** issue/overcharge-capacitors
-- **Requested by:** Daniel ("find new issue" — claim top eligible ready issue, implement via team-work)
-- **Claimed:** 2026-08-22T12:45:00Z
+Repo: poke-defense-godot
+Workspace: /workspace/git-workspaces/godot-td/issue-molten-shackles
+Branch: issue/perk-molten-shackles (based on origin/master 726ee0c)
+Issue slug: perk-molten-shackles
 
-## Issue summary
+## Problem
+Fire Tower's burn DoT and the armor mechanic are entirely separate systems today - burning an armored enemy does nothing to its shield.
 
-New Common progression perk `overcharge_capacitors`: for every 3 towers of the same type owned
-simultaneously, all towers of that type gain a damage bonus (see issue body for exact tiers).
-Purely numeric, composes with existing per-tower Unique trees; reinforces specialization.
+## Why it matters
+Fusion perk: it should do nothing on its own and only matter if the player has also taken a Fire-tower burn-duration/burn-damage perk (see `ProgressionManager.get_fire_burn_config()`). Makes a Fire-stacking build into passive armor-shred without touching Ballista or Sundering Bolts (#88).
 
-## Acceptance criteria
+## Done when
+- New perk `molten_shackles`, type Common, 3 levels. Each burn tick additionally strips a flat armor amount, scaling with the player's current Fire burn perk level (not this perk's own level alone) - L1/L2/L3 sets the base amount (e.g. 1/2/3 armor per tick), scaled by the burn config's level multiplier.
+- If no Fire burn perk is active, this perk has zero effect (burn does not exist to carry it) - expected, not a bug, covered by a `game-test` scenario asserting `armor` is unchanged by burn ticks when no burn perk is present.
+- No new VFX required - reuses existing burn tick/`BurnVFX` visuals; armor drain visible via the armor bar.
 
-Per issue "Done when": new Common `overcharge_capacitors` perk registered in the progression/perk
-system, applied to all towers of a type per every 3 same-type towers owned, with tests proving the
-per-type stacking math (including boundary cases: fewer than 3, exactly 3, 6+ towers) through the
-project's standard harness scenarios. Follow /opt/data/coding_rules.md and project conventions.
+Focus: headless harness verification; no manual-testing screenshots required beyond standard gates.
