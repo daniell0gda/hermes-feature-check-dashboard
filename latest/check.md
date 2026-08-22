@@ -1,98 +1,71 @@
-# Check report: issue-39-buried-ordnance
+# Check report — upgrade-click-money-animation (req-134 r2, revision-check-1)
 
-classification: fixable
-date: 2026-08-22
-iteration: revision-check-2
-checker: check worker (fresh verification via run_project_cmd)
+Classification: fixable
 
-## Commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-buried-ordnance)
+## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-upgrade-click-money-animation)
 
 | Gate | Command | Exit | Result |
 |---|---|---|---|
-| Runner probe | `godot --version` | 0 | 4.4.1.stable |
-| Typecheck/build | `godot --headless --path . --editor --quit-after 300` | 0 | import/parse clean |
-| Focused test | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/traps_buried_ordnance_progression.json` | **1** | **fail** — action 29 log-expectation timeout (see below) |
-| Full test | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/display_damage_surface_parity.json` | 0 | `[Harness] status=pass exit=0` |
+| Runner probe | `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 |
+| Editor/parse gate | `godot --headless --path . --editor --quit-after 300` | 0 | Parse clean; no script errors |
+| Focused harness (headless) | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` | 0 | status=**pass**, all 3 expectations pass — `.gen/harness/upgrade_click_money_popup/result.json` |
+| Focused harness (windowed) | `godot --path . res://scenes/Main.tscn --resolution 1280x720 -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` | 0 | status=pass; both screenshots `outcome: captured` (1920x1080 PNGs in `.gen/harness/upgrade_click_money_popup/shots/`) |
 
-## Fresh evidence
-
-- `.gen/harness/display_damage_surface_parity/result.json` — status pass, exit 0.
-- `.gen/harness/traps_buried_ordnance_progression/result.json` — status timeout, exit 1.
-- `.gen/harness/_logs/traps_buried_ordnance_progression.out.log`
-
-## Revision progress vs prior check (revision-check-1)
-
-The prior blocker (only 1 underground enemy spawned) is FIXED: two `cave_fixture`s
-(id 101, 102) now deterministically produce >= 2 underground enemies; action 23
-(`enemies.underground >= 2`) passes. Arm 1 (progression: eligibility, grant, config
-chance 0.5 / radius 2.0, idempotent re-grant, save/replay) still passes fully —
-actions 0–17 ok. Trap placement, forced roll override, and the 1.5 s wait all pass
-(actions 24–28 ok).
-
-## Current failure
-
-Action index 29: log regex
-`\[BURIED_ORDNANCE\] trap=trap_01 chain=1 rolled=true caught=[1-9]` timed out.
-The harness log contains NO `[BURIED_ORDNANCE]` line at all — the trap never hit
-any enemy. Root cause is scenario-side: `cave_fixture` enemies spawn statically at
-the fixture positions and never move, and the trap's step-on detection requires an
-enemy within `trigger_radius = 0.3` world units of the trap at (0.25, -3.0, 0.25).
-The nearest spawned enemy is ~0.05–0.35 units away horizontally but the overlap poll
-(`_check_overlap_and_damage`) uses the same 0.3 trigger_radius; with the fixtures at
-(0, -3, 0) and (0.3, -3, 0.1), distances are ~0.26 and ~0.14 — borderline, and the
-run shows no hit fired within the 10 s window. Everything downstream (chain blast,
-`[BURIED_ORDNANCE]` log, screenshot, no-chain arm, final snapshot) never executed.
-
-Required fix (scenario side): place the trap exactly on an enemy position or widen
-the trigger window — e.g. put `place_tower` at the exact fixture position
-(0.0, -3.0, 0.0), or add a harness action that teleports/forces an underground enemy
-into the trap's trigger radius, then rerun. Implementation code need not change.
+The previous iteration's failure (`enemies.reward_popups == 0` seeing 1 at expectation time)
+is resolved: the scenario's final condition is now a `wait_for_condition` with a 30 s timeout
+that waits out the 1.5 s popup before the snapshot. Fresh headless run: money 1460 < 1500
+(pass), tower.level == 2 (pass), reward_popups == 0 (pass).
 
 ## Acceptance criteria evidence
 
-1. Perk defined as Unique, eligible/grantable/idempotent — VERIFIED by fresh arm-1
-   actions 1–17 (all ok), but kept PENDING until the focused scenario passes
-   end-to-end.
-2. Chance/radius chain damage on underground hit — code present
-   (`Trap.gd::_apply_chain_blast` iterates `get_all_underground_enemies`, distance
-   filter, `take_damage`), but NOT EXERCISED (chain never triggered). PENDING.
-3. No chain without perk — `roll_buried_trigger` returns false when config disabled;
-   no-chain arm (trap_03) never ran. PENDING.
-4. Non-underground immunity — structural only (underground-only source list plus
-   per-enemy `is_enemy_underground` re-check); no runtime assertion ran. PENDING.
-5. Visible small-explosion VFX — code calls
-   `ExplosionFX.spawn_bazooka_explosion(..., 0.6)` per caught enemy; screenshot
-   action never ran; manual_testing windowed screenshots absent. PENDING.
-6. Determinism under fixed seed — `set_buried_ordnance_next_roll` override
-   implemented; the forced roll was consumed by no roll site (no hit). PENDING.
-7. Debug `[BURIED_ORDNANCE]` log line, absent in release — implemented behind
-   `OS.is_debug_build()`; log-expectation never met because no chain event fired.
-   PENDING.
-8. Focused harness scenario passes with fresh evidence — FAILED (timeout, action 29).
-   PENDING.
-9. Windowed screenshot at the chained-explosion moment — never captured. PENDING.
+1. **Upgrade click triggers the money-increase animation** — Done.
+   `scripts/ui/UI.gd::_on_upgrade_pressed` → `_spawn_upgrade_money_popup()` →
+   `ChestRewardSystem.create_reward_popup()`. Harness log line
+   `[CHEST REWARD] Created popup for 20 coins at (-5.684, 1.5, -5.213)` confirms the live
+   spawn on the real handler path; inline wait_for_condition steps asserted popup count 1,
+   text "+20 coins!", tower level 2, and money charged.
+
+2. **Animation visually matches the existing money-increase effect** — Done.
+   It literally reuses the chest-payout factory (`ChestRewardSystem.create_reward_popup`,
+   same Label3D style/tween), parented to the currently visible layer with +1.5 Y anchor.
+
+3. **Verified in-game via windowed screenshot** — Pending.
+   The windowed run was performed this iteration (previous gap closed): both checkpoints are
+   `captured`, not `skipped`. However, inspection of `after_upgrade_click_popup_visible.png`
+   (pixel diff vs before shot + vision review, including zoomed crops around the tower) finds
+   no visible floating "+20 coins!" label — the popup is spawned while the details panel is
+   open and the tower is largely occluded by it, so the effect cannot be confirmed visually
+   from the current shots. Behavioral evidence (criterion 1) is unaffected.
+
+## Changed-file quality review
+
+Diff vs HEAD: `scripts/game/ChestRewardSystem.gd`, `scripts/testing/HarnessValues.gd`,
+`scripts/ui/UI.gd`, plus new `tests/scenarios/upgrade_click_money_popup.json`.
+No rule violations found:
+
+- Typed GDScript, guard clauses, shallow nesting (CLAUDE.md); surgical diff — every changed
+  line traces to the issue or its verification instrumentation.
+- Popup factory reused rather than duplicated; default arg keeps existing callers unchanged.
+- Harness fields confined to `HarnessValues._enemy_report()` via node meta tags; no gameplay
+  logic altered beyond the requested popup spawn.
+- Advisory only: single-line `if x: return` style in `_spawn_upgrade_money_popup` matches
+  surrounding UI.gd conventions ("match existing style").
 
 ## Quality notes
 
-- Open entry `typed-vars-new-code` (revision-check-1) re-checked: new code in
-  `Trap.gd` / `ProgressionManager.gd` still has untyped locals (`cfg_any`, `ug`,
-  loop var `e`). Still open; advisory, does not demote criteria.
-- No new cross-cutting violations found in the feature diff
-  (`autoload/ProgressionManager.gd`, `scripts/game/actors/Trap.gd`,
-  `scripts/progression/managers/TrapProgressionManager.gd`,
-  `scripts/progression/trap.json`, `tests/scenarios/traps_buried_ordnance_progression.json`).
-  Implementation follows existing trap/perk patterns; debug logging follows the
-  CLAUDE.md `[TAG]` + `OS.is_debug_build()` convention.
+`.gen/quality-notes.md`: no open entries; nothing appended this iteration — no scope creep,
+no duplicated bad patterns in the feature diff. `.gen-blocked-req134-attempt1/` is declared
+workflow archive state, not scope creep.
 
-## Blockers
+## Blockers / unverified
 
-None infrastructural. Single remaining gap is the scenario's trap-trigger setup
-(static cave enemies never step on the trap), fixable in
-`tests/scenarios/traps_buried_ordnance_progression.json` or via a harness
-enemy-position action, then rerun the focused scenario.
+- Criterion 3 visual confirmation: windowed capture exists but the popup is not discernible;
+  scenario should capture the popup unoccluded (e.g., screenshot before reopening the panel,
+  or move/deselect the panel). Fixable, not blocked.
+- No project-wide "run all scenarios" command exists; editor parse gate + focused scenario
+  are the available gates. Existing suite untouched by this diff except additive
+  `HarnessValues` fields (parse-clean verified).
 
-## Unverified items
+## Verdict
 
-- All 9 criteria remain Pending per the gates above.
-- `manual_testing: required` — windowed screenshots of the chained-explosion moment
-  have not been produced (manual-tester profile owns that report).
+classification: fixable

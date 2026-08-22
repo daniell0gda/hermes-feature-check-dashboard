@@ -1,40 +1,22 @@
-# Request: Traps — Buried Ordnance Unique perk
+# Request: upgrade-click-money-animation
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/39
-- **Project:** godot-td
-- **Git workspace:** poke-defense-godot/issue-buried-ordnance (branch `issue/buried-ordnance`, cut from `origin/master`)
-- **Request ID:** issue-39-buried-ordnance
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/134
+- **Project:** poke-defense-godot
+- **Git workspace:** /workspace/git-workspaces/poke-defense-godot/issue-upgrade-click-money-animation (branch issue/upgrade-click-money-animation, base origin/master @726ee0c)
+- **Request ID:** req-134-upgrade-click-money-animation-r2
 
-## Feature
+## Goal
 
-New progression Unique `traps_buried_ordnance` for the Traps system: when a trap hits an
-underground enemy, it has a chance to chain a small explosion to neighboring underground
-enemies within a short radius.
+Play the existing floating money-increase animation when the player clicks "Upgrade" in the tower details panel. Upgrading currently spends money with no visual feedback.
 
-## Why
+## Acceptance criteria (from issue)
 
-Traps currently only hit the single enemy that steps on them, so they fall off as enemy HP
-scales. This keeps traps relevant against underground swarms late in a run by reusing the
-small-explosion logic already proven by Bazooka/Cannon.
+1. Clicking "Upgrade" in tower details triggers the same animation used for money increase.
+2. Animation visually matches the existing money-increase effect (position/style consistent).
+3. Verified in-game via windowed screenshot.
 
-## Done when
+## Notes
 
-1. New Unique perk `traps_buried_ordnance` exists and is grantable through the normal
-   progression/Unique flow used by other trap Uniques.
-2. Trap hits against **underground** enemies have a chance to chain a small explosion to
-   neighboring **underground** enemies in a short radius.
-3. The chained blast has its own readable explosion VFX cue — reuse the existing
-   small-explosion VFX from `scripts/game/actors/projectiles/BazookaProjectile.gd` or
-   `scripts/game/actors/projectiles/CannonballProjectile.gd` (whichever burst best matches
-   "small") — it must not be a silent chained damage tick.
-4. Verification covers: perk grants cleanly; chained explosion triggers on underground trap
-   hits with the expected radius/chance behavior; no chain on non-underground targets;
-   editor/import gate passes; focused harness scenario passes with fresh evidence.
-
-## Notes for planner/coder/checker
-
-- Follow `/opt/data/coding_rules.md` and existing trap/perk patterns in the repo.
-- Underground-only targeting matters: ground-level enemies above must not be affected.
-- Visual cue is an explicit acceptance criterion — a silent damage tick is not done.
-- Manual testing: this is visible player-facing VFX work → `manual_testing: required`
-  with windowed screenshots of the chained explosion moment.
+- Visible player-facing effect → manual_testing: required.
+- Previous attempt (req-134-upgrade-click-money-animation) was blocked: planner and coder both hit their iteration limits without writing artifacts; its partial unverified changes were discarded and archived under .gen-blocked-req134-attempt1/. Start fresh.
+- Do not close or push unless Daniel asks.

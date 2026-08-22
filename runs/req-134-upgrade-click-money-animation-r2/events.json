@@ -43,5 +43,14 @@
     "duration_ms": 778760,
     "summary": "Verification complete; artifacts written to `.gen/check.md`, `.gen/status.md`, `.gen/revisions.md`.\n\nSummary: All gates re-run fresh via run_project_cmd (project=poke-defense-godot, workspace=poke-defense-godot/issue-upgrade-click-money-ani\u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-22T18:07:28.641Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 904396,
+    "summary": "The release endpoint isn't exposed as a separate tool in this session (only `run_project_cmd` is available), so worker release is left to the orchestrator.\n\nSummary:\n\n- Criterion \"Verified in-game via windowed screenshot\" \u2014 fixed and green.\u2026",
+    "error": null
   }
 ]
