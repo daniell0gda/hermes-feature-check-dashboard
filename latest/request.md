@@ -1,32 +1,32 @@
-# Request: perk-siege-breaker (issue #92)
+# Request: no-rock-or-tree-same-position-as-building
 
-- **Project:** poke-defense-godot
-- **Workspace:** /workspace/git-workspaces/poke-defense-godot/issue-perk-siege-breaker
-- **Branch:** issue/perk-siege-breaker (cut from origin/master @ d241462)
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/92
-- **Request ID:** perk-siege-breaker-92-run1 (restarted after external workspace wipe at 20:22; prior run's plan artifacts were destroyed, not superseded)
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/138
+Project: poke-defense-godot
+Workspace: poke-defense-godot/issue-no-rock-or-tree-same-position-as-building
+Branch: issue/no-rock-or-tree-same-position-as-building
 
-## Feature
+## Goal
+In `scripts/game/NatureDecoration.gd`, trees, dead trees, and rocks must never be placed
+at the same XZ position as an already-placed building. Grass and other small vegetation
+remain allowed at the same position as a building.
 
-Progression: Siege Breaker perk (Unique, Cannon only, 3 levels) — Cannon's own hits ignore the armor damage-reduction penalty: penalty reduced from 50% to 35%/20%/0% per level.
+## Context
+- `_generate_all_decorations()` generates buildings (`_generate_building`) before trees,
+  dead trees, and rocks — so building positions can be recorded and checked.
+- Each generator currently only checks path/egg/spawner clearance via `_is_valid_position`;
+  only trees check distance from other trees.
+- Buildings are placed in `buildings_container` ("buildings_container" node).
 
 ## Acceptance criteria
+1. Trees, dead trees, and rocks are never placed at the same position (or overlapping)
+   as an already-placed building.
+2. Grass (and other small vegetation: bushes, flowers) may still share a position with
+   a building.
+3. Placement still respects existing path/egg/spawner clearances and attempt limits
+   (no infinite loops when space runs out).
+4. Editor import/parse gate passes (`godot --headless --editor --quit-after` style check)
+   and any existing nature-decoration-related tests still pass.
 
-1. New perk `siege_breaker`, type Unique, Cannon only, 3 levels.
-2. Reduces the armor-damage-reduction multiplier applied in `EnemyHealthController.take_damage()` for Cannon's hits from 0.5 → 0.35/0.20/0.0 by level.
-3. Does NOT modify `enemy.armor` — armor drains at normal rate from other towers' hits; only the multiplier on Cannon's own hits changes.
-4. Visual: reuse the shield-crack flash effect from Exposed Plating (#87-series), no new second effect.
-
-## Runner notes (pin correct names — redo safety)
-
-- Runner key: `godot-td` (never folder name). Workspace: `poke-defense-godot/issue-perk-siege-breaker`.
-- Editor gate: `godot --headless --path . --editor --quit-after 300` via runner.
-- Harnesses: explicit scene arg before user args; never rely on project.godot main scene.
-
-## Historical context
-
-First run (same request-id) was aborted when the workspace directory was externally wiped mid-run (~20:22 UTC) while plan/code phases were underway. Worktree was recreated fresh from origin/master. Treat all earlier artifacts as lost.
-
-## Manual testing expectation
-
-Visible player-facing perk → manual_testing: required with windowed PNGs/GIFs per team-work rules (no --headless-only).
+## Manual testing
+manual_testing: required — visible placement; take windowed top-down screenshots showing
+buildings with no tree/rock intersecting them, grass allowed near buildings.
