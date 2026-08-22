@@ -1,30 +1,30 @@
-# Coder report: implementation
+# Coder report: implementation (re-verification pass)
 
 ## Changed files
-- `tests/ui/test_titled_panel_close_corner.gd` — modified (new UpgPanel-scene test; report file moved under `.gen/`)
-- `.gitignore` — modified (ignore legacy root `.gen-test-report.txt`)
-- `scripts/ui/hud/TitledPanel.gd` — unchanged this iteration (implementation from iteration 1 stands)
+- None this pass. Working tree carries the cluster's changes from prior iterations:
+  - `scripts/ui/hud/TitledPanel.gd` — modified (`_reserve_content_padding()` pulls Frame's right edge in by CLOSE_CORNER_SIZE.x = 90px whenever a CloseChip exists; debug `[TITLED_PANEL]` log)
+  - `tests/ui/test_titled_panel_close_corner.gd` / `.tscn` — modified (31 assertions incl. real UI.tscn UpgPanel coverage at two sizes)
+  - `.gitignore` — modified (legacy root `.gen-test-report.txt`)
 
 ## Criteria
-- Closable TitledPanel reserves padding so no content control intersects the CloseChip rect — Done
-- Padding only when closable / scene-placed chip; plain panel unchanged — Done
-- CloseChip flush top-right, emits exactly one close_requested — Done
-- UpgPanel tower-details content clear of the chip — Done (NEW: real UI.tscn scene instantiated)
-- Manage Towers + Options content clear of chip — Done (+ windowed screenshots verified)
-- Debug `[TITLED_PANEL]` log naming panel and inset — Done
+- Closable TitledPanel reserves padding; no content rect intersects the CloseChip rect at any size — Done
+- Padding only when is_closable or scene-placed chip; plain panel unchanged — Done
+- CloseChip flush top-right; exactly one close_requested per press — Done
+- UpgPanel tower-details content clear of the chip — Done
+- Manage Towers + Options content clear of the chip after layout — Done
+- Debug `[TITLED_PANEL]` log naming panel and reserved inset — Done
 
-## Commands and results
-- `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit 0; "31 ok, 0 failed" (was 29; +2 UpgPanel assertions at 380x420 and 620x480)
+## Commands and results (all via run_project_cmd, project=poke-defense-godot)
+- `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit 0; "31 ok, 0 failed"
 - `godot --headless --path . res://tests/ui/test_enemy_armor_bar.tscn` — exit 0; "35 ok, 0 failed"
 - `godot --headless --path . res://tests/ui/test_enemy_health_bar_boss_icon.tscn` — exit 0; "18 ok, 0 failed"
 - `godot --headless --path . res://tests/ui/test_enemy_health_bar_oiled_icon.tscn` — exit 0; "8 ok, 0 failed"
 - `godot --headless --path . --check-only --script res://scripts/ui/hud/TitledPanel.gd` — exit 0
-- `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/hud_other_panels.json` (windowed via runner) — exit 0; Harness status=pass; screenshots captured in `.gen/harness/hud_other_panels/shots/`
-
-All commands run through run_project_cmd (project=poke-defense-godot, workspace=poke-defense-godot/issue-padding-closable-panels-close-button).
+- Manual evidence re-inspected: `.gen/harness/hud_other_panels/shots/panel_manage_towers.png` and
+  `panel_options.png` visually verified — no content touches/overlaps the ✕ on either panel;
+  tower details panel carries no ✕ by design.
 
 ## Notes
-- Manual evidence closed out: all four windowed screenshots captured and visually inspected. panel_manage_towers.png and panel_options.png show no content touching or overlapping the painted ✕; panel_tower_details.png confirms the details panel carries no ✕ (as designed — it is dismissed by deselecting).
-- New test instantiates the real scenes/UI.tscn rather than a synthetic lookalike. Key ordering trap: `is_closable` must be set before the instance enters the tree because `_add_close_chip()` runs in `_ready()`.
-- Quality note from iteration check resolved: test report now written to `res://.gen/test-reports/titled_panel_close_corner.txt`; stray repo-root `.gen-test-report.txt` deleted and gitignored.
-- Pre-existing noise (not ours): HudTheme.tres / UI.tscn invalid-UID warnings on headless load; GL resource-leak errors at harness process exit.
+- No new work was needed; all criteria were already implemented and passing. This pass re-ran every
+  verification command fresh through the project runner to confirm.
+- Pre-existing noise (not ours): invalid-UID ext_resource warnings for HudTheme.tres/UI.tscn on headless load.
