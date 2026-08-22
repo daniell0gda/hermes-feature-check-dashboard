@@ -1,19 +1,19 @@
 # Cluster 1: cave-carved-path-torches
 
 - cluster ID: 1-cave-carved-path-torches
-- owned file scope: `scripts/game/underground/TorchPlacer.gd`, `scripts/game/underground/TorchManager.gd`, `scripts/game/UndergroundSystem.gd`, `tests/scenarios/cave_carved_path_torches.json`
+- owned file scope: `scripts/game/underground/TorchPlacer.gd`, `scripts/game/underground/TorchManager.gd`, `scripts/game/underground/Torch.gd`, `tests/scenarios/cave_carved_path_torches.json`
 - dependencies: none
 - parallel: false
 
 ## Acceptance criteria
 
-- While a dangerous cave is pending confirmation, that cave's interior has zero active torches, including when its room overlaps already-carved path.
-- After a discovered cave is confirmed open, that cave's carved path has at least one active torch.
-- After the connected 2-by-18 and 18-by-2 cross carve on that confirmed-open cave, sampled points along the full length of the north, south, east, and west arms at about 2-unit spacing each have at least one active torch within 2.5 world units on XZ.
-- After a later carve adds a new corridor connected to that same open cave, sampled points along the full length of the new corridor at about 2-unit spacing each have at least one active torch within 2.5 world units on XZ.
-- After a dangerous cave is declined, that cave's interior has zero active torches, including when its room overlaps already-carved path.
-- An isolated declined dangerous cave with no overlapping later corridor carve has zero active interior torches.
-- Debug-build [TORCH] log line per cave-path torch update
+- After a dangerous cave is confirmed open, sampled points along every carved cell of that cave's full connected carved network (cave room plus all corridors) each have at least one active torch within Torch.LIGHT_RADIUS (2.5 world units) on XZ; proven with count_near checks spaced about every 2 units along the full length of both arms of the cross carve (north/south and east/west), not only at the cave centre or arm tips.
+- Carving a new connected corridor into an already confirmed-open cave produces active torches along the new path's full extent: count_near at about 2-unit spacing along the whole new corridor finds at least one active torch within 2.5 world units (XZ) of each sample point.
+- No leftover dark carved corridor remains in the same connected open-cave network as lit path after the cross carve: zero carved cells of the network are outside torch coverage (uncarved rock may stay dark).
+- While a dangerous cave is pending confirmation, its interior contains zero active torches, including where its room overlaps already-carved path.
+- After a dangerous cave is declined, its interior contains zero active torches (regression: currently fails with 5 torches in declined fixture cave 9102).
+- The torch pool does not silently cap coverage on large carves: after the full cross carve, total active torches exceed any internal maximum such that every network sample criterion above passes without holes caused by pool exhaustion.
+- Debug-build [TORCH] log line per cave-path torch update, naming the event (torch added/removed for a carve or decline) with cave id and world position context.
 
 ## Verification
 
