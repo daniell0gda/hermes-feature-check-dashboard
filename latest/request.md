@@ -1,21 +1,21 @@
-# Request: Systemic: Overcharge Capacitors
+# Request: Upgrade tower button disabled without money (issue #135)
 
-- **Issue:** #34 — https://github.com/daniell0gda/poke-defense-godot/issues/34
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/135
+- **Slug:** upgrade-button-disabled-without-money
 - **Project:** poke-defense-godot
-- **Git workspace:** /workspace/git-workspaces/poke-defense-godot/issue-overcharge-capacitors
-- **Branch:** issue/overcharge-capacitors
-- **Requested by:** Daniel ("find new issue" — claim top eligible ready issue, implement via team-work)
-- **Claimed:** 2026-08-22T12:45:00Z
+- **Workspace:** poke-defense-godot/issue-upgrade-button-disabled-without-money
+- **Branch:** issue/upgrade-button-disabled-without-money
 
-## Issue summary
+## Problem
+The upgrade tower button stays clickable when the player has no money. It should be disabled whenever the player cannot afford the upgrade, and instantly re-enabled the moment the upgrade panel is open and the player has enough money.
 
-New Common progression perk `overcharge_capacitors`: for every 3 towers of the same type owned
-simultaneously, all towers of that type gain a damage bonus (see issue body for exact tiers).
-Purely numeric, composes with existing per-tower Unique trees; reinforces specialization.
+## Acceptance criteria (from the issue)
+1. Upgrade tower button is disabled while the player has less money than the upgrade cost.
+2. When the upgrade panel is opened and the player has enough money, the button is enabled immediately (no need to reopen or click elsewhere).
+3. Button state updates live as money changes while the panel is open (spend below cost → disables again).
+4. Harness verification covers both states: no-money → disabled, affordable → enabled instantly on panel open.
 
-## Acceptance criteria
-
-Per issue "Done when": new Common `overcharge_capacitors` perk registered in the progression/perk
-system, applied to all towers of a type per every 3 same-type towers owned, with tests proving the
-per-type stacking math (including boundary cases: fewer than 3, exactly 3, 6+ towers) through the
-project's standard harness scenarios. Follow /opt/data/coding_rules.md and project conventions.
+## Notes
+- This is visible UI work: per Daniel's standing expectation, visible chest/UI/gameplay behavior requires team-work manual-tester with windowed screenshots (never headless-only). Manual testing must be `required`.
+- Use native Linux Godot via runner commands (`run_project_cmd`), explicit scene argument before harness user args.
+- Checker classification line required: `classification: pass|fixable|design_failure|blocked`.
