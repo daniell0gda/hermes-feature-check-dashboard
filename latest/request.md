@@ -1,39 +1,20 @@
-# Request: window-modals-skip-wood-frame (#127)
+# Request: #107 HudTheme missing wood_panel.png
 
-Give RewardsModal and ProgressionModal the same wood frame and corner close as the other HUD modals.
-
-## Issue
-https://github.com/daniell0gda/poke-defense-godot/issues/127
+Project: poke-defense-godot (runner `godot-td`)
+Workspace: poke-defense-godot/issue-hud-theme-missing-wood-panel
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/107
+Slug: hud-theme-missing-wood-panel
 
 ## Problem
-RewardsModal and ProgressionModal are raw Window nodes with no theme. They look like a grey Godot default window. Every other modal uses ModalPanel + TitlePlate from themes/hud/HudTheme.tres and TitledPanel.gd, and dismisses via CloseChip / close_requested.
+
+`themes/hud/HudTheme.tres` declares `res://textures/ui/hud/wood_panel.png`, but that PNG is not in the repo. Only an orphan `.import` remains. That texture is the base `Panel`/`PanelContainer` style. Fresh clones lose HUD panel backing.
 
 ## Done when
-- Both modals use the same wood frame and name plate as PauseMenu, Options, Manage Towers, and tower details.
-- They dismiss through the same corner ✕ / close_requested contract, not a window decoration.
-- UI.open_progression_modal and UI._on_rewards_pressed still return something callers can use. CaveSystem types the return as Window. AgentHarness still matches `node is ProgressionModal` for auto-answer.
-- tests/scenarios/hud_other_panels.json panel_rewards checkpoint shows the wood frame.
-- The reward-pick modal (ProgressionModal) gets a screenshot checkpoint of its own.
 
-Visual: reuse existing ModalPanel / TitlePlate / ChipButton theme variations. No new art.
+- `res://textures/ui/hud/wood_panel.png` resolves — regenerate via `tools/gen_hud_textures.py` and commit, or repoint `StyleBoxTexture_panel` at an existing slice such as `wood_panel_wide.png` and remove the dead ext_resource.
+- No `.import` file under `textures/ui/hud/` lacks a source PNG. Clean orphans: `icon_speed.png.import`, `wide_panel.png.import`, `woden_panel_wide_lightonly.png.import`, `wood_chip_on.png.import`.
+- The `hud_wood_panels` scenario passes after deleting `.godot/imported`, proving the theme loads without the stale cache.
 
-## Follow-up (Daniel, not satisfied)
-Each reward card inside ProgressionModal must use the same background treatment as
-the tower-details panel's stats area (`Root/UpgPanel/Frame/VBox/Stats`, theme type
-variation `ModalWell` from themes/hud/HudTheme.tres) — not the current plain grey
-default PanelContainer style. The Unique rarity accent must not rely on the invalid
-`add_theme_color_override("panel", ...)` call (PanelContainer has no such color
-item); tint via a duplicated StyleBoxFlat border instead if kept.
-Verify visually with a windowed screenshot of the opened modal showing ModalWell-
-styled cards.
+Visible HUD work: windowed screenshots required (manual-tester windowed, not headless-only).
 
-## Constraints
-- Project runner key: godot-td
-- Workspace: poke-defense-godot/issue-window-modals-skip-wood-frame
-- All Godot/project commands via run_project_cmd. No host godot.
-- Visible UI work: manual_testing required, windowed screenshots, never --headless for manual-tester.
-- Do not commit, push, merge, or close the issue.
-- Follow /opt/data/coding_rules.md and project CLAUDE.md.
-
-## Project path
-/workspace/git-workspaces/poke-defense-godot/issue-window-modals-skip-wood-frame
+Do not commit, push, merge, or close the issue.
