@@ -25,5 +25,14 @@
     "duration_ms": 1069210,
     "summary": "Check complete (iteration 2).\n\nVerified done: 7. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no new entries; prior `pre-existing-workspace-dirt` entry stan\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-22T23:25:08.664Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 64789,
+    "summary": "Gate complete. Check was `pass` (7/7 criteria, focused harness green), and the change is a new player-visible story \u2014 building placement now excludes trees/dead trees/rocks from building positions while small vegetation remains allowed. Thi\u2026",
+    "error": null
   }
 ]
