@@ -1,21 +1,21 @@
 {
-  "run_id": "req-134-upgrade-click-money-animation",
-  "feature": "upgrade-click-money-animation",
+  "run_id": "issue-133-panels-closable-x-escape",
+  "feature": "panels-closable-x-escape",
   "status": "running",
-  "started_at": "2026-08-22T12:07:01.141Z",
+  "started_at": "2026-08-22T13:36:02.196Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-134-upgrade-click-money-animation/",
-  "heartbeat_at": "2026-08-22T13:57:16.037Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-133-panels-closable-x-escape/",
+  "heartbeat_at": "2026-08-22T14:05:27.756Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T13:57:16.037Z",
-  "process_id": 532368,
+  "active_node": null,
+  "last_event_at": "2026-08-22T14:05:27.756Z",
+  "process_id": 569006,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T13:57:20.446835+00:00",
-    "last_success_at": "2026-08-22T13:57:20.446147+00:00",
+    "last_attempt_at": "2026-08-22T14:05:27.760465+00:00",
+    "last_success_at": "2026-08-22T13:45:27.002364+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,19 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 132657,
-        "output_tokens": 11372
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 167232,
-        "output_tokens": 9517
+        "input_tokens": 90026,
+        "output_tokens": 6565
       }
     ]
   }
