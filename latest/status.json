@@ -1,47 +1,20 @@
 {
   "run_id": "issue137-earth-continent-map",
   "feature": "earth-continent-map-integration",
-  "status": "failed",
-  "started_at": "2026-08-22T20:29:07.265Z",
-  "ended_at": "2026-08-22T22:53:37.624Z",
-  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'check', '-z', 'You are the check worker in a team-work run.\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-earth-continent-map-integration.\\nThe durable\u2026",
+  "status": "running",
+  "started_at": "2026-08-22T22:56:15.876Z",
+  "ended_at": null,
+  "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-22T22:53:37.624Z",
-  "last_node": "check",
+  "heartbeat_at": "2026-08-22T22:56:15.876Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-22T22:53:33.299Z",
-  "process_id": 717779,
+  "last_event_at": null,
+  "process_id": 788449,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T22:53:37.624102+00:00",
-    "last_success_at": "2026-08-22T22:53:37.623092+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-22T22:56:15.876901+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 144586,
-        "output_tokens": 8451
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 90933,
-        "output_tokens": 6189
-      }
-    ]
-  }
+  "metrics": {}
 }
