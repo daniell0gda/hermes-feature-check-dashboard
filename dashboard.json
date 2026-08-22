@@ -165,6 +165,11 @@
     "url": "runs/issue-61-team-work/"
   },
   {
+    "run_id": "issue-39-buried-ordnance",
+    "status": "running",
+    "url": "runs/issue-39-buried-ordnance/"
+  },
+  {
     "run_id": "issue-38-trap-panel-ignores-trap-damage-perk",
     "status": "completed",
     "url": "runs/issue-38-trap-panel-ignores-trap-damage-perk/"
