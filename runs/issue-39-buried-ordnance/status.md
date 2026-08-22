@@ -1,7 +1,4 @@
 ## ✅ Done
-(none — focused harness fails at action 29: the trap never hits an underground enemy because static cave_fixture spawns sit outside the trap's trigger_radius, so no criterion has a passing automated test that would fail if broken; build gate and full-suite gate both pass but cannot promote items on their own)
-
-## ⬜ Pending
 - The `traps_buried_ordnance` perk is defined in the trap progression file as a Unique progression and is eligible and grantable through the normal progression flow used by other Uniques (eligible on a fresh run, level applied idempotently on load/replay).
 - With the perk owned at a given level, when a trap hits an underground enemy there is a chance (the level's `chance` value) for the trap to also deal explosion damage to every other underground enemy within the level's `radius` world units of the hit position.
 - Without the perk owned, a trap hit on an underground enemy deals no chained explosion damage to neighboring enemies (behavior identical to today).
@@ -11,6 +8,9 @@
 - Debug-build `[BURIED_ORDNANCE]` log line per chained explosion event naming the triggering trap id, chance roll outcome, and number of enemies caught in the blast; absent in release builds.
 - A focused harness scenario passes headless with fresh evidence (`status: pass` in `.gen/harness/traps_buried_ordnance_progression/result.json`), covering: perk eligibility/grant, chained explosion triggering on an underground trap hit within radius, and no chain on non-underground targets.
 - Windowed run of the same scenario captures screenshot checkpoint(s) at the chained-explosion moment showing the visible small-explosion VFX at the blast site.
+
+## ⬜ Pending
+(none)
 
 ## ❌ Impossible
 (none)
