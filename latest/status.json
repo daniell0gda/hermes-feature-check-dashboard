@@ -1,12 +1,12 @@
 {
   "run_id": "req-136-padding-closable-panels-close-button",
   "feature": "padding closable panels close button",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-22T20:33:24.676Z",
-  "ended_at": null,
+  "ended_at": "2026-08-22T20:42:36.809Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
-  "heartbeat_at": "2026-08-22T20:42:32.444Z",
+  "heartbeat_at": "2026-08-22T20:42:36.809Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-22T20:42:32.444Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T20:42:32.445222+00:00",
-    "last_success_at": "2026-08-22T20:39:50.466980+00:00",
+    "last_attempt_at": "2026-08-22T20:42:36.809390+00:00",
+    "last_success_at": "2026-08-22T20:42:36.808567+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 77949,
         "output_tokens": 2031
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 66857,
+        "output_tokens": 3093
       }
     ]
   }
