@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-22T15:18:43.564Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 536054,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-earth-continent-map-integration/.gen/plan.md\n",
+    "error": null
+  }
+]

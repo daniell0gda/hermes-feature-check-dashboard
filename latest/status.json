@@ -1,20 +1,22 @@
 {
-  "run_id": "issue-34-overcharge-capacitors-cont2-20260822-151808",
-  "feature": "overcharge-capacitors",
+  "run_id": "issue137-earth-continent-map",
+  "feature": "earth-continent-map-integration",
   "status": "running",
-  "started_at": "2026-08-22T15:18:09.019Z",
+  "started_at": "2026-08-22T15:08:12.926Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-cont2-20260822-151808/",
-  "heartbeat_at": "2026-08-22T15:18:09.019Z",
-  "last_node": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
+  "heartbeat_at": "2026-08-22T15:18:43.564Z",
+  "last_node": "plan",
   "active_node": null,
-  "last_event_at": null,
-  "process_id": 614296,
+  "last_event_at": "2026-08-22T15:18:43.564Z",
+  "process_id": 607774,
   "host": "25e0b2c49eb5",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:18:09.020052+00:00"
+    "last_attempt_at": "2026-08-22T15:18:43.564271+00:00",
+    "last_success_at": "2026-08-22T15:09:52.143291+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
