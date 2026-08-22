@@ -1,20 +1,33 @@
-# Acceptance Plan: no-rock-or-tree-same-position-as-building
+# Acceptance Plan: earth-continent-map-integration
+
+manual_testing: required
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/nature_no_building_overlap.json"]`
-- Full test: `["python3", "tests/run_all_shard.py", "0", "1"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--quit-after", "2", "--path", "."]`
-
-manual_testing: required — visible placement; windowed top-down screenshots showing buildings with no tree/rock intersecting them and grass allowed near buildings.
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/backdrop_earth_visible.json"]`
+- Full test: `["python3", "-c", "\nimport glob, json, subprocess, sys\nfails = []\nfor s in sorted(glob.glob('tests/scenarios/*.json')):\n    subprocess.run(['godot', '--headless', '--path', '.', 'res://scenes/Main.tscn', '--', '--harness=res://' + s])\n    try:\n        ok = json.load(open('.gen/harness/' + json.load(open(s))['id'] + '/result.json'))['status'] == 'pass'\n    except Exception:\n        ok = False\n    print(s, 'PASS' if ok else 'FAIL')\n    if not ok:\n        fails.append(s)\nsys.exit(1 if fails else 0)\n"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
 ## Clusters
 
-1. building-clearance-placement — files: `scripts/game/NatureDecoration.gd`, `tests/scenarios/nature_no_building_overlap.json` — depends on: none
-- Trees are never placed at an XZ position within the configured building clearance radius of any already-placed building.
-- Dead trees are never placed at an XZ position within the building clearance radius of any already-placed building.
-- Rocks are never placed at an XZ position within the building clearance radius of any already-placed building.
-- Grass, bush, and flower placements remain permitted at positions inside a building's clearance radius (no new rejection for small vegetation).
-- Tree, dead tree, and rock placement still respects existing path/egg/spawner clearances and terminates within their existing per-generator attempt limits when no valid position is available.
-- Loading a map with a fixed decoration seed reports zero large-nature items inside any building's clearance radius via the harness overlap count.
-- Debug-build `[NATURE]` log line per rejected large-nature candidate near a building, including the kind (tree/dead tree/rock) and candidate XZ position.
+1. grounded-continent-placement — files: `scripts/game/visuals/BackdropEarth.gd` — depends on: none
+- The grounded configuration names exactly one continent mesh from `models/stylized_earth_in_clouds.glb`, and a debug-build warning is emitted if that mesh is absent from the instantiated model.
+- After `configure_for_map` on a surface map, the chosen continent's terrain apex sits flush at the playable plane height (harness `backdrop_earth_center_y == 0`) with no floating gap between board and globe surface.
+- The globe rig pose places the globe body close enough to the board that its horizon lies inside the normal gameplay camera's view frustum (not sunk below the plane nor pushed far behind the board).
+- In the grounded configuration the earth spin never starts: the earth body's world transform sampled at two times several seconds apart is identical.
+- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent and the final rig position/scale/rotation.
+2. backdrop-regression-and-harness-contract — files: `tests/scenarios/backdrop_earth_visible.json`, `tests/scenarios/backdrop_earth_glint.json` — depends on: 1
+- The focused harness scenarios `backdrop_earth_visible` and `backdrop_earth_glint` both pass headless with all their expectations green (present, grounded, flush placement, rotation invariance).
+- From the normal gameplay camera in the windowed build, other continents, ocean, cloud banks, and the atmosphere rim remain visible; only the previously hidden mesh prefixes stay hidden, with no visual regressions to the backdrop look.
+- A windowed run of `backdrop_earth_visible` produces a surface screenshot from the default gameplay camera showing the map sitting on the chosen continent with surrounding continent terrain blending in scale and color into the map field.
+
+## Criteria
+
+- The grounded configuration names exactly one continent mesh from `models/stylized_earth_in_clouds.glb`, and a debug-build warning is emitted if that mesh is absent from the instantiated model.
+- After `configure_for_map` on a surface map, the chosen continent's terrain apex sits flush at the playable plane height (harness `backdrop_earth_center_y == 0`) with no floating gap between board and globe surface.
+- The globe rig pose places the globe body close enough to the board that its horizon lies inside the normal gameplay camera's view frustum (not sunk below the plane nor pushed far behind the board).
+- In the grounded configuration the earth spin never starts: the earth body's world transform sampled at two times several seconds apart is identical.
+- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent and the final rig position/scale/rotation.
+- The focused harness scenarios `backdrop_earth_visible` and `backdrop_earth_glint` both pass headless with all their expectations green (present, grounded, flush placement, rotation invariance).
+- From the normal gameplay camera in the windowed build, other continents, ocean, cloud banks, and the atmosphere rim remain visible; only the previously hidden mesh prefixes stay hidden, with no visual regressions to the backdrop look.
+- A windowed run of `backdrop_earth_visible` produces a surface screenshot from the default gameplay camera showing the map sitting on the chosen continent with surrounding continent terrain blending in scale and color into the map field.
