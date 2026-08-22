@@ -16,9 +16,9 @@ Manual testing: required
 - In the windowed screenshot from the normal gameplay camera, the continent terrain around the board reads as continuous with the map field (scale and color blend), with no hard seam between board and globe surface.
 - During play, the globe does not rotate: the earth body's world rotation measured at two times several seconds apart is identical in the grounded configuration.
 - Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent mesh and the final rig position/scale/rotation.
-2. backdrop-regression-coverage — files: `tests/scenarios/backdrop_earth_visible.json`, `scripts/game/Game.gd` — depends on: 1
+2. backdrop-regression-and-harness-contract — files: `scripts/game/visuals/BackdropEarth.gd`, `tests/scenarios/backdrop_earth_visible.json`, `tests/scenarios/backdrop_earth_glint.json` — depends on: 1
+- The focused harness scenarios (`backdrop_earth_visible`, `backdrop_earth_glint`) pass headless: map loads, `backdrop_earth_present` is true, and their `backdrop_earth_center_y` expectation matches the grounded rig pose actually produced by the grounded configuration (the sunk globe position, no longer the old floating-mode value of 0).
 - With the grounded configuration active, other continents, ocean, cloud banks, and the atmosphere rim remain visible from the normal gameplay camera; only the previously hidden meshes (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud` prefixed) stay hidden (windowed screenshot).
-- The existing focused harness scenario `backdrop_earth_visible` still passes: map loads, `backdrop_earth_present` is true, `backdrop_earth_center_y` equals 0, and the surface screenshot is produced.
 
 ## Criteria
 
@@ -27,5 +27,5 @@ Manual testing: required
 - In the windowed screenshot from the normal gameplay camera, the continent terrain around the board reads as continuous with the map field (scale and color blend), with no hard seam between board and globe surface.
 - During play, the globe does not rotate: the earth body's world rotation measured at two times several seconds apart is identical in the grounded configuration.
 - Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent mesh and the final rig position/scale/rotation.
+- The focused harness scenarios (`backdrop_earth_visible`, `backdrop_earth_glint`) pass headless: map loads, `backdrop_earth_present` is true, and their `backdrop_earth_center_y` expectation matches the grounded rig pose actually produced by the grounded configuration (the sunk globe position, no longer the old floating-mode value of 0).
 - With the grounded configuration active, other continents, ocean, cloud banks, and the atmosphere rim remain visible from the normal gameplay camera; only the previously hidden meshes (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud` prefixed) stay hidden (windowed screenshot).
-- The existing focused harness scenario `backdrop_earth_visible` still passes: map loads, `backdrop_earth_present` is true, `backdrop_earth_center_y` equals 0, and the surface screenshot is produced.

@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-22T18:24:12.134Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 646118,
+    "summary": "Verification complete for the planning gate:\n\n- Runner probe `godot --version` \u2192 4.4.1.stable (workspace coordinate: `poke-defense-godot/issue-earth-continent-map-integration`, project `godot-td`)\n- Import/editor gate (`godot --headless --p\u2026",
+    "error": null
+  }
+]

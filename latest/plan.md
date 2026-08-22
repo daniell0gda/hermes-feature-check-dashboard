@@ -1,38 +1,31 @@
-# Acceptance Plan: buried-ordnance
+# Acceptance Plan: earth-continent-map-integration
+
+Manual testing: required
 
 ## Verification
 
-Run via `run_project_cmd` (project=poke-defense-godot, workspace=poke-defense-godot/issue-buried-ordnance):
-
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/traps_buried_ordnance_progression.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/display_damage_surface_parity.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
-
-manual_testing: required — the chained blast is player-visible VFX; capture windowed screenshots of the chained-explosion moment.
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/backdrop_earth_visible.json"]`
+- Full test: `["bash", "-c", "for f in tests/scenarios/*.json; do godot --headless --path . res://scenes/Main.tscn -- --harness=res://$f || exit 1; done"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "2"]`
 
 ## Clusters
 
-1. buried-ordnance-perk-and-chain — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `scripts/game/actors/Trap.gd` — depends on: none
-- The `traps_buried_ordnance` perk is defined in the trap progression file as a Unique progression and is eligible and grantable through the normal progression flow used by other Uniques (eligible on a fresh run, level applied idempotently on load/replay).
-- With the perk owned at a given level, when a trap hits an underground enemy there is a chance (the level's `chance` value) for the trap to also deal explosion damage to every other underground enemy within the level's `radius` world units of the hit position.
-- Without the perk owned, a trap hit on an underground enemy deals no chained explosion damage to neighboring enemies (behavior identical to today).
-- Enemies that are not underground never receive chained explosion damage from a trap hit, regardless of distance or perk ownership.
-- Each chained blast produces a visible small-explosion effect at the affected location by reusing the existing small-explosion VFX pattern (`ExplosionFX.spawn_bazooka_explosion`, the small burst used by Bazooka/Cannon); a chained kill with no visible cue is not acceptable.
-- The chain is deterministic under a fixed seed through the game's seeded RNG sites, so a harness scenario can assert chance behavior reproducibly.
-- Debug-build `[BURIED_ORDNANCE]` log line per chained explosion event naming the triggering trap id, chance roll outcome, and number of enemies caught in the blast; absent in release builds.
-
-2. buried-ordnance-harness-scenario — files: `tests/scenarios/traps_buried_ordnance_progression.json` — depends on: 1
-- A focused harness scenario passes headless with fresh evidence (`status: pass` in `.gen/harness/traps_buried_ordnance_progression/result.json`), covering: perk eligibility/grant, chained explosion triggering on an underground trap hit within radius, and no chain on non-underground targets.
-- Windowed run of the same scenario captures screenshot checkpoint(s) at the chained-explosion moment showing the visible small-explosion VFX at the blast site.
+1. grounded-continent-placement — files: `scripts/game/visuals/BackdropEarth.gd` — depends on: none
+- The grounded configuration targets exactly one named continent mesh from `stylized_earth_in_clouds.glb`, and the chosen mesh name is recorded in code or project documentation so it can be checked against the GLB's mesh list.
+- After `configure_for_map`, from the normal gameplay camera on a surface map, the playable field sits flush on the chosen continent with no visible gap or floating edge between the board and the globe surface (verified by windowed screenshot).
+- In the windowed screenshot from the normal gameplay camera, the continent terrain around the board reads as continuous with the map field (scale and color blend), with no hard seam between board and globe surface.
+- During play, the globe does not rotate: the earth body's world rotation measured at two times several seconds apart is identical in the grounded configuration.
+- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent mesh and the final rig position/scale/rotation.
+2. backdrop-regression-and-harness-contract — files: `scripts/game/visuals/BackdropEarth.gd`, `tests/scenarios/backdrop_earth_visible.json`, `tests/scenarios/backdrop_earth_glint.json` — depends on: 1
+- The focused harness scenarios (`backdrop_earth_visible`, `backdrop_earth_glint`) pass headless: map loads, `backdrop_earth_present` is true, and their `backdrop_earth_center_y` expectation matches the grounded rig pose actually produced by the grounded configuration (the sunk globe position, no longer the old floating-mode value of 0).
+- With the grounded configuration active, other continents, ocean, cloud banks, and the atmosphere rim remain visible from the normal gameplay camera; only the previously hidden meshes (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud` prefixed) stay hidden (windowed screenshot).
 
 ## Criteria
 
-- The `traps_buried_ordnance` perk is defined in the trap progression file as a Unique progression and is eligible and grantable through the normal progression flow used by other Uniques (eligible on a fresh run, level applied idempotently on load/replay).
-- With the perk owned at a given level, when a trap hits an underground enemy there is a chance (the level's `chance` value) for the trap to also deal explosion damage to every other underground enemy within the level's `radius` world units of the hit position.
-- Without the perk owned, a trap hit on an underground enemy deals no chained explosion damage to neighboring enemies (behavior identical to today).
-- Enemies that are not underground never receive chained explosion damage from a trap hit, regardless of distance or perk ownership.
-- Each chained blast produces a visible small-explosion effect at the affected location by reusing the existing small-explosion VFX pattern (`ExplosionFX.spawn_bazooka_explosion`, the small burst used by Bazooka/Cannon); a chained kill with no visible cue is not acceptable.
-- The chain is deterministic under a fixed seed through the game's seeded RNG sites, so a harness scenario can assert chance behavior reproducibly.
-- Debug-build `[BURIED_ORDNANCE]` log line per chained explosion event naming the triggering trap id, chance roll outcome, and number of enemies caught in the blast; absent in release builds.
-- A focused harness scenario passes headless with fresh evidence (`status: pass` in `.gen/harness/traps_buried_ordnance_progression/result.json`), covering: perk eligibility/grant, chained explosion triggering on an underground trap hit within radius, and no chain on non-underground targets.
-- Windowed run of the same scenario captures screenshot checkpoint(s) at the chained-explosion moment showing the visible small-explosion VFX at the blast site.
+- The grounded configuration targets exactly one named continent mesh from `stylized_earth_in_clouds.glb`, and the chosen mesh name is recorded in code or project documentation so it can be checked against the GLB's mesh list.
+- After `configure_for_map`, from the normal gameplay camera on a surface map, the playable field sits flush on the chosen continent with no visible gap or floating edge between the board and the globe surface (verified by windowed screenshot).
+- In the windowed screenshot from the normal gameplay camera, the continent terrain around the board reads as continuous with the map field (scale and color blend), with no hard seam between board and globe surface.
+- During play, the globe does not rotate: the earth body's world rotation measured at two times several seconds apart is identical in the grounded configuration.
+- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent mesh and the final rig position/scale/rotation.
+- The focused harness scenarios (`backdrop_earth_visible`, `backdrop_earth_glint`) pass headless: map loads, `backdrop_earth_present` is true, and their `backdrop_earth_center_y` expectation matches the grounded rig pose actually produced by the grounded configuration (the sunk globe position, no longer the old floating-mode value of 0).
+- With the grounded configuration active, other continents, ocean, cloud banks, and the atmosphere rim remain visible from the normal gameplay camera; only the previously hidden meshes (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud` prefixed) stay hidden (windowed screenshot).
