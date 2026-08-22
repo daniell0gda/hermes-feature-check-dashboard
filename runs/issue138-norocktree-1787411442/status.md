@@ -8,7 +8,9 @@
 - Tree/dead-tree/rock generation still terminates via the existing attempt limit when no building-free position is available (no infinite loop), and previously valid placements still respect path/egg/spawner clearances.
 - A debug-build `[NATURE]` log line is emitted when a tree, dead tree, or rock candidate is rejected for being too close to a building, including the rejected position.
 
+## ✅ Done
+- The harness scenario passes headless: loading the map generates nature decorations with zero large-nature/building overlaps reported by the scenario's expectation.
+
 ## ⬜ Pending
-- The harness scenario passes headless: loading the map generates nature decorations with zero large-nature/building overlaps reported by the scenario's expectation. — quality: scripts/game/NatureDecoration.gd: `get_large_nature_building_overlaps()` uses an `as Node3D` type cast, which CLAUDE.md forbids ("Type casts are forbidden"); replace with a typed loop variable or `is Node3D` guard plus direct property access.
 
 ## ❌ Impossible
