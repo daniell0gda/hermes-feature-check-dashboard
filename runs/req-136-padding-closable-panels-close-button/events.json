@@ -25,5 +25,14 @@
     "duration_ms": 247926,
     "summary": "Verified done: 6. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes (prior entry already resolved). Verification: passed \u2014 all gates re-run fresh thro\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-22T19:49:18.310Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 58455,
+    "summary": "Manual testing gate complete.\n\n- Check status: pass (fresh verification, all suites green per .gen/check.md).\n- Decision: manual_testing: required \u2014 the change is a new player-visible UI story (closable panels now reserve padding so content\u2026",
+    "error": null
   }
 ]
