@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue105-towers-bar-slot-row-overflow-margin-1/",
-  "heartbeat_at": "2026-08-22T20:50:03.330Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-22T20:50:03.330Z",
+  "heartbeat_at": "2026-08-22T20:55:44.861Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T20:55:44.861Z",
   "process_id": 719669,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T20:50:08.000282+00:00",
-    "last_success_at": "2026-08-22T20:50:07.999607+00:00",
+    "last_attempt_at": "2026-08-22T20:55:44.861815+00:00",
+    "last_success_at": "2026-08-22T20:50:12.399593+00:00",
     "last_error": null
   },
   "metrics": {
