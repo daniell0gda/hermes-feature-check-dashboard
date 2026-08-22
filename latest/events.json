@@ -1,29 +1,20 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T21:14:07.287Z",
+    "timestamp": "2026-08-22T20:37:12.889Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 97647,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-padding-closable-panels-close-button/.gen/plan.md\n",
+    "duration_ms": 480822,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-earth-continent-map-integration/.gen/plan.md\n",
     "error": null
   },
   {
     "sequence": 2,
-    "timestamp": "2026-08-22T21:18:00.767Z",
+    "timestamp": "2026-08-22T21:23:18.107Z",
     "node": "code",
     "status": "completed",
-    "duration_ms": 228137,
-    "summary": "Implementation cluster complete. All work verified through run_project_cmd (no host-shell Godot).\n\nState: the implementation was already in the working tree from prior iterations; this pass re-verified everything end-to-end.\n\nChanged files \u2026",
-    "error": null
-  },
-  {
-    "sequence": 3,
-    "timestamp": "2026-08-22T21:20:43.006Z",
-    "node": "check",
-    "status": "completed",
-    "duration_ms": 158045,
-    "summary": "API call failed after 3 retries: HTTP 429: Too many concurrent inference requests for an account with low available credits.\n",
+    "duration_ms": 2760781,
+    "summary": "All verification is green and artifacts are written. Summary:\n\n## Result\n\n**Cluster 1 \u2014 grounded-continent-placement: fixed**\n- Root cause of iteration-2 failure (`center_y = -81.768`, rig scale \u2248 1.0): assigning `earth_rig.basis` from a ro\u2026",
     "error": null
   }
 ]

@@ -1,64 +1,84 @@
-# Check report: req-136-padding-closable-panels-close-button (iteration 4, fresh verification)
+# Check Report — earth-continent-map-integration (iteration 2)
 
-classification: pass
+Classification: **fixable**
 
-## Verification (all via run_project_cmd, project=godot-td, workspace=poke-defense-godot/issue-padding-closable-panels-close-button)
+## Verification (all commands via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-earth-continent-map-integration)
 
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Runner probe | `git status --short` | 0 | clean tree: M .gitignore, TitledPanel.gd, test_titled_panel_close_corner.gd |
-| Typecheck | `godot --headless --path . --check-only --script res://scripts/ui/hud/TitledPanel.gd` | 0 | clean |
-| Focused test | `res://tests/ui/test_titled_panel_close_corner.tscn` | 0 | 32 ok, 0 failed; all 11 groups completed |
-| Full suite 1/3 | `res://tests/ui/test_enemy_armor_bar.tscn` | 0 | 35 ok, 0 failed |
-| Full suite 2/3 | `res://tests/ui/test_enemy_health_bar_boss_icon.tscn` | 0 | 18 ok, 0 failed |
-| Full suite 3/3 | `res://tests/ui/test_enemy_health_bar_oiled_icon.tscn` | 0 | 8 ok, 0 failed |
+| Command | Exit | Result |
+|---|---|---|
+| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner reachable |
+| `godot --headless --path . --editor --quit-after 300` (typecheck/build gate) | 0 | Import completed cleanly, incl. stylized_earth_in_clouds.glb |
+| Focused harness `backdrop_earth_visible.json` | 1 | status: fail — `center_y = -81.768` ≠ 0 (fresh result `.gen/harness/backdrop_earth_visible/result.json`, finished 2026-08-22T19:49:58); present/grounded/rotation_invariant pass |
+| Focused harness `backdrop_earth_glint.json` | 1 | status: fail — same `center_y = -81.768` ≠ 0 (finished 19:49:50) |
+| Full suite: python3 loop over all 135 `tests/scenarios/*.json` harness runs | runner 504 | Runner 15-min timeout killed the loop after ~52 scenarios; of 51 completed results, 35 pass and 16 do not (2 backdrop fails above, `cave_discovery_long_carve` fail carved_tiles 961<1000, plus 13 scenario timeouts such as fire_oil_slick, cannon_bunker_buster, curse_overheat_cycle) |
 
-All commands were run fresh this iteration through the approved runner (`run_project_cmd`);
-no host-shell project commands and no host `godot` invocation. Pre-existing HudTheme.tres /
-UI.tscn invalid-UID warnings fall back to text paths — legacy noise, not this change's scope.
+Full-suite evidence timestamps: `.gen/harness/*/result.json` finished 19:49:50–20:04:08
+(this iteration's loop run).
 
-## Criterion-by-criterion
+## Acceptance criteria
 
-1. Closable panel reserves padding; no content rect intersects CloseChip at any size — PASS.
-   `_reserve_content_padding()` duplicates the frame's panel stylebox and widens
-   `content_margin_right` by `CLOSE_CORNER_SIZE.x`. Fresh focused run asserts margin ≥ 90
-   (got 136) and "no leaf content control intersects the CloseChip rect" at 620x480.
-2. Padding only when closable / scene chip present — PASS. Gated on `_close_chip() != null`;
-   fresh assertions: "a non-closable panel keeps its full-width content area (20 < 90)",
-   "and its full-rect anchors are untouched", and "a scene-placed CloseChip reserves the same
-   content margin (136)".
-3. Chip flush top-right inside the frame, exactly one `close_requested` per press — PASS.
-   Fresh assertions: "it sits flush in the top-right corner (offset 0.0, 0.0)",
-   "the ✕ sits inside the full-size frame, not floating outside it",
-   "pressing it emits close_requested once (got 1)".
-4. UpgPanel tower-details content clear at multiple sizes — PASS. Fresh assertions at both
-   380x420 and 620x480: header/badge/stat rows/buttons clear of the chip (real UI.tscn
-   instantiated).
-5. Manage Towers + Options clear after layout — PASS. Fresh headless assertions for
-   ManageTowersPanel.tscn and OptionsScreen.tscn ("keeps every visible content control clear
-   of the CloseChip"), plus checker visual inspection of fresh post-fix windowed screenshots
-   (20:51 UTC): panel_manage_towers.png — ✕ inside the frame art, no content overlap;
-   panel_options.png — ✕ is the frame's own corner ornament, no content beneath it.
-6. Debug `[TITLED_PANEL]` log naming panel + inset — PASS. Observed in this iteration's fresh
-   output: "[TITLED_PANEL] ManageTowersPanel reserves 90px of right padding for the close
-   corner" and "[TITLED_PANEL] UpgPanel reserves 90px of right padding for the close corner".
+### Cluster 1: grounded-continent-placement
 
-## Changed-file quality
+1. Continent mesh named + recorded with absence warning — **verified**: `GROUNDED_CONTINENT = "Continent_Africa"` with full GLB node list comment and `push_warning` in `_verify_continent_mesh()` (`scripts/game/visuals/BackdropEarth.gd`). Debug log confirms runtime selection. PASS on its own evidence, but held out of Done by the global gate.
+2. Flush placement / globe inside camera frustum — **NOT VERIFIED**: requires windowed screenshot from the normal gameplay camera; no windowed run exists (`reason: "headless"` screenshot skip), no `.gen/manual-report.md`. PENDING.
+3. Continent fills space around board (windowed screenshot) — NOT VERIFIED, same reason. PENDING.
+4. Scale/color blend, no hard seam (windowed screenshot) — NOT VERIFIED, same reason. PENDING.
+5. Globe does not rotate — **partially verified**: new harness assertion `rotation_invariant == true` passes (transform sampled at two times ~3 s apart, `debug_backdrop_earth_rotation_invariant`), and grounded path never calls `_start_earth_spin()`. This is genuine automated coverage for the criterion, but held out of Done by the failing global gate. PENDING (gate).
+6. Debug `[BACKDROP EARTH]` grounding log line — **verified** in fresh log: `grounded continent=Continent_Africa pos=(-21.2, -83.2, -51.76) scale≈1.0 rot_deg=(15.39, 21.67, 83.15)` (`.gen/harness/_logs/backdrop_earth_visible.out.log`). PENDING (gate).
 
-Diff scope: `scripts/ui/hud/TitledPanel.gd`, `tests/ui/test_titled_panel_close_corner.gd`,
-one-line `.gitignore` addition. Checked against /opt/data/coding_rules.md and CLAUDE.md:
-typed variables throughout, small focused helpers with doc comments, guard clauses,
-debug-gated `[TITLED_PANEL]` log per project convention, surgical diff. No violations in
-new/changed code.
+Note on scale: log shows rig scale ≈ 0.99999994, i.e. grounded_scale=2.6 was NOT applied
+in the run (expected 41.6). The pose actually produced does not match the code's intent —
+consistent with the center_y mismatch (−81.77 vs designed −(2.014·41.6−2.014·41.6)=0).
+Implementor must reconcile scale/pose with the center_y contract.
 
-New tests do not overlap existing coverage: the five added test groups assert padding
-reservation, non-closable layout preservation, scene-placed-chip reservation, real-scene
-rect checks, and UpgPanel checks — no prior suite asserted these behaviors on these paths.
+### Cluster 2: backdrop-regression-and-harness-contract
 
-Quality notes: the open entry `stray-test-report-file` was already resolved in a prior
-iteration (report moved to `res://.gen/test-reports/titled_panel_close_corner.txt`; root
-file gitignored) — confirmed still resolved by inspecting the current diff. No new entries.
+7. Both focused scenarios pass headless with matching center_y — **FAILS** (fresh rerun):
+   both report `center_y = -81.768 ≠ 0`. `present` and `grounded` are true; the visible
+   scenario also passes its new rotation-invariance expectation — good additions — but the
+   core flush-placement expectation fails. PENDING.
+8. Other continents/ocean/clouds/atmosphere visible, hidden prefixes unchanged (windowed
+   screenshot) — NOT VERIFIED: no windowed run. PENDING.
+9. Windowed run produces surface screenshot — NOT VERIFIED: screenshots skipped headless;
+   manual-tester report absent. PENDING.
 
-## Blockers / unverified items
+## Build/test gate
 
-None.
+Import/editor gate passes (exit 0). Full test command did NOT complete green: the
+python3-loop variant was accepted by the profile allowlist (fixing iteration 1's bash
+block), but the runner's 15-minute timeout ended the loop at ~52/135 scenarios, and among
+completed scenarios the suite is red (16 non-pass). The two feature-focused failures are
+implementation regressions against the plan's own expectations; whether the other 14
+non-pass scenarios pre-date this change was not established (no baseline run) — recorded in
+quality-notes as advisory. Because the gate is not green, no criterion may remain Done.
+
+## Changed-file quality findings
+
+- `scripts/game/visuals/BackdropEarth.gd`: typed vars, small functions, guard clauses,
+  debug-only `[TAG]` logging — complies with CLAUDE.md and coding_rules.md. However the
+  produced pose contradicts `grounded_scale`/apex math (scale logged ≈ 1.0, center_y ≠ 0),
+  so the placement implementation does not satisfy its own documented contract — tracked by
+  pending criteria, not a style violation.
+- `logs/balance/map_difficulty.csv`: regenerated values unrelated to the earth-backdrop
+  feature — scope creep (quality-notes).
+- `models/stylized_earth_in_clouds.glb`: worktree holds the 9.58 MB glTF binary; HEAD
+  stores an equivalent-size LFS pointer (sha256 …4cfe59, size 9580728 matches worktree
+  bytes). Asset swap stands; prior quality-note remains open.
+
+## Blockers
+
+None infrastructural. Runner healthy; allowlist accepts python3 loops. Failures are
+implementation-level plus missing windowed/manual evidence.
+
+## Unverified items
+
+- All windowed-screenshot criteria (flush fit, terrain fill, seam blend, backdrop view,
+  surface screenshot file).
+- Whether the 14 non-backdrop non-passing scenarios were already failing before this change.
+
+## Verdict
+
+fixable — import gate green, but both focused earth scenarios fail on `center_y`,
+the full suite is red/incomplete under the runner timeout, and every windowed/manual
+criterion lacks evidence.
