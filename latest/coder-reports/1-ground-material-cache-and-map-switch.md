@@ -1,4 +1,4 @@
-# Coder report: 1-ground-material-cache-and-map-switch\n\n# Coder report: 1-ground-material-cache-and-map-switch
+# Coder report: 1-ground-material-cache-and-map-switch
 
 ## Changed files
 - `scripts/utils/TextureAtlasUtils.gd` — modified: ground textures load via new `_load_ground_texture` helper with `ResourceLoader.CACHE_MODE_REUSE` (was `CACHE_MODE_IGNORE`); debug-build `[GROUND]` log per material creation naming cache-hit vs fresh textures; fallback paths (Grass.png tile / StandardMaterial3D) untouched.
@@ -23,4 +23,3 @@
 - All shipped maps share grassColor 5209935 = Color(0.309804, 0.498039, 0.309804), so the tint assertion uses that value; a future map with a distinct color would need the expected string updated.
 - The probe is refreshed twice per map load: once right after `_build_ground_plane` (tint is still the Game.gd vivid-green default at that point) and again after `apply_environment_visuals_from_config` applies the map's configured grassColor. Expectations read the post-environment value.
 - Pre-existing noisy-but-harmless errors remain in the log (`Signal 'layer_changed' is already connected`, missing GLB imports) — unrelated to this change.
-\n
