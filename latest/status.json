@@ -1,22 +1,47 @@
 {
-  "run_id": "nature-decoration-counts-r1",
-  "feature": "nature-decoration-counts",
+  "run_id": "issue-108-harness-non-game-scene-211634",
+  "feature": "harness-cannot-boot-menu-scene",
   "status": "running",
-  "started_at": "2026-08-22T21:55:26.841Z",
+  "started_at": "2026-08-22T21:41:53.338Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/nature-decoration-counts-r1/",
-  "heartbeat_at": "2026-08-22T21:55:26.841Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
-  "process_id": 769237,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-108-harness-non-game-scene-211634/",
+  "heartbeat_at": "2026-08-22T21:56:53.099Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T21:56:53.099Z",
+  "process_id": 764606,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T21:56:24.196594+00:00",
-    "last_success_at": "2026-08-22T21:55:31.394606+00:00",
+    "last_attempt_at": "2026-08-22T21:56:53.099518+00:00",
+    "last_success_at": "2026-08-22T21:48:43.935130+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 54364,
+        "output_tokens": 3825
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 169086,
+        "output_tokens": 4475
+      }
+    ]
+  }
 }
