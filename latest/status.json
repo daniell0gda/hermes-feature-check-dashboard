@@ -1,21 +1,21 @@
 {
-  "run_id": "issue116-game-ready-blocks-map-load-r1",
-  "feature": "game-ready-blocks-map-load",
+  "run_id": "issue138-norocktree-1787411442",
+  "feature": "no-rock-or-tree-same-position-as-building",
   "status": "running",
-  "started_at": "2026-08-22T23:17:33.566Z",
+  "started_at": "2026-08-22T23:01:40.084Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r1/",
-  "heartbeat_at": "2026-08-22T23:22:03.709Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T23:22:03.709Z",
-  "process_id": 792468,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue138-norocktree-1787411442/",
+  "heartbeat_at": "2026-08-22T23:23:59.149Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-22T23:23:59.149Z",
+  "process_id": 789587,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T23:22:08.231958+00:00",
-    "last_success_at": "2026-08-22T23:22:08.231342+00:00",
+    "last_attempt_at": "2026-08-22T23:23:59.150161+00:00",
+    "last_success_at": "2026-08-22T23:06:14.221929+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,19 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 112499,
-        "output_tokens": 5457
+        "input_tokens": 72959,
+        "output_tokens": 2572
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 59224,
+        "output_tokens": 2014
       }
     ]
   }

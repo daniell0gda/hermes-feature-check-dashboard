@@ -1,26 +1,32 @@
-# Request: issue-116 game-ready-blocks-map-load
+# Request: no-rock-or-tree-same-position-as-building
 
-## Feature
-Split `Game`'s world build into resumable phases so `MapLoadingScreen` can drive it and show real progress during world building.
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/138
+Project: poke-defense-godot
+Workspace: poke-defense-godot/issue-no-rock-or-tree-same-position-as-building
+Branch: issue/no-rock-or-tree-same-position-as-building
 
-## Issue
-https://github.com/daniell0gda/poke-defense-godot/issues/116
-
-Problem: `MapLoadingScreen` threads the `Main.tscn` load, but `scene.instantiate()` + `Game._ready()` (map JSON parse, terrain, paths, decorations, spawners, environment) block the main thread in one go under a static "Building Map" caption. The progress bar finishes before the expensive part starts.
-
-Proposal: split `Game`'s world build into a step list that yields between phases, same shape as `LoadingSequence`'s step list, so `MapLoadingScreen` can drive and report it. See the "Known limitation" section in `LOADING_SYSTEM.md`.
-
-## Done when
-- `MapLoadingScreen`'s bar advances during the world build rather than jumping over it.
-- No single frame stalls for more than ~100ms during a map load.
-
-## Runner notes (redo notes)
-- Project key: `godot-td`. Workspace: `poke-defense-godot/issue-game-ready-blocks-map-load`.
-- Use only `run_project_cmd`; no shell operators; use Godot's `--log-file .gen/<name>.log` for full logs.
-- Windowed evidence needs `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` when Vulkan fails.
-- Harness scene arg must precede user args: `godot [--headless] --path . res://scenes/Main.tscn -- ...`.
-- Manual testing: required if the loading screen UI is visibly changed — capture windowed PNGs of the loading screen mid-world-build showing the bar advancing past the threaded-load portion.
+## Goal
+In `scripts/game/NatureDecoration.gd`, trees, dead trees, and rocks must never be placed
+at the same XZ position as an already-placed building. Grass and other small vegetation
+remain allowed at the same position as a building.
 
 ## Context
-- Branch: `issue/game-ready-blocks-map-load`, cut from fresh `origin/master` (d241462).
-- Worktree clean at claim time.
+- `_generate_all_decorations()` generates buildings (`_generate_building`) before trees,
+  dead trees, and rocks — so building positions can be recorded and checked.
+- Each generator currently only checks path/egg/spawner clearance via `_is_valid_position`;
+  only trees check distance from other trees.
+- Buildings are placed in `buildings_container` ("buildings_container" node).
+
+## Acceptance criteria
+1. Trees, dead trees, and rocks are never placed at the same position (or overlapping)
+   as an already-placed building.
+2. Grass (and other small vegetation: bushes, flowers) may still share a position with
+   a building.
+3. Placement still respects existing path/egg/spawner clearances and attempt limits
+   (no infinite loops when space runs out).
+4. Editor import/parse gate passes (`godot --headless --editor --quit-after` style check)
+   and any existing nature-decoration-related tests still pass.
+
+## Manual testing
+manual_testing: required — visible placement; take windowed top-down screenshots showing
+buildings with no tree/rock intersecting them, grass allowed near buildings.
