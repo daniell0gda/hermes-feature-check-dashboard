@@ -1,7 +1,4 @@
 ## ✅ Done
-(none)
-
-## ⬜ Pending
 - With `water_pressure` not owned, a Water hit against a Wet enemy deals its normal damage (bonus ratio 0.0).
 - At level 1 / 2 / 3, a Water tower hit against an already-Wet enemy deals 1.2× / 1.35× / 1.5× the damage the same hit would deal without the perk.
 - The bonus applies only while the target is Wet (`wet_time_left > 0`): a Water hit against a non-Wet enemy is unmodified at every perk level.
@@ -11,6 +8,9 @@
 - `water_tower.json` defines a Common perk `water_pressure` with maxLevels 3 whose levels carry +20% / +35% / +50%, and repeated `apply_progression("res://scripts/progression/water_tower.json", "water_pressure")` calls raise its current level 1 → 2 → 3 with a fourth call rejected (level stays 3, ineligible for further picks).
 - A focused AgentHarness scenario (`water_pressure_progression`) asserts the unowned baseline, each level's exact ratio, and the non-Wet guard via `progression_call` expectations, and passes headless with `status: pass`.
 - While `water_pressure` is owned, the Water tower tooltip includes a "Bonus vs Wet" percentage line matching the owned level (+20%/+35%/+50%), and the line is absent when the perk is not owned.
+
+## ⬜ Pending
+(none)
 
 ## ❌ Impossible
 (none)

@@ -1,32 +1,67 @@
-# Check Report — issue-water-pressure-bonus (Water Pressure perk #46), iteration 1
+# Check Report — issue-water-pressure-bonus (Water Pressure perk #46), iteration 2
 
-Classification: **fixable**
+Classification: **pass**
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-water-pressure-bonus)
+All verification commands were run fresh via `run_project_cmd` (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-water-pressure-bonus). No host-shell Godot was used.
+
+## Verification commands (fresh, this iteration)
 
 | Command | Exit | Result |
 |---|---|---|
-| `["git","status","--short"]` | 0 | runner reachable; 5 modified files + 1 new scenario |
-| `["godot","--headless","--path",".","--editor","--quit-after","300"]` (typecheck/build) | 0 | PASS — scripts parse; only pre-existing HudTheme texture UID warnings |
-| `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/water_pressure_progression.json"]` (focused) | 0 | PASS — `.gen/harness/water_pressure_progression/result.json` status=pass; [WATER-PRESSURE] L1/L2/L3 log lines observed (0.20/0.35/0.50) |
-| `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/progression_pick.json"]` (full) | 1 | FAIL — `.gen/harness/progression_pick/result.json` status=fail; reproduced twice (12:42:33, 12:43:22): `progression.venom_miasma_bloom` expected 1 actual 0, `progression_call.enabled` expected true actual false; modal resolved to kind=money instead of venom_miasma_bloom |
+| `["git","status","--short"]` | 0 | runner reachable; 6 modified files + 1 new scenario |
+| `["godot","--headless","--path",".","--editor","--quit-after","300"]` (typecheck/build) | 0 | PASS — all scripts parse; only pre-existing HudTheme texture-UID warnings |
+| `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/water_pressure_progression.json"]` (focused) | 0 | PASS — `.gen/harness/water_pressure_progression/result.json` status=pass; `[WATER-PRESSURE] water_pressure L1 -> bonus=0.20 / L2 -> 0.35 / L3 -> 0.50` observed in fresh runner stdout |
+| `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/progression_pick.json"]` (full) | 0 | PASS — `.gen/harness/progression_pick/result.json` status=pass; venom_miasma_bloom=1, enabled=true, paused=false, current_layer=underground |
 
-## Acceptance criteria evidence
+The iteration-1 failure of `progression_pick` (exit 1: modal resolved to money instead of
+venom_miasma_bloom) is fixed by the coder's change: three
+`apply_progression(water_tower.json, water_pressure)` exhaustion calls were added to
+`progression_pick.json`, restoring the deterministic 2-card chest pool the seeded draw relies on.
+Both harnesses now pass back-to-back in the same worktree.
 
-All nine criteria are demoted to Pending solely because the full-suite gate (`progression_pick`) fails reproducibly under the current worktree. The focused harness itself passes and covers criteria 1–9 well:
+## Acceptance criteria evidence — 9/9 Done
 
-- Unowned baseline ratio 0.0, L1/L2/L3 exact ratios 0.2/0.35/0.5, non-Wet guard via get_water_wet_bonus()==0.0 unowned, level cap (4th apply rejected, is_eligible==false), reset returns bonus to 0.0, electric_wet_conduction coexistence, tooltip "Bonus vs Wet: +20%/+35%/+50%" present/absent — all asserted in `tests/scenarios/water_pressure_progression.json` and green.
-- `[WATER-PRESSURE]` debug log lines confirmed in fresh runner stdout.
-- Implementation reviewed against coding rules/CLAUDE.md: typed vars, debug-tag logging, small functions — no violations found in the diff.
+1. Unowned baseline ratio 0.0 — focused harness asserts `get_water_wet_bonus() == 0.0`
+   before any pick; implementation returns 0.0 when not owned (`WaterTowerProgressionManager._wet_bonus`
+   init/reset; `ProgressionManager.get_water_wet_bonus()` fallback). Test would fail if broken.
+2. L1/L2/L3 exact ratios 0.2/0.35/0.5 — asserted per level via `wait_for_condition` after each
+   apply; log lines confirm applied values. EnemyHealthController multiplies by `1.0 + pbonus`
+   for Water hits only while Wet.
+3. Non-Wet guard — `_apply_wet_bonus_if_needed` early-returns when `wet_time_left <= 0.0`
+   before any attacker-type branch; ratio stays 0.0 unowned. Guard verified at code path +
+   baseline assertion (harness notes document that wet_time_left itself is not harness-readable).
+4. Water-only multiplication — Electric branch preserved unchanged (`get_electric_wet_bonus`),
+   other types fall through unmodified; harness asserts electric_wet_conduction still yields 0.5
+   after water_pressure L3 (both bonuses coexist).
+5. Reset — `reset()` zeroes `_wet_bonus`; harness calls `reset_for_new_game` then asserts
+   level 0, bonus 0.0, tooltip line absent.
+6. Debug log line — `OS.is_debug_build()` + `[WATER-PRESSURE]` prefix naming event, level, and
+   resulting bonus ratio; observed in fresh runner stdout at L1/L2/L3.
+7. Perk data + cap — `water_tower.json` defines Common `water_pressure`, maxLevels 3, bonuses
+   0.2/0.35/0.5; harness applies 4 times: level 1→2→3, fourth rejected (`is_eligible == false`,
+   level stays 3).
+8. Focused AgentHarness scenario — `tests/scenarios/water_pressure_progression.json` covers
+   baseline, each level's exact ratio, non-Wet guard path, cap, reset via `progression_call`
+   expectations; passes headless with `status: pass`.
+9. Tooltip — UI.gd appends `Bonus vs Wet: %+.0f%%` only while owned; harness asserts
+   "+20%"/"+35%"/"+50%" present at each level and absent before pick and after reset.
 
-## Failure analysis (for the coder)
+No test-overlap issue found: no existing suite test already asserted these behaviors on the same
+code paths; the new scenario is additive.
 
-`progression_pick` seeds 20260726 and uses auto-answer index 0 on upgrade modals. An earlier stored run of the same scenario at 12:33:25 passed (venom_miasma_bloom picked); after the focused water_pressure harness ran (which autosaves via SaveManager), the full scenario deterministically resolves its first modal to a `money` card and never picks `venom_miasma_bloom`. Likely causes to investigate: persisted save/progession state leaking between harness runs (scenario lacks a clean-state/reset step or the harness does not clear SaveManager data), or the new `water_pressure` entry changing the Common-perk card pool/order so index 0 no longer maps to venom_miasma_bloom. Fix by making `progression_pick` state-independent (reset progression + clear save at scenario start) or updating its pick expectations for the enlarged perk pool, then rerun both harnesses back-to-back.
+## Changed-file quality review (vs /opt/data/coding_rules.md + CLAUDE.md)
+
+- ProgressionManager.gd / WaterTowerProgressionManager.gd / EnemyHealthController.gd / UI.gd:
+  typed variables everywhere, small single-purpose functions, guard clauses with ≤2 if-nesting,
+  debug-tag logging per state transition, surgical diff scoped to the feature. No violations.
+- water_tower.json: valid JSON (Godot parses it); indentation of the inserted block uses tabs
+  vs the file's spaces — cosmetic, recorded in quality-notes.md (advisory only).
 
 ## Blockers
 
-None infrastructural. Runner healthy; classification is fixable (full-suite regression/flakiness to be repaired by coder).
+None.
 
 ## Unverified items
 
-None beyond the failing full suite; manual_testing is none per plan.
+None. manual_testing is none per plan.
