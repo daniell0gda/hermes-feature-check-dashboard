@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-125-progression-modal-close-resume/",
   "heartbeat_at": "2026-08-22T07:13:16.569Z",
   "last_node": "team-leader",
-  "active_node": null,
+  "active_node": "manual-tester",
   "last_event_at": "2026-08-22T07:13:16.569Z",
   "process_id": 462011,
   "host": "25e0b2c49eb5",
-  "phase": "team-leader",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T07:13:16.569980+00:00",
-    "last_success_at": "2026-08-22T07:11:25.113190+00:00",
+    "last_attempt_at": "2026-08-22T07:13:20.861183+00:00",
+    "last_success_at": "2026-08-22T07:13:20.860149+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 135806,
         "output_tokens": 5613
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "estimated",
+        "input_tokens": 46791,
+        "output_tokens": 597
       }
     ]
   }
