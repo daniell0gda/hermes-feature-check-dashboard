@@ -1,22 +1,36 @@
 {
-  "run_id": "issue-34-overcharge-capacitors-cont3-20260822-154755",
-  "feature": "overcharge-capacitors",
+  "run_id": "req-134-upgrade-click-money-animation-r2",
+  "feature": "upgrade-click-money-animation",
   "status": "running",
-  "started_at": "2026-08-22T15:47:55.710Z",
+  "started_at": "2026-08-22T14:28:55.188Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-34-overcharge-capacitors-cont3-20260822-154755/",
-  "heartbeat_at": "2026-08-22T15:47:55.710Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
-  "process_id": 628083,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-134-upgrade-click-money-animation-r2/",
+  "heartbeat_at": "2026-08-22T16:00:33.147Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T16:00:33.147Z",
+  "process_id": 589947,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T15:49:30.703559+00:00",
-    "last_success_at": "2026-08-22T15:48:00.294890+00:00",
+    "last_attempt_at": "2026-08-22T16:00:33.147998+00:00",
+    "last_success_at": "2026-08-22T14:40:52.155871+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
+      }
+    ]
+  }
 }
