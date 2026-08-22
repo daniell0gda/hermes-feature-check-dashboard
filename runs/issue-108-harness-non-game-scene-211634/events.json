@@ -70,5 +70,14 @@
     "duration_ms": 61325,
     "summary": "Gate decision complete.\n\n- Read request/plan/check/status; check classification is pass with all 10 Done criteria holding on fresh runner evidence.\n- Decision: manual_testing required \u2014 the remaining story is player-facing (main menu UI ove\u2026",
     "error": null
+  },
+  {
+    "sequence": 9,
+    "timestamp": "2026-08-22T22:41:34.082Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 604351,
+    "summary": "Done. Summary of the manual test run:\n\n**Result: PASSED**\n\nWhat I did:\n- Read `.gen/ui_scenario.md`, `plan.md`, `manual_testing.md`, and `changes.md`.\n- Ran the windowed harness scenario (`main_menu.json`) through `run_project_cmd` with the\u2026",
+    "error": null
   }
 ]
