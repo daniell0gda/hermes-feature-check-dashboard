@@ -1,31 +1,30 @@
-# Acceptance Plan: upgrade-click-money-animation (req-134 r3)
+# Acceptance Plan: no-rock-or-tree-same-position-as-building
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/upgrade_click_money_popup.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/chest_reward_compatibility.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
-
-manual_testing: required — windowed screenshot run with pixel-scan + visual inspection of the
-popup region is mandatory; headless cannot prove visibility.
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/nature_no_building_overlap.json"]`
+- Full test: `["bash", "-c", "rc=0; for f in tests/scenarios/*.json; do id=$(basename \"$f\" .json); godot --headless --path . res://scenes/Main.tscn -- --harness=res://$id >/dev/null 2>&1 || rc=1; done; exit $rc"]`
+- Typecheck/build: `["godot", "--headless", "--editor", "--quit-after", "2", "--path", "."]`
 
 ## Clusters
 
-1. upgrade-popup-visibility — files: `scripts/ui/UI.gd`, `scripts/game/ChestRewardSystem.gd`, `tests/scenarios/upgrade_click_money_popup.json` — depends on: none
-- Clicking "Upgrade" in the tower details panel spawns the same floating money popup chest rewards use, with text "+N coins!" where N is the rounded upgrade cost.
-- When the tower's screen position lies inside the tower details panel rect, the popup's on-screen position stays outside the panel rect for the whole popup lifetime, so no frame shows it fully hidden behind the panel.
-- When the tower is not occluded by the details panel, the popup anchors above the tower exactly as before (no offset applied).
-- Popup style and timing are identical to the chest popup: same yellow Label3D factory, same float/fade duration, and the popup frees itself so the live popup count returns to 0 within ~2 seconds of the click.
-- Tower level increments and money is charged by the exact upgrade cost when Upgrade is clicked.
-- Existing chest reward popups are unchanged: the chest compatibility scenario still passes with its existing expectations.
-- Debug-build [UPGRADE_POPUP] log line per occlusion adjustment, naming the tower screen position and the adjusted popup anchor.
+1. building-clearance-for-large-nature — files: `scripts/game/NatureDecoration.gd`, `tests/scenarios/nature_no_building_overlap.json` — depends on: none
+- Trees are never placed at an XZ position within the building clearance radius of an already-placed building.
+- Dead trees are never placed at an XZ position within the building clearance radius of an already-placed building.
+- Rocks are never placed at an XZ position within the building clearance radius of an already-placed building.
+- Bushes, flowers, and grass groups can still be placed at positions that coincide with or overlap a building.
+- Tree/dead-tree/rock generation still terminates via the existing attempt limit when no building-free position is available (no infinite loop), and previously valid placements still respect path/egg/spawner clearances.
+- A debug-build `[NATURE]` log line is emitted when a tree, dead tree, or rock candidate is rejected for being too close to a building, including the rejected position.
+- The harness scenario passes headless: loading the map generates nature decorations with zero large-nature/building overlaps reported by the scenario's expectation.
 
 ## Criteria
 
-- Clicking "Upgrade" in the tower details panel spawns the same floating money popup chest rewards use, with text "+N coins!" where N is the rounded upgrade cost.
-- When the tower's screen position lies inside the tower details panel rect, the popup's on-screen position stays outside the panel rect for the whole popup lifetime, so no frame shows it fully hidden behind the panel.
-- When the tower is not occluded by the details panel, the popup anchors above the tower exactly as before (no offset applied).
-- Popup style and timing are identical to the chest popup: same yellow Label3D factory, same float/fade duration, and the popup frees itself so the live popup count returns to 0 within ~2 seconds of the click.
-- Tower level increments and money is charged by the exact upgrade cost when Upgrade is clicked.
-- Existing chest reward popups are unchanged: the chest compatibility scenario still passes with its existing expectations.
-- Debug-build [UPGRADE_POPUP] log line per occlusion adjustment, naming the tower screen position and the adjusted popup anchor.
+- Trees are never placed at an XZ position within the building clearance radius of an already-placed building.
+- Dead trees are never placed at an XZ position within the building clearance radius of an already-placed building.
+- Rocks are never placed at an XZ position within the building clearance radius of an already-placed building.
+- Bushes, flowers, and grass groups can still be placed at positions that coincide with or overlap a building.
+- Tree/dead-tree/rock generation still terminates via the existing attempt limit when no building-free position is available (no infinite loop), and previously valid placements still respect path/egg/spawner clearances.
+- A debug-build `[NATURE]` log line is emitted when a tree, dead tree, or rock candidate is rejected for being too close to a building, including the rejected position.
+- The harness scenario passes headless: loading the map generates nature decorations with zero large-nature/building overlaps reported by the scenario's expectation.
+
+manual_testing: required

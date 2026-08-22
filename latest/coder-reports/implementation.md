@@ -1,25 +1,33 @@
-# Coder report: implementation (revision 2 redo, task code)
+# Coder report: implementation
 
 ## Changed files
-- `scripts/ui/UI.gd` — modified: `_spawn_upgrade_money_popup` now routes its anchor through a new `_adjust_anchor_out_of_upgrade_panel(anchor)` occlusion check; added the `[UPGRADE_POPUP]` debug log line.
-- (`tests/scenarios/upgrade_click_money_popup.json`, `scripts/game/ChestRewardSystem.gd`, `scripts/testing/HarnessValues.gd` unchanged this iteration — carried over from the previous iteration's already-green work.)
+- `scripts/game/NatureDecoration.gd` — modified: buildings now placed before large nature; building clearance check for trees/dead trees/rocks; debug `[NATURE]` reject log; harness overlap counter.
+- `scripts/game/Game.gd` — modified: exposes `nature_large_nature_building_overlaps` after nature generation for the harness expectation.
+- `tests/scenarios/nature_no_building_overlap.json` — new harness scenario (load map_1, wait 1s, snapshot; asserts zero overlaps + regex on `[NATURE]`/`[Harness]` log).
 
 ## Criteria
-- Clicking Upgrade spawns chest-style "+N coins!" popup — Done (verified previously + re-run this iteration)
-- Popup stays outside details-panel rect when tower is occluded — Done (new)
-- Unoccluded popup anchors above tower unchanged — Done (guard clause returns anchor untouched when panel off / point outside rect)
-- Same yellow Label3D factory/timing, popup frees within ~2 s — Done
-- Level increments, exact cost charged — Done
-- Chest compatibility scenario unchanged and passing — Done
-- Debug-build `[UPGRADE_POPUP]` log per adjustment naming tower screen pos and adjusted anchor — Done (new)
+- Trees never placed within building clearance radius of a placed building — Done (`_is_within_building_clearance` gate in `_generate_trees`).
+- Dead trees never placed within building clearance radius — Done (gate in `_generate_dead_trees`).
+- Rocks never placed within building clearance radius — Done (gate in `_generate_rocks`).
+- Bushes/flowers/grass groups may still overlap buildings — Done (no clearance check added to those generators; verified unchanged).
+- Generation terminates via existing attempt limits; path/egg/spawner clearances still respected — Done (attempt-limit loops untouched; `_is_valid_position` still runs before the building check in each generator).
+- Debug-build `[NATURE]` reject log including position — Done (`_debug_log_nature_reject`, guarded by `OS.is_debug_build()`); observed live in headless run output.
+- Harness scenario passes headless with zero overlaps — Done (see commands).
 
-## Commands and results (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-upgrade-click-money-animation)
-- `godot --version` — exit 0; 4.4.1.stable.official.49a5bc7b6
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` — exit 0; status=pass, all 3 expectations pass. Live occlusion path exercised: `[UPGRADE_POPUP] tower screen (803.84, 403.60) inside panel [P: (770, 172), S: (380, 502)] - anchor moved (-5.684, 1.5, -5.213) -> (8.371838, 1.5, -5.212997)` followed by `[CHEST REWARD] Created popup for 20 coins at (8.371838, 1.5, -5.212997)`; final `reward_popups == 0`.
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/chest_reward_compatibility.json` — exit 0; status=pass (chest popup for 33 coins on the unmodified factory path).
-- `godot --headless --path . --editor --quit-after 300` — exit 0; parse clean, no script errors.
+## Commands and results
+- `godot --headless --path . --editor --quit-after 300` (import preflight) — exit 0.
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/nature_no_building_overlap.json` — exit 0; `[Harness] status=pass exit=0`; 11 `[NATURE] rejected ... too close to a building at (x, z)` lines logged; result written to `.gen/harness/nature_no_building_overlap/result.json`.
+- `godot --headless --editor --quit-after 2 --path .` (typecheck/build) — exit 0.
+- Full suite attempt: ran `python3 tests/run_all_scenarios_scratch.py` inside the worker — killed at ~12 min by runner timeout (exit 137) after completing 50 of 136 scenarios (~14s each). Of those 50, 36 passed and 14 failed. Re-ran one failure, `cannon_bunker_buster`, with this cluster's changes stashed (baseline HEAD) — identical failure (status timeout, same expectations fail). Conclusion: the 14 failures are pre-existing and unrelated to nature/building placement (they are cannon/cave/fire/floodgate/curse progression scenarios; full list matches the previous worker's `tests/run_all_done.txt`). Full-suite completion is bounded out by per-scenario cost, not by this change.
 
 ## Notes
-- Occlusion algorithm: if the popup anchor projects inside `upg_panel.get_global_rect()`, project a cleared screen point 40 px past the nearer panel edge back onto the horizontal plane at the anchor's height (`Plane(Vector3.UP, anchor.y)` via `project_ray_origin/normal`) and spawn there. Guard clauses return the original anchor when there is no camera, the panel is hidden, or the projected point is outside the rect — so unoccluded towers behave exactly as before.
-- Adjustment only runs on the surface layer (`GameState.current_layer != "underground"`); the details panel is a surface HUD concept.
-- Gotcha for tester: the focused scenario deselects the tower before the "after" screenshot (so the popup is unoccluded for pixel-scan), but the headless log above proves the occluded branch fires while the panel is open at click time. Windowed recapture must budget ≥ ~2 s of TransitionUtils fade-in before screenshots.
+- Building clearance is XZ-plane distance < 4.0 units (`building_clearance`); Y ignored via Vector3(x, 0, z) comparisons.
+- `building_positions` is cleared at the start of `_generate_all_decorations()` so map reloads don't accumulate stale positions.
+- Dead trees are added to `TreeDecorations`, so `get_large_nature_building_overlaps()` scanning `TreeDecorations` + `RocksDecorations` covers all three large-nature kinds.
+- The scenario's log regex alternation accepts `[Harness]` so it passes on seeds where no candidate happens to be rejected; seed 20260822 does produce rejects.
+- Pre-existing repo dirt (modified .glb binaries, deleted portal_fantasy_arch.glb, logs/balance CSV) was already present in the workspace before this iteration and was left untouched.
+
+## Re-verification (iteration 1 re-run)
+- Focused harness via run_project_cmd (project=poke-defense-godot) — exit 0, `[Harness] status=pass exit=0`; 11 `[NATURE] rejected ... too close to a building at (x, z)` lines observed; zero overlaps asserted.
+- `godot --headless --editor --quit-after 2 --path .` — exit 0.
+

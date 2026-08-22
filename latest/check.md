@@ -1,51 +1,41 @@
-# Check report — upgrade-click-money-animation (req-134 r3, check iteration 3)
+# Check report: no-rock-or-tree-same-position-as-building (iteration 1)
 
 classification: fixable
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-upgrade-click-money-animation)
+## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-no-rock-or-tree-same-position-as-building; no host Godot used)
 
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Runner probe | `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 |
-| Editor/parse gate | `godot --headless --path . --editor --quit-after 300` | 0 | Parse clean; only pre-existing legacy UID/GLB warnings |
-| Focused harness (headless) | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` | 0 | status=pass; 3/3 expectations (money 1460<1500, level==2, reward_popups==0). Log shows `[UPGRADE_POPUP] tower screen (803.8, 403.6) inside panel [P:(770,172) S:(380,502)] - anchor moved (-5.684,1.5,-5.213) -> (8.372,1.5,-5.213)` and `[CHEST REWARD] Created popup for 20 coins` |
-| Full/compat harness | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/chest_reward_compatibility.json` | 0 | status=pass; 3/3 expectations — chest popups unchanged |
+| Command | Exit code | Result |
+|---|---|---|
+| `godot --version` (runner probe) | 0 | Godot 4.4.1.stable.official.49a5bc7b6 — runner reachable |
+| `godot --headless --editor --quit-after 2 --path .` (typecheck/build gate) | 0 | Import/parse clean, no script errors |
+| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/nature_no_building_overlap.json` | 0 | `[Harness] status=pass exit=0`; fresh result at `.gen/harness/nature_no_building_overlap/result.json`; expectation `nature_large_nature_building_overlaps == 0` passed; 11 live `[NATURE] rejected ... candidate too close to a building at (x, z)` lines observed |
 
-Result files: `.gen/harness/upgrade_click_money_popup/result.json`, `.gen/harness/chest_reward_compatibility/result.json` (both fresh this iteration).
+The plan's full-suite command uses a `bash -c` loop that the runner profile does not allowlist (`bash` is not an approved executable), so it was not run as-is. The prior worker recorded a full-suite baseline in `tests/run_all_done.txt` (136 scenarios, 18 pre-existing failures unrelated to this change — cannon/cave/curse/fire/hud/ice/issue-* scenarios). This checker re-ran the focused scenario for this issue green; full-suite regression remains honestly incomplete rather than proven green.
 
 ## Acceptance criteria evidence
 
-1. **Upgrade click spawns the same money popup, "+N coins!"** — Done (headless). `_on_upgrade_pressed` → `_spawn_upgrade_money_popup` → `ChestRewardSystem.create_reward_popup`; inline wait_for_condition asserted popup count 1 and text "+20 coins!" on the real handler path; popup freed (reward_popups==0).
-2. **Popup stays outside the panel rect for the whole lifetime (visibility)** — **Pending.** The headless harness only asserts meta counters; it cannot prove visibility. The windowed evidence fails:
-   - Implementor's own 10-frame animation run `.gen/harness/upgrade_click_money_popup_gif/result.json` has **status: timeout** with an unmet condition `enemies.reward_popups == 1` (actual 0) — in the windowed run the popup was not alive at the sampled frames at all. All 10 `anim_frame_*.png` vision-inspected: no "+20 coins!" popup anywhere.
-   - Checker-side independent pixel diff of the r3 windowed shots (`before_upgrade_click.png` vs `after_upgrade_click_popup_visible.png`, 1920x1080): 7,286 new yellow-mask pixels, but zoomed vision reads identify them as **in-world yellow vegetation**, not text. 0 text glyphs found; no popup visible inside or outside the panel rect. The prior check.md claim of "~2,149 new yellow pixels = '+20 COINS!'" is not reproducible — the same shots show no text.
-   - The occlusion-adjust code exists (`UI.gd::_adjust_anchor_out_of_upgrade_panel`) and fires in headless, but no windowed frame demonstrates a visible popup, so the criterion is unproven and the windowed harness run itself times out.
-3. **Non-occluded towers anchor above the tower unchanged** — **Pending.** No automated test exercises the non-occluded branch; the single scenario always places the tower inside the panel rect. Missing evidence.
-4. **Same factory/style/timing, popup frees within ~2s** — Done (headless): same `create_reward_popup` tween, reward_popups returns to 0 within the 2s-timeout wait.
-5. **Level increments, exact cost charged** — Done: level==2, money 1500→1460 (exact 40 cost across 2 upgrades? no — single upgrade cost 40? actual charge 40 matches generic tower upgrade; money < 1500 plus log `Created popup for 20 coins` and level 2 confirm charge+level on the real handler).
-6. **Chest compatibility unchanged** — Done: fresh full-suite run passes all existing expectations.
-7. **Debug-build [UPGRADE_POPUP] log per occlusion adjustment** — **Pending (quality).** The log fires (seen in headless run) but uses a bare `print(...)` (`scripts/ui/UI.gd`, `_adjust_anchor_out_of_upgrade_panel`), not gated on `OS.is_debug_build()` as the criterion requires.
+1. Trees never within building clearance radius — implementation gates `_generate_trees` on `_is_within_building_clearance(pos)` (NatureDecoration.gd); focused harness asserts zero overlaps and passed.
+2. Dead trees never within building clearance radius — same gate in `_generate_dead_trees`.
+3. Rocks never within building clearance radius — same gate in `_generate_rocks`.
+4. Bushes/flowers/grass groups may still coincide with a building — no clearance check added to those generators (verified in diff).
+5. Attempt-limit termination and path/egg/spawner clearances preserved — existing attempt-limit loops untouched; `_is_valid_position` runs before the new building check. Note: `_generate_building` max_attempts changed from `buildings_count` to `buildings_count * 10` — still bounded, no infinite-loop risk.
+6. Debug-build `[NATURE]` reject log including position — `_debug_log_nature_reject` guarded by `OS.is_debug_build()`, prints `(x, z)`; observed live in this checker's focused run (11 lines).
+7. Harness scenario passes headless with zero overlaps — fresh rerun by this checker: status=pass, exit 0, all expectations passed. Demoted to Pending for a quality violation in the new supporting helper (see below).
 
-## Changed-file quality review
+## Changed-file quality findings
 
-Diff vs HEAD: `scripts/ui/UI.gd` (+44), `scripts/game/ChestRewardSystem.gd` (+8/-2), `scripts/testing/HarnessValues.gd` (+19), new `tests/scenarios/upgrade_click_money_popup.json`, new `tests/scenarios/upgrade_click_money_popup_gif.json`.
-
-- Typed GDScript, guard clauses, surgical diff — no global-rule violations beyond the one below.
-- Popup factory reused via default `parent_path` arg; existing chest callers unchanged. No test-overlap: no prior test covered the upgrade-click popup.
-- **quality: scripts/ui/UI.gd — `[UPGRADE_POPUP]` log is a bare `print()` not gated on `OS.is_debug_build()`, violating the criterion's debug-build-only requirement** (criterion 7 demoted with `— quality:` suffix in status.md).
+- scripts/game/NatureDecoration.gd: `get_large_nature_building_overlaps()` contains `(child as Node3D)` — CLAUDE.md forbids type casts. Corrective action: use `for child: Node3D in container.get_children()` or an `is Node3D` guard with direct access, then rerun the focused harness.
+- Rest of the new code complies: typed variables, small helpers, guard clauses, debug-only logging.
 
 ## Quality notes
 
-`.gen/quality-notes.md` does not exist; no open entries. Feature diff inspected (`git diff HEAD`, untracked files): `.gen-blocked-req134-attempt1/` and the two new scenario JSONs are declared workflow/verification artifacts, not scope creep. Nothing appended.
+- Open entry `pre-existing-workspace-dirt` from iteration 1 stands (no resolution yet): binary `.glb` model changes, regenerated balance CSV, and untracked scratch files (`tests/run_all_scenarios_scratch.gd`, `.py`, `tests/run_all_shard.py`, `tools/reimport_buildings.gd`) present in the worktree but not introduced as feature scope creep. Should be cleaned or gitignored before merge.
+- No new cross-cutting entries appended.
 
-## Blockers / unverified
+## Blockers
 
-- Windowed visibility proof is missing and the windowed harness scenario (`upgrade_click_money_popup_gif`) times out with `reward_popups == 0` — implementor must fix the windowed path (popup alive and rendered outside the panel in captured frames) and re-capture.
-- Non-occluded-anchor criterion has no automated coverage (single scenario always occluded).
-- Pre-existing engine noise (invalid UID ext_resources, GLB-not-imported in headless, exit RID leaks) is unrelated legacy state on master paths.
+None blocking classification. Manual top-down screenshot testing remains required per request.md (not performable headless).
 
 ## Verdict
 
-Build/typecheck and both harness suites pass headless, but the issue's core requirement — the popup provably visible outside the details panel in windowed frames — is not demonstrated, and the windowed animation run fails/times out. Implementation is close; a targeted revision can fix it.
-
-classification: fixable
+6/7 Done retained, 1 demoted to Pending (quality: forbidden type cast), 0 Impossible. Runner gate healthy; build/typecheck gate passed; focused harness green.
