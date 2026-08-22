@@ -1,21 +1,21 @@
 {
-  "run_id": "req-134-upgrade-click-money-animation-r2",
-  "feature": "upgrade-click-money-animation",
+  "run_id": "elemental-attunement-20260822",
+  "feature": "elemental-attunement",
   "status": "running",
-  "started_at": "2026-08-22T14:28:55.188Z",
+  "started_at": "2026-08-22T14:33:53.954Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-134-upgrade-click-money-animation-r2/",
-  "heartbeat_at": "2026-08-22T14:40:43.413Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T14:40:43.413Z",
-  "process_id": 589947,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/elemental-attunement-20260822/",
+  "heartbeat_at": "2026-08-22T14:44:11.612Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T14:44:11.612Z",
+  "process_id": 592164,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T14:40:47.971474+00:00",
-    "last_success_at": "2026-08-22T14:40:47.970412+00:00",
+    "last_attempt_at": "2026-08-22T14:44:11.613366+00:00",
+    "last_success_at": "2026-08-22T14:40:22.434700+00:00",
     "last_error": null
   },
   "metrics": {
@@ -24,12 +24,12 @@
         "task_id": "plan",
         "cluster_id": null,
         "role": "plan",
-        "model": null,
+        "model": "stealth/ox-alpha",
         "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 123060,
+        "output_tokens": 2166
       }
     ]
   }

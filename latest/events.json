@@ -1,11 +1,20 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T14:40:43.413Z",
+    "timestamp": "2026-08-22T14:40:13.452Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 655115,
-    "summary": "API call failed after 3 retries: HTTP 429: Too many concurrent inference requests for an account with low available credits.\n",
+    "duration_ms": 374418,
+    "summary": "All required verification passed through the project runner (`godot-td` / `poke-defense-godot/issue-elemental-attunement`):\n\n- Focused harness `elemental_attunement.json`: status=pass, exit=0 (result at `.gen/harness/elemental_attunement/re\u2026",
+    "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-22T14:44:11.612Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 233486,
+    "summary": "Work complete. Summary:\n\n**State**: The elemental_attunement implementation from iteration 1 was already present in the worktree (uncommitted: `autoload/ProgressionManager.gd`, `scripts/config/Balance.gd`, `scripts/config/maps/map_1.json`, \u2026",
     "error": null
   }
 ]

@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/elemental-attunement-20260822/",
-  "heartbeat_at": "2026-08-22T14:40:13.452Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-22T14:40:13.452Z",
+  "heartbeat_at": "2026-08-22T14:44:11.612Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-22T14:44:11.612Z",
   "process_id": 592164,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-22T14:40:18.127353+00:00",
-    "last_success_at": "2026-08-22T14:40:18.126510+00:00",
+    "last_attempt_at": "2026-08-22T14:44:11.613366+00:00",
+    "last_success_at": "2026-08-22T14:40:22.434700+00:00",
     "last_error": null
   },
   "metrics": {
