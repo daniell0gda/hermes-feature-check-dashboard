@@ -1,12 +1,12 @@
 {
   "run_id": "114-preloader-cache-info-nan-r1",
   "feature": "preloader-cache-info-nan",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-23T02:25:18.075Z",
-  "ended_at": null,
+  "ended_at": "2026-08-23T03:06:28.089Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/114-preloader-cache-info-nan-r1/",
-  "heartbeat_at": "2026-08-23T03:06:23.392Z",
+  "heartbeat_at": "2026-08-23T03:06:28.089Z",
   "last_node": "team-leader",
   "active_node": null,
   "last_event_at": "2026-08-23T03:06:23.392Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T03:06:23.392263+00:00",
-    "last_success_at": "2026-08-23T03:05:57.004010+00:00",
+    "last_attempt_at": "2026-08-23T03:06:28.089328+00:00",
+    "last_success_at": "2026-08-23T03:06:28.087313+00:00",
     "last_error": null
   },
   "metrics": {
@@ -96,6 +96,17 @@
         "cost_status": "estimated",
         "input_tokens": 128604,
         "output_tokens": 2088
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 18368,
+        "output_tokens": 430
       }
     ]
   }
