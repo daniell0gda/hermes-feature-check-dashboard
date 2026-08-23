@@ -1,22 +1,28 @@
-# Request — Issue #91: Progression perk "Undermining"
+# Request: Implement issue #90 — Progression: Corrosive Soak perk (Floodgate)
 
-- **Project:** poke-defense-godot (runner key `godot-td`, workspace `poke-defense-godot/issue-perk-undermining`)
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/91
-- **Branch:** issue/perk-undermining (cut fresh from origin/master @ d241462)
-- **Labels:** status:in-progress, priority:medium, type:common, type:progression-perk, type:traps, type:armor
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/90
+Workspace: /workspace/git-workspaces/poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat
+Branch: issue/progression-corrosive-soak-perk-floodgat (cut from origin/master @ 97ed515)
+Runner: project `godot-td`, workspace `poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat`. Do NOT invent other runner/workspace names.
 
-## Problem
-None of the underground traps (`trap_01`/Jaw, `trap_03`/Spike, `trap_02`/Saw, `trap_05`/Blender, `data/towers.xml:35-38`) have an `armor_dmg` stat, so armored enemies routed underground are just as shielded there as on the surface.
+## Feature
 
-## Done when (exact acceptance criteria from the issue)
-1. New perk `undermining`, type Common, traps only, 3 levels.
-2. All 4 traps gain flat armor-damage per hit — L1 8, L2 15, L3 25 — added the same way Ballista's `armor_dmg` is read via `TowersConfig.get_armor_damage()` (`systems/TowersConfig.gd:184-186`).
-3. Does not affect any surface tower.
-4. Visual: tint traps' existing hit-impact effect to flag the armor-strip portion; if a given trap currently has no impact VFX at all, note that as a pre-existing gap rather than scope creep for this issue.
+New Unique progression perk `corrosive_soak` for Floodgate Tower only, 3 levels:
+- Enemies hit by Floodgate's discharge gain a "Corroded" status.
+- While Corroded, armor-damage taken from **all other towers'** hits is increased by +25% / +45% / +70% by level.
+- Floodgate's own hits are unaffected by its own Corroded status (it has no armor_dmg; setup effect, not self-buff).
+- Implemented in `FloodgateTowerProgressionManager.gd` alongside the existing `floodgate_saltwater_purge` pattern.
+- Visual: extend Floodgate's existing wet/soak shader (`WaterSubmersionSystem`) with a distinct rust tint on corroded enemies — no new VFX class.
 
-## Notes / redo guidance for workers
-- Runner workspace naming pitfall: use exactly project key `godot-td` and workspace `poke-defense-godot/issue-perk-undermining`. Invented names cause HTTP 422 chdir failures that look like infra blockers.
-- Native Linux Godot verification through the runner only. Editor gate: `godot --headless --path . --editor --quit-after 300`. Gameplay harnesses need explicit scene arg before user args.
-- Visible player-facing perk → manual_testing should be `required`; manual-tester must never use `--headless`; windowed evidence via `--rendering-method gl_compatibility --audio-driver Dummy` when Vulkan fails; screenshots/GIFs into `.gen/screenshots/`.
-- Check profile must emit the literal line `classification: <pass|fixable|design_failure|blocked>` (lowercase value, no bold) so leader routing parses it.
-- Historical reference only (previous abandoned claim): commit 84c8e60 "bird view centers..." was on this branch before reset — unrelated to this issue; branch was reset to origin/master d241462.
+Reference files: `data/towers.xml` (Floodgate entry lines ~13-15), existing perk patterns in other tower progression managers (e.g. siege-breaker/static-breach/sundering-bolts/undermining perks) for armor_dmg mechanics and tests.
+
+## Acceptance criteria
+1. Perk defined with 3 levels and correct amplification values (25/45/70%), Floodgate-only, type Unique.
+2. Corroded status applied on Floodgate discharge hits; amplifies armor-dmg from all towers EXCEPT Floodgate itself.
+3. Editor gate passes (`godot --headless --path . --editor --quit-after 300`).
+4. Focused headless gameplay harness proves: enemy hit by Floodgate → subsequent armor-dmg hit from another tower is amplified per level; Floodgate-own follow-up is not amplified.
+5. Manual testing: required if any player-facing visual (rust tint) is implemented; windowed screenshots via runner, never --headless for manual test evidence.
+
+## Notes
+- Use exact scene argument before user args in harness commands.
+- Inspect raw Godot stdout for Parse Error / Failed loading resource, not just harness status=pass.
