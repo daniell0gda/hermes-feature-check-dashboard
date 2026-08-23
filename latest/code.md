@@ -1,54 +1,46 @@
-# Coder report: implementation\n\n# Coder report: implementation (revision 2)
+# Coder report: implementation\n\n# Coder report: implementation (revision 1)
 
-Task: revision-code-1, cluster "implementation" — redo the failed criteria from the
-revision-1 check (forced-Unique windowed scenario fixture + visual closeout prep).
+Task: revision-code-1 / cluster implementation. Re-verify the previously green
+criteria after the checker's fixable classification; no code defects were
+identified by check.md — the only residual item is the windowed screenshot
+handoff to the manual tester.
 
 ## Changed files
-- `tests/scenarios/progression_modal_wood_frame.json` — modified
+
+No source changes this iteration (worktree diff identical to iteration 1):
+- `scripts/progression/trap.json` — mod (from iteration 1)
+- `scripts/progression/managers/TrapProgressionManager.gd` — mod (iteration 1)
+- `autoload/ProgressionManager.gd` — mod (iteration 1)
+- `scripts/game/actors/Trap.gd` — mod (iteration 1)
+- `tests/scenarios/traps_frostbite_fangs_progression.json` — new (iteration 1)
 
 ## Criteria
-- Forced-Unique scenario fixture — Done (automated evidence below)
-- Windowed screenshots / `.gen/manual-report.md` — NOT DONE BY THIS WORKER: the
-  runner executes headless (`HarnessScreenshot.is_available()` is false), so both
-  screenshot checkpoints correctly report `skipped`. request.md itself assigns
-  windowed capture and manual judging to the windowed/manual-tester worker; the
-  code-side deliverable was making the scenario *force* a Unique offer so those
-  shots actually contain one. That precondition now holds and is proven.
 
-## Commands and results (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-window-modals-skip-wood-frame)
-- `["git","status","--short"]` — exit 0. Runner reachable.
-- `["godot","--headless","--path",".","res://tests/ui/test_titled_panel_close_corner.tscn"]`
-  — exit 0, "58 ok, 0 failed", "every test ran to completion (17 of 17)".
-- `["godot","--headless","--path",".","res://scenes/Main.tscn","--",
-  "--harness=res://tests/scenarios/progression_modal_wood_frame.json"]`
-  — exit 0, `[Harness] status=pass exit=0`. Log shows the forced draw:
-  `[Progression] draw_choices_for_chest: force_mode=true, flagged=1, normal=45,
-  chosen=1` then `[PROGRESSION_MODAL] open money=50 options=2` with **no**
-  invalid-theme-override errors. RewardsModal opened over 1 selection
-  (`[REWARDS_MODAL] open trigger=rewards_button selections=1`, scifi_overclock).
-  Both screenshots report outcome=skipped (headless renderer — expected).
-- `["godot","--headless","--path",".","--editor","--quit-after","300"]`
-  — exit 0. Import/typecheck gate green.
+All eight acceptance criteria remain Done; nothing moved back to Pending.
+The windowed frost-overlay confirmation stays with the manual tester per
+`manual_testing: required` (scenario checkpoints already wired:
+`frostbite_fangs_chilled_hit`, optional `frostbite_fangs_aftermath`).
 
-## Notes for tester/manual-tester
-- The forcing mechanism: map_10 puts Sci-Fi on its build roster, which makes the
-  only forceVisibility perk (`scifi_overclock`) chest-compatible; while any
-  forceVisibility perk is chest-eligible, `draw_choices_for_chest` is
-  flagged-exclusive, so the modal's upgrade cards are exactly that Unique.
-- Two inline `wait_for_condition` probes assert this BEFORE the chest opens:
-  a 100-draw contains probe on `scifi_overclock` and a 2-draw !contains probe on
-  `"type": "Common"`. An unmet precondition aborts the timeline instead of
-  photographing a Common-only modal (the revision-1 failure mode).
-- After the modal shot the timeline closes the modal via
-  `progression_modal verb=close` (restores pre-open pause state), grants
-  scifi_overclock directly, and opens RewardsModal via `_on_rewards_pressed`,
-  producing checkpoint `panel_rewards_unique` — the listed-selections shot with a
-  stored-type Unique card wearing the shared gold border/badge treatment.
-- Run WINDOWED (never --headless) to get real pixels:
-  `.gen/harness/progression_modal_wood_frame/shots/progression_modal_wood_frame.png`
-  and `.../shots/panel_rewards_unique.png`; copy fresh PNGs to `.gen/screenshots/`.
-- Pre-existing noise, not from this diff: invalid-UID ext_resource warnings in
-  HudTheme.tres/UI.tscn, dummy-renderer RID-leak errors at exit, unimported-GLB
-  load failures headless.
+## Commands and results
+
+All via run_project_cmd (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-traps-frostbite-fangs):
+
+| Command | Exit | Result |
+|---|---|---|
+| `["git","status","--short"]` | 0 | same 4 modified + 1 new feature files as iteration 1 |
+| `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | import/parse gate clean (only pre-existing invalid-UID warnings) |
+| `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_frostbite_fangs_progression.json"]` | 0 | status=pass; live trap hits logged `[FROSTBITE_FANGS] trap=trap_01 chill=0.6 dur=3.0 enemy=Cactoro`; L1→L3 replay logged 0.4/2.0s → 0.5/2.5s → 0.6/3.0s |
+| same runner cmd, `traps_serrated_edges_progression.json` | 0 | status=pass |
+| same runner cmd, `undermining_trap_armor.json` | 0 | status=pass (Underming strip path unaffected by the `perform_hit` hook) |
+
+Evidence refreshed under `.gen/harness/`:
+- `.gen/harness/traps_frostbite_fangs_progression/result.json` — status=pass
+- `.gen/harness/traps_serrated_edges_progression/result.json` — status=pass
+- `.gen/harness/undermining_trap_armor/result.json` — status=pass
+
+## Notes
+
+- Nothing committed/pushed/merged/closed (lifecycle respected).
+- The stale-out.log gotcha from iteration 1 did not recur; logs were fresh.
 \n

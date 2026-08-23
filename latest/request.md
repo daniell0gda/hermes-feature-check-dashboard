@@ -1,30 +1,35 @@
-# Request: #127 visual closeout (continuation)
+# Request: traps_frostbite_fangs
 
-Implementation already exists on this worktree (uncommitted). Do not rebase.
-Do not rewrite the Unique styling API unless a test fails.
+- request_id: req-83-traps-frostbite-fangs
+- issue: https://github.com/daniell0gda/poke-defense-godot/issues/83
+- project runner key: godot-td
+- git workspace: poke-defense-godot/issue-traps-frostbite-fangs
+- branch: issue/traps-frostbite-fangs
+- intent: implementation
 
-https://github.com/daniell0gda/poke-defense-godot/issues/127
+## Feature
 
-## Why the last run failed
-Checker classified `fixable` because:
-- no `.gen/manual-report.md` / windowed screenshots
-- the windowed ProgressionModal scenario did not force a Unique option, so Unique gold border + Unique badge were unphotographed
+Add Unique perk `traps_frostbite_fangs` (L1-3). Trap hits apply chill/slow via existing `EffectsManager.apply_frozen(magnitude, duration, owner_instance_id)`. Duration or magnitude scales per level. Reuse existing frost overlay VFX; no new asset. Confirm frost overlay renders when triggered from a trap.
 
-## Required this run
-1. Update `tests/scenarios/progression_modal_wood_frame.json` (and/or a sibling scenario) so at least one offered card is Unique. Seed/harness must force Unique, not hope the RNG draws it.
-2. Run windowed (never --headless for visual):
-   - `hud_other_panels` → panel_rewards
-   - progression modal with Unique visible
-   - RewardsModal listing at least one Unique selection if possible
-3. Copy fresh PNGs to `.gen/screenshots/` AND `.gen/harness/.../shots/`.
-4. Manual-tester required, windowed only. Judge `ui_feels_broken: no`.
-5. Vision-check: full unclipped titles ("Rewards", "Choose a Reward"); description text inside a distinct ModalWell; Unique card has gold/bronze ≥3px border + readable "Unique" badge.
+## Acceptance
 
-## Preserve
-- Existing TitledPanel inset / plate-width fix
-- Shared `scripts/ui/modal_unique_styling.gd`
-- Runner: `godot-td` / `poke-defense-godot/issue-window-modals-skip-wood-frame`
-- No commit/push/close
+- Add Unique `traps_frostbite_fangs` (L1-3).
+- Trap hits apply chill/slow via `EffectsManager.apply_frozen`.
+- Duration or magnitude scales per level.
+- Reuse existing frost overlay VFX from `apply_frozen`.
+- Confirm frost overlay renders when the effect is triggered from a trap.
+- Preserve existing frozen-effect ownership and stacking semantics.
+- Focused coverage for level scaling and trap-triggered visual/effect behavior.
+- Verify the relevant trap gameplay path, not only generic parsing.
 
-## Project path
-/workspace/git-workspaces/poke-defense-godot/issue-window-modals-skip-wood-frame
+## Runner
+
+Use only `run_project_cmd` with project=`godot-td` and workspace=`poke-defense-godot/issue-traps-frostbite-fangs`.
+
+## Manual testing
+
+Visible frost overlay on trap hit is player-facing: `manual_testing: required`. Windowed screenshots/GIFs, no `--headless` for manual tester.
+
+## Lifecycle
+
+Do not commit, push, merge, or close the issue.
