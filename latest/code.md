@@ -1,5 +1,25 @@
 # Coder report: implementation\n\n# Coder report: implementation
 
+## Revision 2 (closes criterion-2 tower-overlap gap)
+
+### Changed files
+- `scripts/ui/UI.gd` — added `_upgrade_panel_overlap_ratio_with_selected_tower()` (projects the selected tower's world-space mesh AABB through the active camera into a screen Rect2 via `Camera3D.unproject_position` + `is_position_behind`, then returns panel∩tower area / panel area) and `_tower_world_aabb(tower)` (merged world AABB of all MeshInstance3D under the tower).
+- `tests/scenarios/tower_details_panel_right_side.json` — new wait_for_condition asserting the above == 0 right after the HUD overlap checks (13 actions total now).
+
+### Commands and results
+All via run_project_cmd project=godot-td workspace=poke-defense-godot/issue-move-tower-details-panel-right-side:
+- `godot --version` — exit 0 (4.4.1.stable)
+- Focused harness `godot --headless --path . scenes/Main.tscn --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy -- --harness=res://tests/scenarios/tower_details_panel_right_side.json` — exit 0, `.gen/harness/tower_details_panel_right_side/result.json` status=pass, 13/13 actions ok including the new `_upgrade_panel_overlap_ratio_with_selected_tower == 0`
+- Second resolution: same command with leading `--resolution 1280x720` — exit 0, status=pass
+- Regression `--harness=res://tests/scenarios/tower_details_panel.json` — exit 0, status=pass, 45/45 actions ok
+
+### Notes
+- The windowed manual test with `ui_feels_broken` verdict (.gen/manual_testing.md) is owned by the manual-testing node, not code; geometry evidence for its second-resolution leg now exists.
+- Gotcha: `Camera3D.unproject_position` errors if the point is behind the camera — guard each AABB corner with `is_position_behind` before unprojecting; if no corner survives (tower fully off-screen) return 0.0 overlap.
+- Gotcha: an empty `find_children("*", "MeshInstance3D")` result yields a zero-size AABB; fall back to a 0.5-unit box around global_position so the assertion can never silently pass on a degenerate projection.
+
+---
+
 ## Changed files
 - `scenes/UI.tscn` — modified: `Root/UpgPanel` re-anchored from top-center (anchors_preset 5, anchor_left/right = 0.5, offsets ±190) to right-edge dock (anchors_preset 1, anchor_left/right = 1.0, offset_left -390 / offset_right -16, grow_horizontal 0). `Root/UpgPanel/TitlePlate` re-anchored to the panel's right rim to match (anchors_preset 1, anchor 1.0, grow_horizontal 0); TitledPanel._place_plate still recentres it at runtime.
 - `scripts/ui/UI.gd` — modified: added `get_upgrade_panel_rect() -> Rect2` (upg_panel.get_global_rect()), `_upgrade_panel_right_edge_gap_to_viewport()` and `_upgrade_panel_overlap_ratio_with_node(path)` (Rect2.intersection area ratio vs another Control's global rect).

@@ -43,5 +43,14 @@
     "duration_ms": 271758,
     "summary": "Worker release isn't exposed to me (only `run_project_cmd` with `cmd`); leaving workspace release to the leader. Artifacts written.\n\nVerified done: 2. Pending: 1 \u2014 0 due to build/test failures, 1 due to missing evidence (no assertion for \"o\u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-23T05:41:46.324Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 495350,
+    "summary": "`release_project_worker` isn't exposed as a callable tool in this session (only `run_project_cmd` is loaded from the runner plugin), so worker release is left to the orchestrator. All work is complete.\n\n## Summary \u2014 revision-code-2 (impleme\u2026",
+    "error": null
   }
 ]
