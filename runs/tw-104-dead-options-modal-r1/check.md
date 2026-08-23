@@ -1,88 +1,94 @@
-# Check report: issue-dead-options-modal-scene (revision-check-1, iteration 2)
+# Check report: issue-dead-options-modal-scene (revision-check-2, iteration 3)
 
 classification: fixable
 
 ## Verdict
 
-The deletion itself remains fully verified: dead `Options.tscn` / `Options.gd` /
-`Options.gd.uid` are gone, a fresh project-wide grep finds zero references to
-`Options.tscn` / `OptionsModal` / `scripts/ui/Options.gd`, the editor/import gate is
-clean, `smoke_placement` passes fresh, and both live Options paths pass fresh
-(pause-menu scenario: exit 0, all expectations green; main-menu script: exit 0,
+The deletion itself remains fully verified with fresh evidence: dead `Options.tscn`
+/ `Options.gd` / `Options.gd.uid` are gone from the worktree and the diff, a fresh
+project-wide grep finds zero references to `Options.tscn` / `OptionsModal` /
+`scripts/ui/Options.gd`, the editor/import gate is clean, `smoke_placement` passes
+fresh with a new result.json, `smoke_tower_roster` now reaches wave 2 with 7 of its
+10 tower types dealing damage (up from 4), and both live Options paths pass fresh
+(pause-menu scenario exit 0 with all expectations green; main-menu script exit 0,
 OptionsScreen instantiated visible=true).
 
-However, the plan's **full test command** (`smoke_tower_roster`) still fails with exit 1.
-The revision added two `_set_egg(20)` calls to the scenario timeline, but they do not
-cure it: the egg still reaches 0 hp during wave 2 and the game enters `gameover`
-BEFORE the between-waves revive fires. Snapshots from the fresh run prove it:
-`start egg_hp=20 paused` → `after_waves wave=2 egg_hp=0 gameover` → `after_upgrade
-egg_hp=20 gameover`. Once `_set_game_state("gameover")` fires (Game.gd:526), waves stop
-advancing (`current_wave` stays 2 < 3) and balista/bazooka/cannon never engage (damage 0).
-Topping the egg up after gameover does not resume the simulation clock, so the revive
-call is placed too late to matter. The failure signature is otherwise identical to the
-pre-existing baseline failure (reproduced on pristine HEAD in iteration 1).
+However, the plan's **full test command** (`smoke_tower_roster`) still fails with
+exit 1. The revision added five `_set_egg(20)` timeline calls but they still cannot
+prevent the wave-2 gameover: snapshots prove the egg dies DURING wave 1 — the
+first wait (`current_wave >= 2`, optional) times out at wave 1 with gameover already
+set, so the wave-1 top-up placed immediately after `trigger_wave` fires long before
+the leak lands. Once Game.gd flips to `gameover` the SimulationClock stops,
+`current_wave` freezes at 2 (< 3), and balista/bazooka/cannon never engage (damage 0).
+The failure signature is otherwise identical to the pre-existing baseline failure
+(reproduced on pristine HEAD in iteration 1); it is a map_10 gameplay-pacing issue
+under this synthetic 12-tower placement, not a resource/class-cache regression from
+the deletion.
 
-Per the build/test gate, no criterion may remain Done while the full suite is red, so
-all criteria remain Pending. This is fixable: either place periodic/earlier egg top-ups
-(e.g. `_set_egg(20)` immediately after each trigger_wave, or before the first snapshot
-plus after every wait_for_condition) so gameover never occurs, or restore the scenario's
-original expectations and file the map_10 pacing issue separately — but the criterion as
-written requires `smoke_tower_roster` to pass.
+Per the build/test gate, no criterion may remain Done while the full suite is red,
+so all criteria stay Pending. This remains fixable.
 
-## Verification commands (fresh this iteration, all via run_project_cmd,
+## Verification commands (all fresh this iteration via run_project_cmd,
 project=poke-defense-godot, workspace=poke-defense-godot/issue-dead-options-modal-scene)
 
 | Command | Exit | Result |
 |---|---|---|
 | `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 (runner healthy) |
 | `godot --headless --path . --editor --quit-after 300` | 0 | Clean; no parse or missing-resource errors |
-| `--harness=res://tests/scenarios/smoke_tower_roster.json` | 1 | `status: fail`; snapshots show egg dead + gameover at wave 2 before mid-scenario revive; failing expectations: `current_wave >= 3`, balista/bazooka/cannon damage > 0 |
+| `--harness=res://tests/scenarios/smoke_tower_roster.json` | 1 | `status: fail`; snapshots: start egg=20 → after_waves wave=2 egg=0 gameover; first wait times out AT WAVE 1 (gameover during wave 1); failing expectations: `current_wave >= 3` (actual 2), balista/bazooka/cannon damage > 0 |
 | `--harness=res://tests/scenarios/smoke_placement.json` | 0 | `[Harness] status=pass exit=0`; fresh `.gen/harness/smoke_placement/result.json` |
-| `--harness=res://tests/scenarios/issue_dead_options_live_pause_menu.json` | 0 | `status=pass`; game_state==paused and 1 live OptionsScreen instance |
-| `--script res://tests/ui/issue_dead_options_main_menu.gd` | 0 | OptionsButton wired to `_on_options_button_pressed`, pressed; live OptionsScreen instantiated visible=true |
+| `--harness=res://tests/scenarios/issue_dead_options_live_pause_menu.json` | 0 | `[Harness] status=pass exit=0`; expectations green: game_state==paused, ui_call size 1 >= 1 (live OptionsScreen instance) |
+| `--script res://tests/ui/issue_dead_options_main_menu.gd` | 0 | `[issue-check] options control found: OptionsButton`; pressed; `[issue-check] live OptionsScreen instantiated: Control visible=true` |
 
-Reference search (checker-run, project-wide grep over *.gd/*.tscn/project.godot/docs,
-excluding .gen/.git/.godot): zero hits for `Options.tscn`, `OptionsModal`,
-`scripts/ui/Options.gd`.
+Reference search (checker-run grep over *.gd/*.tscn/*.godot/*.md, excluding .gen/.git):
+zero hits for `Options.tscn`, `OptionsModal`, `scripts/ui/Options.gd`. File checks:
+all three dead files absent from disk.
 
-## Why the revision did not fix the red suite
+## Why the second revision also did not fix the red suite
 
-- `_set_egg(20)` only clamps `egg_hp` and emits `egg_changed` (scripts/core/GameState.gd:47);
-  it does not clear `game_state`.
-- Game.gd:521-526 sets `game_state = "gameover"` when egg hp reaches 0; SimulationClock then
-  stops, so `current_wave` freezes at 2 and later waves never spawn.
-- The scenario's revive call sits AFTER `wait_for_condition(current_wave >= 3)` and the
-  `after_waves` snapshot — i.e. strictly after gameover has already occurred. Too late by
-  construction.
+- The egg dies during **wave 1**, not between waves: the first
+  `wait_for_condition(current_wave >= 2)` (optional) returned NOT OK with actual=1,
+  and the `after_waves` snapshot shows `wave=2 egg_hp=0 game_state=gameover`. The
+  top-up placed right after the first `trigger_wave` executes before wave-1 damage
+  accumulates, so it cannot protect the egg through the whole wave.
+- `_set_egg(20)` clamps `egg_hp` and emits `egg_changed` only; once
+  `game_state = "gameover"` is set (Game.gd ~line 526) the simulation clock stops
+  and no later call resumes waves.
+- Fix direction for the next revision: repeated small egg top-ups INSIDE each wave
+  (e.g. interleave short `wait_for_duration` steps with `_set_egg(20)` calls until
+  `current_wave >= 3`), or rebaseline/rebalance the scenario expectations and file
+  the map_10 pacing issue separately. The criterion as written requires
+  `smoke_tower_roster` to pass.
 
 ## Per-criterion status
 
 1. No references to dead Options surfaces — verified fresh (grep above).
-2. Dead files removed incl. `.uid` sidecar — verified (git status: 3 deletions).
+2. Dead files removed incl. `.uid` sidecar — verified fresh (git status + ls).
 3. Editor/import gate exit 0, no errors — verified fresh.
 4. smoke_placement pass + fresh result.json — verified fresh.
-5. smoke_tower_roster pass — FAILED (exit 1); revision's egg top-ups ineffective (see
-   analysis above). Remains Pending.
+5. smoke_tower_roster pass — FAILED (exit 1). Partial progress vs iteration 2:
+   generic/fire/ice/water/electric/venom/scifi damage > 0 now (was 4 of 10);
+   current_wave reached 2 (was frozen lower). Remains Pending.
 6. Pause menu opens live Options modal — verified fresh via new scenario (pass).
-7. Main menu loads OptionsScreen.tscn — verified fresh via new SceneTree script (exit 0).
+7. Main menu loads OptionsScreen.tscn — verified fresh via SceneTree script (exit 0).
 
 ## Test overlap check
 
-New scenario `issue_dead_options_live_pause_menu.json` asserts OptionsScreen instantiation
-via the public pause path; existing `hud_other_panels.json` only asserts the paused state,
-so no duplication. New main-menu script has no existing equivalent. No overlap violations.
+No new tests were added in this revision (only timeline entries inside the existing
+scenario). No overlap violations.
 
 ## Changed-file quality
 
-Deletion-only feature diff plus focused test artifacts; new GDScript follows project style.
-No quality violations in changed code. One environment observation recorded in
-quality-notes.md: ~109 model `.glb` files show binary diffs against HEAD that are outside
-the cluster scope (likely LFS-pointer smudging during workspace bootstrap, not coder edits);
-advisory only.
+Feature diff is deletion-only plus scenario timeline edits; new GDScript test script
+follows project style. No quality violations in changed code. Advisory (already in
+quality-notes.md): ~109 model `.glb` files show binary diffs against HEAD outside
+cluster scope — LFS-pointer smudging from workspace bootstrap, not coder edits;
+also the two open quality-notes entries about the smoke_tower_roster pre-existing
+failure remain open (no RESOLVED marker yet) since the scenario is still red.
 
 ## Blockers
 
-None infra-related. Single blocker: `smoke_tower_roster` still red because the revision's
-revive placement cannot prevent the wave-2 gameover. Next revision should top up the egg
-immediately after each `trigger_wave` (or use repeated small top-ups around waits) so
-`gameover` never occurs, then rerun the full command.
+None infra-related. Single blocker: `smoke_tower_roster` still red because the egg
+cannot survive wave 1 under the current single-shot top-up pattern. Next revision:
+interleave periodic egg top-ups with short waits throughout waves 1–2 so gameover
+never occurs, then rerun the full command.

@@ -1,28 +1,40 @@
-# Acceptance Plan: health-bar-never-auto-hides
+# Acceptance Plan: issue-dead-options-modal-scene
 
-manual_testing: required
+Deletion-only cleanup: remove the unreferenced dead Options surfaces
+(`scenes/ui/Options.tscn`, `scripts/ui/Options.gd` with `class_name OptionsModal`)
+without disturbing the live Options paths (pause-menu modal via
+`scenes/ui/OptionsScreen.tscn` in `scripts/ui/UI.gd`; main-menu screen via
+`scripts/MainMenu.gd`).
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_armor_bar.tscn"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://tests/menu/test_menu_backdrop_camera.tscn"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--check-only", "-s", "res://scripts/ui/EnemyHealthBar.gd"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_placement.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_tower_roster.json"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
 ## Clusters
 
-1. spawned-bar-auto-fade — files: `scripts/ui/EnemyHealthBar.gd`, `tests/ui/test_enemy_armor_bar.gd`, `tests/ui/verify_enemy_bar_spawn_fade.gd`, `tests/ui/verify_enemy_bar_spawn_fade.tscn` — depends on: none
-- A spawned, undamaged full-health bar is shown immediately after setup and its hide timer is armed to FADE_OUT_DELAY, so the auto-hide branch is reachable on spawn.
-- After FADE_OUT_DELAY of frames with no damage, the spawned bar stops being shown, fades out, and hides itself once fully faded.
-- The first damage to a spawned enemy whose bar has faded shows the bar again, and a bar below full health is not auto-hidden.
-- Both the direct setup path and the deferred setup path (progress bar not yet ready) arm the hide timer, so a bar set up either way fades identically.
-- Debug-build [ENEMYHEALTHBAR] log line per auto-hide transition of a spawned bar (existing visibility-transition log covers it; the spawned path must emit the same "auto_hide" line with hp context).
-- The menu-backdrop special case in Enemy.gd either stays with its recorded rationale or is removed only after a verified run proves bars self-hide safely there; the existing menu-backdrop camera test still passes either way.
+1. delete-dead-options-modal — files: `scenes/ui/Options.tscn`, `scripts/ui/Options.gd`, `scripts/ui/Options.gd.uid` — depends on: none
+- A project-wide search finds no reference to `Options.tscn`, `OptionsModal`, or `scripts/ui/Options.gd` in any scene, script, project setting, or documentation file after the deletion.
+- `scenes/ui/Options.tscn` and `scripts/ui/Options.gd` (plus their orphaned `.uid` sidecar files) no longer exist in the repository.
+- The Godot editor/import gate (`--headless --editor --quit-after`) completes with exit code 0 and no script parse errors or missing-resource errors in its output after the deletion.
+- The focused gameplay harness scenario (`smoke_placement`) completes with `status: pass`, exit code 0, and a fresh `.gen/harness/smoke_placement/result.json` written after the deletion.
+- The broad-shallow harness scenario (`smoke_tower_roster`) completes with `status: pass`, proving the autoload/class cache still loads the full game after the deletion.
+- The in-game pause menu still opens the live Options modal: with the harness active, opening the pause menu and triggering its Options button instantiates a visible Options modal (the `OptionsScreen.tscn` path in `scripts/ui/UI.gd`), not a missing-scene error.
+- The main menu still opens the live Options screen: loading the main menu scene and triggering its Options control loads `res://scenes/ui/OptionsScreen.tscn` successfully with no load errors in the run log.
 
 ## Criteria
 
-- A spawned, undamaged full-health bar is shown immediately after setup and its hide timer is armed to FADE_OUT_DELAY, so the auto-hide branch is reachable on spawn.
-- After FADE_OUT_DELAY of frames with no damage, the spawned bar stops being shown, fades out, and hides itself once fully faded.
-- The first damage to a spawned enemy whose bar has faded shows the bar again, and a bar below full health is not auto-hidden.
-- Both the direct setup path and the deferred setup path (progress bar not yet ready) arm the hide timer, so a bar set up either way fades identically.
-- Debug-build [ENEMYHEALTHBAR] log line per auto-hide transition of a spawned bar (existing visibility-transition log covers it; the spawned path must emit the same "auto_hide" line with hp context).
-- The menu-backdrop special case in Enemy.gd either stays with its recorded rationale or is removed only after a verified run proves bars self-hide safely there; the existing menu-backdrop camera test still passes either way.
+- A project-wide search finds no reference to `Options.tscn`, `OptionsModal`, or `scripts/ui/Options.gd` in any scene, script, project setting, or documentation file after the deletion.
+- `scenes/ui/Options.tscn` and `scripts/ui/Options.gd` (plus their orphaned `.uid` sidecar files) no longer exist in the repository.
+- The Godot editor/import gate (`--headless --editor --quit-after`) completes with exit code 0 and no script parse errors or missing-resource errors in its output after the deletion.
+- The focused gameplay harness scenario (`smoke_placement`) completes with `status: pass`, exit code 0, and a fresh `.gen/harness/smoke_placement/result.json` written after the deletion.
+- The broad-shallow harness scenario (`smoke_tower_roster`) completes with `status: pass`, proving the autoload/class cache still loads the full game after the deletion.
+- The in-game pause menu still opens the live Options modal: with the harness active, opening the pause menu and triggering its Options button instantiates a visible Options modal (the `OptionsScreen.tscn` path in `scripts/ui/UI.gd`), not a missing-scene error.
+- The main menu still opens the live Options screen: loading the main menu scene and triggering its Options control loads `res://scenes/ui/OptionsScreen.tscn` successfully with no load errors in the run log.
+
+## Notes
+
+- manual_testing: optional — a quick windowed sanity check that both live Options paths (pause menu and main menu) open is sufficient; no new visual work is required (deletion only).
+- No debug logging criterion: no state transitions are added or changed; this is pure deletion.
+- No `ui_scenario.md`: no new player-visible story; a still cannot prove a deletion beyond what the harness criteria already cover.
