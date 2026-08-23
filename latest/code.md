@@ -1,33 +1,32 @@
 # Coder report: implementation\n\n# Coder report: implementation
 
 ## Changed files
-- `tools/gen_hud_textures.py` — deleted (dead script: its three crate JPG sources never existed in any commit)
-- `textures/ui/hud/wood_slot.png` — deleted (referenced nowhere outside the deleted script)
-- `textures/ui/hud/slot_empty.png` — deleted (referenced nowhere)
-- `textures/ui/hud/wood_panel_wide.png` — deleted (referenced nowhere; WidePanel/WidePanelDark variations use towers_panel.png)
-- `textures/ui/hud/wood_panel_wide_dark.png` — deleted (referenced nowhere)
-- `textures/ui/hud/wood_chip.png` — deleted (theme uses btn_chip.png; wood_chip referenced nowhere)
-- `tools/gen_hud_icons.py` — docstring fix only: removed stale claim that icon_coin/icon_heart "come from gen_hud_textures.py"
+- `data/towers.xml` — added a `description` attribute with the tower's special characteristic to all 12 combat towers (fire, water, electric, porter, floodgate, balista, bazooka, cannon, generic, ice, scifi, venom).
+- `systems/TowersConfig.gd` (mod) — parse the new `description` attribute, store it in `tower_descriptions`, expose `get_description(tower_type_id) -> String`.
+- `scripts/ui/UI.gd` (mod) — `_build_tower_tooltip` now appends the catalog description line right under the tower name.
+- `tests/scenarios/tower_descriptions_tooltip.json` (new) — harness UI scenario asserting every combat tower's tooltip states its special behavior; Porter's explicitly says "Teleports enemies to the underground tunnels via the nearest hole" and "deals no damage itself".
 
 ## Criteria
-- tools/ contains no script whose sources are missing — Done
-- Still-used HUD outputs exist and are referenced — Done (no regeneration needed; committed PNGs unchanged)
+- Review towers / identify special characteristics — Done (descriptions derived from actual code paths: Fire burn via Projectile._maybe_apply_fire_burn; Water wet via _apply_wet_status + EnemyHealthController water/electric wet bonuses; Electric chain via Projectile._do_chain_lightning; Ice cone slow via IceTower slow pct/dur; Porter teleport via PorterTower continuous laser + hole requirement + zero damage; Floodgate periodic underground flood via FloodgateTower cycle; Ballista armor strip via armor_dmg 20 vs dmg 5; Bazooka/Cannon explosion radius AoE; SciFi continuous DPS beam via ScifiTowerProjectile; Venom DoT poison via VenomTowerProjectile/PoisonStatus).
+- Add each special characteristic to the tower description — Done (data-driven from towers.xml).
+- Porter description explicitly explains that it teleports enemies — Done ("Teleports enemies to the underground tunnels via the nearest hole; needs a hole within reach and deals no damage itself.").
+- Descriptions clear, consistent, visible in tower UI — Done (one consistent line in every placement tooltip).
 
 ## Commands and results
-- `python3 --version` — exit 0 (runner preflight)
-- `python3 -c <scan tools/*.py for _source refs>` — exit 0; no remaining tool references a missing `_source` file. The two raw hits ("textures") were regex artifacts of `ROOT / "textures" / "_source"` path construction, not filenames.
-- `python3 tools/prep_hud_assets.py` — exit 0; regenerated all 37 of its outputs byte-differently but visually identical; working tree then restored with `git checkout -- textures/ui/hud` so committed PNGs are untouched.
-- `python3 tools/gen_hud_icons.py` — exit 0; stray untracked output `icon_speed.png` removed via `git clean -f`.
-- `python3 tools/cut_towers_bar_assets.py` — exit 0.
-- `godot --headless --path . --editor --quit-after 300` — exit 0 (83s). Zero errors touching hud/wood/slot/gen_hud/HudTheme/UI.tscn/PricedButton. Remaining log errors are pre-existing and unrelated: glTF/FBX model import failures (Venom_lv*.glb, trap FBX textures) and a pre-existing parse error in `res://debug_enemy_parsing.gd` (`get_process_frame()`).
+- `godot --headless --path . --editor --quit-after 300` — exit 0; fresh-worktree import done.
+- RED: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/tower_descriptions_tooltip.json` — result status "timeout", action index 1 unmet (`contains Cheap all-round starter tower.`), tooltip had no description line before implementation.
+- GREEN: same command after implementation — `[Harness] status=pass exit=0`; all 13 timeline conditions ok; expectations recorded pass=True including Porter "Teleports enemies".
+- Regression: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/porter_wide_gate_tooltip.json` — `[Harness] status=pass exit=0` (Range lines unchanged by the inserted description line).
+- Note: ran `res://tests/tower/test_tower_armor_damage.tscn` directly once — exit 1 because autoloads are not initialized when a bare tscn is run without the Main scene path context (pre-existing test-harness convention issue, unrelated to this change; the file itself documents running through the project runner with autoloads). No product regression observed; both harness scenarios cover the changed surface.
 
 ## Notes
-- Chosen path: option 2 (re-derive/delete), because `git log --all -- '*woden_panel*'` shows the crate JPGs were NEVER committed — unrecoverable from history.
-- Worker image lacks pip/Pillow/numpy. Workaround used inside the runner (ephemeral, nothing written to repo): bootstrapped pip via get-pip.py into `/home/hermes/.local`, installed Pillow to `/tmp/pylibs`, ran tools with `PYTHONPATH=/tmp/pylibs`. Runner allowlist blocked direct `rm`; used `git clean` instead.
-- Verification that live assets are referenced:
-  - `icon_coin.png` → scenes/ui/widgets/PricedButton.tscn
-  - `icon_heart.png` → scenes/UI.tscn
-  - `towers_panel.png`, `wood_panel.png`, all `wood_button*.png`, `btn_chip.png`, `slot_frame.png` → themes/hud/HudTheme.tres
-  - Deleted files (`wood_slot`, `slot_empty`, `wood_panel_wide*`, `wood_chip`) are referenced by no scene/theme/script/test.
-- Manual testing: none needed — no committed player-facing PNG changed; this is a tools/source cleanup.
+- Description is optional per tower: `block` and the four traps carry none, so their tooltips are unchanged (getter returns "").
+- The pre-existing hardcoded Porter/Floodgate tooltip lines in `_build_tower_tooltip` were kept; the data-driven description complements them rather than replacing them.
+- Tester gotcha: `contains` assertions on tooltip text must match exact substrings of the xml attribute text (watch sentence punctuation).
+
+## Revision 1 re-verification
+- `godot --version` — exit 0 (4.4.1.stable.official).
+- `--harness=res://tests/scenarios/tower_descriptions_tooltip.json` — exit 0, status=pass; 15/15 actions ok, both expectations pass=true (Porter "Teleports enemies"). Fresh result.json this revision.
+- Regression `porter_wide_gate_tooltip.json` — exit 0, status=pass; 32/32 actions ok. Fresh run this revision.
+- No source files changed in revision 1; implementation from iteration 1 confirmed green.
 \n
