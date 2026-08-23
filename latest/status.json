@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-127-unique-shots",
-  "feature": "window-modals-skip-wood-frame",
+  "run_id": "req-83-traps-frostbite-fangs",
+  "feature": "traps-frostbite-fangs",
   "status": "running",
-  "started_at": "2026-08-23T19:37:42.124Z",
+  "started_at": "2026-08-23T19:26:24.238Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-unique-shots/",
-  "heartbeat_at": "2026-08-23T19:49:10.833Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T19:49:10.833Z",
-  "process_id": 179464,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs/",
+  "heartbeat_at": "2026-08-23T19:57:06.174Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-23T19:57:06.174Z",
+  "process_id": 168492,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T19:49:15.261083+00:00",
-    "last_success_at": "2026-08-23T19:49:15.260232+00:00",
+    "last_attempt_at": "2026-08-23T19:57:06.174601+00:00",
+    "last_success_at": "2026-08-23T19:32:16.983387+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,30 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 17486,
-        "output_tokens": 50
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 36418,
-        "output_tokens": 2552
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 65902,
-        "output_tokens": 6645
+        "input_tokens": 56666,
+        "output_tokens": 1866
       }
     ]
   }
