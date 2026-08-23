@@ -1,23 +1,47 @@
-# Coder report: implementation\n\n# Coder report: implementation (revision 1)
+# Coder report: implementation\n\n# Coder report: implementation (clusters 1–3)
 
 ## Changed files
-- `tests/scenarios/warlords_doctrine.json` — modified (evidence-only change; no production code touched)
+- `scripts/progression/global.json` — mod: new `sundering_bolts` Common perk, 3 levels (0.10 / 0.20 / 0.35)
+- `scripts/progression/managers/CurseProgressionManager.gd` — mod: handles `sundering_bolts`, absolute per-level ratio, `get_sundering_bolts_config()` ({enabled, ratio}), reset clears it
+- `autoload/ProgressionManager.gd` — mod: `get_sundering_bolts_config()` pass-through to the curse manager
+- `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — mod: `_apply_sundering_bolts_if_needed(final_hit_damage)` called in `take_damage` after all damage modifiers; converts ratio × final damage into extra armor drain via `_consume_armor`, debug `[SUNDERING_BOLTS] sunder ... level=N base_damage=X armor_damage=Y` log
+- `tests/scenarios/sundering_bolts_progression.json` — new: focused harness scenario
 
-## Criteria addressed (were Pending after iteration 1)
-- Applying `warlords_doctrine` at L1/L2/L3 raises the global tower-damage multiplier to exactly 1.05 / 1.09 / 1.14 — Done: new "Level leg" re-applies the perk three times and asserts level 1/2/3 with multiplier 1.05/1.09/1.14 via `progression_call` wait_for_conditions.
-- Innate-armor enemy: bonus added on top of innate — Done: new map_7 wave-6 leg spawns Orc Enemy King with perk at L3; asserts `max_armor == 303.75` (= innate 60 + 15% × 1625) and `armor == 303.75`, then a scripted armor_hit with `armor_damage=243.75` strips exactly the granted portion, asserting armor back to innate 60 and hp 1620 (halved 5 HP damage per ARMOR_DAMAGE_REDUCTION).
-- Armor bar row windowed visual check — still owned by the manual tester (headless `enemy_armor_bar_visual` leg passes; `.gen/manual-report.md` remains the manual artifact). Not code-verifiable here.
+## Criteria — all Done
+Perk definition/eligibility/config/reset; take_damage application (final-damage base, zero-damage guard via `final_hit_damage <= 0.0`, additive with flat armor_dmg, no-op unowned); harness scenario.
 
-Also added a final reset assertion `get_warlords_armor_ratio() == 0.0` so post-reset spawns are provably innate-only.
+## Commands and results (all via run_project_cmd)
+- Focused: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/sundering_bolts_progression.json` — exit 0; `[Harness] status=pass`. Observed log lines:
+  - `[SUNDERING_BOLTS] sunder enemy=Orc Enemy_boss level=1 base_damage=5.0 armor_damage=0.5`
+  - `level=2 base_damage=5.0 armor_damage=1.0`
+  - `level=3 base_damage=5.0 armor_damage=1.75`
+  Armor assertions 60→40 (baseline), →39.5 / 39.0 / 38.25 at L1/L2/L3 all passed.
+- `godot --headless --path . res://tests/enemy/test_enemy_armor_damage.tscn` — exit 0; 18 ok, 0 failed.
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_ballista.json` — exit 0; status=pass.
+- Typecheck/build `godot --headless --path . --editor --quit-after 2` — exit 0, scripts compile clean.
+- `godot --headless --path . res://tests/tower/test_tower_armor_damage.tscn` — exit 1: **15 ok, 3 failed** — PRE-EXISTING on pristine baseline (verified by stashing my changes and rerunning; identical failures). Cause: `[BalistaTower] WARNING: Cannot fire - no bolt found in model` in this worker's model-import state; the bolt never reaches the enemy, so my hook is never involved.
 
-## Commands and results (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-warlords-doctrine)
-- Focused: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/warlords_doctrine.json` — exit 0, `[Harness] status=pass exit=0`; log shows `[WARLORDS-DOCTRINE] applied L1/L2/L3 ... total_multiplier=1.05/1.09/1.14` and `[WARLORDS-DOCTRINE] spawn_bonus level=3 granted_armor=303.75 on Orc Enemy_boss`.
-- Full legs: same invocation for `enemy_armor_ballista`, `enemy_armor_trap`, `enemy_armor_bar_visual` — each exit 0, `status=pass`.
-- Typecheck/build: `godot --headless --path . --editor --quit-after 300` — exit 0, no script errors.
+## Notes for tester
+- Conversion base is the hit's FINAL damage after ARMOR_DAMAGE_REDUCTION etc., not towers.xml base: scenario asserts 60→39.5/39.0/38.25 (base 5 = 10 × 0.5 while armor remains).
+- Sunder runs before HP accumulation but after armor depletion checks; a hit that fully strips armor still sunders nothing extra afterward (`enemy.armor <= 0.0` fast escape).
+- Fresh worktree needs one `--editor --quit-after 300` import pass before any harness run, else GLB loads fail.
 
-## Notes
-- The enemy armor pool is single-valued (`armor == max_armor`, no separate granted-armor ledger), so an oversized armor hit would eat innate armor too. The innate-armor leg must strip exactly the granted 243.75 to leave innate 60 intact.
-- End-of-run scenario `expectations` are evaluated against final state: after adding the map_7 leg the run ends on map_7 and stats were reset, so the old expectations (`map_3`, instance_summary.8801.damage==21) failed; replaced with map_7 + doctrine level 0 + multiplier 1.0.
-- Harness float equality is epsilon-based (`HarnessValues._compare_numbers`), so 303.75 and 243.75 assert cleanly.
-- No production-code changes in this revision; iteration-1 gotchas (int HP damage, reset-only removal) still apply.
+## Re-verification (iteration 2, code worker rerun)
+All commands via run_project_cmd (project=godot-td, workspace=poke-defense-godot/issue-perk-sundering-bolts):
+
+- Focused harness `--harness=res://tests/scenarios/sundering_bolts_progression.json` — exit 0, `[Harness] status=pass exit=0`. Log lines confirmed: `[SUNDERING_BOLTS] sunder enemy=Orc Enemy_boss level=1 base_damage=5.0 armor_damage=0.5`, level=2 armor_damage=1.0, level=3 armor_damage=1.75. Armor assertions 40.0 / 39.5 / 39.0 / 38.25 all green.
+- `res://tests/enemy/test_enemy_armor_damage.tscn` — exit 0; `=== enemy_armor_damage: 18 ok, 0 failed ===`.
+- `res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_ballista.json` — exit 0, status=pass.
+- Typecheck/build `godot --headless --path . --editor --quit-after 2` — exit 0; scripts compile clean (EnemyHealthController, CurseProgressionManager registered).
+- `res://tests/tower/test_tower_armor_damage.tscn` — exit 1: **15 ok, 3 failed**. Reconfirmed PRE-EXISTING on pristine baseline (stashed all changes, reran on clean tree @97ed515 with a fresh editor import pass: identical 15/3). Cause: `[BalistaTower] WARNING: Cannot fire - no bolt found in model` — the tower GLBs fail to import in this headless worker (`Failed loading resource: res://models/gltf/towers/Balista_lvl1.glb ... imported by opening the project in the editor at least once`), so no bolt spawns and the perk hook is never reached. Not touched by this feature's changed files.
+
+
+## Re-verification (iteration 2, code worker rerun)
+All commands via run_project_cmd (project=godot-td, workspace=poke-defense-godot/issue-perk-sundering-bolts):
+
+- Focused harness `--harness=res://tests/scenarios/sundering_bolts_progression.json` - exit 0, `[Harness] status=pass exit=0`. Log lines confirmed: `[SUNDERING_BOLTS] sunder enemy=Orc Enemy_boss level=1 base_damage=5.0 armor_damage=0.5`, level=2 armor_damage=1.0, level=3 armor_damage=1.75. Armor assertions 40.0 / 39.5 / 39.0 / 38.25 all green.
+- `res://tests/enemy/test_enemy_armor_damage.tscn` - exit 0; `=== enemy_armor_damage: 18 ok, 0 failed ===`.
+- `res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_ballista.json` - exit 0, status=pass.
+- Typecheck/build `godot --headless --path . --editor --quit-after 2` - exit 0; scripts compile clean (EnemyHealthController, CurseProgressionManager registered).
+- `res://tests/tower/test_tower_armor_damage.tscn` - exit 1: **15 ok, 3 failed**. Reconfirmed PRE-EXISTING on pristine baseline (stashed all changes, reran on clean tree @97ed515 with a fresh `--editor --quit-after 300` import pass: identical 15 ok / 3 failed). Cause: `[BalistaTower] WARNING: Cannot fire - no bolt found in model` - tower GLBs fail to import in this headless worker (`Failed loading resource: res://models/gltf/towers/Balista_lvl1.glb`), so no bolt spawns and the perk hook is never reached. Not touched by this feature's changed files.
 \n
