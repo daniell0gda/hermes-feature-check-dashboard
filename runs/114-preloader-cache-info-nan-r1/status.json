@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/114-preloader-cache-info-nan-r1/",
   "heartbeat_at": "2026-08-23T03:05:47.989Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "team-leader",
   "last_event_at": "2026-08-23T03:05:47.989Z",
   "process_id": 876919,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T03:05:47.989203+00:00",
-    "last_success_at": "2026-08-23T03:04:03.070741+00:00",
+    "last_attempt_at": "2026-08-23T03:05:52.517878+00:00",
+    "last_success_at": "2026-08-23T03:05:52.516920+00:00",
     "last_error": null
   },
   "metrics": {
@@ -85,6 +85,17 @@
         "cost_status": "unknown",
         "input_tokens": 46374,
         "output_tokens": 1986
+      },
+      {
+        "task_id": "revision-check-2",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "estimated",
+        "input_tokens": 128604,
+        "output_tokens": 2088
       }
     ]
   }
