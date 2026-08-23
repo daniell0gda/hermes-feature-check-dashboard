@@ -1,72 +1,127 @@
 # Team-leader report
 
-- **Result:** completed
-- **Classification:** pass
-- **Feature:** gen-hud-textures-py-cannot-run-all-three
-- **Run:** 117-gen-hud-20260823
+- **Result:** failed
+- **Classification:** blocked
+- **Feature:** underground-carve-topdown-camera-rotation
+- **Run:** issue130-underground-carve-topdown-camera-rotation
 - **Lifecycle:** dashboard publish only; project commit/push/close not implied
 
 ## Status
 
 ## ✅ Done
-- tools/ contains no script whose sources are missing — `gen_hud_textures.py` deleted; scan of `tools/*.py` confirms every remaining `_source` reference resolves to an existing file (exit 0)
-- Still-used HUD outputs exist and are referenced — `icon_coin.png` → PricedButton.tscn, `icon_heart.png` → UI.tscn, `towers_panel.png` → HudTheme.tres; committed PNGs unchanged; editor/import gate `godot --headless --path . --editor --quit-after 300` exit 0
+- (none — all criteria moved to Pending)
 
 ## ⬜ Pending
+- When carve mode is activated while on the underground layer, the active camera's rotation becomes a top-down bird's-eye view (camera forward pointing straight down at the underground board) without changing the camera's position or zoom.
+- Activating carve mode changes only the camera's rotation: the camera's position and its distance/zoom relative to the view target are exactly what they were immediately before activation.
+- Canceling carve mode (ESC, right-click cancel path, or any existing cancel route that ends carve mode) restores the camera rotation that was active immediately before carve mode was entered, when the player did not rotate the camera manually during carving.
+- If the player manually rotated the camera while carve mode was active, canceling carve mode leaves the camera at the player's current angle instead of restoring the pre-carve angle.
+- While carve mode is active on the underground layer, the player's normal camera rotation input (right-mouse drag or shift+left drag) still rotates the camera.
+- Entering dig-hole, place-exit, place-block, or tower-selection modes does not rotate the camera to the top-down angle; only carve mode triggers the rotation.
+- Debug-build `[CARVE_CAMERA]` log line per rotation event: one when the top-down angle is applied (with the pre-carve angles captured) and one when a cancel restores or deliberately skips restoring them (with which of the two happened).
+- A harness value source exposes the active camera's rotation basis (and position/zoom-equivalent) so scenarios can compare camera orientation before, during, and after carve mode.
+- The focused scenario asserts, under the harness: top-down orientation after entering carve mode on the underground layer, unchanged position/zoom across the transition, exact restoration after plain cancel, and retained player angle after a scripted manual rotation followed by cancel.
 
 ## ❌ Impossible
-- Restore crate JPGs to `textures/_source/` — `git log --all -- '*woden_panel*'` is empty: the three JPGs were never committed in any reachable history, so option 1 cannot be satisfied (option 2 was implemented instead)
+- (none)
 
 ## Check
 
-# check.md — gen-hud-textures-py-cannot-run-all-three (issue #117)
+# Check report — underground-carve-topdown-camera-rotation (iteration 1)
 
-classification: pass
+classification: blocked
 
 ## Verdict
 
-Implementation chose option 2 (delete dead script + dead outputs) after proving
-`git log --all -- '*woden_panel*'` is empty — the three crate JPGs were never
-committed, so option 1 (restore) is impossible. Both acceptance criteria hold.
+Blocked by runner infrastructure, not by the project alone. `run_project_cmd` was
+used (never the host shell) for every attempted verification command, and every
+invocation failed at container start:
 
-## Verification performed (fresh, this run)
+- `{"project":"godot-td","workspace":"godot-td/issue-underground-carve-topdown-camera-rotation","cmd":["git","status","--short"]}` → HTTP 422, exit 126:
+  `OCI runtime exec failed: exec failed: unable to start container process: chdir to cwd ("/workspaces/godot-td/issue-underground-carve-topdown-camera-rotation") set in config.json failed: no such file or directory`
+- `godot --version` @ `godot-td/issue-130` → same 422 chdir failure.
+- `git status --short` @ `poke-defense-godot/check` → same 422 chdir failure.
+- Host: `/workspaces` does not exist; `docker ps` → `Cannot connect to the Docker daemon at unix:///var/run/docker.sock`.
 
-| Check | Command | Result |
+The runner's pre-provisioned workspace directory is missing and Hermes has no
+Docker socket access to create it; the project-runner skill prohibits
+bootstrapping the workspace through the host shell. Therefore the typecheck/build
+gate and the full test gate could not be executed and are treated as failed.
+
+## Gate results
+
+| Gate | Command | Result |
 |---|---|---|
-| Runner preflight | `run_project_cmd` `["python3","--version"]`, project godot-td | exit 0, Python 3.10.12 |
-| No tools script references missing `_source` sources | `run_project_cmd` python scan of `tools/*.py` for `_source` refs vs filesystem | exit 0; only `prep_hud_assets.py` / `cut_towers_bar_assets.py` reference `_source`, and all their source files exist under `textures/_source/`. `gen_hud_textures.py` is deleted |
-| Editor/import gate (textures changed: deletions) | `run_project_cmd` `["godot","--headless","--path",".","--editor","--quit-after","300"]` | exit 0, 9.2s warm run; import scan of all assets completed, no errors related to hud/wood/slot/theme/deleted files |
-| Dead outputs unreferenced | host grep over scenes/themes/scripts/tests/systems for wood_slot, slot_empty, wood_panel_wide*, wood_chip | only remaining mention is the intentional historical note in `tools/gen_hud_icons.py` docstring |
-| Live assets referenced | file inspection | `icon_coin.png` → `scenes/ui/widgets/PricedButton.tscn`; `icon_heart.png` → `scenes/UI.tscn`; `towers_panel.png` → `themes/hud/HudTheme.tres`; plus wood_panel/wood_button*/btn_chip/slot_frame in HudTheme.tres |
-| Crate JPG recoverability | `git log --all -- '*woden_panel*'` | 0 commits — confirms option-1 impossibility |
+| Typecheck/build | `["godot","--headless","--editor","--path",".","--quit-after","3"]` | NOT RUN — runner 422 chdir failure (infra) |
+| Focused test | `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/carve_camera_topdown.json"]` | NOT RUN this session — runner 422 chdir failure (infra) |
+| Full test loop | plan.md full-test command | NOT RUN — runner 422 chdir failure (infra) |
 
-## Evidence notes
+## Evidence from the implementor's own stored run
 
-- Coder-reported runs of `prep_hud_assets.py`, `gen_hud_icons.py`,
-  `cut_towers_bar_assets.py` (exit 0 each, with ephemeral Pillow bootstrap)
-  could not be byte-reproduced in this pass because the worker image has no
-  pip/Pillow; this is an environment limitation only. It does not affect the
-  acceptance criteria: the scripts' sources all exist, and committed player-
-  facing PNGs were intentionally left unchanged (`git checkout` restored them),
-  which the diff confirms (`tools/gen_hud_icons.py` docstring-only modification
-  plus staged deletions).
-- Manual testing: none required — no committed player-facing art changed;
-  request.md explicitly allows `manual_testing: none` for this case.
-- Pre-existing unrelated issues (not introduced by this change, recorded for
-  awareness): parse error in `res://debug_enemy_parsing.gd`
-  (`get_process_frame()`), glTF/FBX import failures on Venom/trap assets.
+`.gen/harness/carve_camera_topdown/result.json` (written 2026-08-22T12:18:12,
+before the runner broke) records `"status": "fail"`:
 
-## Changed-file quality findings
+- 6 timeline actions failed with `ui has no method '_on_dig_hole'`,
+  `_clear_dig_mode`, `_on_carve` (×2), `clear_carve_mode` (×2).
+- Expectation `dig_hole_camera_top_down` FAILED (actual true, expected false —
+  the dig-hole probe was taken without dig mode ever being entered, so the check
+  is both failing and vacuous).
+- The three `carve_camera_*` expectations "passed" only vacuously: every probe
+  captured the identical untouched camera basis because carve mode was never
+  actually entered. They assert nothing about the feature.
+- All three `[CARVE_CAMERA]` log regex expectations failed (`actual: ""`).
 
-- `tools/gen_hud_icons.py`: docstring-only correction removing a stale claim.
-  Clean, surgical, matches coding rules. No violations.
-- Deletions are minimal and trace directly to the issue. No scope creep.
+## Source inspection of the diff (`git diff HEAD`, 6 files, +184)
+
+- `scripts/ui/UI.gd`: `carving_active` setter now calls
+  `game.on_carve_camera_mode(armed)` — **no such method exists anywhere**
+  (`grep -rn on_carve_camera_mode scripts/` matches only the call site). At
+  runtime this is guarded by `has_method`, so it silently does nothing.
+- `scripts/game/Game.gd`: contains NO carve-camera logic and NO `[CARVE_CAMERA]`
+  logging. The only addition is `debug_look_down_underground()` (orthogonal
+  camera teleport for screenshots) which implements none of the acceptance
+  criteria and looks like manual-test scaffolding, possibly scope creep.
+- No code anywhere rotates the camera to top-down on carve arm, restores it on
+  cancel, or tracks manual rotation during carve.
+- `scripts/testing/HarnessValues.gd` / `HarnessActions.gd` / `AgentHarness.gd`:
+  camera_probe / rotate_camera / camera value source are implemented and look
+  reasonable, but they test a feature that does not exist.
+- `tests/scenarios/carve_camera_topdown.json` references four UI methods that do
+  not exist (`_on_dig_hole`, `_clear_dig_mode`, `_on_carve`, `clear_carve_mode`);
+  grep finds none of them in `scripts/ui/UI.gd`.
+
+## Acceptance criteria status (all unmet)
+
+Every criterion below is Pending: the implementing logic is absent from the diff
+and/or its scenario actions fail against real UI methods.
+
+1. Carve on underground rotates camera top-down, position/zoom unchanged — Pending (no implementation; during_carve probe identical to before).
+2. Only rotation changes across arm — Pending (vacuous pass only).
+3. Plain cancel restores pre-carve rotation — Pending (no implementation).
+4. Manual rotation during carve survives cancel — Pending (no implementation).
+5. Camera rotation input still works while carving — Pending (untested; rotate_camera action ran outside carve mode).
+6. Dig-hole/place-exit/place-block/tower-selection do not trigger rotation — Pending (scenario calls nonexistent UI methods; expectation fails).
+7. `[CARVE_CAMERA]` debug log lines — Pending (absent from source; log assertions fail).
+8. Harness value source exposes camera orientation/placement — implemented (camera source + probes present in HarnessValues/HarnessActions) but unverifiable this session; kept Pending pending a runnable gate.
+9. Focused scenario asserts top-down / position-unchanged / restore / kept-player-angle — Pending (scenario currently fails: 4 bad action targets, 3 failed log checks, 1 failed expectation).
+
+## Manual testing
+
+Required by plan (`manual_testing: required`) and request notes. No windowed
+screenshot evidence found under `.gen/harness/carve_camera_topdown`
+(`"screenshots": []`). Not performed.
 
 ## Blockers
 
-None.
+1. Runner infrastructure unavailable: `run_project_cmd` 422 chdir failures for
+   every workspace slug; `/workspaces` missing; Docker socket unreachable from
+   Hermes. Re-provision the runner workspace (host/root side) and re-run check.
+2. Implementation incomplete: `Game.on_carve_camera_mode` and all
+   `[CARVE_CAMERA]` logging missing; scenario targets four nonexistent UI
+   methods. Coder must implement cluster 1 and fix the scenario action names.
 
-## Unverified items
+## Quality notes
 
-- Byte-level regeneration of the PIL-based tool scripts was not repeated here
-  (worker image lacks Pillow); covered by coder evidence + unchanged-diff proof.
+See `.gen/quality-notes.md` (appended: silent no-op notification pattern;
+vacuous harness passes masking a missing feature; suspected scope creep in
+`debug_look_down_underground`). Advisory only.

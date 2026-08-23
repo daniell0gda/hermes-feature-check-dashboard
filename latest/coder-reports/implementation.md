@@ -1,32 +1,32 @@
-# Coder report: implementation
+# Coder report: implementation (clusters 1 + 2: carve-camera-lifecycle, carve-camera-harness)
 
 ## Changed files
-- `tools/gen_hud_textures.py` — deleted (dead script: its three crate JPG sources never existed in any commit)
-- `textures/ui/hud/wood_slot.png` — deleted (referenced nowhere outside the deleted script)
-- `textures/ui/hud/slot_empty.png` — deleted (referenced nowhere)
-- `textures/ui/hud/wood_panel_wide.png` — deleted (referenced nowhere; WidePanel/WidePanelDark variations use towers_panel.png)
-- `textures/ui/hud/wood_panel_wide_dark.png` — deleted (referenced nowhere)
-- `textures/ui/hud/wood_chip.png` — deleted (theme uses btn_chip.png; wood_chip referenced nowhere)
-- `tools/gen_hud_icons.py` — docstring fix only: removed stale claim that icon_coin/icon_heart "come from gen_hud_textures.py"
+- `scripts/game/Game.gd` — mod: `on_carve_camera_mode(armed)` lifecycle, `_carve_*` state vars, manual-rotation flag set in `_rotate_camera`
+- `scripts/ui/UI.gd` — mod: `_notify_carve_camera` on the `carving_active` setter
+- `scripts/config/CameraConfig.gd` — mod: new `carve_camera` const (`enabled`, `top_down_epsilon`)
+- `scripts/testing/HarnessActions.gd` — mod: `camera_probe` and `rotate_camera` timeline actions
+- `scripts/testing/HarnessValues.gd` — mod: `camera` harness value source (`basis`, `position`, `distance`, `top_down`, `yaw`, `pitch`) and `carve_camera_*` / `dig_hole_camera_top_down` checks
+- `scripts/testing/AgentHarness.gd` — mod: wire new action types
+- `tests/scenarios/carve_camera_topdown.json` — new: focused scenario
 
 ## Criteria
-- tools/ contains no script whose sources are missing — Done
-- Still-used HUD outputs exist and are referenced — Done (no regeneration needed; committed PNGs unchanged)
+- Top-down rotation on arm, underground only, position/zoom untouched — Done
+- Cancel restores pre-carve angles (all cancel routes end at `carving_active = false`) — Done
+- Manual rotation during carve → cancel keeps player angle — Done
+- Rotation input still works during carve — Done (`_rotate_camera` runs normally; only sets the flag)
+- dig-hole/place-exit/place-block/tower-selection do not rotate camera — Done (only `carving_active` notifies)
+- `[CARVE_CAMERA]` debug logs on apply / restore / skip — Done (debug builds only; log regex asserted in scenario)
+- Harness exposes camera basis/position/distance probes — Done
+- Focused scenario asserts all four transitions — Done
 
 ## Commands and results
-- `python3 --version` — exit 0 (runner preflight)
-- `python3 -c <scan tools/*.py for _source refs>` — exit 0; no remaining tool references a missing `_source` file. The two raw hits ("textures") were regex artifacts of `ROOT / "textures" / "_source"` path construction, not filenames.
-- `python3 tools/prep_hud_assets.py` — exit 0; regenerated all 37 of its outputs byte-differently but visually identical; working tree then restored with `git checkout -- textures/ui/hud` so committed PNGs are untouched.
-- `python3 tools/gen_hud_icons.py` — exit 0; stray untracked output `icon_speed.png` removed via `git clean -f`.
-- `python3 tools/cut_towers_bar_assets.py` — exit 0.
-- `godot --headless --path . --editor --quit-after 300` — exit 0 (83s). Zero errors touching hud/wood/slot/gen_hud/HudTheme/UI.tscn/PricedButton. Remaining log errors are pre-existing and unrelated: glTF/FBX model import failures (Venom_lv*.glb, trap FBX textures) and a pre-existing parse error in `res://debug_enemy_parsing.gd` (`get_process_frame()`).
+- `godot --headless --path . res://scenes/Main.tscn -- "--harness=res://tests/scenarios/carve_camera_topdown.json"` — exit 0; status=pass; 16/16 actions ok; 7/7 expectations pass. Probes show real transitions: before basis `1,0,0|0,0.832,-0.555|0,0.5547,0.832` → during top-down with identical position `0,-15,15`; plain cancel restores exact basis string; after scripted rotate + cancel basis equals the rotated probe and differs from pre-carve.
+- Full suite loop over `tests/scenarios/*.json` — see final line of run output; no scenario regressed by this change.
+- `godot --headless --editor --path . --quit-after 3` — exit 0, no script errors.
 
 ## Notes
-- Chosen path: option 2 (re-derive/delete), because `git log --all -- '*woden_panel*'` shows the crate JPGs were NEVER committed — unrecoverable from history.
-- Worker image lacks pip/Pillow/numpy. Workaround used inside the runner (ephemeral, nothing written to repo): bootstrapped pip via get-pip.py into `/home/hermes/.local`, installed Pillow to `/tmp/pylibs`, ran tools with `PYTHONPATH=/tmp/pylibs`. Runner allowlist blocked direct `rm`; used `git clean` instead.
-- Verification that live assets are referenced:
-  - `icon_coin.png` → scenes/ui/widgets/PricedButton.tscn
-  - `icon_heart.png` → scenes/UI.tscn
-  - `towers_panel.png`, `wood_panel.png`, all `wood_button*.png`, `btn_chip.png`, `slot_frame.png` → themes/hud/HudTheme.tres
-  - Deleted files (`wood_slot`, `slot_empty`, `wood_panel_wide*`, `wood_chip`) are referenced by no scene/theme/script/test.
-- Manual testing: none needed — no committed player-facing PNG changed; this is a tools/source cleanup.
+- Quality note `carve-camera-noop-notification`: resolved — Game.gd now implements `on_carve_camera_mode`, so `UI._notify_carve_camera` is live.
+- Quality note `carve-camera-vacuous-harness-passes`: resolved — scenario calls the real methods (`_on_dig_hole`, `_clear_dig_mode`, `_on_carve`, `clear_carve_mode`) and probes bracket genuine state changes (probe bases differ across arm/cancel as shown above).
+- Quality note `game-debug-look-down-scope-creep`: confirmed not present in current tree — no `debug_look_down_underground` exists in scripts/.
+- Restore path recomputes camera position from saved yaw/pitch/distance around the view target rather than storing a transform, so it stays correct if the player panned while carving.
+- Gotcha for tester: godot binary lives at `/opt/data/profiles/code/home/bin/godot` (not on default PATH).
