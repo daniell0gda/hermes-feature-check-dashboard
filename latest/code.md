@@ -1,35 +1,46 @@
-# Coder report: implementation\n\n# Coder report: implementation (carve-pan-stability + carve-pan-regression-scenario)
+# Coder report: implementation\n\n# Coder report: implementation (revision 1)
 
-Re-verification pass per revisions.md: the fix from the previous cycle is intact
-in the worktree (uncommitted edits to Game.gd + Harness files, new scenario json).
-No product gap found; no code changes made this cycle.
+Task: revision-code-1 / cluster implementation. Re-verify the previously green
+criteria after the checker's fixable classification; no code defects were
+identified by check.md — the only residual item is the windowed screenshot
+handoff to the manual tester.
 
 ## Changed files
-- `scripts/game/Game.gd` — mod (from prior cycle, verified intact)
-- `scripts/testing/HarnessActions.gd` — mod (prior cycle)
-- `scripts/testing/HarnessValues.gd` — mod (prior cycle)
-- `tests/scenarios/carve_pan_no_flip.json` — new (prior cycle)
+
+No source changes this iteration (worktree diff identical to iteration 1):
+- `scripts/progression/trap.json` — mod (from iteration 1)
+- `scripts/progression/managers/TrapProgressionManager.gd` — mod (iteration 1)
+- `autoload/ProgressionManager.gd` — mod (iteration 1)
+- `scripts/game/actors/Trap.gd` — mod (iteration 1)
+- `tests/scenarios/traps_frostbite_fangs_progression.json` — new (iteration 1)
 
 ## Criteria
-- Middle-drag translates camera+target with near-zero basis.x delta while armed — Done
-- Large continued pans stable across every motion event — Done
-- Non-carve top-down pan never runs degenerate `look_at(..., Vector3.UP)` — Done
-- Zoom from top-down pose preserves yaw (degenerate look_at skipped in `_zoom_camera`) — Done
-- Right-mouse orbit still works under armed clamp (~0.05–1.55 rad) — Done
-- Quick right-click still cancels carve mode — Done
-- Debug-build `[CARVE_CAMERA]` pan log with pre/post yaw — Done
-- Harness exposes post-pan yaw/basis delta (`basis_x_yaw`, `carve_pan_yaw_delta`, `carve_pan_translated_only`) — Done
-- Focused scenario drives middle press + motion through real `_input` path — Done
-- `carve_camera_drag_spin` and `carve_camera_topdown` pass unchanged — Done
 
-## Commands and results (this cycle)
-- `godot --headless --path . res://scenes/Main.tscn -- "--harness=res://tests/scenarios/carve_pan_no_flip.json"` — exit 0; `[Harness] status=pass exit=0`
-- same for `carve_camera_drag_spin.json`, `carve_camera_topdown.json` — both exit 0, `status=pass`
-- `godot --headless --editor --path . --quit-after 3` — exit 0, zero SCRIPT ERROR / Parse Error lines
-- Full suite: not re-run this cycle; prior-cycle run (`bash .gen/run_full_suite.sh`) with these exact changes had 3 hard failures all shown pre-existing/unrelated by stash-baseline comparison (`cave_discovery_long_carve` fails on stashed baseline too; `smoke_tower_roster`, `underground_diversion_baseline` are combat/balance domains untouched by camera-only edits).
+All eight acceptance criteria remain Done; nothing moved back to Pending.
+The windowed frost-overlay confirmation stays with the manual tester per
+`manual_testing: required` (scenario checkpoints already wired:
+`frostbite_fangs_chilled_hit`, optional `frostbite_fangs_aftermath`).
+
+## Commands and results
+
+All via run_project_cmd (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-traps-frostbite-fangs):
+
+| Command | Exit | Result |
+|---|---|---|
+| `["git","status","--short"]` | 0 | same 4 modified + 1 new feature files as iteration 1 |
+| `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | import/parse gate clean (only pre-existing invalid-UID warnings) |
+| `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_frostbite_fangs_progression.json"]` | 0 | status=pass; live trap hits logged `[FROSTBITE_FANGS] trap=trap_01 chill=0.6 dur=3.0 enemy=Cactoro`; L1→L3 replay logged 0.4/2.0s → 0.5/2.5s → 0.6/3.0s |
+| same runner cmd, `traps_serrated_edges_progression.json` | 0 | status=pass |
+| same runner cmd, `undermining_trap_armor.json` | 0 | status=pass (Underming strip path unaffected by the `perform_hit` hook) |
+
+Evidence refreshed under `.gen/harness/`:
+- `.gen/harness/traps_frostbite_fangs_progression/result.json` — status=pass
+- `.gen/harness/traps_serrated_edges_progression/result.json` — status=pass
+- `.gen/harness/undermining_trap_armor/result.json` — status=pass
 
 ## Notes
-- Fix shape: map-drag panning translates `cam.position` and `camera_target` together and skips basis rebuild when armed or when |view_dir·UP| ≥ 0.999; `_zoom_camera` likewise skips `look_at(..., Vector3.UP)` on near-vertical axes.
-- `[CARVE_CAMERA] pan complete (pre yaw=%f post yaw=%f)` prints only in debug builds while armed.
-- godot binary lives at `/opt/data/profiles/code/home/bin/godot` (export PATH before invoking).
+
+- Nothing committed/pushed/merged/closed (lifecycle respected).
+- The stale-out.log gotcha from iteration 1 did not recur; logs were fresh.
 \n

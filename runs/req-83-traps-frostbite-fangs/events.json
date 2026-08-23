@@ -52,5 +52,14 @@
     "duration_ms": 45564,
     "summary": "Gate decision complete. Wrote /workspace/git-workspaces/poke-defense-godot/issue-traps-frostbite-fangs/.gen/manual_testing.md:\n\n- manual_testing: required\n- Reason: check.md classifies pass; the one remaining acceptance item is pixel-visibl\u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-23T20:35:06.391Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 1576291,
+    "summary": "Done. Summary:\n\nManual-test result: PASSED. Scenario: tests/scenarios/traps_frostbite_fangs_progression.json (windowed). Report: .gen/manual-report.md. Escalation: no.\n\nKey points:\n- Ran the scenario windowed via run_project_cmd (never --he\u2026",
+    "error": null
   }
 ]
