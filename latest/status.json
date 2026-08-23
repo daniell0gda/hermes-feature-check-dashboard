@@ -1,47 +1,20 @@
 {
-  "run_id": "issue-127-reopen-title-desc-unique",
-  "feature": "window-modals-skip-wood-frame",
+  "run_id": "issue-130-middle-pan-flip-r1",
+  "feature": "issue-130-middle-pan-flip",
   "status": "running",
-  "started_at": "2026-08-23T18:47:55.228Z",
+  "started_at": "2026-08-23T19:21:33.076Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-reopen-title-desc-unique/",
-  "heartbeat_at": "2026-08-23T19:17:39.485Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T19:17:39.485Z",
-  "process_id": 152212,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-130-middle-pan-flip-r1/",
+  "heartbeat_at": "2026-08-23T19:21:33.076Z",
+  "last_node": null,
+  "active_node": null,
+  "last_event_at": null,
+  "process_id": 165601,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T19:17:43.735380+00:00",
-    "last_success_at": "2026-08-23T19:17:43.734771+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-23T19:21:33.076893+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 109505,
-        "output_tokens": 7145
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 153234,
-        "output_tokens": 16238
-      }
-    ]
-  }
+  "metrics": {}
 }

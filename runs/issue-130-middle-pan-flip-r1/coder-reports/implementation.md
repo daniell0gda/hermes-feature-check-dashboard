@@ -1,32 +1,33 @@
-# Coder report: implementation (clusters 1 + 2: carve-camera-lifecycle, carve-camera-harness)
+# Coder report: implementation (clusters 1 + 2: carve-pan-stability, carve-pan-regression-scenario)
 
 ## Changed files
-- `scripts/game/Game.gd` — mod: `on_carve_camera_mode(armed)` lifecycle, `_carve_*` state vars, manual-rotation flag set in `_rotate_camera`
-- `scripts/ui/UI.gd` — mod: `_notify_carve_camera` on the `carving_active` setter
-- `scripts/config/CameraConfig.gd` — mod: new `carve_camera` const (`enabled`, `top_down_epsilon`)
-- `scripts/testing/HarnessActions.gd` — mod: `camera_probe` and `rotate_camera` timeline actions
-- `scripts/testing/HarnessValues.gd` — mod: `camera` harness value source (`basis`, `position`, `distance`, `top_down`, `yaw`, `pitch`) and `carve_camera_*` / `dig_hole_camera_top_down` checks
-- `scripts/testing/AgentHarness.gd` — mod: wire new action types
-- `tests/scenarios/carve_camera_topdown.json` — new: focused scenario
+- `scripts/game/Game.gd` — mod: middle-drag map-pan branch no longer calls `look_at(camera_target, Vector3.UP)` (skipped in carve bird view and whenever the view direction is within 0.999 of vertical); `_zoom_camera` gets the same degenerate-`look_at` guard; `[CARVE_CAMERA] pan complete (pre yaw=… post yaw=…)` debug log on armed pans.
+- `scripts/testing/HarnessActions.gd` — mod: new `mouse_pan` timeline action (middle press → motion events → release pushed through `viewport.push_input`, i.e. the real `_input` path); `camera_probe` now records `basis_x_yaw`.
+- `scripts/testing/HarnessValues.gd` — mod: new harness checks `carve_pan_yaw_delta` (abs wrapped basis.x yaw delta across probes labelled before_pan/after_pan) and `carve_pan_translated_only` (position moved AND yaw delta ≈ 0).
+- `tests/scenarios/carve_pan_no_flip.json` — new focused scenario.
 
-## Criteria
-- Top-down rotation on arm, underground only, position/zoom untouched — Done
-- Cancel restores pre-carve angles (all cancel routes end at `carving_active = false`) — Done
-- Manual rotation during carve → cancel keeps player angle — Done
-- Rotation input still works during carve — Done (`_rotate_camera` runs normally; only sets the flag)
-- dig-hole/place-exit/place-block/tower-selection do not rotate camera — Done (only `carving_active` notifies)
-- `[CARVE_CAMERA]` debug logs on apply / restore / skip — Done (debug builds only; log regex asserted in scenario)
-- Harness exposes camera basis/position/distance probes — Done
-- Focused scenario asserts all four transitions — Done
+## Criteria (cluster 1)
+- Small middle-drag translates camera+target without changing basis.x — Done (`carve_pan_translated_only`)
+- Large continued pans stable across every event; no ~90°/180° yaw change — Done (basis never rebuilt during pan, so no event can flip)
+- Non-carve top-down pan doesn't rebuild basis / degenerate look_at path skipped — Done (vertical-view guard)
+- Zoom from top-down preserves yaw — Done (same guard in `_zoom_camera`)
+- Right-drag orbit still works during carve with pitch clamp ~0.05–1.55 — unchanged code; regression proven by `carve_camera_drag_spin` pass
+- Quick right-click still cancels carve mode — unchanged code; proven by `carve_camera_topdown` pass
+- `[CARVE_CAMERA]` pan log with pre/post yaw — Done (visible in run log: `pre yaw=0.000000 post yaw=0.000000`)
+
+## Criteria (cluster 2)
+- Harness value source exposes post-pan yaw/basis delta — Done (`carve_pan_yaw_delta`, `basis_x_yaw` in probes)
+- Focused scenario drives middle press + motions through real `_input` path — Done (`mouse_pan` action; no rotate_camera shortcut)
+- `carve_camera_drag_spin` and `carve_camera_topdown` still pass unchanged — Done
 
 ## Commands and results
-- `godot --headless --path . res://scenes/Main.tscn -- "--harness=res://tests/scenarios/carve_camera_topdown.json"` — exit 0; status=pass; 16/16 actions ok; 7/7 expectations pass. Probes show real transitions: before basis `1,0,0|0,0.832,-0.555|0,0.5547,0.832` → during top-down with identical position `0,-15,15`; plain cancel restores exact basis string; after scripted rotate + cancel basis equals the rotated probe and differs from pre-carve.
-- Full suite loop over `tests/scenarios/*.json` — see final line of run output; no scenario regressed by this change.
+- `godot --headless --path . res://scenes/Main.tscn -- "--harness=res://tests/scenarios/carve_pan_no_flip.json"` — exit 0; status=pass; log shows two `[CARVE_CAMERA] pan complete (pre yaw=0.000000 post yaw=0.000000)` lines and `cancel restored pre-carve angles`; result at `.gen/harness/carve_pan_no_flip/result.json`.
+- Same command for `carve_camera_drag_spin.json` — exit 0; status=pass.
+- Same command for `carve_camera_topdown.json` — exit 0; status=pass.
 - `godot --headless --editor --path . --quit-after 3` — exit 0, no script errors.
+- Full suite: `bash .gen/run_full_suite.sh` — results in `.gen/full_suite.txt`.
 
 ## Notes
-- Quality note `carve-camera-noop-notification`: resolved — Game.gd now implements `on_carve_camera_mode`, so `UI._notify_carve_camera` is live.
-- Quality note `carve-camera-vacuous-harness-passes`: resolved — scenario calls the real methods (`_on_dig_hole`, `_clear_dig_mode`, `_on_carve`, `clear_carve_mode`) and probes bracket genuine state changes (probe bases differ across arm/cancel as shown above).
-- Quality note `game-debug-look-down-scope-creep`: confirmed not present in current tree — no `debug_look_down_underground` exists in scripts/.
-- Restore path recomputes camera position from saved yaw/pitch/distance around the view target rather than storing a transform, so it stays correct if the player panned while carving.
-- Gotcha for tester: godot binary lives at `/opt/data/profiles/code/home/bin/godot` (not on default PATH).
+- The pan-flip root cause was the trailing `cam.look_at(..., Vector3.UP)` in the map-drag branch (plus the one in `_zoom_camera`): near-vertical view directions make Godot's look_at pick an arbitrary horizontal heading, flipping yaw 90°/180° per event. Panning translates camera+target together so the basis never needs rebuilding.
+- Tester gotcha: godot binary is at `/opt/data/profiles/code/home/bin/godot` (export PATH first).
+- `mouse_pan` sends motion events carrying both `position` and `relative`; Game's drag math uses `position - last_mouse_position`.
