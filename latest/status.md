@@ -1,36 +1,10 @@
-# Acceptance Plan: grass-mutates-shared-materials
-
-## Verification
-
-- Focused test: `["godot", "--headless", "--path", ".", "res://tests/visuals/test_small_vegetation_render_settings.tscn"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://tests/visuals/test_nature_visibility_range.tscn"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]`
-
-## Clusters
-
-1. grass-material-duplication-and-recursion — files: `scripts/game/NatureDecoration.gd`, `tests/visuals/test_small_vegetation_render_settings.gd`, `tests/visuals/test_small_vegetation_render_settings.tscn` — depends on: none
-- The grass/flower path duplicates any StandardMaterial3D it modifies before writing to it, so the material resource cached by the imported model is left unchanged after decoration generation.
-- After the grass/flower path runs, each affected MeshInstance3D surface carries its own modified copy via set_surface_override_material, with transparency alpha-scissor, alpha scissor threshold applied, no depth test disabled, and render priority -1.
-- Two grass or flower decorations generated from the same model do not share one modified material instance between them.
-- The small-vegetation mesh walk reaches MeshInstance3D nodes nested deeper than direct children of the passed node (e.g. inside a sub-node of a nature model), applying shadow-off, no distance cull, opaque sorting, and the alpha-scissor material settings to them.
-- A MeshInstance3D under the grass path still has cast_shadow off and visibility_range_end 0 after the fix.
-- Debug-build [NatureDecoration] log line per small-vegetation mesh whose material is duplicated, naming the node and surface index.
-- The existing nature visibility-range regression test still passes unchanged after the rewrite.
-
-## Criteria
-
 ## ✅ Done
-- The grass/flower path duplicates any StandardMaterial3D it modifies before writing to it, so the material resource cached by the imported model is left unchanged after decoration generation.
-- After the grass/flower path runs, each affected MeshInstance3D surface carries its own modified copy via set_surface_override_material, with transparency alpha-scissor, alpha scissor threshold applied, no depth test disabled, and render priority -1.
-- Two grass or flower decorations generated from the same model do not share one modified material instance between them.
-- The small-vegetation mesh walk reaches MeshInstance3D nodes nested deeper than direct children of the passed node (e.g. inside a sub-node of a nature model), applying shadow-off, no distance cull, opaque sorting, and the alpha-scissor material settings to them.
-- A MeshInstance3D under the grass path still has cast_shadow off and visibility_range_end 0 after the fix.
-- Debug-build [NatureDecoration] log line per small-vegetation mesh whose material is duplicated, naming the node and surface index.
-- The existing nature visibility-range regression test still passes unchanged after the rewrite.
+- Decision recorded in `scripts/ui/EnemyHealthBar.gd`: keep the fade — `setup()` and `_deferred_setup()` arm `hide_timer = FADE_OUT_DELAY` after `show_health_bar()` (issue #112 decision in code comments)
+- Spawned bar fades out after FADE_OUT_DELAY and reappears on first damage, verified on a windowed run (`tests/ui/verify_enemy_bar_spawn_fade.tscn`: VERIFY RESULT PASSED, real frames) and asserted in `tests/ui/test_enemy_armor_bar.gd` (`_test_spawned_bar_fades_and_reappears_on_first_damage`; suite 41 ok, 0 failed, exit 0)
+- `Enemy.gd` `is_menu_backdrop` skip re-examined and kept with recorded rationale (comment-only change); menu-backdrop regression `tests/menu/test_menu_backdrop_camera.tscn` passes (12 ok, 0 failed, exit 0)
 
 ## ⬜ Pending
-- Windowed (never --headless) manual screenshot of a gameplay map shows grass/flowers rendering correctly with cutout foliage edges and casting no shadows.
+- (none)
 
 ## ❌ Impossible
-
-classification: pass
+- (none)
