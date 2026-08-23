@@ -25,5 +25,14 @@
     "duration_ms": 304402,
     "summary": "Verification complete; artifacts written to .gen/check.md and .gen/status.md in the worktree.\n\nVerified done: 0. Pending: 11 \u2014 0 due to build/test failures alone, 11 due to missing evidence (required windowed manual-tester screenshots/manua\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T19:29:30.234Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 397981,
+    "summary": "Done. Revision summary (task revision-code-1, cluster implementation):\n\nChanges\n- scripts/ui/modal_unique_styling.gd (new) \u2014 shared static `ModalUniqueStyling.apply()`: gold/bronze Color(0.85,0.66,0.28) \u22653px border via duplicated StyleBoxFl\u2026",
+    "error": null
   }
 ]
