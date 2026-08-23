@@ -1,12 +1,12 @@
 {
   "run_id": "corrosive-soak-90-r1",
   "feature": "corrosive-soak-perk",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-23T16:55:30.645Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-23T18:32:38.223Z",
+  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat.\\nThe \u2026",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/corrosive-soak-90-r1/",
-  "heartbeat_at": "2026-08-23T18:32:33.825Z",
+  "heartbeat_at": "2026-08-23T18:32:38.223Z",
   "last_node": "code",
   "active_node": null,
   "last_event_at": "2026-08-23T18:32:33.825Z",
@@ -14,8 +14,8 @@
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T18:32:33.826329+00:00",
-    "last_success_at": "2026-08-23T17:02:27.491815+00:00",
+    "last_attempt_at": "2026-08-23T18:32:38.223784+00:00",
+    "last_success_at": "2026-08-23T18:32:38.221404+00:00",
     "last_error": null
   },
   "metrics": {
