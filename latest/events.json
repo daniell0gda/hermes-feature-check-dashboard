@@ -1,29 +1,29 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-22T23:24:55.054Z",
+    "timestamp": "2026-08-22T23:22:03.709Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 214244,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-harness-cannot-inject-gui-input/.gen/plan.md\n",
+    "duration_ms": 214876,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-game-ready-blocks-map-load/.gen/plan.md\n",
     "error": null
   },
   {
     "sequence": 2,
-    "timestamp": "2026-08-23T00:06:39.739Z",
+    "timestamp": "2026-08-23T00:08:18.723Z",
     "node": "code",
     "status": "completed",
-    "duration_ms": 2500409,
-    "summary": "odot/issue-harness-cannot-inject-gui-input. Here is where things stand:\n\n### What I found\n\n1. **The implementation already exists as uncommitted working-tree changes** (verified via `git diff`):\n   - `scripts/testing/HarnessActions.gd` \u2014 a \u2026",
+    "duration_ms": 2770492,
+    "summary": "Final report \u2014 code worker, cluster \"implementation\"\n\n## What I found\n\nThe phased world-build (Game.gd) and loading-screen driving (MapLoadingScreen.gd) were already implemented from a prior iteration. The focused harness run `map_build_pha\u2026",
     "error": null
   },
   {
     "sequence": 3,
-    "timestamp": "2026-08-23T00:18:00.664Z",
+    "timestamp": "2026-08-23T00:19:08.037Z",
     "node": "check",
     "status": "completed",
-    "duration_ms": 676089,
-    "summary": "Check complete. Artifacts written to /workspace/git-workspaces/poke-defense-godot/issue-harness-cannot-inject-gui-input/.gen/check.md and .gen/status.md (plus new .gen/quality-notes.md).\n\nVerified done: 0. Pending: 7 \u2014 0 due to build/test f\u2026",
+    "duration_ms": 644478,
+    "summary": "Check complete. Artifacts written to .gen/check.md, .gen/status.md, .gen/quality-notes.md.\n\nVerified done: 4. Pending: 4 \u2014 1 due to build/test failures (focused scenario exit 1: frame-budget expectation fails with phases of 135ms \"Placing t\u2026",
     "error": null
   }
 ]
