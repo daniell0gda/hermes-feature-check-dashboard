@@ -1,20 +1,22 @@
 {
-  "run_id": "issue-124-fix-cave-sealing-regression-r3",
-  "feature": "issue-124-fix-cave-sealing-regression-r3",
+  "run_id": "run-3",
+  "feature": "Smoke",
   "status": "running",
-  "started_at": "2026-08-23T08:50:49.457Z",
+  "started_at": "2026-08-23T08:50:35.355Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-fix-cave-sealing-regression-r3/",
-  "heartbeat_at": "2026-08-23T08:50:49.457Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/run-3/",
+  "heartbeat_at": "2026-08-23T08:50:35.355Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "planning",
   "last_event_at": null,
-  "process_id": 4796,
+  "process_id": 4641,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "planning",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T08:50:49.457868+00:00"
+    "last_attempt_at": "2026-08-23T08:50:53.388441+00:00",
+    "last_success_at": "2026-08-23T08:50:52.692041+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
