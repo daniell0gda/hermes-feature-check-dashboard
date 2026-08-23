@@ -1,12 +1,12 @@
 {
   "run_id": "issue132-move-tower-details-panel-right-1787458233",
   "feature": "move-tower-details-panel-right-side",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-23T04:10:33.976Z",
-  "ended_at": null,
+  "ended_at": "2026-08-23T05:53:51.325Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue132-move-tower-details-panel-right-1787458233/",
-  "heartbeat_at": "2026-08-23T05:53:45.024Z",
+  "heartbeat_at": "2026-08-23T05:53:51.325Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-23T05:53:45.024Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T05:53:45.025160+00:00",
-    "last_success_at": "2026-08-23T05:49:15.877685+00:00",
+    "last_attempt_at": "2026-08-23T05:53:51.325806+00:00",
+    "last_success_at": "2026-08-23T05:53:51.322897+00:00",
     "last_error": null
   },
   "metrics": {
@@ -107,6 +107,17 @@
         "cost_status": "unknown",
         "input_tokens": 38221,
         "output_tokens": 485
+      },
+      {
+        "task_id": "manual-tester",
+        "cluster_id": null,
+        "role": "manual-tester",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 129983,
+        "output_tokens": 5308
       }
     ]
   }
