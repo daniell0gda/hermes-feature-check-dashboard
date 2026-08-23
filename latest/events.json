@@ -25,5 +25,14 @@
     "duration_ms": 3991,
     "summary": "{\"status\": \"ok\"}",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T08:54:58.226Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 4260,
+    "summary": "{\"status\": \"ok\"}",
+    "error": null
   }
 ]
