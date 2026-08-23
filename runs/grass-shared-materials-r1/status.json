@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/grass-shared-materials-r1/",
   "heartbeat_at": "2026-08-23T02:01:36.540Z",
   "last_node": "team-leader",
-  "active_node": null,
+  "active_node": "manual-tester",
   "last_event_at": "2026-08-23T02:01:36.540Z",
   "process_id": 856428,
   "host": "25e0b2c49eb5",
-  "phase": "team-leader",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T02:01:36.540278+00:00",
-    "last_success_at": "2026-08-23T02:01:00.814709+00:00",
+    "last_attempt_at": "2026-08-23T02:01:41.103694+00:00",
+    "last_success_at": "2026-08-23T02:01:41.102795+00:00",
     "last_error": null
   },
   "metrics": {
@@ -74,6 +74,17 @@
         "cost_status": "unknown",
         "input_tokens": 36008,
         "output_tokens": 2837
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "estimated",
+        "input_tokens": 62938,
+        "output_tokens": 401
       }
     ]
   }
