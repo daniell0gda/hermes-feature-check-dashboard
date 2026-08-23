@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-127-unique-shots",
-  "feature": "window-modals-skip-wood-frame",
+  "run_id": "req-84-traps-venom-barbs",
+  "feature": "traps-venom-barbs",
   "status": "running",
-  "started_at": "2026-08-23T19:37:42.124Z",
+  "started_at": "2026-08-23T19:30:17.879Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-unique-shots/",
-  "heartbeat_at": "2026-08-23T20:11:02.300Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T20:11:02.300Z",
-  "process_id": 179464,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-84-traps-venom-barbs/",
+  "heartbeat_at": "2026-08-23T20:14:22.588Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-23T20:14:22.588Z",
+  "process_id": 171766,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T20:11:06.576273+00:00",
-    "last_success_at": "2026-08-23T20:11:06.575199+00:00",
+    "last_attempt_at": "2026-08-23T20:14:22.588890+00:00",
+    "last_success_at": "2026-08-23T19:39:46.496846+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,52 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 17486,
-        "output_tokens": 50
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 36418,
-        "output_tokens": 2552
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 65902,
-        "output_tokens": 6645
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 178605,
-        "output_tokens": 21290
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 61408,
-        "output_tokens": 4269
+        "input_tokens": 33944,
+        "output_tokens": 8000
       }
     ]
   }
