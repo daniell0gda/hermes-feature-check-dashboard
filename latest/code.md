@@ -1,27 +1,27 @@
-# Coder report: 1-grass-material-duplication-and-recursion\n\n# Coder report: 1-grass-material-duplication-and-recursion
+# Coder report: implementation\n\n# Coder report: implementation (spawned-bar-auto-fade)
 
 ## Changed files
-- `scripts/game/NatureDecoration.gd` — modified
-- `tests/visuals/test_small_vegetation_render_settings.gd` — new
-- `tests/visuals/test_small_vegetation_render_settings.tscn` — new
+- `scripts/ui/EnemyHealthBar.gd` — mod
+- `tests/ui/test_enemy_armor_bar.gd` — mod
+- `tests/ui/verify_enemy_bar_spawn_fade.gd` — new
+- `tests/ui/verify_enemy_bar_spawn_faze.tscn` → actual: `tests/ui/verify_enemy_bar_spawn_fade.tscn` — new
+- `scripts/game/actors/Enemy.gd` — mod, comment-only rationale
 
-## Criteria
-- The grass/flower path duplicates any StandardMaterial3D it modifies before writing to it — Done
-- Each affected surface carries its own modified copy via set_surface_override_material with alpha-scissor, threshold, no depth-test disable, render priority -1 — Done
-- Two decorations from the same model do not share one modified material instance — Done
-- Mesh walk reaches MeshInstance3D nested deeper than direct children — Done
-- cast_shadow off and visibility_range_end 0 preserved under grass path — Done
-- Debug-build [NatureDecoration] log per duplicated mesh naming node and surface index — Done
-- Existing nature visibility-range regression test still passes unchanged — Done
+## Criteria (all Done)
+- Spawned full-health bar shown immediately after setup with hide timer armed to FADE_OUT_DELAY — Done
+- After FADE_OUT_DELAY with no damage bar stops showing, fades, hides itself once fully faded — Done
+- First damage re-shows a faded bar; damaged bar is not auto-hidden — Done
+- Both direct and deferred setup paths arm the hide timer identically — Done
+- Debug [ENEMYHEALTHBAR] "auto_hide"/"show" log lines with hp context on spawned-path transitions — Done (`_log_visibility_transition`, deduped via `last_boss_icon_debug_line`)
+- Enemy.gd menu-backdrop special case kept with updated recorded rationale; menu-backdrop test passes — Done
 
 ## Commands and results
-- `godot --headless --path . res://tests/visuals/test_small_vegetation_render_settings.tscn` — exit code 1 before fix (RED: cast_shadow off failed, no override set); exit code 0 after fix, "16 ok, 0 failed" (GREEN)
-- `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn` — exit code 0, "5 ok, 0 failed"
-- `godot --headless --path . --import` — exit code 0, clean import (registered NatureDecoration + new test script)
+- `["godot","--headless","--path",".","res://tests/ui/test_enemy_armor_bar.tscn","--log-file",".gen/coder_focused.log"]` — exit code 0; `=== enemy_armor_bar: 41 ok, 0 failed ===` (8 test functions incl. new `_test_spawned_bar_fades_and_reappears_on_first_damage`)
+- `["godot","--headless","--path",".","res://tests/menu/test_menu_backdrop_camera.tscn","--log-file",".gen/coder_menu.log"]` — exit code 0; `=== menu_backdrop_camera: 12 ok, 0 failed ===` (exit-time dummy-renderer RID leak warnings are pre-existing harness teardown noise)
+- `["godot","--headless","--path",".","--check-only","-s","res://scripts/ui/EnemyHealthBar.gd"]` — exit code 0; clean parse
 
 ## Notes
-- Fix shape: `_apply_small_vegetation_render_settings` delegates to a recursive `_apply_small_vegetation_render_settings_recursive` (mirrors the existing tree-settings function). Per surface it takes override-or-mesh material, duplicates it if StandardMaterial3D, applies TRANSPARENCY_ALPHA_SCISSOR / threshold 0.3 / no_depth_test false / render_priority -1, and sets it via `set_surface_override_material`. Shadow-off, visibility_range_end 0 and opaque sorting are applied to every nested MeshInstance3D regardless of material type.
-- Debug log is gated on `OS.is_debug_build()`; verified firing in the headless run ("[NatureDecoration] duplicated material for Blades surface 0").
-- Gotcha for tester: runner output truncates long Godot logs; during RED only the test wrote a temp result file which was removed before handoff — final test writes nothing extra.
-- The manual windowed screenshot criterion remains for the manual-testing pass.
+- All work ran through run_project_cmd (project poke-defense-godot, workspace poke-defense-godot/issue-health-bar-never-auto-hides); no host-shell Godot.
+- Key mechanism: `show_health_bar()` resets `hide_timer = 0`, so arming must happen AFTER it in both `setup()` and `_deferred_setup()`; otherwise the auto-hide branch (`current_health >= max_health and hide_timer > 0`) never fires for a spawned undamaged bar (the reported bug).
+- Windowed real-frame verification evidence from prior iteration preserved in `.gen/verify_spawn_fade.log` ([VERIFY RESULT] PASSED, bar fully faded after ~3.5s of real frames).
 \n

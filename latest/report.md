@@ -2,89 +2,88 @@
 
 - **Result:** failed
 - **Classification:** pass
-- **Feature:** grass-mutates-shared-materials
-- **Run:** grass-shared-materials-r1
+- **Feature:** health-bar-never-auto-hides
+- **Run:** issue112-healthbar-014516
 - **Lifecycle:** dashboard publish only; project commit/push/close not implied
 
 ## Status
 
-# Acceptance Plan: grass-mutates-shared-materials
-
-## Verification
-
-- Focused test: `["godot", "--headless", "--path", ".", "res://tests/visuals/test_small_vegetation_render_settings.tscn"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://tests/visuals/test_nature_visibility_range.tscn"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]`
-
-## Clusters
-
-1. grass-material-duplication-and-recursion — files: `scripts/game/NatureDecoration.gd`, `tests/visuals/test_small_vegetation_render_settings.gd`, `tests/visuals/test_small_vegetation_render_settings.tscn` — depends on: none
-- The grass/flower path duplicates any StandardMaterial3D it modifies before writing to it, so the material resource cached by the imported model is left unchanged after decoration generation.
-- After the grass/flower path runs, each affected MeshInstance3D surface carries its own modified copy via set_surface_override_material, with transparency alpha-scissor, alpha scissor threshold applied, no depth test disabled, and render priority -1.
-- Two grass or flower decorations generated from the same model do not share one modified material instance between them.
-- The small-vegetation mesh walk reaches MeshInstance3D nodes nested deeper than direct children of the passed node (e.g. inside a sub-node of a nature model), applying shadow-off, no distance cull, opaque sorting, and the alpha-scissor material settings to them.
-- A MeshInstance3D under the grass path still has cast_shadow off and visibility_range_end 0 after the fix.
-- Debug-build [NatureDecoration] log line per small-vegetation mesh whose material is duplicated, naming the node and surface index.
-- The existing nature visibility-range regression test still passes unchanged after the rewrite.
-
-## Criteria
-
 ## ✅ Done
-- The grass/flower path duplicates any StandardMaterial3D it modifies before writing to it, so the material resource cached by the imported model is left unchanged after decoration generation.
-- After the grass/flower path runs, each affected MeshInstance3D surface carries its own modified copy via set_surface_override_material, with transparency alpha-scissor, alpha scissor threshold applied, no depth test disabled, and render priority -1.
-- Two grass or flower decorations generated from the same model do not share one modified material instance between them.
-- The small-vegetation mesh walk reaches MeshInstance3D nodes nested deeper than direct children of the passed node (e.g. inside a sub-node of a nature model), applying shadow-off, no distance cull, opaque sorting, and the alpha-scissor material settings to them.
-- A MeshInstance3D under the grass path still has cast_shadow off and visibility_range_end 0 after the fix.
-- Debug-build [NatureDecoration] log line per small-vegetation mesh whose material is duplicated, naming the node and surface index.
-- The existing nature visibility-range regression test still passes unchanged after the rewrite.
+- Decision recorded in `scripts/ui/EnemyHealthBar.gd`: keep the fade — `setup()` and `_deferred_setup()` arm `hide_timer = FADE_OUT_DELAY` after `show_health_bar()` (issue #112 decision in code comments)
+- Spawned bar fades out after FADE_OUT_DELAY and reappears on first damage, verified on a windowed run (`tests/ui/verify_enemy_bar_spawn_fade.tscn`: VERIFY RESULT PASSED, real frames) and asserted in `tests/ui/test_enemy_armor_bar.gd` (`_test_spawned_bar_fades_and_reappears_on_first_damage`; suite 41 ok, 0 failed, exit 0)
+- `Enemy.gd` `is_menu_backdrop` skip re-examined and kept with recorded rationale (comment-only change); menu-backdrop regression `tests/menu/test_menu_backdrop_camera.tscn` passes (12 ok, 0 failed, exit 0)
 
 ## ⬜ Pending
-- Windowed (never --headless) manual screenshot of a gameplay map shows grass/flowers rendering correctly with cutout foliage edges and casting no shadows.
+- (none)
 
 ## ❌ Impossible
-
-classification: pass
+- (none)
 
 ## Check
 
-# Check Report: grass-mutates-shared-materials (issue #111) — iteration 1 (revision-check)
+# Check report: health-bar-never-auto-hides (issue #112) — iteration 1
 
 classification: pass
 
 ## Verdict
 
-The fix is implemented and verified fresh in this worktree via run_project_cmd
-(project=poke-defense-godot, workspace=poke-defense-godot/issue-grass-render-settings-mutate-the-shared-).
-All automated criteria pass; only the manual windowed screenshot criterion remains open (manual_testing: required — owned by the manual-tester profile).
+All three "Done when" criteria verified with fresh runner evidence. The implementor chose the
+"keep the fade" option: `setup()` / `_deferred_setup()` in `scripts/ui/EnemyHealthBar.gd` now arm
+`hide_timer = FADE_OUT_DELAY` immediately AFTER `show_health_bar()` (which resets it to 0), so a
+spawned undamaged full-health bar auto-fades after 2s and reappears on first damage. Decision is
+recorded in code comments. `Enemy.gd`'s `is_menu_backdrop` skip was re-examined and kept with an
+updated comment rationale (removing it would flash a full-green bar on every menu creature for
+FADE_OUT_DELAY) — comment-only change.
 
-## Implementation evidence
+## Acceptance criteria evidence
 
-- `scripts/game/NatureDecoration.gd` — `_apply_small_vegetation_render_settings` now delegates to a recursive `_apply_small_vegetation_render_settings_recursive`. Per surface it duplicates the StandardMaterial3D before modification and writes the copy back with `set_surface_override_material` (alpha-scissor transparency, threshold 0.3, no_depth_test false, render_priority -1). Shadow-off, visibility_range_end 0.0, opaque sorting applied to every nested MeshInstance3D. Debug-build `[NatureDecoration] duplicated material for <node> surface <i>` log present.
-- `tests/visuals/test_small_vegetation_render_settings.gd/.tscn` — new focused test asserting all of the above plus cached-material untouched and per-instance independence.
+1. Decision recorded in EnemyHealthBar.gd — DONE.
+   Evidence: diff shows `hide_timer = FADE_OUT_DELAY` after `show_health_bar()` in both `setup()`
+   (line ~129) and `_deferred_setup()` (line ~139), with a comment citing issue #112 and the
+   show_health_bar-resets-timer ordering trap.
 
-## Verification commands (all via run_project_cmd)
+2. Spawn fade verified on a windowed run; spawn case asserted in tests/ui/test_enemy_armor_bar.gd — DONE.
+   Evidence (fresh, this check, all via run_project_cmd):
+   - `godot --headless --path . --log-file .gen/check_test_armor_bar.log res://tests/ui/test_enemy_armor_bar.tscn`
+     exit 0 — `=== enemy_armor_bar: 41 ok, 0 failed ===`, including the new
+     `_test_spawned_bar_fades_and_reappears_on_first_damage` (8 test functions, EXPECTED_TESTS 7->8):
+     "setup arms the hide timer to FADE_OUT_DELAY", "after FADE_OUT_DELAY the spawned bar stops being
+     shown", "the fully faded spawned bar hides itself", "the first hit shows the bar again".
+   - `godot --path . --rendering-method gl_compatibility --audio-driver Dummy --log-file
+     .gen/check_spawn_fade.log res://tests/ui/verify_enemy_bar_spawn_fade.tscn` (windowed, real
+     frames) exit 0 — `[VERIFY] spawned: is_showing=true hide_timer=2.000000`, `[VERIFY] ok - bar
+     fully faded after 3.50s of real frames`, reappear on first hit, `[VERIFY RESULT] PASSED`.
+     Debug transitions `[ENEMYHEALTHBAR] show/auto_hide` present in the log.
+   - Regression: `godot --headless --path . --log-file .gen/check_menu_backdrop.log
+     res://tests/menu/test_menu_backdrop_camera.tscn` exit 0 — `=== menu_backdrop_camera: 12 ok,
+     0 failed ===`.
 
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Preflight | `godot --version` | 0 | 4.4.1.stable.official |
-| Build/import | `godot --headless --path . --import` | 0 | Clean import |
-| Focused test | `godot --headless --path . res://tests/visuals/test_small_vegetation_render_settings.tscn` | 0 | `=== small_vegetation_render_settings: 16 ok, 0 failed ===`; debug log lines fired (`[NatureDecoration] duplicated material for Blades surface 0`) |
-| Full test | `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn` | 0 | `=== nature_visibility_range: 5 ok, 0 failed ===`; exit-time dummy-renderer RID leak warnings are baseline headless noise, not failures |
+3. Enemy.gd is_menu_backdrop skip re-examined — DONE (kept, rationale recorded in comment).
+   The issue allows "remove only if verified safe"; keeping it with a recorded rationale satisfies
+   the criterion. The menu-backdrop regression test passes.
 
-Runner gate: passed (every project command through run_project_cmd; no host Godot).
+## Commands (all through run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-health-bar-never-auto-hides)
 
-## Acceptance criteria status
+- `["godot","--version"]` — exit 0 (4.4.1.stable.official.49a5bc7b6), runner healthy.
+- armor-bar suite — exit 0, 41 ok / 0 failed.
+- windowed spawn-fade verify scene — exit 0, VERIFY RESULT PASSED.
+- menu-backdrop camera regression — exit 0, 12 ok / 0 failed.
 
-Criteria 1–7 verified Done (see status.md). Criterion 8 (windowed manual screenshot) left Pending — manual_testing required; not executable headless.
+## Changed-file quality findings
 
-Test overlap check: no pre-existing test asserted these behaviors (the scenario is new; the existing nature_visibility_range test covers culling only and was rerun unchanged, passing).
-
-Changed-code quality: diff vs HEAD touches only NatureDecoration.gd + the two new test files; mirrors the existing tree-path pattern, matches existing style, no scope creep. No violations under /opt/data/coding_rules.md or CLAUDE.md. quality-notes.md: created with no open entries.
+- New test does not overlap existing coverage: `_test_boss_style_and_fading_survive_the_armor_row`
+  covers damage-driven fade in/out; the new test covers the spawn auto-hide path (`hide_timer`
+  armed at setup) which no prior test asserted.
+- New code follows project rules: typed vars, debug-only `[ENEMYHEALTHBAR]` transition logs per
+  CLAUDE.md logging rule, surgical diff (5 files, one comment-only).
+- Minor (advisory, not demoting): `_log_visibility_transition` reuses the
+  `last_boss_icon_debug_line` field as its dedupe cache — a misnamed shared field, harmless here.
 
 ## Blockers
 
-None infra-related.
+None.
 
 ## Unverified items
 
-- Criterion 8: windowed (never --headless) manual screenshot of a gameplay map showing grass/flowers with cutout foliage edges and no shadows — deferred to the manual-testing pass.
+None. No full-project typecheck/build command exists for this Godot project beyond scene parse
+(both scenes parsed and ran cleanly headless and windowed).
