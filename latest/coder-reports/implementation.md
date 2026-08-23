@@ -1,33 +1,41 @@
-# Coder report: implementation
+# Coder report: implementation (revision 1)
 
 ## Changed files
-No new source changes this pass (revision-code-3, revision 2). The implementation is present as uncommitted working-tree modifications from iteration 5:
-- `scripts/progression/trap.json` — `undermining` Common trap perk, 3 levels (8/15/25 armor damage)
-- `scripts/progression/managers/TrapProgressionManager.gd` — owns the undermining value
-- `autoload/ProgressionManager.gd` — exposes `get_trap_armor_damage()`
-- `scripts/game/actors/Trap.gd` — `perform_hit()` strips armor (clamped at 0), `[Undermining] strip` debug log, fires amber strip tint only when armor actually came off
-- `scripts/game/actors/effects/EffectsManager.gd`, `scripts/game/actors/effects/UnderminingStripVFX.gd` (new) — amber UnderminingStripVFX tint
-- `scripts/testing/HarnessActions.gd` — harness seams (`_trap_hit` add_childs the trap first)
-- `tests/scenarios/undermining_progression.json`, `undermining_trap_armor.json`, `undermining_scope_isolation.json` (new)
+- No feature source changes this iteration (feature code was already green in iteration 1; unchanged:
+  `autoload/ProgressionManager.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd`,
+  `scripts/progression/global.json`, `scripts/progression/managers/CurseProgressionManager.gd`,
+  `tests/scenarios/sundering_bolts_progression.json`).
+- Worker import-state repair only (no repo files changed): removed stale
+  `valid=false` `.glb.import` remap files under `models/gltf/towers/`, `models/glb/`,
+  and `models/gltf/buildings/` plus their stale `.godot/imported/*.glb-*.md5` markers,
+  then reimported via `godot --headless --path . --import`.
 
 ## Criteria
-- undermining-perk-definition — verified Done (undermining_progression pass; L1/L2/L3 -> 8.0/15.0/25.0 in log)
-- undermining-trap-runtime — verified Done (undermining_trap_armor pass; live strips 60->52->37->12->0 clamped, unowned hit leaves armor exactly 60.0)
-- undermining-hit-vfx — verified Done (tint fired via EffectsManager on stripping hits only; scenario passes)
-- undermining-game-test-coverage — verified Done (all three new scenarios pass)
+All cluster criteria — Done via full verification below.
 
-## Commands and results
-All via run_project_cmd project=poke-defense-godot workspace=poke-defense-godot/issue-perk-undermining:
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/undermining_progression.json` — exit 0; [Harness] status=pass exit=0
-- `... --harness=res://tests/scenarios/undermining_trap_armor.json` — exit 0; status=pass
-- `... --harness=res://tests/scenarios/undermining_scope_isolation.json` — exit 0; status=pass
-- `... --harness=res://tests/scenarios/enemy_armor_trap.json` — exit 0; status=pass
-- `... --harness=res://tests/scenarios/trap_stats_attribution.json` — exit 0; status=pass
-- `... --harness=res://tests/scenarios/traps_serrated_edges_progression.json` — exit 0; status=pass
-- `godot --headless --editor --path . --quit-after 300` — exit 0
+## Commands and results (all via run_project_cmd, project=poke-defense-godot)
+- Preflight `git status --short` — exit 0.
+- `godot --headless --path . --import` (after clearing stale valid=false glb imports) — exit 0;
+  all tower/enemy/building GLBs now produce real `.scn` imports (103 scn files). The
+  `ERROR: Parameter "t" is null at texture_2d_get ... dummy/storage` lines are harmless
+  dummy-renderer texture warnings during headless scene import, not failures.
+- Focused harness `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/sundering_bolts_progression.json`
+  — exit 0; `[Harness] status=pass exit=0`; sunder log lines present:
+  `[SUNDERING_BOLTS] sunder enemy=Orc Enemy_boss level=1 base_damage=5.0 armor_damage=0.5`,
+  `level=2 ... armor_damage=1.0`, `level=3 ... armor_damage=1.75`.
+- Regression `res://tests/enemy/test_enemy_armor_damage.tscn` — exit 0; 18 ok / 0 failed.
+- Regression harness `--harness=res://tests/scenarios/enemy_armor_ballista.json` — exit 0; status=pass.
+- Full-suite leg `res://tests/tower/test_tower_armor_damage.tscn` — **exit 0; 18 ok / 0 failed**
+  (previously 15 ok / 3 failed on pristine baseline).
+- Typecheck/build `godot --headless --path . --editor --quit-after 2` — exit 0.
 
 ## Notes
-- Fresh result.json files written under `.gen/harness/<scenario>/result.json` for all six runs.
-- Key live evidence in the undermining_trap_armor log: `[Undermining] strip enemy=Orc Enemy_boss trap=trap_02 armor_damage=8.0 armor 60.0->52.0`, then trap_03 52->37, trap_05 37->12 and 12->0 (clamped); unowned trap_01 hit leaves armor exactly 60.0.
-- Scope isolation: with undermining owned at L3, surface-tower scripted hits change armor only by their explicit armor_damage; no perk-derived loss.
-- Pre-existing benign warnings (invalid UID ext_resources, missing GLB imports, RID leak at exit) appear in all scenarios including baseline ones; unrelated to this feature.
+- ROOT CAUSE of the previously failing tower leg found and fixed: the worktree's
+  `.import` files for every GLB carried `valid=false` from an earlier failed import
+  (their cached `source_md5` no longer matched the checked-out LFS-smudged files), and
+  Godot never retries an import whose remap says invalid — it silently falls back to
+  placeholder models, so BalistaTower had no Bolt node ("Cannot fire - no bolt found").
+  Deleting those `.import` files forces a fresh import that succeeds.
+- This is worker/import-state only: `.godot/` and `*.import` are not tracked by git
+  (`git status` clean apart from the feature files). Any future fresh worktree needs the
+  same one-time repair if its `.import` cache predates a checkout.

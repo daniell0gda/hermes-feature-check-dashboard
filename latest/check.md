@@ -1,59 +1,77 @@
-# Check report: perk-undermining (iteration 3, revision 2)
+# Check report: perk-sundering-bolts (revision-check-1, iteration 3)
 
 classification: pass
 
 ## Verdict
 
-All 10 acceptance criteria verified Done. Fresh verification executed through
-`run_project_cmd` (project=poke-defense-godot, workspace=poke-defense-godot/issue-perk-undermining)
-in this check pass; every command returned exit 0 with `[Harness] status=pass exit=0`.
+All acceptance criteria verified green through the approved runner. The prior
+iteration's full-suite blocker (`test_tower_armor_damage.tscn` exit 1) was
+resolved by the implementor by repairing stale `valid=false` GLB `.import`
+remaps in the worker import cache (untracked files only; `git status` shows
+only feature files changed). Every leg of the plan's full-test command now
+passes with exit 0.
 
-## Verification commands and results (all via run_project_cmd)
+## Verification commands
 
-| Command | Exit | Result |
-|---|---|---|
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/undermining_progression.json` | 0 | `[Harness] status=pass exit=0`; log shows L1→8.0, L2→15.0, L3→25.0 |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/undermining_trap_armor.json` | 0 | `[Harness] status=pass exit=0`; live strips on map_7 wave 6 armored Orc Enemy King: unowned trap_01 leaves armor exactly 60.0; trap_02@L1 60→52; trap_03@L2 52→37; trap_05@L3 37→12 then 12→0 clamped |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/undermining_scope_isolation.json` | 0 | `[Harness] status=pass exit=0`; surface tower hits under owned L3 change armor only by explicit armor_damage, no perk-derived loss |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_trap.json` | 0 | `[Harness] status=pass exit=0` (full/baseline scenario) |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/trap_stats_attribution.json` | 0 | `[Harness] status=pass exit=0` |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/traps_serrated_edges_progression.json` | 0 | `[Harness] status=pass exit=0`; existing serrated-edges perk unaffected by the TrapProgressionManager refactor |
-| `godot --headless --editor --path . --quit-after 300` | 0 | Editor typecheck/import gate clean |
+All via run_project_cmd, project=godot-td,
+workspace=poke-defense-godot/issue-perk-sundering-bolts:
 
-Fresh result.json files confirmed under `.gen/harness/<scenario>/result.json`.
+- Preflight `git status --short` — exit 0. Changed: autoload/ProgressionManager.gd,
+  scripts/game/actors/enemy/parts/EnemyHealthController.gd,
+  scripts/progression/global.json,
+  scripts/progression/managers/CurseProgressionManager.gd,
+  tests/scenarios/sundering_bolts_progression.json (+ untracked logs/tower_armor_test.log).
+- Typecheck/build `godot --headless --path . --editor --quit-after 2` — exit 0; scripts compile clean.
+- Focused harness `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/sundering_bolts_progression.json`
+  — exit 0; `[Harness] status=pass exit=0`; fresh `.gen/harness/sundering_bolts_progression/result.json`
+  has `status: pass`, zero failed actions. Observed log lines:
+  - `[SUNDERING_BOLTS] sunder enemy=Orc Enemy_boss level=1 base_damage=5.0 armor_damage=0.5`
+  - `level=2 base_damage=5.0 armor_damage=1.0`
+  - `level=3 base_damage=5.0 armor_damage=1.75`
+- Full-suite legs:
+  - `res://tests/tower/test_tower_armor_damage.tscn` — exit 0; **18 ok / 0 failed**.
+  - `res://tests/enemy/test_enemy_armor_damage.tscn` — exit 0; **18 ok / 0 failed**.
+  - `--harness=res://tests/scenarios/enemy_armor_ballista.json` — exit 0; status=pass;
+    flat Ballista armor stack observed (`[Armor] Orc Enemy_boss depleted: 40.0 armor removed`).
 
-## Criterion evidence
+## Acceptance criteria evidence (all pass)
 
-1. **Definition (Common/traps-only/3 levels)** — `scripts/progression/trap.json`: `undermining`, type Common, maxLevels 3, values 8/15/25. It lives only in the trap progression pool; surface towers never read it. Proven in undermining_progression run.
-2. **8/15/25 accessor** — `TrapProgressionManager.get_undermining_armor_damage()` exposed through `ProgressionManager.get_trap_armor_damage()`; harness asserted 8 → 15 → 25 through the same accessor Ballista uses; reset/base is 0.0 when unowned.
-3. **Per-hit armor strip, clamped** — `Trap.perform_hit()` reads the perk value per hit and passes it to `take_damage(..., armor_damage)`; live log shows exact deltas at each level and clamp at 0 (37→12→0).
-4. **Zero armor change unowned** — unowned trap_01 hit left armor at exactly 60.0 (asserted in undermining_trap_armor).
-5. **Surface scope isolation** — undermining_scope_isolation passes with perk owned at L3; only `Trap.gd` calls `get_trap_armor_damage()`.
-6. **Debug log** — observed fresh this run: `[Undermining] strip enemy=Orc Enemy_boss trap=trap_02 armor_damage=8.0 armor 60.0->52.0` etc., guarded by `OS.is_debug_build()`.
-7. **Strip tint** — amber `UnderminingStripVFX` fired via `EffectsManager.play_undermining_strip()` only when `stripped` is true (armor_damage > 0 and armor_before > 0); absent entirely on unowned hits. Distinct amber color vs StaticBreach blue.
-8–10. **Coverage scenarios** — all three new scenarios exist in `tests/scenarios/` and passed fresh; assertions are wait_for_condition equality checks against live state (would fail if behavior broke). No overlap with pre-existing coverage: enemy_armor_trap asserts baseline unowned behavior only and was preserved; the new scenarios assert perk-specific behavior not covered elsewhere.
+| # | Criterion | Evidence |
+|---|-----------|----------|
+| 1 | Perk defined, 3 levels 0.1/0.2/0.35, chest-eligible | global.json diff + harness draw steps (`normal=41, chosen=41`, perk included) |
+| 2 | Disabled when unowned / enabled per level, no compounding on replay | CurseProgressionManager absolute-ratio assignment `_sundering_bolts_ratio = value`; harness L1/L2/L3 armor deltas exactly 0.5/1.0/1.75 |
+| 3 | reset_for_new_game() disables config | reset() zeroes `_sundering_bolts_ratio`; `_is_sundering_bolts_owned()` gate returns `{enabled: false}` |
+| 4 | Ratio of final post-modifier damage applied on same hit | EnemyHealthController hook after modifiers uses `hit_damage` (base 5 = 10 × ARMOR_DAMAGE_REDUCTION), not towers.xml base |
+| 5 | Conversion base is final damage, not static base | harness asserts drain proportional to modified final damage |
+| 6 | Final damage 0 → no sunder | `final_hit_damage <= 0.0` fast-escape guard |
+| 7 | Ballista flat 20 stacks additively | armor 40→39.5/39.0/38.25 = 20 flat + 0.5/1.0/1.75 perk; enemy_armor_ballista leg green |
+| 8 | Unowned → behavior unchanged | enabled=false gate returns before any `_consume_armor` call; regression suites green |
+| 9 | Debug [SUNDERING_BOLTS] log line per event | observed in runner output with level, base_damage, armor_damage; gated behind OS.is_debug_build() |
+| 10 | Focused harness scenario covers baseline + 3 levels incl. additive stack | sundering_bolts_progression result.json pass, 0 failed actions |
+| 11 | Existing armor bar reflects drain, no new VFX | `[ENEMYHEALTHBAR] show ... hp=1620/1625` updates during sunder legs; no VFX files in diff |
 
-## Changed-file quality findings
+## Changed-code quality findings
 
-Reviewed diff (`git status`/`git diff`) against /opt/data/coding_rules.md and worktree CLAUDE.md:
-typed GDScript members, no casts of raw enum strings, surgical changes confined to feature files,
-reuses existing VFX pattern (StaticBreachVFX-style) rather than inventing new plumbing. No violations.
-
-Pre-existing benign warnings (invalid UID ext_resources, missing GLB imports, RID leak at exit)
-appear in baseline scenarios too — unrelated to this feature, not attributed to it.
+Reviewed against /opt/data/coding_rules.md and worktree CLAUDE.md: typed vars,
+small focused functions, guard-clause early returns (≤2 nesting), reuses the
+existing frozen_fracture/config-query pattern rather than duplicating it,
+debug logging gated behind `OS.is_debug_build()` with a `[TAG]` marker as the
+project rules require. No violations in changed files. New scenario test does
+not overlap existing suites (asserts perk-specific math not covered by
+tower/enemy armor tests).
 
 ## Quality notes
 
-No changes. No open prior entries required resolution; no cross-cutting scope creep found
-(feature diff touches exactly the planned files plus the three planned test scenarios).
+Open entry `tower-test-baseline-failure` (iteration 2) — RESOLVED this
+iteration: the tower leg now passes 18/18 after worker import-state repair;
+root cause was stale `valid=false` `.import` remaps, not project code.
 
 ## Blockers
 
-None. Manual player-facing verification remains assigned per plan's `manual_testing: required`
-(manual-tester profile owns that evidence).
+None.
 
 ## Unverified items
 
-None beyond manual visual confirmation of the tint in a rendered (non-headless) session, which is
-the manual-tester's remit, not a code criterion gap — headless counting of strip dispatches covers
-the logic criterion.
+- Manual testing note (visible armor-bar drain windowed screenshots to
+  `.gen/screenshots/`) remains for the manual-tester profile; automated
+  health-bar update lines were observed in harness output.

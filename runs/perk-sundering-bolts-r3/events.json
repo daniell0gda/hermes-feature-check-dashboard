@@ -52,5 +52,14 @@
     "duration_ms": 32882,
     "summary": "Manual testing gate complete.\n\n- Check status: pass (all acceptance criteria green, no blockers).\n- Decision: manual_testing: required \u2014 the perk's armor drain is a new user-visible story; the existing armor bar shows the drained value pers\u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-23T18:36:28.442Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 1714625,
+    "summary": "The `release_project_worker` action isn't exposed as a separate tool in this session (only `run_project_cmd` is available), so the worker is left running for the orchestrator to release.\n\nManual-test result: PASSED. Scenario: .gen/ui_scenar\u2026",
+    "error": null
   }
 ]
