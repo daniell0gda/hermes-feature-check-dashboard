@@ -1,21 +1,21 @@
 {
-  "run_id": "perk-sundering-bolts-r3",
-  "feature": "Sundering Bolts perk - % of final damage also strips armor",
+  "run_id": "req-85-update-tower-descriptions-with-special-c",
+  "feature": "update-tower-descriptions-with-special-c",
   "status": "running",
-  "started_at": "2026-08-23T16:42:32.685Z",
+  "started_at": "2026-08-23T17:40:17.423Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-sundering-bolts-r3/",
-  "heartbeat_at": "2026-08-23T18:02:26.981Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T18:02:26.981Z",
-  "process_id": 77891,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-update-tower-descriptions-with-special-c/",
+  "heartbeat_at": "2026-08-23T18:04:40.725Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-23T18:04:40.725Z",
+  "process_id": 108056,
   "host": "f1a4230ec90b",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T18:02:31.346247+00:00",
-    "last_success_at": "2026-08-23T18:02:31.345589+00:00",
+    "last_attempt_at": "2026-08-23T18:04:40.725622+00:00",
+    "last_success_at": "2026-08-23T18:01:02.725429+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 224992,
-        "output_tokens": 12823
+        "input_tokens": 0,
+        "output_tokens": 0
       },
       {
         "task_id": "code",
@@ -39,30 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 209681,
-        "output_tokens": 4953
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 104456,
-        "output_tokens": 4035
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 224492,
-        "output_tokens": 10896
+        "input_tokens": 121420,
+        "output_tokens": 16300
       }
     ]
   }

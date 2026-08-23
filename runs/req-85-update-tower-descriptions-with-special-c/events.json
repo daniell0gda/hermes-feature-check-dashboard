@@ -16,5 +16,14 @@
     "duration_ms": 1107281,
     "summary": "Summary \u2014 implementation cluster complete (TDD, one vertical slice):\n\n- RED: new harness scenario `tests/scenarios/tower_descriptions_tooltip.json` failed before implementation (tooltip had no description line; status=timeout at first unmet\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-23T18:04:40.725Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 222209,
+    "summary": "Check complete. Artifacts written.\n\nVerified done: 4. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes (no open entries; feature diff is surgical \u2014 t\u2026",
+    "error": null
   }
 ]
