@@ -1,41 +1,42 @@
-# Acceptance Plan: perk-sundering-bolts
+# Acceptance Plan: Warlord's Doctrine progression perk
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/sundering_bolts_progression.json"]`
-- Full test: `["sh", "-lc", "godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/sundering_bolts_progression.json && godot --headless --path . res://tests/tower/test_tower_armor_damage.tscn && godot --headless --path . res://tests/enemy/test_enemy_armor_damage.tscn && godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_ballista.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "2"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/warlords_doctrine.json"]`
+- Full test: `["bash", "-lc", "for s in warlords_doctrine enemy_armor_ballista enemy_armor_trap enemy_armor_bar_visual; do godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/$s.json || exit 1; done"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+
+manual_testing: required — player-visible perk (windowed screenshot checkpoints; no `--headless` for the manual pass). See `.gen/ui_scenario.md`.
 
 ## Clusters
 
-1. sundering-bolts-perk-definition — files: `scripts/progression/global.json`, `autoload/ProgressionManager.gd` — depends on: none
-- The global progression catalog defines a `sundering_bolts` perk with exactly 3 levels whose level values are 0.1, 0.2 and 0.35, and it is eligible for chest draws under the standard eligibility rules.
-- With the perk unowned, the ProgressionManager config query returns a disabled config; at level N it reports enabled with that level's ratio (0.1 / 0.2 / 0.35), and re-applying or replaying levels 1..N neither compounds nor collapses the ratio.
-- After `reset_for_new_game()`, the sundering_bolts config is disabled again.
-2. sunder-application-in-take-damage — files: `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — depends on: 1
-- A hit from any damaging tower while sundering_bolts is owned at level L applies additional armor damage equal to L's ratio (10% / 20% / 35%) of the hit's final post-modifier HP damage, on the same hit.
-- The conversion base is the hit's final damage after all other damage-modifying perks and effectiveness multipliers, not the static towers.xml base value (a hit whose final damage was modified by another perk yields armor damage proportional to the modified amount).
-- When the hit's final damage is 0 (Porter, damage=0), no additional armor damage is applied regardless of perk level.
-- Ballista's flat armor_dmg of 20 still applies and stacks additively with the perk-derived armor damage on the same hit.
-- With the perk unowned, hits behave exactly as before: no perk-derived armor damage is added.
-- Debug-build [SUNDERING_BOLTS] log line per applied sunder event, naming the perk level, the final hit damage used as the base, and the derived armor-damage amount.
-3. sundering-bolts-harness-scenario — files: `tests/scenarios/sundering_bolts_progression.json` — depends on: 1, 2
-- A focused AgentHarness scenario drives a representative tower (Ballista) through the shared take_damage path and asserts the resulting enemy armor values for the no-perk baseline and for each of the three perk levels (10% / 20% / 35%), including the additive stack with Ballista's flat armor_dmg.
+1. perk-definition-and-damage-chain — files: `scripts/progression/global.json`, `autoload/ProgressionManager.gd`, `scripts/progression/handlers/global/TowerDamage.gd`, `tests/scenarios/warlords_doctrine.json` — depends on: none
+- The perk catalog defines `warlords_doctrine` as a Common global progression with exactly 3 selectable levels whose values are L1 +5% damage / 8% armor, L2 +9% / 12%, L3 +14% / 15% of max HP.
+- Applying `warlords_doctrine` at level L raises the game's global tower-damage multiplier to exactly 1 plus that level's damage ratio (1.05 / 1.09 / 1.14), observable through the progression state the tower damage chain reads.
+- Owning both `tower_dmg` and `warlords_doctrine` produces a combined tower-damage multiplier equal to the sum of both perks' ratios (additive stacking), never one overriding the other.
+- Giving up the perk (`reset_for_new_game`) returns the tower-damage multiplier to exactly 1.0 and the doctrine armor bonus to zero, so enemies spawned afterwards are armored only by their innate config armor.
+2. spawn-bonus-armor-and-health-bar — files: `scripts/game/actors/Enemy.gd`, `scripts/ui/EnemyHealthBar.gd`, `tests/scenarios/warlords_doctrine.json` — depends on: 1
+- While `warlords_doctrine` is active, an enemy type whose config names no armor spawns with `armor > 0` and `max_armor > 0` equal to the active level's percentage of its max HP; without the perk the same enemy spawns with zero armor.
+- For an enemy with innate config armor, the perk's bonus armor is added on top of the innate value (spawned max_armor equals innate armor plus ratio × max HP), not a replacement.
+- A scripted armor hit against a doctrine-armored enemy strips the granted armor first through the existing armor-soak behavior, and the damage bonus lands in HP according to the normal armor-damage rules.
+- The existing armor bar row becomes visible on a previously-unarmored enemy once the perk grants it armor, showing and animating the granted armor like any innate armor (windowed visual check).
+- Debug-build `[WARLORDS-DOCTRINE]` log lines appear per doctrine-granted spawn bonus (level, granted armor, enemy id) and per doctrine application (level, bonus, resulting total multiplier), each filterable by that marker.
+3. harness-scenarios — files: `tests/scenarios/warlords_doctrine.json`, `tests/scenarios/enemy_armor_ballista.json` — depends on: 1, 2
+- A `game-test` scenario activates `warlords_doctrine`, spawns a normally-unarmored enemy, and asserts `enemy.armor > 0` (and matching `max_armor`) at spawn; headless result is `pass`.
+- The same scenario asserts the tower damage bonus end-to-end through the harness at one perk level (a scripted hit applies 1.05x/1.09x/1.14x the base damage).
+- The pre-existing `enemy_armor_ballista` scenario still passes unchanged after the feature lands (armor arithmetic regression).
 
 ## Criteria
 
-- The global progression catalog defines a `sundering_bolts` perk with exactly 3 levels whose level values are 0.1, 0.2 and 0.35, and it is eligible for chest draws under the standard eligibility rules.
-- With the perk unowned, the ProgressionManager config query returns a disabled config; at level N it reports enabled with that level's ratio (0.1 / 0.2 / 0.35), and re-applying or replaying levels 1..N neither compounds nor collapses the ratio.
-- After `reset_for_new_game()`, the sundering_bolts config is disabled again.
-- A hit from any damaging tower while sundering_bolts is owned at level L applies additional armor damage equal to L's ratio (10% / 20% / 35%) of the hit's final post-modifier HP damage, on the same hit.
-- The conversion base is the hit's final damage after all other damage-modifying perks and effectiveness multipliers, not the static towers.xml base value (a hit whose final damage was modified by another perk yields armor damage proportional to the modified amount).
-- When the hit's final damage is 0 (Porter, damage=0), no additional armor damage is applied regardless of perk level.
-- Ballista's flat armor_dmg of 20 still applies and stacks additively with the perk-derived armor damage on the same hit.
-- With the perk unowned, hits behave exactly as before: no perk-derived armor damage is added.
-- Debug-build [SUNDERING_BOLTS] log line per applied sunder event, naming the perk level, the final hit damage used as the base, and the derived armor-damage amount.
-- A focused AgentHarness scenario drives a representative tower (Ballista) through the shared take_damage path and asserts the resulting enemy armor values for the no-perk baseline and for each of the three perk levels (10% / 20% / 35%), including the additive stack with Ballista's flat armor_dmg.
-- Existing armor bar reflects the drain with no new VFX required (existing armor bar UI already tracks the armor stat the perk drains).
-
-manual_testing: required
-
-Manual testing note: visible armor-bar drain after sundered hits, windowed evidence via the runner, screenshots to `.gen/screenshots/`.
+- The perk catalog defines `warlords_doctrine` as a Common global progression with exactly 3 selectable levels whose values are L1 +5% damage / 8% armor, L2 +9% / 12%, L3 +14% / 15% of max HP.
+- Applying `warlords_doctrine` at level L raises the game's global tower-damage multiplier to exactly 1 plus that level's damage ratio (1.05 / 1.09 / 1.14), observable through the progression state the tower damage chain reads.
+- Owning both `tower_dmg` and `warlords_doctrine` produces a combined tower-damage multiplier equal to the sum of both perks' ratios (additive stacking), never one overriding the other.
+- Giving up the perk (`reset_for_new_game`) returns the tower-damage multiplier to exactly 1.0 and the doctrine armor bonus to zero, so enemies spawned afterwards are armored only by their innate config armor.
+- While `warlords_doctrine` is active, an enemy type whose config names no armor spawns with `armor > 0` and `max_armor > 0` equal to the active level's percentage of its max HP; without the perk the same enemy spawns with zero armor.
+- For an enemy with innate config armor, the perk's bonus armor is added on top of the innate value (spawned max_armor equals innate armor plus ratio × max HP), not a replacement.
+- A scripted armor hit against a doctrine-armored enemy strips the granted armor first through the existing armor-soak behavior, and the damage bonus lands in HP according to the normal armor-damage rules.
+- The existing armor bar row becomes visible on a previously-unarmored enemy once the perk grants it armor, showing and animating the granted armor like any innate armor (windowed visual check).
+- Debug-build `[WARLORDS-DOCTRINE]` log lines appear per doctrine-granted spawn bonus (level, granted armor, enemy id) and per doctrine application (level, bonus, resulting total multiplier), each filterable by that marker.
+- A `game-test` scenario activates `warlords_doctrine`, spawns a normally-unarmored enemy, and asserts `enemy.armor > 0` (and matching `max_armor`) at spawn; headless result is `pass`.
+- The same scenario asserts the tower damage bonus end-to-end through the harness at one perk level (a scripted hit applies 1.05x/1.09x/1.14x the base damage).
+- The pre-existing `enemy_armor_ballista` scenario still passes unchanged after the feature lands (armor arithmetic regression).
