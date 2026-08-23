@@ -25,5 +25,14 @@
     "duration_ms": 206027,
     "summary": "Check complete.\n\nVerified done: 4. Pending: 1 \u2014 0 due to build/test failures, 0 due to missing evidence, 1 due to required windowed/manual VFX evidence not yet produced (manual-tester scope). Impossible: 0. Quality notes: no changes (no ope\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T17:15:25.437Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 622495,
+    "summary": "The `release_project_worker` tool isn't exposed in this session's toolset (only `run_project_cmd` from the app_containers_runner plugin, which spins up disposable workers per call), so there's no persistent worker to release \u2014 each command \u2026",
+    "error": null
   }
 ]
