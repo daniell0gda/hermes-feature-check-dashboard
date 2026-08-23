@@ -25,5 +25,14 @@
     "duration_ms": 316277,
     "summary": "Worker-release isn't exposed to this checker profile, so workspace cleanup stays with the leader as usual.\n\nSummary:\n\nVerified done: 13. Pending: 2 \u2014 0 due to build/test failures, 2 due to missing evidence (windowed visible-lighting), 0 due\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T11:08:56.550Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 393389,
+    "summary": "Revision 2 complete. Summary:\n\n**Fix landed:** `scripts/game/underground/Torch.gd` \u2014 added a per-torch `FloorGlow`: an unshaded, additive-blend plane (radius 2.5, matching LIGHT_RADIUS) with a soft radial-falloff gradient texture, sitting j\u2026",
+    "error": null
   }
 ]

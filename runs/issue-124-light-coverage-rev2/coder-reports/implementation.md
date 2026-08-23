@@ -1,45 +1,48 @@
-# Coder report: implementation (revision-1 re-verification, 2026-08-23)
+# Coder report: implementation (revision 2 — visible corridor lighting fix)
 
-## Scope of this iteration
-Revision 1 asked to "redo the failed criteria". status.md shows zero Pending and
-check.md (iteration 6) classified the run as pass — no criteria failed. This
-iteration therefore performed a full fresh verification of the unchanged
-implementation through `run_project_cmd`; no source files were modified.
+## Changed files
+- `scripts/game/underground/Torch.gd` — modified
 
-## Changed files (this iteration)
-- none (verification-only; working tree identical to the iteration-6 state:
-  9 modified files + new `tests/scenarios/cave_carved_path_torches.json`)
+## Criteria targeted
+- "In a fresh windowed gl_compatibility (llvmpipe) top-down run of `cave_carved_path_torches.json`, each of the four carved cross arms shows visibly lit floor pixels along its entire length" — code fix landed; final numeric pixel proof remains the manual tester's item.
+- "Fresh windowed-run screenshot PNGs exist with current timestamps ... pixels inspected (manual tester)" — unchanged ownership; manual tester must re-run the windowed capture + numeric warm-pixel measurement.
 
-## Commands and results (all fresh via run_project_cmd,
-project=godot-td, workspace=poke-defense-godot/issue-cave-carved-path-torches)
-- Preflight `godot --version` — exit 0 (4.4.1.stable.official.49a5bc7b6).
-- Focused `cave_carved_path_torches.json` — exit 0, `[Harness] status=pass`;
-  trigger-labeled `[TORCH] incremental-carve update active=29 / 148 / 154 / 142`
-  per recompute event; incremental corridor carve placed torches along its whole
-  length (148 → 154); pending/declined cave interiors dark.
-- Full `declined_cave_torches_extinguish.json` — exit 0, `status=pass`
-  (`[CAVE] Decline-lock cave=9001 outcome=spawner blocks=49`,
-  `[TORCH] incremental-carve update active=10`).
-- `cave_pending_seals_entrance_instantly.json` run 1 — exit 0, `status=pass`;
-  `[CAVE] discovery suppressed: harness scenario forbids RNG cave discovery`
-  logged on every carve event (only fixture cave 9003 present); initial route
-  found (distance 8.0, 17 waypoints) → sealed with `No valid path found to any
-  exit` while cave pending → dark after seal (`[TORCH] active=31`) → confirm yes
-  restores exact route (8.0 / 17 waypoints) with lighting restored (active=50).
-- Same scenario run 2 (consecutive) — exit 0, `status=pass`, byte-for-byte
-  identical sequence, distances, and torch counts (determinism confirmed).
-- Typecheck/build `godot --headless --path . --editor --quit-after 300` —
-  exit 0, clean import.
+## What changed
+Torch.gd now creates a `FloorGlow` MeshInstance3D per torch: an unshaded,
+alpha-additive PlaneMesh (size 5x5 = 2*GLOW_RADIUS, matching LIGHT_RADIUS=2.5)
+with a soft radial-falloff GradientTexture2D, positioned just above the floor.
+This is the rendering-layer fix for the compatibility-renderer per-mesh
+omni-light budget: emissive/unshaded materials are not subject to the omni
+light-per-mesh cap that dropped most of the ~150 OmniLight3D nodes over merged
+MultiMesh block geometry. The glow:
+- flickers subtly with the light (`albedo_color.a` follows the flicker value),
+- is hidden by `extinguish()` and shown by `ignite()`, so pending/declined
+  sealed caves stay fully dark (glow only exists on active torches),
+- adds no placement logic change; headless count_near/unlit assertions are
+  untouched.
 
-## Raw-output scan (per plan rule)
-Scanned fresh runner stdout/stderr independently from harness status: only the
-pre-existing HudTheme.tres missing-texture noise (documented in
-quality-notes.md as hudtheme-missing-texture) and exit-time dummy-renderer leak
-warnings — both explicitly excluded by the plan. No game SCRIPT ERROR, no GDScript
-Parse Error, no unexpected Failed loading resource, no Invalid call in feature code.
+## Commands and results (all via run_project_cmd, project godot-td)
+- `godot --headless --path . --editor --quit-after 300` — exit 0; clean import.
+  First attempt caught a parse error (flicker var scoped inside `if light:`),
+  fixed by hoisting flicker computation out of the if-block; second run clean.
+- Focused `cave_carved_path_torches.json` — exit 0, status=pass;
+  [TORCH] incremental-carve active=29 → 148 → 154 → 142; all arm count_near
+  green; declined 9102/9103 zero interior torches.
+- `declined_cave_torches_extinguish.json` — exit 0, status=pass;
+  decline-lock 9001 then active=10.
+- `cave_pending_seals_entrance_instantly.json` run 1 — exit 0 status=pass;
+  suppression logged on every carve event; only fixture cave 9003; route found
+  (8.0 / 17 waypoints) → sealed pending ("No valid path") → 1s dark
+  (active=31) → confirm yes restores exact route + lighting (active=50).
+- Same scenario consecutive run 2 — exit 0 status=pass, identical sequence,
+  distances, torch counts (deterministic).
 
-## Notes / handoff
-- All 15 plan criteria remain implemented and verified headless this iteration.
-- Remaining manual item stays with the manual tester: fresh windowed top-down
-  PNGs of the carved cross pixel-inspected per arm (cluster 1/3 screenshot
-  criteria); headless runs skip screenshots by design.
+## Notes for checker/manual tester
+- Raw-output scan per plan rule: only pre-existing HudTheme.tres
+  missing-texture noise and exit-time dummy-renderer leak warnings; no feature
+  SCRIPT ERROR / Parse Error / Invalid call.
+- The glow renders in every renderer (unshaded additive), so it should show up
+  under llvmpipe windowed runs regardless of light budget. If any arm segment
+  still reads dark numerically, raise GLOW_ENERGY (1.4) before touching
+  placement.
+- No scenario JSON or assertion was modified this revision.
