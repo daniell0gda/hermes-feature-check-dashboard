@@ -4,23 +4,12 @@
       "task_id": "plan",
       "cluster_id": null,
       "role": "plan",
-      "model": "stealth/ox-alpha",
+      "model": null,
       "model_tier": null,
-      "cost_usd": 0.0,
-      "cost_status": "estimated",
-      "input_tokens": 80028,
-      "output_tokens": 1488
-    },
-    {
-      "task_id": "code",
-      "cluster_id": "implementation",
-      "role": "code",
-      "model": "stealth/ox-alpha",
-      "model_tier": null,
-      "cost_usd": 0.0,
-      "cost_status": "unknown",
-      "input_tokens": 98565,
-      "output_tokens": 3104
+      "cost_usd": null,
+      "cost_status": "unavailable",
+      "input_tokens": null,
+      "output_tokens": null
     }
   ]
 }
