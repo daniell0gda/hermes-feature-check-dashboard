@@ -67,3 +67,15 @@ Also required (carried over):
    for the grounded configuration so the harness can pass legitimately.
 4. Windowed screenshot evidence from the normal gameplay camera proving 1–2 are fixed,
    plus rotation-invariance (globe does not rotate).
+
+## Check-scope bound (after check-worker timeout, run issue137-earth-continent-map)
+
+The full 135-scenario python3 loop times out the runner (15-min cap, ~52 scenarios in
+15 min). For verification of THIS issue do NOT run the full suite. Required evidence:
+1. Import/build gate (editor quit-after).
+2. Focused harnesses: `backdrop_earth_visible.json` and `backdrop_earth_glint.json`
+   (both must pass with center_y ≈ 0, grounded=true, rotation_invariant=true).
+3. A small targeted spot-check (≤5 related scenarios: menu_backdrop_map + 2-3 smoke
+   scenarios) if time allows.
+4. Windowed screenshot + rotation-invariance via the manual-testing gate.
+Record the full-suite timeout as a known limitation in quality-notes, not a blocker.
