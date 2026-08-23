@@ -391,7 +391,7 @@
   },
   {
     "run_id": "issue-124-light-coverage-rev2",
-    "status": "running",
+    "status": "failed",
     "url": "runs/issue-124-light-coverage-rev2/"
   },
   {
