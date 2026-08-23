@@ -1,12 +1,12 @@
 {
   "run_id": "issue130-underground-carve-topdown-camera-rotation",
   "feature": "underground-carve-topdown-camera-rotation",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-23T04:05:47.971Z",
-  "ended_at": null,
+  "ended_at": "2026-08-23T04:36:09.949Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue130-underground-carve-topdown-camera-rotation/",
-  "heartbeat_at": "2026-08-23T04:36:05.227Z",
+  "heartbeat_at": "2026-08-23T04:36:09.949Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-23T04:36:05.227Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T04:36:05.228501+00:00",
-    "last_success_at": "2026-08-23T04:34:31.483239+00:00",
+    "last_attempt_at": "2026-08-23T04:36:09.949610+00:00",
+    "last_success_at": "2026-08-23T04:36:09.948392+00:00",
     "last_error": null
   },
   "metrics": {
@@ -35,6 +35,17 @@
         "task_id": "code",
         "cluster_id": "implementation",
         "role": "code",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
         "model": null,
         "model_tier": null,
         "cost_usd": null,
