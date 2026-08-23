@@ -25,5 +25,14 @@
     "duration_ms": 177893,
     "summary": "Check complete.\n\nVerified done: 8. Pending: 1 \u2014 0 due to build/test failures, 1 due to missing evidence (windowed armor-bar visual checkpoint owned by the manual tester; `.gen/manual-report.md` absent), 0 due to quality violations. Impossib\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T17:24:04.999Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 25165,
+    "summary": "Gate decision complete.\n\n- Wrote /workspace/git-workspaces/poke-defense-godot/issue-warlords-doctrine/.gen/manual_testing.md with `manual_testing: required`.\n- Reason: check.md is `pass` with one Pending criterion \u2014 the windowed armor-bar v\u2026",
+    "error": null
   }
 ]
