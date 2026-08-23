@@ -34,5 +34,14 @@
     "duration_ms": 1091074,
     "summary": "`release_project_worker` is not exposed in this session's toolset (only `run_project_cmd`), so the worker stays up for the checker's own runs.\n\nSummary:\n\n- Read plan, clusters, revisions.md, check.md, request.md, status.md. The revision-1 f\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-23T20:11:02.300Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 211139,
+    "summary": "Verification complete; artifacts written.\n\nVerified done: 6. Pending: 5 \u2014 0 due to build/test failures, 5 due to missing evidence (windowed screenshots + `.gen/manual-report.md`, which belong to the manual-tester), 0 due to quality violatio\u2026",
+    "error": null
   }
 ]

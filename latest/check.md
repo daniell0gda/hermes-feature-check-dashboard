@@ -1,77 +1,94 @@
-# Check report: req-83-traps-frostbite-fangs (iteration 2 / revision-check-1)
+# Check report — issue #127 reopen follow-ups (revision-check-1, iteration 4)
 
-classification: pass
+classification: fixable
 
 ## Verdict
 
-All eight acceptance criteria are implemented and freshly verified through
-`run_project_cmd` (project=poke-defense-godot,
-workspace=poke-defense-godot/issue-traps-frostbite-fangs). No source changes
-were needed this iteration (worktree diff identical to iteration 1); iteration
-1's only `fixable` residue was the windowed screenshot handoff, which belongs to
-the manual-tester profile per the request's own `manual_testing: required`
-gate — not to the coder. The implementation side is complete and green, so this
-check classifies `pass` and hands the windowed confirmation to the manual
-tester rather than looping another code revision over a non-code item.
+The revision-1 code deliverable is complete and freshly verified green this run:
+editor/import gate exit 0, focused suite `titled_panel_close_corner` **58 ok,
+0 failed** (exit 0, 17/17 tests completed), and the full harness scenario passes
+(exit 0) with the **forced Unique draw actually firing** — log shows
+`[Progression] draw_choices_for_chest: force_mode=true, flagged=1, normal=45,
+chosen=1`, `[PROGRESSION_MODAL] open money=50 options=2` with no
+invalid-theme-override errors, then scifi_overclock granted and
+`[REWARDS_MODAL] open trigger=rewards_button selections=1` for the listed-Unique
+shot. Both precondition probes (`contains scifi_overclock` over a 100-draw,
+`!contains Common` over a 2-draw) passed before the chest opened, so the
+revision-1 failure mode (photographing a Common-only modal) is closed.
+`tests/scenarios/progression_modal_wood_frame.json` was modified as required.
 
-## Fresh verification commands (this run, all via run_project_cmd)
+What remains missing is exactly the windowed/manual half of request.md, which
+belongs to the manual-tester worker: `.gen/screenshots/` copies do not exist,
+`shots/progression_modal_wood_frame.png` / `panel_rewards_unique.png` were not
+captured (headless runner correctly reports both screenshots `skipped`,
+reason=headless), and `.gen/manual-report.md` is absent. The checker does not own
+`.gen/manual-report.md`. 6 structural criteria are verified Done; 5 visual
+criteria stay Pending on that missing evidence.
+
+## Verification commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-window-modals-skip-wood-frame)
 
 | Command | Exit | Result |
-|---|---|---|
-| `["godot","--version"]` | 0 | 4.4.1.stable.official.49a5bc7b6 |
-| `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | import/parse gate clean (only pre-existing invalid-UID warnings) |
-| `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_frostbite_fangs_progression.json"]` | 0 | `.gen/harness/traps_frostbite_fangs_progression/result.json`: `status=pass`, all timeline steps ok; live log `[FROSTBITE_FANGS] trap=trap_01 chill=0.6 dur=3.0 enemy=Cactoro`; L1→L3 replay 0.4/2.0s → 0.5/2.5s → 0.6/3.0s |
-| same runner cmd, `traps_serrated_edges_progression.json` | 0 | status=pass (trap regression) |
-| same runner cmd, `undermining_trap_armor.json` | 0 | status=pass (Undermining strip path unaffected by the new `perform_hit` hook) |
+| --- | --- | --- |
+| `["git","status","--short"]` | 0 | runner reachable; 8 modified files + `scripts/ui/modal_unique_styling.gd`; scenario JSON now modified |
+| `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | import/typecheck gate green |
+| `["godot","--headless","--path",".","res://tests/ui/test_titled_panel_close_corner.tscn"]` | 0 | "58 ok, 0 failed", "every test ran to completion (17 of 17)" |
+| `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/progression_modal_wood_frame.json"]` | 0 | `[Harness] status=pass exit=0`; fresh `.gen/harness/progression_modal_wood_frame/result.json` status=pass, all 16 actions ok |
 
-## Acceptance criteria evidence
+Fresh result.json confirms: load_map map_10 ok, both force-probes ok,
+cave_fixture/open_chest ok, modal count==1 ok, both screenshots outcome=skipped
+(headless — expected), progression close + rewards reopen ok.
 
-1. **Add Unique `traps_frostbite_fangs` (L1-3)** — Done.
-   `scripts/progression/trap.json`: Unique, maxLevels 3; harness asserts
-   `type == Unique`, eligible at L1/L2, ineligible at L3.
-2. **Trap hits apply chill/slow via `EffectsManager.apply_frozen`** — Done.
-   `Trap.gd::_apply_frostbite_fangs` calls `apply_frozen(magnitude, duration, -1)`
-   from `perform_hit`; live trap hits logged on the real overlap-poll path.
-3. **Duration or magnitude scales per level** — Done. Harness walks L1→L2→L3:
-   0.4/2.0s → 0.5/2.5s → 0.6/3.0s; absolute levels are idempotent across
-   save/reload.
-4. **Reuse existing frost overlay VFX from `apply_frozen`** — Done. No new
-   assets; unchanged `EffectsManager.apply_frozen` → `apply_slow` +
-   `_ensure_ice_slow_fx`.
-5. **Confirm frost overlay renders when triggered from a trap** — headless bar
-   green (`frozen_count >= 1`, `slow_magnitude == 0.6`, `ice_slow_fx >= 1` on a
-   live trap hit). Windowed pixel confirmation remains with the manual tester
-   (screenshot checkpoint skipped: reason=headless). Criterion stays Pending in
-   status.md until the manual report lands; it is not a code defect.
-6. **Preserve existing frozen-effect ownership and stacking semantics** — Done.
-   Chill routes through untouched `apply_frozen` (burn exclusivity + slow owner
-   preserved); unowned config returns before any effect call; both trap
-   regression harnesses pass.
-7. **Focused coverage for level scaling and trap-triggered behavior** — Done.
-   New `tests/scenarios/traps_frostbite_fangs_progression.json`; no pre-existing
-   scenario covered frostbite (no test overlap).
-8. **Verify the relevant trap gameplay path** — Done. Live underground arm:
-   cave fixtures → force spawn → placed trap_01 → overlap-poll `perform_hit`;
-   unowned control arm proves no `[FROSTBITE_FANGS]` log without the perk.
+## Per-criterion evidence
+
+Done (passing automated tests from this run's focused suite):
+- Plate width derived from `_title_min_width()` in `TitledPanel.gd` — test asserts plate width == label combined min width + stylebox side margins ("plate width 247 covers title min width + margins 247 - no clip").
+- TitlePlate centre anchoring (preset 5, symmetric offsets L-124/R124) asserted for both scenes.
+- ✕ emits `close_requested` once and closes the modal — pre-existing tests pass unchanged.
+- ProgressionModal Unique offer card: gold/bronze border Color(0.85,0.66,0.28) ≥3px every side via duplicated StyleBoxFlat override (not color override); modal opens with zero invalid-theme-override errors (focused suite + harness).
+- Unique card name label uses ModalTitle contrast; common card name styling unchanged (asserted).
+- RewardsModal listed selection with stored type Unique gets identical border/badge/header treatment ("listed unique selection wears the same gold ≥3px border", "border applied through StyleBoxFlat override").
+
+Pending (windowed visual / manual evidence only — structure proven, pixels not):
+- Title fully readable at rendered size (geometry proven: plate rects enclosed by windows, straddle rim).
+- RewardsModal description in ModalWell "visually distinct" (structure asserted).
+- ProgressionModal inner body well visible panel background (structure asserted).
+- Common-card layout order confirmed in a real render (order asserted structurally).
+- "Unique" badge literal text legible in a screenshot (badge node + Label asserted; criterion demands a screenshot).
 
 ## Changed-file quality findings
 
-- Diff reviewed against `/opt/data/coding_rules.md` + worktree `CLAUDE.md`:
-  typed variables, guard clauses, debug-only tagged logs, surgical scope
-  (4 modified files + 1 new scenario), no duplication or dead code. No
-  violations in new/changed code.
-- quality-notes.md: no open entries; no new cross-cutting issues found
-  (`git diff HEAD` / untracked = feature files plus declared `.gen` artifacts).
+No quality violations in this iteration's changed code against
+/opt/data/coding_rules.md and worktree CLAUDE.md: typed variables throughout,
+documented single-purpose shared helper `modal_unique_styling.gd` resolving the
+revision-1 duplication, small focused functions, guard-clause style, inline
+explanations for the HudTheme margin change and TitledPanel inset. Test-overlap
+check across the existing suite: the added assertions target behaviour no other
+test covered; no duplication found.
+
+Pre-existing noise, not attributed to this diff: invalid-UID ext_resource
+warnings in HudTheme.tres/UI.tscn, dummy-renderer RID-leak errors at exit,
+one exclusive-child Window ERROR when both modals instantiate in one test tree,
+unimported-GLB load failures headless.
 
 ## Blockers
 
-None. Runner healthy throughout; every command went through run_project_cmd;
-no host-shell Godot.
+None infra-related. Remaining gap is the assigned manual/windowed pass:
+1. Run the harness WINDOWED (never --headless) to capture
+   `shots/progression_modal_wood_frame.png` and `shots/panel_rewards_unique.png`.
+2. Copy fresh PNGs to `.gen/screenshots/`.
+3. Manual tester judges `ui_feels_broken: no` and writes `.gen/manual-report.md`
+   (vision-check titles unclipped, ModalWell distinction, gold ≥3px border,
+   readable "Unique" badge).
 
-## Unverified items / handoff
+## Unverified items
 
-- Windowed screenshot of visible frost overlay on trap hit → manual tester
-  (checkpoints wired: `frostbite_fangs_chilled_hit`, optional
-  `frostbite_fangs_aftermath`). Checker did not touch
-  `.gen/manual-report.md`.
-- Lifecycle respected: nothing committed/pushed/merged/closed by check.
+- Rendered-pixel claims listed under Pending above.
+- Nothing else; all automated gates passed fresh this run.
+
+## Classification rationale
+
+Runner healthy via run_project_cmd; build, focused suite, and full harness all
+exit 0 with the forced-Unique fixture working. The 5 remaining Pending criteria
+require windowed screenshots and the manual-tester report that request.md
+assigns to another worker — recoverable within current design → fixable.
