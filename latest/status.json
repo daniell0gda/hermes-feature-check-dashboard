@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-glow-tuning-rev4-retry/",
   "heartbeat_at": "2026-08-23T12:57:05.659Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
   "process_id": 46910,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T12:57:05.659551+00:00"
+    "last_attempt_at": "2026-08-23T12:58:20.045168+00:00",
+    "last_success_at": "2026-08-23T12:57:09.945486+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
