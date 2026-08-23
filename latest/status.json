@@ -1,20 +1,21 @@
 {
-  "run_id": "warlords-doctrine-r1",
-  "feature": "Warlord's Doctrine perk",
+  "run_id": "req-91-perk-undermining",
+  "feature": "perk-undermining",
   "status": "running",
-  "started_at": "2026-08-23T16:35:26.314Z",
+  "started_at": "2026-08-23T16:35:28.569Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/",
-  "heartbeat_at": "2026-08-23T16:35:26.314Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-91-perk-undermining/",
+  "heartbeat_at": "2026-08-23T16:35:28.569Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
-  "process_id": 73860,
+  "process_id": 73877,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T16:35:26.314728+00:00"
+    "last_attempt_at": "2026-08-23T16:35:32.019102+00:00",
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
   "metrics": {}
 }
