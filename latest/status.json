@@ -1,21 +1,21 @@
 {
-  "run_id": "issue132-move-tower-details-panel-right-1787458233",
-  "feature": "move-tower-details-panel-right-side",
+  "run_id": "req-136-padding-closable-panels-close-button",
+  "feature": "padding closable panels close button",
   "status": "running",
-  "started_at": "2026-08-23T04:10:33.976Z",
+  "started_at": "2026-08-23T04:18:23.650Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue132-move-tower-details-panel-right-1787458233/",
-  "heartbeat_at": "2026-08-23T04:31:46.411Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T04:31:46.411Z",
-  "process_id": 896032,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
+  "heartbeat_at": "2026-08-23T04:32:17.406Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-23T04:32:17.406Z",
+  "process_id": 898756,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T04:31:51.267663+00:00",
-    "last_success_at": "2026-08-23T04:31:51.267064+00:00",
+    "last_attempt_at": "2026-08-23T04:32:17.406906+00:00",
+    "last_success_at": "2026-08-23T04:28:48.707888+00:00",
     "last_error": null
   },
   "metrics": {
@@ -24,12 +24,12 @@
         "task_id": "plan",
         "cluster_id": null,
         "role": "plan",
-        "model": null,
+        "model": "stealth/ox-alpha",
         "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
+        "cost_usd": 0.0,
+        "cost_status": "estimated",
+        "input_tokens": 80028,
+        "output_tokens": 1488
       }
     ]
   }
