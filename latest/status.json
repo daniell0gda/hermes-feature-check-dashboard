@@ -1,102 +1,20 @@
 {
   "run_id": "warlords-doctrine-r1",
   "feature": "Warlord's Doctrine perk",
-  "status": "failed",
-  "started_at": "2026-08-23T16:35:26.314Z",
-  "ended_at": "2026-08-23T17:08:41.654Z",
+  "status": "running",
+  "started_at": "2026-08-23T17:09:13.035Z",
+  "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/",
-  "heartbeat_at": "2026-08-23T17:08:41.654Z",
-  "last_node": "manual-tester",
+  "heartbeat_at": "2026-08-23T17:09:13.035Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-23T17:08:37.259Z",
-  "process_id": 73860,
+  "last_event_at": null,
+  "process_id": 93127,
   "host": "f1a4230ec90b",
-  "phase": "manual-tester",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T17:08:41.654079+00:00",
-    "last_success_at": "2026-08-23T17:08:41.653006+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-23T17:09:13.035437+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 154526,
-        "output_tokens": 6961
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 150803,
-        "output_tokens": 3916
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 101875,
-        "output_tokens": 3846
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 161410,
-        "output_tokens": 11037
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 93818,
-        "output_tokens": 4288
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 42366,
-        "output_tokens": 385
-      },
-      {
-        "task_id": "manual-tester",
-        "cluster_id": null,
-        "role": "manual-tester",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 0,
-        "output_tokens": 0
-      }
-    ]
-  }
+  "metrics": {}
 }
