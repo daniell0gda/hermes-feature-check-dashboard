@@ -1,22 +1,20 @@
 {
-  "run_id": "131-pointer-cursor-r1",
-  "feature": "pointer-cursor-on-clickable-surfaces",
+  "run_id": "req-136-padding-closable-panels-close-button",
+  "feature": "padding closable panels close button",
   "status": "running",
-  "started_at": "2026-08-23T03:46:17.900Z",
+  "started_at": "2026-08-23T03:49:38.189Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/131-pointer-cursor-r1/",
-  "heartbeat_at": "2026-08-23T03:46:17.900Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
+  "heartbeat_at": "2026-08-23T03:49:38.189Z",
   "last_node": null,
-  "active_node": "plan",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 887180,
+  "process_id": 888151,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T03:47:26.209507+00:00",
-    "last_success_at": "2026-08-23T03:46:22.640461+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-23T03:49:38.190049+00:00"
   },
   "metrics": {}
 }
