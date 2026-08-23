@@ -1,27 +1,39 @@
-# Coder report: implementation (clusters 1–3)
+# Coder report: implementation
 
 ## Changed files
-- `scripts/progression/global.json` — mod: new `sundering_bolts` Common perk, 3 levels (0.10 / 0.20 / 0.35)
-- `scripts/progression/managers/CurseProgressionManager.gd` — mod: handles `sundering_bolts`, absolute per-level ratio, `get_sundering_bolts_config()` ({enabled, ratio}), reset clears it
-- `autoload/ProgressionManager.gd` — mod: `get_sundering_bolts_config()` pass-through to the curse manager
-- `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — mod: `_apply_sundering_bolts_if_needed(final_hit_damage)` called in `take_damage` after all damage modifiers; converts ratio × final damage into extra armor drain via `_consume_armor`, debug `[SUNDERING_BOLTS] sunder ... level=N base_damage=X armor_damage=Y` log
-- `tests/scenarios/sundering_bolts_progression.json` — new: focused harness scenario
+- `scripts/progression/global.json` — mod: added Common global perk `warlords_doctrine` (3 levels, `value` 0.05/0.09/0.14 tower-damage ratios, `armor_bonus` 0.08/0.12/0.15), inserted directly after `tower_dmg`.
+- `autoload/ProgressionManager.gd` — mod: new `_warlords_damage_ratio` aggregate added additively inside `get_global_damage_multiplier()` (stacks with, never overrides, `tower_dmg`); dedicated `_apply_to_handler` branch for the perk with `[WARLORDS-DOCTRINE] applied L<n>` debug log; reset clears the ratio; new public `get_warlords_armor_ratio()` returning the level's `armor_bonus` (0 when unowned).
+- `scripts/game/actors/Enemy.gd` — mod: in `setup()`, after innate `max_armor` is read from cfg and after `max_hp`/boss multiplier are final, adds `max_hp * warlords_armor_ratio` bonus armor (additive on innate armor), with `[WARLORDS-DOCTRINE] spawn_bonus level=<n> granted_armor=<amount>` debug log per spawn.
+- `scripts/game/SpawnerSystem.gd` — no change needed: it only resolves innate armor into `enemy_config["armor"]`; the perk bonus is applied at the Enemy.gd spawn site as the plan requires.
+- `scripts/ui/EnemyHealthBar.gd` — no change needed: `_update_armor_bar()` already mirrors `enemy.armor` / `enemy.max_armor` generically and seeds/eases the ArmorRow on first appearance, so granted armor shows/animates on previously-unarmored enemies for free.
+- `tests/scenarios/warlords_doctrine.json` — new game-test scenario (details below).
 
-## Criteria — all Done
-Perk definition/eligibility/config/reset; take_damage application (final-damage base, zero-damage guard via `final_hit_damage <= 0.0`, additive with flat armor_dmg, no-op unowned); harness scenario.
+## Criteria
+- Perk definition (Common, exactly 3 levels, +5/+9/+14%) — Done
+- Multiplier 1.05/1.09/1.14, additive with `tower_dmg`, reset → 1.0 — Done
+- give/take consistent with existing Common globals (`apply_progression` / `reset_for_new_game`; there is no take API in this codebase — removal is via reset, same as every other global perk) — Done
+- Bonus armor 8/12/15% of max HP while active — Done
+- Additive over innate armor; unarmored enemy spawns with armor > 0 — Done
+- Inactive/removal → exactly innate armor (ratio returns 0.0 when level ≤ 0 or def missing) — Done
+- Armor bar shows/animates granted armor — Done (existing generic ArmorRow path; no code change)
+- `[WARLORDS-DOCTRINE]` debug log per application/spawn-bonus naming level and amount — Done
+- Harness scenario: unarmored enemy spawns armor > 0 / max_armor > 0; headless pass — Done
+- Harness asserts damage bonus end-to-end at L1 (20 base × 1.05 = 21 lands full through `armor_hit`) — Done
+- `enemy_armor_ballista` still passes unchanged — Done
 
-## Commands and results (all via run_project_cmd)
-- Focused: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/sundering_bolts_progression.json` — exit 0; `[Harness] status=pass`. Observed log lines:
-  - `[SUNDERING_BOLTS] sunder enemy=Orc Enemy_boss level=1 base_damage=5.0 armor_damage=0.5`
-  - `level=2 base_damage=5.0 armor_damage=1.0`
-  - `level=3 base_damage=5.0 armor_damage=1.75`
-  Armor assertions 60→40 (baseline), →39.5 / 39.0 / 38.25 at L1/L2/L3 all passed.
-- `godot --headless --path . res://tests/enemy/test_enemy_armor_damage.tscn` — exit 0; 18 ok, 0 failed.
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_ballista.json` — exit 0; status=pass.
-- Typecheck/build `godot --headless --path . --editor --quit-after 2` — exit 0, scripts compile clean.
-- `godot --headless --path . res://tests/tower/test_tower_armor_damage.tscn` — exit 1: **15 ok, 3 failed** — PRE-EXISTING on pristine baseline (verified by stashing my changes and rerunning; identical failures). Cause: `[BalistaTower] WARNING: Cannot fire - no bolt found in model` in this worker's model-import state; the bolt never reaches the enemy, so my hook is never involved.
+## Commands and results
+- `pwsh -Command "$env:GODOT_BIN='/usr/local/bin/godot'; & .claude/skills/game-test/scripts/Run-Scenario.ps1 warlords_doctrine"` (via run_project_cmd, project poke-defense-godot) — exit 0; `status=pass exit=0 elapsed=1.278s`; "3 scenarios — 3 pass, 0 fail, 0 timeout, 0 error" (warlords_doctrine, progression_global_scaling, enemy_armor_ballista).
+- Same command shape with `-Editor` (typecheck/build) — exit 0; "OK — no script or parse errors".
+- Evidence in run log `.gen/harness/_logs/warlords_doctrine.out.log`: `[WARLORDS-DOCTRINE] applied L1 tower_damage_bonus=0.05 total_multiplier=1.05`, `[WARLORDS-DOCTRINE] spawn_bonus level=1 granted_armor=1.76 on Mushnub` (8% of hp 22), `[PROGRESSION] apply tower_dmg L1 multiplier=1.10` proving additive stacking.
+- result.json assertions all pass: Mushnub spawns max_armor > 0 / armor > 0 where the pre-perk baseline scenario asserts 0/0; scripted neutral hit deals exactly 21 (StatsManager instance_summary.8801.damage == 21); owning both perks gives 1.10; reset returns multiplier to 1.0 and level to 0.
 
-## Notes for tester
-- Conversion base is the hit's FINAL damage after ARMOR_DAMAGE_REDUCTION etc., not towers.xml base: scenario asserts 60→39.5/39.0/38.25 (base 5 = 10 × 0.5 while armor remains).
-- Sunder runs before HP accumulation but after armor depletion checks; a hit that fully strips armor still sunders nothing extra afterward (`enemy.armor <= 0.0` fast escape).
-- Fresh worktree needs one `--editor --quit-after 300` import pass before any harness run, else GLB loads fail.
+## Re-verification (final pass)
+- `Run-Scenario.ps1 warlords_doctrine` via run_project_cmd — exit 0, `status=pass elapsed=1.274s`, "3 scenarios — 3 pass" (warlords_doctrine, progression_global_scaling, enemy_armor_ballista).
+- `Run-Scenario.ps1 -Editor` — exit 0, "OK — no script or parse errors".
+- result.json assertions confirmed: Mushnub spawns `max_armor > 0` / `armor > 0`; scripted armor_hit deals exactly 21 (20 base × 1.05), armor stripped to 0; log shows `[WARLORDS-DOCTRINE] applied L1 tower_damage_bonus=0.05 total_multiplier=1.05` and `spawn_bonus level=1 granted_armor=1.76 on Mushnub`.
+
+## Notes
+- Scenario design gotchas for the tester: enemy HP is int, so the end-to-end damage leg uses base 20 (×1.05 = 21 integer-exact) instead of 10 (would floor to 10 and prove nothing). The scripted hit carries armor_damage 5 so the 1.76-granted armor strips fully (5 > 1.76 avoids the ARMOR_DAMAGE_REDUCTION halving of the HP component) and the full 21 reaches HP.
+- `warlords_doctrine` has `forceVisibility: false` like other non-flagged globals, so chest draws behave unchanged; the scenario drives picks via `apply_progression` directly (same route as `progression_global_scaling.json`).
+- Bonus armor intentionally scales off post-boss-multiplier `max_hp` (computed after the boss multiplier block in `setup()`), matching "share of its max HP" for bosses too.
+- Manual/UI-sanity criterion remains for the manual tester (windowed run per `.gen/ui_scenario.md`): perk visible/selectable in progression draw, armor row appearing over a fresh unarmored enemy.
