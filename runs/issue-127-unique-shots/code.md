@@ -1,26 +1,27 @@
-# Coder report: implementation\n\n# Coder report: implementation (revision 2)
+# Coder report: implementation\n\n# Coder report: implementation (revision 2 rework)
 
 ## Changed files
-- `scripts/ui/modal_unique_styling.gd` — new: shared static `ModalUniqueStyling.apply(card, name_label, card_vb, rarity, badge_alignment)` helper carrying the whole Unique treatment: duplicated StyleBoxFlat override with metallic gold/bronze border Color(0.85,0.66,0.28) at 3px on all sides, a CostBadge "Unique" chip moved to the top of the card VBox, and ModalTitle variation on the name label.
-- `scripts/ui/RewardsModal.gd` — mod: `_apply_unique_styling` reduced to a one-line delegation (`Control.SIZE_SHRINK_BEGIN` badge alignment preserved).
-- `scripts/ui/ProgressionModal.gd` — mod: same delegation with the default `SIZE_SHRINK_CENTER`.
-- `themes/hud/HudTheme.tres` — mod: `StyleBoxTexture_modal_closable.texture_margin_right` 80 → 75 to match `TitledPanel.CLOSE_CORNER_SIZE.x`; this turns the previously failing focused-suite assertion ("its corner region (80x80) fits under the plate") green — the 5px excess was real bare wood beside the ✕ plate.
-
-No other behaviour changed; border colour, widths, badge text/variation, ModalTitle treatment identical to revision 1.
+- `scripts/ui/modal_unique_styling.gd` — new; shared `ModalUniqueStyling.apply()` static helper
+- `scripts/ui/ProgressionModal.gd` — mod; delegates to helper, carries `rarity`, inner description well
+- `scripts/ui/RewardsModal.gd` — mod; delegates to helper (SIZE_SHRINK_BEGIN badge), own ModalWell for description
+- `scripts/ui/hud/TitledPanel.gd` — mod; `_title_min_width()` plate sizing from label min width + stylebox margins
+- `scenes/ui/RewardsModal.tscn`, `scenes/ui/ProgressionModal.tscn` — mod; Frame inset offset_top=27, TitlePlate offsets 2..52
+- `themes/hud/HudTheme.tres` — mod; StyleBoxTexture_modal_closable.texture_margin_right 80 -> 75 (matches CLOSE_CORNER_SIZE.x)
+- `tests/ui/test_titled_panel_close_corner.gd` — mod; 6 new test functions covering all three clusters
 
 ## Criteria
-- unique-card-styling quality finding (checker's `— quality:` demotion) — Done: duplication extracted into one shared helper; both modals now delegate.
-- Focused-suite gate — Done: suite fully green for the first time (was exit 1 from the pre-existing corner-region failure).
+- title-plate-inside-window (4 criteria) — Done by automated tests; windowed manual screenshot still owed by manual tester (.gen/manual-report.md)
+- description-well (3 criteria) — Done by automated tests; visual screenshot still owed by manual tester
+- unique-card-styling (4 criteria) — Done by automated tests via shared ModalUniqueStyling; harness scenario still draws only Common offers, so Unique styling is unphotographed until a fixture forces a Unique option
 
-## Commands and results (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-window-modals-skip-wood-frame)
-- `git status --short` — exit 0.
-- `godot --headless --path . --editor --quit-after 300` — exit 0; typecheck/build/import gate green.
-- `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit code **0**; "titled_panel_close_corner: 58 ok, 0 failed". All 17 tests complete including the previously failing corner-region assertion (now "(0x80) fits under the plate"), plate-inside-window, wells, and both Unique-styling tests.
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/progression_modal_wood_frame.json` — exit code 0; `[Harness] status=pass exit=0`; result written to `.gen/harness/progression_modal_wood_frame/result.json`. ProgressionModal opened (money=30 options=3) with no invalid-theme-override errors. Screenshot step skipped headless as expected.
+## Commands and results
+- `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit code 0; full import pass clean (via run_project_cmd)
+- `["godot","--headless","--path",".","res://tests/ui/test_titled_panel_close_corner.tscn"]` — exit code 0; "58 ok, 0 failed", "every test ran to completion (17 of 17)"
+- `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/progression_modal_wood_frame.json"]` — exit code 0; "[Harness] status=pass exit=0"; no theme-override engine errors during any modal open
 
 ## Notes
-- Manual windowed screenshots (.gen/manual-report.md) remain outstanding — headless runs cannot produce them; that hold is unchanged from revision 1 and belongs to the tester role.
-- The windowed scenario still does not force a Unique offer into the chest draw (log shows `force_mode=false ... chosen=2`, all Common); force or seed one before photographing the gold border/"Unique" badge.
-- Gotcha: GDScript has no `SizeFlags` type — size-flag parameters must be annotated `int`.
-- Gotcha: after adding a new `class_name` script, run one editor import pass before headless tests or the global class is unresolved ("Identifier not declared").
+- The revision-1 duplication of `_apply_unique_styling` is resolved: both modals now delegate to the new `ModalUniqueStyling` class (`scripts/ui/modal_unique_styling.gd`). Border Color(0.85,0.66,0.28) at 3px on every side through duplicated StyleBoxFlat override; CostBadge "Unique" chip; ModalTitle name contrast.
+- HudTheme texture_margin_right fix (80->75) turned the previously failing corner-region assertion ("its corner region (80x80) fits under the plate") green.
+- Harness draw remains force_mode=false with chosen cards all Common — before windowed manual shots, a fixture or forced option must include a Unique offer, otherwise gold border/badge go unphotographed.
+- Pre-existing noise, not ours: invalid-UID ext_resource warnings in HudTheme/UI.tscn, harness exit RID-leak errors (dummy renderer), one exclusive-child Window ERROR in the focused suite when both modal windows are instantiated in the same test tree (harmless; assertions unaffected).
 \n
