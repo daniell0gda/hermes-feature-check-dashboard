@@ -1,58 +1,22 @@
 {
-  "run_id": "110-grass-grid-misses-far-edges",
-  "feature": "grass-grid-misses-far-edges",
+  "run_id": "issue137-earth-continent-map",
+  "feature": "earth-continent-map-integration",
   "status": "running",
-  "started_at": "2026-08-23T00:32:36.653Z",
+  "started_at": "2026-08-23T00:55:39.079Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/110-grass-grid-misses-far-edges/",
-  "heartbeat_at": "2026-08-23T00:59:15.500Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T00:59:15.500Z",
-  "process_id": 830468,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
+  "heartbeat_at": "2026-08-23T00:59:29.165Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-23T00:59:29.165Z",
+  "process_id": 837982,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T00:59:19.971916+00:00",
-    "last_success_at": "2026-08-23T00:59:19.971087+00:00",
+    "last_attempt_at": "2026-08-23T00:59:29.166320+00:00",
+    "last_success_at": "2026-08-23T00:55:48.156616+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 110924,
-        "output_tokens": 4733
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 175209,
-        "output_tokens": 18984
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 95388,
-        "output_tokens": 3160
-      }
-    ]
-  }
+  "metrics": {}
 }

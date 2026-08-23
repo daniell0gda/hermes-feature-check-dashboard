@@ -1,28 +1,29 @@
 # Coder report: implementation
 
 ## Changed files
-- `scripts/game/NatureDecoration.gd` — modified
-- `tests/visuals/test_nature_visibility_range.gd` — modified
+- `scripts/game/visuals/BackdropEarth.gd` — mod (grounded continent rig; carried from prior iteration, verified this run)
+- `scripts/game/Game.gd` — mod (harness observability: `debug_sample_backdrop_earth_transform`, `debug_backdrop_earth_rotation_invariant`, `backdrop_earth_grounded`)
+- `scripts/testing/HarnessValues.gd` — mod (`backdrop_earth` expectation source: present/grounded/center_y/rotation_invariant)
+- `tests/scenarios/backdrop_earth_visible.json` — mod (grounded + rotation-invariance expectations, transform samples a/b around 3s gap)
+- `tests/scenarios/backdrop_earth_glint.json` — mod (backdrop_earth source expectations incl. grounded)
+- `models/stylized_earth_in_clouds.glb`, `logs/balance/map_difficulty.csv` — mod (pre-existing worktree changes, not touched by this cluster)
 
 ## Criteria
-- Grass base-position sampling covers full map extent for any size/grid combination — Done
-- Duplicated grid-walk replaced by one shared helper called from both paths — Done
-- 50x50 default settings: grass in every quadrant band adjacent to all four edges — Done
-- Debug-build [NATURE] log line per pass with count and min/max X/Z — Done
-- Test numerically asserts 50x50 extent within one grid step of all four edges on both paths — Done
-- Existing assertions still pass (no distance cull, all tests complete) — Done
+- Exactly one grounded continent mesh + debug warning when absent — Done (`GROUNDED_CONTINENT="Continent_Africa"`, `_verify_continent_mesh()` push_warning)
+- Continent apex flush at playable plane (center_y == 0) — Done (apex-based sink; harness center_y = -1.28e-05)
+- Globe horizon inside normal gameplay camera frustum — implemented; windowed visual confirmation is manual-tester scope
+- Grounded spin never starts — Done (rotation_invariant=true across 3.0s sample gap; `_place_earth_grounded` never calls `_start_earth_spin`)
+- Debug `[BACKDROP EARTH]` grounding log line — Done (continent name + pos/scale/rot_deg per grounding event)
+- Both focused scenarios pass headless green — Done
+- Windowed backdrop look / surface screenshot — Pending: requires windowed build; headless worker cannot capture
 
 ## Commands and results
-- `godot --headless --editor --quit-after 2 --path .` (typecheck/build) — exit code 0; scripts compile clean, no parse errors.
-- `godot --headless --import --path .` (full test) — exit code 0.
-- `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn` (focused) — exit code 0; prints `=== nature_visibility_range: 16 ok, 0 failed ===`. Sampled base positions: 289 on a 50x50 map, min/max X (-24, 24), min/max Z (-24, 24). Grid-path placed grass extent x [-24.48, 24.50], z [-24.47, 24.50]; all four edge-band checks pass on both paths.
-
-Note: the focused run was executed via a python3 wrapper inside the runner (`subprocess.run([...])`) because the runner response truncates long stdout before the summary line; the godot invocation inside is byte-for-byte the focused command.
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/backdrop_earth_visible.json` — exit 0; `.gen/harness/backdrop_earth_visible/result.json` status=pass; all 6 expectations pass (present, grounded, center_y=-1.28e-05, rotation_invariant, map_id, current_layer); log line: `[BACKDROP EARTH] grounded continent=Continent_Africa pos=(-21.2, -83.7824, -51.76) scale=41.6 rot_deg=(15.39, 21.67, 83.15)`
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/backdrop_earth_glint.json` — exit 0; status=pass; present/grounded/center_y all green
+- Typecheck/build `godot --headless --path . --editor --quit-after 300` — exit 0; no script errors
+- Full suite (plan command, DEVNULL-wrapped): ran ~50/95 scenarios in the 900 s runner cap before being killed; every scenario it reached passed except pre-existing unrelated failures/timeouts (cannon_bunker_buster*, cave_discovery_long_carve carve_tiles 961>=1000, fire_oil_slick/wildfire timeouts, projectiles_10x/2x/5x egg-death, progression_pick venom_miasma_bloom). None of these touch BackdropEarth.gd or the two backdrop scenarios; both backdrop scenarios re-ran and passed inside that sweep at 23:07.
 
 ## Notes
-- Root cause: both grid walks used `range(-int(map/2 - margin), int(map/2 - margin), int(grid_size))` — int truncation shrank the step AND the exclusive end never reached +half, leaving an unsampled strip along +X/+Z.
-- Fix: new shared helper `_sample_grass_grid_base_positions()` does a float while-loop walk over [-half+margin, half-margin] inclusive on both axes; called from `_generate_grass_groups` (per-instance) and `_generate_grass_groups_multimesh` (grid branch). Changing the helper changes both paths.
-- [NATURE] log emitted inside the helper (debug builds only): count + min/max sampled X/Z.
-- Gotchas for tester:
-  - Headless Godot uses a dummy renderer that does NOT retain MultiMesh instance buffers: `MultiMesh.get_instance_transform(i)` reads back zero transforms headless. The multimesh edge assertion therefore checks the sampler's authoritative base positions via new public getter `get_last_grass_base_positions()`; per-instance path additionally verifies real placed node world transforms.
-  - Do not wrap typed arrays through untyped `Array(...)` in GDScript when assigning to `Array[Vector3]` vars — raises "Trying to assign an array of type Array" script errors at runtime.
+- Flush-at-y=0 contract depends on baking scale into `earth_rig.basis`; assigning `.scale` after `.basis` resets scale to unit and breaks center_y.
+- Sink depth measured from GLB apex constant (2.014 native), so land — not ocean sphere — meets the board.
+- The full-suite FAILs above are out-of-cluster regressions visible to the tester; they reproduce on the untouched baseline paths (cave/fire/projectiles/progression systems).
