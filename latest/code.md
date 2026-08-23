@@ -1,55 +1,31 @@
-# Coder report: closable-panel-content-padding\n\n# Coder report: closable-panel-content-padding
+# Coder report: 1-remove-dead-cave-placement-finder\n\n# Coder report: 1-remove-dead-cave-placement-finder
 
 ## Changed files
-- `scripts/ui/hud/TitledPanel.gd` — mod: `_reserve_content_padding()` widens a duplicated frame stylebox's right (+90px) and top (+103px) content margins whenever a CloseChip exists; `[TITLED_PANEL]` debug log names the panel and inset; CloseChip flush top-right inside full-size frame art.
-- `scripts/ui/UI.gd` — mod: UpgPanel gets `is_closable = true` behavior via scene flag wiring — connects `close_requested` to new `_on_upg_panel_close_requested()` which drops the selection.
-- `scenes/UI.tscn` — mod: `Root/UpgPanel` sets `is_closable = true`.
-- `tests/ui/test_titled_panel_close_corner.gd` + `.tscn` — mod/new tests: chip presence/theme/size/flush placement, single close_requested, frame variation swap, stylebox margin reservation, non-closable panel unchanged, Manage Towers / Options / real UI.tscn UpgPanel leaf-rect overlap checks at two sizes.
-- `.gitignore` — mod: legacy repo-root test report path ignored.
+- `scripts/game/CaveSystem.gd` — mod (carried from iteration 1; already on disk, unchanged this revision)
+- `tests/scenarios/cave_discovery_long_carve.json` — mod (this revision)
 
 ## Criteria
-All six cluster criteria — Done (see `.gen/status.md`, already marked Done by prior iterations).
+- `_find_suitable_cave_position` search under scripts/ returns zero matches — Done
+- Only runtime placement lookup is `CaveUtils.find_suitable_cave_position` — Done
+- `cave_discovery_chance` scenario passes fresh run — Done
+- `cave_discovery_long_carve` scenario passes fresh run — Done
+- `cave_discovery_pending_placement` scenario passes fresh run — Done
+- Headless editor parse gate clean — Done
 
 ## Commands and results
-- Focused `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit 0; 33 ok / 0 failed (11 of 11 groups ran to completion).
-- Full `test_enemy_armor_bar.tscn` — exit 0; 35 ok / 0 failed.
-- Full `test_enemy_health_bar_boss_icon.tscn` — exit 0; 18 ok / 0 failed.
-- Full `test_enemy_health_bar_oiled_icon.tscn` — exit 0; 8 ok / 0 failed.
-- Typecheck/import `godot --headless --path . --import` — exit 0.
-- Manual windowed harness `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/hud_other_panels.json` — exit 0, status=pass; fresh screenshots captured 21:31 UTC in `.gen/harness/hud_other_panels/shots/`.
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/cave_discovery_chance.json` — exit 0; `[Harness] status=pass exit=0`; all 5 expectations pass. Result `.gen/harness/cave_discovery_chance/result.json`.
+- same invocation for `cave_discovery_long_carve.json` — exit 0; `[Harness] status=pass exit=0`; all 5 expectations pass, carved_tiles actual = 1600 (>= 1000). Result `.gen/harness/cave_discovery_long_carve/result.json`.
+- same invocation for `cave_discovery_pending_placement.json` — exit 0; `[Harness] status=pass exit=0`. Result `.gen/harness/cave_discovery_pending_placement/result.json`.
+- `godot --headless --path . --editor --quit-after 300` — exit 0; no script parse or class-cache errors.
+- Preflight/postflight `grep -rn "_find_suitable_cave_position" scripts/` — no matches.
 
 ## Notes
-- Vision inspection of the four fresh shots: ui_feels_broken: no on manage_towers, options, pause_menu, tower_details. No content touches or overlaps any ✕; chips sit flush inside the frame art corner.
-- The tower details (UpgPanel) panel DOES carry a ✕ by design in this change (is_closable=true on UpgPanel; close drops selection). A reviewer noting "tower details shouldn't have an x" should read scenes/UI.tscn diff first — it is intentional per this issue's fix.
-- Pre-existing noise, unrelated to this change: HudTheme.tres invalid-UID warnings (text-path fallback works), GLB load failures for stylized_earth_in_clouds.glb / portal_fantasy_arch.glb / ruined_house.glb in fresh import caches, GLES leak-at-exit errors after harness quit.
-- Gotcha carried from earlier iterations: set `is_closable` BEFORE add_child for scene-instantiated panels (chip is grown in `_ready()`); scene scripts extend TitledPanel by path so class identity checks must use `get_base_script()`.
-\n\n# Coder report: implementation\n\n# Coder report: implementation
+Root cause of the previously failing `cave_discovery_long_carve`: the scenario carved 5x5 rects centred at +/-7.5 world units, whose +X/+Z edge is exactly 10.0. `UndergroundUtils.world_to_grid` maps that to grid index 40 on map_6's 40x40 grid (valid indices 0-39), so `UndergroundSystem._carve_area_exceeds_grid` rejected every rect touching the positive edges — only 961 of 1600 tiles were carved. Deterministic at seed 20260820 and identical on unmodified HEAD (confirmed by iteration-1 checker), so it was a scenario geometry bug, not a code bug.
 
-## Changed files
-(working tree already carried the implementation from prior iterations; no new source edits this pass)
-- `scripts/ui/hud/TitledPanel.gd` — mod (close-corner right padding reservation)
-- `tests/ui/test_titled_panel_close_corner.gd` — mod (32 assertions incl. UpgPanel coverage)
-- `tests/ui/test_titled_panel_close_corner.tscn` — owned test scene
-- `.gitignore` — mod (legacy root test-report path)
+Fix: nudged edge rect centres from ±7.5 to ±7.45 (and adjacent centres to ±2.483 / ±2.483 so tiles stay aligned); all four 4x4 sweeps now cover every cell of the 40x40 grid with in-grid carves. The >=1000 threshold was kept as-is — the scenario now genuinely carves the whole grid (1600/1600). A note documenting the geometry rationale was appended to the scenario's `notes`.
 
-## Criteria
-All 6 cluster criteria — Done (see status.md; none pending/impossible).
-
-## Commands and results
-- `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit 0; 32 ok / 0 failed
-- `godot --headless --path . res://tests/ui/test_enemy_armor_bar.tscn` — exit 0; 35 ok / 0 failed
-- `godot --headless --path . res://tests/ui/test_enemy_health_bar_boss_icon.tscn` — exit 0; 18 ok / 0 failed
-- `godot --headless --path . res://tests/ui/test_enemy_health_bar_oiled_icon.tscn` — exit 0; 8 ok / 0 failed
-- `godot --headless --path . --import` — exit 0
-- `godot --headless --path . --check-only --script res://scripts/ui/hud/TitledPanel.gd` — exit 0
-- `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/hud_other_panels.json` — exit 0; Harness status=pass; fresh shots 20:51 UTC in `.gen/harness/hud_other_panels/shots/`
-
-## Notes
-- Manual visual verification (vision on the four fresh screenshots): ui_feels_broken: no
-  on tower details, pause menu, Manage Towers, Options. ✕ sits flush inside the frame's
-  top-right corner; no content touches or overlaps it.
-- `[TITLED_PANEL] ... reserves 90px of right padding for the close corner` log observed for
-  ManageTowersPanel, Options ("Panel"), and UpgPanel in both test and windowed runs.
-- Pre-existing benign warnings only (HudTheme invalid UIDs, GLB load warnings, exit-time
-  GLES3 leak noise) — unchanged by this feature.
+Gotchas for tester:
+- Runner rejects `sh` wrappers; each harness scenario must be invoked individually as a tokenized godot command (same semantics).
+- The scenario JSON keeps its original one-step-per-line formatting; diff shows only coordinate changes plus one added note line.
+- Pre-existing asset-import warnings (invalid UIDs, missing GLBs) are noise present on HEAD too.
 \n

@@ -1,13 +1,11 @@
 ## ✅ Done
-- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
-- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
-- The CloseChip remains flush in the frame's top-right corner and pressing it still emits exactly one `close_requested` (existing contract preserved).
-- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
-- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
-- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
 
 ## ⬜ Pending
-- (none)
+- A case-sensitive search for `_find_suitable_cave_position` under `scripts/` returns zero matches after the change.
+- The only cave-placement lookup used at runtime remains the shared helper (`CaveUtils.find_suitable_cave_position`); no second same-named placement routine exists anywhere under `scripts/`.
+- The `cave_discovery_chance` scenario passes a fresh headless harness run (status pass, exit code 0, all expectations met).
+- The `cave_discovery_long_carve` scenario passes a fresh headless harness run (status pass, exit code 0, all expectations met).
+- The `cave_discovery_pending_placement` scenario passes a fresh headless harness run (status pass, exit code 0, all expectations met).
+- The headless editor parse gate completes without script parse or class-cache errors after the removal.
 
 ## ❌ Impossible
-- (none)
