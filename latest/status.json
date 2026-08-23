@@ -1,12 +1,12 @@
 {
   "run_id": "110-grass-grid-misses-far-edges",
   "feature": "grass-grid-misses-far-edges",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-23T00:32:36.653Z",
-  "ended_at": null,
+  "ended_at": "2026-08-23T01:05:16.200Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/110-grass-grid-misses-far-edges/",
-  "heartbeat_at": "2026-08-23T01:05:11.905Z",
+  "heartbeat_at": "2026-08-23T01:05:16.200Z",
   "last_node": "team-leader",
   "active_node": null,
   "last_event_at": "2026-08-23T01:05:11.905Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T01:05:11.905500+00:00",
-    "last_success_at": "2026-08-23T01:04:34.371264+00:00",
+    "last_attempt_at": "2026-08-23T01:05:16.200199+00:00",
+    "last_success_at": "2026-08-23T01:05:16.198544+00:00",
     "last_error": null
   },
   "metrics": {
@@ -74,6 +74,17 @@
         "cost_status": "unknown",
         "input_tokens": 112229,
         "output_tokens": 2478
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 35042,
+        "output_tokens": 376
       }
     ]
   }
