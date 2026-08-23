@@ -1,70 +1,22 @@
 {
-  "run_id": "leader-loop",
-  "feature": "Smoke",
-  "status": "completed",
-  "started_at": "2026-08-23T08:51:24.742Z",
-  "ended_at": "2026-08-23T08:51:49.893Z",
+  "run_id": "issue-124-fix-cave-sealing-regression-r3",
+  "feature": "issue-124-fix-cave-sealing-regression-r3",
+  "status": "running",
+  "started_at": "2026-08-23T08:50:49.457Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-loop/",
-  "heartbeat_at": "2026-08-23T08:51:49.893Z",
-  "last_node": "team-leader",
-  "active_node": null,
-  "last_event_at": "2026-08-23T08:51:49.886Z",
-  "process_id": 4641,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-fix-cave-sealing-regression-r3/",
+  "heartbeat_at": "2026-08-23T08:50:49.457Z",
+  "last_node": null,
+  "active_node": "plan",
+  "last_event_at": null,
+  "process_id": 4796,
   "host": "f1a4230ec90b",
-  "phase": "team-leader",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T08:51:49.893380+00:00",
-    "last_success_at": "2026-08-23T08:51:49.885990+00:00",
-    "last_error": null,
-    "last_skipped_remote_at": "2026-08-23T08:51:49.892476+00:00"
+    "last_attempt_at": "2026-08-23T08:52:23.957644+00:00",
+    "last_success_at": "2026-08-23T08:50:53.211063+00:00",
+    "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      }
-    ]
-  }
+  "metrics": {}
 }
