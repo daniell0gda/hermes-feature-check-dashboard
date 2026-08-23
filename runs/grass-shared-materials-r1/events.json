@@ -25,5 +25,14 @@
     "duration_ms": 242541,
     "summary": "Check complete. All gates re-ran fresh through run_project_cmd (no host Godot):\n\n- Preflight `godot --version` \u2192 exit 0 (4.4.1.stable)\n- Build/import `--import` \u2192 exit 0, clean\n- Focused `test_small_vegetation_render_settings.tscn` \u2192 exit 0\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T02:17:23.424Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 33893,
+    "summary": "Manual testing gate complete.\n\n- Read request.md, plan.md, check.md, status.md. Check classification: pass (all automated criteria verified; only the windowed screenshot remains).\n- Decision: the fix changes on-screen foliage rendering (alp\u2026",
+    "error": null
   }
 ]
