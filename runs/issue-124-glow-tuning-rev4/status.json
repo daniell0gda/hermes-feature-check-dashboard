@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-glow-tuning-rev4/",
-  "heartbeat_at": "2026-08-23T12:34:53.438Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-23T12:41:31.786Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-23T12:41:31.786Z",
   "process_id": 42320,
   "host": "f1a4230ec90b",
   "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T12:35:59.117810+00:00",
-    "last_success_at": "2026-08-23T12:34:57.763307+00:00",
+    "last_attempt_at": "2026-08-23T12:41:31.787448+00:00",
+    "last_success_at": "2026-08-23T12:36:03.522933+00:00",
     "last_error": null
   },
   "metrics": {}
