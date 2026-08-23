@@ -61,5 +61,14 @@
     "duration_ms": 109265,
     "summary": "Verified done: 5. Pending: 0. Impossible: 0. Quality notes: no changes (prior entry already RESOLVED at iteration 2; confirmed in diff). Verification: passed. Blockers: none.\n\nAll gates ran fresh via run_project_cmd (project poke-defense-go\u2026",
     "error": null
+  },
+  {
+    "sequence": 8,
+    "timestamp": "2026-08-23T03:06:23.392Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 30874,
+    "summary": "Manual-testing gate complete for issue #114 (preloader cache-info NaN).\n\n- Check report: classification pass, all 5 criteria verified with fresh runner evidence.\n- Decision: manual_testing: none \u2014 this is a logic-only utility fix (NaN \u2192 0.0\u2026",
+    "error": null
   }
 ]

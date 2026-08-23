@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/114-preloader-cache-info-nan-r1/",
-  "heartbeat_at": "2026-08-23T03:05:47.989Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-23T03:05:47.989Z",
+  "heartbeat_at": "2026-08-23T03:06:23.392Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-23T03:06:23.392Z",
   "process_id": 876919,
   "host": "25e0b2c49eb5",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T03:05:52.517878+00:00",
-    "last_success_at": "2026-08-23T03:05:52.516920+00:00",
+    "last_attempt_at": "2026-08-23T03:06:23.392263+00:00",
+    "last_success_at": "2026-08-23T03:05:57.004010+00:00",
     "last_error": null
   },
   "metrics": {
