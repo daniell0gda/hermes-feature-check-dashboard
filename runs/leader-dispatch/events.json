@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-23T08:54:33.028Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 4146,
+    "summary": "{\"status\": \"ok\"}",
+    "error": null
+  }
+]
