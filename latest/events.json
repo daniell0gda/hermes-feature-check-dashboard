@@ -1,38 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-23T08:54:45.724Z",
+    "timestamp": "2026-08-23T08:59:45.307Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 3958,
-    "summary": "{\"status\": \"ok\"}",
-    "error": null
-  },
-  {
-    "sequence": 2,
-    "timestamp": "2026-08-23T08:54:49.953Z",
-    "node": "code",
-    "status": "completed",
-    "duration_ms": 4221,
-    "summary": "{\"status\": \"ok\"}",
-    "error": null
-  },
-  {
-    "sequence": 3,
-    "timestamp": "2026-08-23T08:54:53.953Z",
-    "node": "check",
-    "status": "completed",
-    "duration_ms": 3991,
-    "summary": "{\"status\": \"ok\"}",
-    "error": null
-  },
-  {
-    "sequence": 4,
-    "timestamp": "2026-08-23T08:54:58.226Z",
-    "node": "team-leader",
-    "status": "completed",
-    "duration_ms": 4260,
-    "summary": "{\"status\": \"ok\"}",
+    "duration_ms": 441350,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-cave-carved-path-torches/.gen/plan.md\n\nSummary of the run:\n- Repaired plan.md: the previous version was missing cluster 4 (cave-sealing-regression-determinism) from `## Cluste\u2026",
     "error": null
   }
 ]
