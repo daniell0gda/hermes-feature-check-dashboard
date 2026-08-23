@@ -1,36 +1,22 @@
 {
-  "run_id": "issue-89-exposed-plating",
-  "feature": "Exposed Plating perk",
+  "run_id": "req-91-perk-undermining",
+  "feature": "perk-undermining",
   "status": "running",
-  "started_at": "2026-08-23T16:36:06.554Z",
+  "started_at": "2026-08-23T16:35:28.569Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-89-exposed-plating/",
-  "heartbeat_at": "2026-08-23T16:38:18.502Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-91-perk-undermining/",
+  "heartbeat_at": "2026-08-23T16:40:46.385Z",
   "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T16:38:18.502Z",
-  "process_id": 74545,
+  "active_node": null,
+  "last_event_at": "2026-08-23T16:40:46.385Z",
+  "process_id": 73877,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T16:38:22.373927+00:00",
-    "last_success_at": "2026-08-23T16:38:22.373108+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-23T16:40:46.385672+00:00",
+    "last_error": null,
+    "last_success_at": "2026-08-23T16:35:35.724019+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 0,
-        "output_tokens": 0
-      }
-    ]
-  }
+  "metrics": {}
 }
