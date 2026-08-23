@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation (spawned-bar-auto-fade)
+# Coder report: implementation (spawned-bar-auto-fade)
 
 ## Changed files
 - `scripts/ui/EnemyHealthBar.gd` — mod
@@ -24,4 +24,3 @@
 - All work ran through run_project_cmd (project poke-defense-godot, workspace poke-defense-godot/issue-health-bar-never-auto-hides); no host-shell Godot.
 - Key mechanism: `show_health_bar()` resets `hide_timer = 0`, so arming must happen AFTER it in both `setup()` and `_deferred_setup()`; otherwise the auto-hide branch (`current_health >= max_health and hide_timer > 0`) never fires for a spawned undamaged bar (the reported bug).
 - Windowed real-frame verification evidence from prior iteration preserved in `.gen/verify_spawn_fade.log` ([VERIFY RESULT] PASSED, bar fully faded after ~3.5s of real frames).
-\n
