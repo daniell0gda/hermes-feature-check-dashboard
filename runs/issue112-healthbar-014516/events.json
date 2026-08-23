@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-23T01:47:33.582Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 75097,
+    "summary": "HTTP 400: This request is not valid. Check the model name and other parameters. Additional info: Provider returned error\n",
+    "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-23T01:59:03.422Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 687987,
+    "summary": "The `release_project_worker` tool isn't exposed in this session (only `run_project_cmd`), so the worker container is left running \u2014 flagging that for the orchestrator.\n\nSummary:\n\nDecision (recorded in code): kept the fade. `scripts/ui/Enemy\u2026",
+    "error": null
+  }
+]

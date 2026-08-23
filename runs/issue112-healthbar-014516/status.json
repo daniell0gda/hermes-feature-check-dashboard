@@ -6,17 +6,31 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue112-healthbar-014516/",
-  "heartbeat_at": "2026-08-23T01:45:16.648Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-23T01:59:03.422Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-23T01:59:03.422Z",
   "process_id": 858843,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T01:46:18.485032+00:00",
-    "last_success_at": "2026-08-23T01:45:21.221744+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-23T01:59:03.422902+00:00",
+    "last_success_at": "2026-08-23T01:46:23.149633+00:00",
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'fetch', '--depth', '1', 'origin', 'gh-pages']' returned non-zero exit status 128."
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
+      }
+    ]
+  }
 }

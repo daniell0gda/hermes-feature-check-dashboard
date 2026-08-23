@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation
+# Coder report: implementation
 
 ## Changed files
 - `scripts/ui/EnemyHealthBar.gd` — mod: `setup()` and `_deferred_setup()` now arm `hide_timer = FADE_OUT_DELAY` after `show_health_bar()`, so a spawned, undamaged full-health bar fades out (decision from request recorded in code). Added debug-only `[ENEMYHEALTHBAR] show/auto_hide is_showing x -> y hp=n/m` transition logs per CLAUDE.md logging rule.
@@ -20,4 +20,3 @@
 - Fresh worktree needed one editor import pass (`godot --headless --editor --quit-after 300`) before any test scene ran — otherwise AgentHarness class_name resolution fails with parse errors (known trap).
 - Runner output truncates long Godot stdout; used `--log-file .gen/<name>.log` and read the files host-side for verdicts.
 - The verification scene lives under tests/ui/ so the tester can re-run it; it needs a display or X fallback (gl_compatibility + llvmpipe worked in the worker).
-\n
