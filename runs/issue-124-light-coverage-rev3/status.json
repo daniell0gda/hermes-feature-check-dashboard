@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-light-coverage-rev3/",
-  "heartbeat_at": "2026-08-23T12:13:53.645Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-23T12:13:53.645Z",
+  "heartbeat_at": "2026-08-23T12:15:07.324Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-23T12:15:07.324Z",
   "process_id": 31762,
   "host": "f1a4230ec90b",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T12:13:57.911745+00:00",
-    "last_success_at": "2026-08-23T12:13:57.910802+00:00",
+    "last_attempt_at": "2026-08-23T12:15:07.325212+00:00",
+    "last_success_at": "2026-08-23T12:14:01.951930+00:00",
     "last_error": null
   },
   "metrics": {
