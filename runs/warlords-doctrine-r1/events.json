@@ -7,5 +7,14 @@
     "duration_ms": 247678,
     "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-warlords-doctrine/.gen/plan.md\n\nSummary:\n- Plan covers 12 acceptance criteria in 3 clusters: (1) perk-definition-and-damage-chain, (2) spawn-bonus-armor-and-health-bar, (3) ha\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-23T17:20:33.536Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 423606,
+    "summary": "Worker release couldn't be invoked (the `release_project_worker` tool isn't exposed in this session's toolset and the runner token isn't reachable from my shell) \u2014 flagging that rather than pretending cleanup happened.\n\nSummary:\n\n- Cluster \u2026",
+    "error": null
   }
 ]
