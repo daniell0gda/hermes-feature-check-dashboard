@@ -1,12 +1,12 @@
 {
   "run_id": "issue116-game-ready-blocks-map-load-r1",
   "feature": "game-ready-blocks-map-load",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-22T23:17:33.566Z",
-  "ended_at": null,
+  "ended_at": "2026-08-23T02:05:15.189Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r1/",
-  "heartbeat_at": "2026-08-23T02:05:10.795Z",
+  "heartbeat_at": "2026-08-23T02:05:15.189Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-23T02:05:10.795Z",
@@ -14,9 +14,9 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T02:05:10.795887+00:00",
-    "last_success_at": "2026-08-23T01:37:33.958999+00:00",
-    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
+    "last_attempt_at": "2026-08-23T02:05:15.189236+00:00",
+    "last_success_at": "2026-08-23T02:05:15.188001+00:00",
+    "last_error": null
   },
   "metrics": {
     "invocations": [
@@ -85,6 +85,17 @@
         "cost_status": "unavailable",
         "input_tokens": null,
         "output_tokens": null
+      },
+      {
+        "task_id": "revision-check-2",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 174753,
+        "output_tokens": 8583
       }
     ]
   }
