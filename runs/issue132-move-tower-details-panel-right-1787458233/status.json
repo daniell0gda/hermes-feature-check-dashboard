@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue132-move-tower-details-panel-right-1787458233/",
   "heartbeat_at": "2026-08-23T04:10:33.976Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
   "process_id": 896032,
   "host": "25e0b2c49eb5",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T04:10:33.976291+00:00"
+    "last_attempt_at": "2026-08-23T04:12:08.347805+00:00",
+    "last_success_at": "2026-08-23T04:10:38.271334+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
