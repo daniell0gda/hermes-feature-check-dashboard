@@ -1,12 +1,12 @@
 {
   "run_id": "issue137-earth-continent-map",
   "feature": "earth-continent-map-integration",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-22T22:56:15.876Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-23T00:54:45.366Z",
+  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'check', '-z', 'You are the check worker in a team-work run.\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-earth-continent-map-integration.\\nThe durable\u2026",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-23T00:54:40.792Z",
+  "heartbeat_at": "2026-08-23T00:54:45.366Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-23T00:54:40.792Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T00:54:40.794131+00:00",
-    "last_success_at": "2026-08-22T23:24:34.434698+00:00",
+    "last_attempt_at": "2026-08-23T00:54:45.366045+00:00",
+    "last_success_at": "2026-08-23T00:54:45.365170+00:00",
     "last_error": null
   },
   "metrics": {
