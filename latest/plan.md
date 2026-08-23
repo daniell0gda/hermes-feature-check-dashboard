@@ -1,31 +1,35 @@
-# Acceptance Plan: harness-cannot-inject-gui-input
+# Acceptance Plan: issue-116 game-ready-blocks-map-load
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/hud_controls_state.json"]`
-- Full test: `["bash", "-lc", "for s in hud_controls_state hud_layer_roundtrip hud_heart_beat_on_egg_damage hud_other_panels hud_wood_panels; do godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/$s.json || exit 1; done"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+- Focused test: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/map_build_phases.json --log-file .gen/map_build_phases.log`
+- Full test: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/level_walkthrough.json --log-file .gen/level_walkthrough.log`
+- Typecheck/build: `godot --headless --path . --import`
 
 ## Clusters
 
-1. press-button-harness-action — files: `scripts/testing/HarnessActions.gd`, `docs/REFERENCE.md` — depends on: none
-- A `press_button` harness action exists that takes a Button reference (node path or a named UI button) and delivers a real press through Godot's button input path (press attempt / `_gui_input`), not `pressed.emit()`, and its result detail reports whether the press actually landed on an enabled button.
-- A `press_button` action whose target does not resolve to a live Button node fails with `ok: false` and a detail naming the unresolvable target.
-- A `press_button` action against a disabled Button reports that the press did not land and the button's connected handler does not run.
-- The `press_button` action works under `--headless` (dummy display, no GUI picking) by driving `Control._gui_input` directly; if it cannot, `REFERENCE.md` documents that the action requires windowed mode.
-- `REFERENCE.md` documents the `press_button` action: its fields, its return detail, and its headless behaviour.
-- Debug-build `[HARNESS-CLICK]` log line per press_button attempt, carrying the button target, whether the press landed, and the button's disabled state at press time.
-2. upgrade-button-scenario-step — files: `tests/scenarios/hud_controls_state.json` — depends on: 1
-- `tests/scenarios/hud_controls_state.json` gains a step that presses the Upgrade button via the new press action after waiting at least 0.5s past tower selection (spanning at least one 0.2s selection-poll tick), and the scenario asserts the tower's level increased as a result of that press.
+1. game-phased-build — files: `scripts/game/Game.gd` — depends on: none
+- After a phased map load completes, the resulting scene matches the current synchronous build: the harness `load_map` action reaches `GameState.game_state == "playing"` with the requested `map_id`, a non-zero total wave count, and live enemies spawnable on wave 1 (asserted via harness expectations on a representative map).
+- No single frame during the world build exceeds ~100ms wall-clock, measurable from the scenario run log (per-phase elapsed timings or an equivalent frame-time record written during the load).
+- Booting `res://scenes/Main.tscn` directly without `MapLoadingScreen` driving it (the AgentHarness path) still completes the entire world build: when nothing consumes the phases externally, they all run to completion.
+- `setup_as_menu_backdrop` still produces a complete backdrop world: the existing `menu_backdrop_map` scenario passes unchanged after the build is split into phases.
+- Debug-build `[MAP_BUILD]` log line per world-build phase completion, naming the phase and its elapsed milliseconds.
+2. loading-screen-driving — files: `scripts/MapLoadingScreen.gd`, `scripts/ui/LoadingSequence.gd` — depends on: 1
+- During the world-build portion of a map load, `MapLoadingScreen`'s progress bar advances in multiple observable increments beyond its post-threaded-load value, rather than sitting at or near 100% while the world builds.
+- The status line updates at least once during the world build (a building-phase caption replaces the static "Building Map" line before the screen is replaced by the game scene).
+- A selected map id that is missing or unparseable still falls back to `map_1` before any world-building phase begins, and the run proceeds with `map_1`.
 
 ## Criteria
 
-- A `press_button` harness action exists that takes a Button reference (node path or a named UI button) and delivers a real press through Godot's button input path (press attempt / `_gui_input`), not `pressed.emit()`, and its result detail reports whether the press actually landed on an enabled button.
-- A `press_button` action whose target does not resolve to a live Button node fails with `ok: false` and a detail naming the unresolvable target.
-- A `press_button` action against a disabled Button reports that the press did not land and the button's connected handler does not run.
-- The `press_button` action works under `--headless` (dummy display, no GUI picking) by driving `Control._gui_input` directly; if it cannot, `REFERENCE.md` documents that the action requires windowed mode.
-- `REFERENCE.md` documents the `press_button` action: its fields, its return detail, and its headless behaviour.
-- Debug-build `[HARNESS-CLICK]` log line per press_button attempt, carrying the button target, whether the press landed, and the button's disabled state at press time.
-- `tests/scenarios/hud_controls_state.json` gains a step that presses the Upgrade button via the new press action after waiting at least 0.5s past tower selection (spanning at least one 0.2s selection-poll tick), and the scenario asserts the tower's level increased as a result of that press.
+- After a phased map load completes, the resulting scene matches the current synchronous build: the harness `load_map` action reaches `GameState.game_state == "playing"` with the requested `map_id`, a non-zero total wave count, and live enemies spawnable on wave 1 (asserted via harness expectations on a representative map).
+- No single frame during the world build exceeds ~100ms wall-clock, measurable from the scenario run log (per-phase elapsed timings or an equivalent frame-time record written during the load).
+- Booting `res://scenes/Main.tscn` directly without `MapLoadingScreen` driving it (the AgentHarness path) still completes the entire world build: when nothing consumes the phases externally, they all run to completion.
+- `setup_as_menu_backdrop` still produces a complete backdrop world: the existing `menu_backdrop_map` scenario passes unchanged after the build is split into phases.
+- Debug-build `[MAP_BUILD]` log line per world-build phase completion, naming the phase and its elapsed milliseconds.
+- During the world-build portion of a map load, `MapLoadingScreen`'s progress bar advances in multiple observable increments beyond its post-threaded-load value, rather than sitting at or near 100% while the world builds.
+- The status line updates at least once during the world build (a building-phase caption replaces the static "Building Map" line before the screen is replaced by the game scene).
+- A selected map id that is missing or unparseable still falls back to `map_1` before any world-building phase begins, and the run proceeds with `map_1`.
 
-manual_testing: none
+manual_testing: required
+
+The loading-screen UI changes visibly mid-load (bar position and caption during world build), so windowed PNG evidence is required: capture the loading screen mid-world-build showing the bar advanced past the threaded-load portion, using `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
