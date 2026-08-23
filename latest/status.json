@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-130-middle-pan-flip-r2/",
   "heartbeat_at": "2026-08-23T20:29:26.730Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
   "process_id": 214465,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T20:29:26.730486+00:00"
+    "last_attempt_at": "2026-08-23T20:30:59.842879+00:00",
+    "last_success_at": "2026-08-23T20:29:31.171515+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
