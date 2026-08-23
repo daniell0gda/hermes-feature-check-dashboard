@@ -1,36 +1,20 @@
 {
-  "run_id": "issue-130-middle-pan-flip-r1",
-  "feature": "issue-130-middle-pan-flip",
+  "run_id": "req-83-traps-frostbite-fangs",
+  "feature": "traps-frostbite-fangs",
   "status": "running",
-  "started_at": "2026-08-23T19:21:33.076Z",
+  "started_at": "2026-08-23T19:26:24.238Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-130-middle-pan-flip-r1/",
-  "heartbeat_at": "2026-08-23T19:25:36.929Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T19:25:36.929Z",
-  "process_id": 165601,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs/",
+  "heartbeat_at": "2026-08-23T19:26:24.238Z",
+  "last_node": null,
+  "active_node": null,
+  "last_event_at": null,
+  "process_id": 168492,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T19:25:41.692668+00:00",
-    "last_success_at": "2026-08-23T19:25:41.692049+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-23T19:26:24.238902+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 52453,
-        "output_tokens": 3647
-      }
-    ]
-  }
+  "metrics": {}
 }
