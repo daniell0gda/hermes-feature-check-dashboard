@@ -1,26 +1,42 @@
-# Coder report: implementation\n\n# Coder report: implementation
+# Coder report: implementation\n\n# Coder report: implementation (revision 1)
 
 ## Changed files
-- `data/towers.xml` — added a `description` attribute with the tower's special characteristic to all 12 combat towers (fire, water, electric, porter, floodgate, balista, bazooka, cannon, generic, ice, scifi, venom).
-- `systems/TowersConfig.gd` (mod) — parse the new `description` attribute, store it in `tower_descriptions`, expose `get_description(tower_type_id) -> String`.
-- `scripts/ui/UI.gd` (mod) — `_build_tower_tooltip` now appends the catalog description line right under the tower name.
-- `tests/scenarios/tower_descriptions_tooltip.json` (new) — harness UI scenario asserting every combat tower's tooltip states its special behavior; Porter's explicitly says "Teleports enemies to the underground tunnels via the nearest hole" and "deals no damage itself".
+- No feature source changes this iteration (feature code was already green in iteration 1; unchanged:
+  `autoload/ProgressionManager.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd`,
+  `scripts/progression/global.json`, `scripts/progression/managers/CurseProgressionManager.gd`,
+  `tests/scenarios/sundering_bolts_progression.json`).
+- Worker import-state repair only (no repo files changed): removed stale
+  `valid=false` `.glb.import` remap files under `models/gltf/towers/`, `models/glb/`,
+  and `models/gltf/buildings/` plus their stale `.godot/imported/*.glb-*.md5` markers,
+  then reimported via `godot --headless --path . --import`.
 
 ## Criteria
-- Review towers / identify special characteristics — Done (descriptions derived from actual code paths: Fire burn via Projectile._maybe_apply_fire_burn; Water wet via _apply_wet_status + EnemyHealthController water/electric wet bonuses; Electric chain via Projectile._do_chain_lightning; Ice cone slow via IceTower slow pct/dur; Porter teleport via PorterTower continuous laser + hole requirement + zero damage; Floodgate periodic underground flood via FloodgateTower cycle; Ballista armor strip via armor_dmg 20 vs dmg 5; Bazooka/Cannon explosion radius AoE; SciFi continuous DPS beam via ScifiTowerProjectile; Venom DoT poison via VenomTowerProjectile/PoisonStatus).
-- Add each special characteristic to the tower description — Done (data-driven from towers.xml).
-- Porter description explicitly explains that it teleports enemies — Done ("Teleports enemies to the underground tunnels via the nearest hole; needs a hole within reach and deals no damage itself.").
-- Descriptions clear, consistent, visible in tower UI — Done (one consistent line in every placement tooltip).
+All cluster criteria — Done via full verification below.
 
-## Commands and results
-- `godot --headless --path . --editor --quit-after 300` — exit 0; fresh-worktree import done.
-- RED: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/tower_descriptions_tooltip.json` — result status "timeout", action index 1 unmet (`contains Cheap all-round starter tower.`), tooltip had no description line before implementation.
-- GREEN: same command after implementation — `[Harness] status=pass exit=0`; all 13 timeline conditions ok; expectations recorded pass=True including Porter "Teleports enemies".
-- Regression: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/porter_wide_gate_tooltip.json` — `[Harness] status=pass exit=0` (Range lines unchanged by the inserted description line).
-- Note: ran `res://tests/tower/test_tower_armor_damage.tscn` directly once — exit 1 because autoloads are not initialized when a bare tscn is run without the Main scene path context (pre-existing test-harness convention issue, unrelated to this change; the file itself documents running through the project runner with autoloads). No product regression observed; both harness scenarios cover the changed surface.
+## Commands and results (all via run_project_cmd, project=poke-defense-godot)
+- Preflight `git status --short` — exit 0.
+- `godot --headless --path . --import` (after clearing stale valid=false glb imports) — exit 0;
+  all tower/enemy/building GLBs now produce real `.scn` imports (103 scn files). The
+  `ERROR: Parameter "t" is null at texture_2d_get ... dummy/storage` lines are harmless
+  dummy-renderer texture warnings during headless scene import, not failures.
+- Focused harness `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/sundering_bolts_progression.json`
+  — exit 0; `[Harness] status=pass exit=0`; sunder log lines present:
+  `[SUNDERING_BOLTS] sunder enemy=Orc Enemy_boss level=1 base_damage=5.0 armor_damage=0.5`,
+  `level=2 ... armor_damage=1.0`, `level=3 ... armor_damage=1.75`.
+- Regression `res://tests/enemy/test_enemy_armor_damage.tscn` — exit 0; 18 ok / 0 failed.
+- Regression harness `--harness=res://tests/scenarios/enemy_armor_ballista.json` — exit 0; status=pass.
+- Full-suite leg `res://tests/tower/test_tower_armor_damage.tscn` — **exit 0; 18 ok / 0 failed**
+  (previously 15 ok / 3 failed on pristine baseline).
+- Typecheck/build `godot --headless --path . --editor --quit-after 2` — exit 0.
 
 ## Notes
-- Description is optional per tower: `block` and the four traps carry none, so their tooltips are unchanged (getter returns "").
-- The pre-existing hardcoded Porter/Floodgate tooltip lines in `_build_tower_tooltip` were kept; the data-driven description complements them rather than replacing them.
-- Tester gotcha: `contains` assertions on tooltip text must match exact substrings of the xml attribute text (watch sentence punctuation).
+- ROOT CAUSE of the previously failing tower leg found and fixed: the worktree's
+  `.import` files for every GLB carried `valid=false` from an earlier failed import
+  (their cached `source_md5` no longer matched the checked-out LFS-smudged files), and
+  Godot never retries an import whose remap says invalid — it silently falls back to
+  placeholder models, so BalistaTower had no Bolt node ("Cannot fire - no bolt found").
+  Deleting those `.import` files forces a fresh import that succeeds.
+- This is worker/import-state only: `.godot/` and `*.import` are not tracked by git
+  (`git status` clean apart from the feature files). Any future fresh worktree needs the
+  same one-time repair if its `.import` cache predates a checkout.
 \n
