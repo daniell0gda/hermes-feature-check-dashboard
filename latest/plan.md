@@ -1,40 +1,44 @@
-# Acceptance Plan: issue #127 reopen follow-ups (title clip, description wells, Unique styling)
-
-manual_testing: required
+# Acceptance Plan: traps-venom-barbs
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://tests/ui/test_titled_panel_close_corner.tscn"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/progression_modal_wood_frame.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/traps_venom_barbs_trap_poison.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/traps_venom_barbs_progression.json"]` plus, after it exits 0, the same token array re-run for each of: `traps_venom_barbs_trap_poison.json`, `undermining_trap_armor.json`, `traps_serrated_edges_progression.json`, `enemy_armor_trap.json`, `trap_stats_attribution.json`, `progression_pick.json` — each run must end `[Harness] status=pass exit=0`.
+- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "120"]`
 
 ## Clusters
 
-1. title-plate-inside-window — files: `scenes/ui/RewardsModal.tscn`, `scenes/ui/ProgressionModal.tscn`, `scripts/ui/hud/TitledPanel.gd` — depends on: none
-- Both modal windows show their TitlePlate caption fully readable with no cut letters or ellipsis: the plate hangs half above the frame rim yet stays entirely inside the window bounds at every title length used by RewardsModal ("Choose a Reward") and ProgressionModal.
-- The plate's width is derived from the title label's combined minimum size so no character is clipped regardless of title text length.
-- TitlePlate remains centre-anchored on the horizontal axis (anchors_preset = 5 behaviour): after opening either modal, the plate stays horizontally centred over the panel.
-- The corner ✕ button still emits close_requested and closes the modal when pressed (existing close behaviour unchanged by the inset change).
-2. description-well — files: `scripts/ui/RewardsModal.gd`, `scripts/ui/ProgressionModal.gd` — depends on: none
-- In a RewardsModal card, the reward description text is rendered inside its own PanelContainer with theme_type_variation "ModalWell", visually distinct from the surrounding card, with the title and sub labels sitting outside that well above it.
-- In a ProgressionModal offer card, the description body text sits inside an inner ModalWell panel distinct from the outer card well, so the body has its own visible panel background.
-- Cards for common rewards keep their existing layout and content order (title, sub, then described body, then accept button where present) with no regression to the ModalWell card bodies.
-3. unique-card-styling — files: `scripts/ui/RewardsModal.gd`, `scripts/ui/ProgressionModal.gd` — depends on: 2
-- A ProgressionModal offer card whose option type is Unique shows a metallic gold/bronze border of at least 3px applied through a duplicated StyleBoxFlat stylebox override, not through add_theme_color_override("panel"), and opening such a card produces no engine error about invalid theme overrides.
-- A Unique offer/listed-selection card shows a small "Unique" badge/chip built from the existing CostBadge variation (or an equivalent small plate), with the literal text "Unique" legible in a screenshot.
-- A Unique card's name label uses the stronger ModalTitle contrast treatment, visibly distinct from Common cards' name styling, while non-Unique cards are unchanged.
-- A RewardsModal listed selection whose stored type is Unique receives the same border, badge, and header contrast treatments as ProgressionModal Unique cards.
+1. venom-barbs-perk-definition — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `autoload/ProgressionManager.gd`, `scripts/testing/HarnessValues.gd` — depends on: none
+- The `traps_venom_barbs` progression exists in the trap progression pool as a Unique perk and offers exactly 3 levels.
+- With `traps_venom_barbs` at levels 1/2/3, the exposed poison total per trap hit scales strictly by level (level N deals more poison damage than level N−1), and reads as disabled (zero poison) when the perk is not owned.
+- Taking a different trap perk (Serrated Edges or Undermining) does not enable trap poison, and owning `traps_venom_barbs` does not change trap hit damage or armor strip values.
+2. venom-barbs-trap-poison-runtime — files: `scripts/game/actors/Trap.gd` — depends on: 1
+- When `traps_venom_barbs` is owned, a trap hit applies lingering poison to the hit enemy through the enemy's existing `EffectsManager.apply_poison` path (a `PoisonStatus` appears on that enemy).
+- When `traps_venom_barbs` is not owned, a trap hit applies no poison: no `PoisonStatus` is created on the hit enemy.
+- Poison applied by a trap uses the Venom baseline timing: the same total-duration and tick interval a base Venom hit uses, at every perk level.
+- Poison delivered by a trap keeps dealing damage after the trap hit, with HP decreasing across poison ticks during the poison duration without any further trap hits.
+- Trap-sourced poison does not activate the Venom compounding-stack behavior even when the Venom stacking perk is active: repeated trap hits refresh rather than compound the stack.
+- A debug-build log line with a stable `[VENOM-BARBS]` marker records each trap-sourced poison application (enemy id, trap id, level, poison total, duration, tick interval).
+- A trap-sourced poison shows the same reused poison visual feedback (existing poison cloud/status VFX from `apply_poison`) that a Venom-applied poison shows, while unowned trap hits show none.
+3. venom-barbs-harness-and-regression-coverage — files: `tests/scenarios/traps_venom_barbs_progression.json`, `tests/scenarios/traps_venom_barbs_trap_poison.json`, `tests/scenarios/progression_pick.json` — depends on: 1, 2
+- A focused headless harness scenario proves the perk definition and level scaling: unowned yields no trap poison, and levels 1/2/3 yield strictly increasing poison totals through the exposed getter.
+- A focused headless harness scenario proves live trap-hit poison: a scripted `Trap.perform_hit` on an underground enemy with the perk owned creates a `PoisonStatus`, deals lingering damage over time after the hit, and leaves the enemy's HP lower than an unowned-perk equivalent hit sequence; it also asserts the pre-existing trap hit damage and Undermining armor-strip behavior are unchanged alongside the new poison.
+- The pre-existing `progression_pick` chest-draw scenario passes again: with `traps_venom_barbs` added to the chest-eligible pool, the scenario's exhaustive-grant setup accounts for it so the forced 2-card chest offer still contains `venom_miasma_bloom` and the auto-answered pick applies it (level reads 1 and miasma config enabled at scenario end).
+
+manual_testing: required
 
 ## Criteria
 
-- Both modal windows show their TitlePlate caption fully readable with no cut letters or ellipsis: the plate hangs half above the frame rim yet stays entirely inside the window bounds at every title length used by RewardsModal ("Choose a Reward") and ProgressionModal.
-- The plate's width is derived from the title label's combined minimum size so no character is clipped regardless of title text length.
-- TitlePlate remains centre-anchored on the horizontal axis (anchors_preset = 5 behaviour): after opening either modal, the plate stays horizontally centred over the panel.
-- The corner ✕ button still emits close_requested and closes the modal when pressed (existing close behaviour unchanged by the inset change).
-- In a RewardsModal card, the reward description text is rendered inside its own PanelContainer with theme_type_variation "ModalWell", visually distinct from the surrounding card, with the title and sub labels sitting outside that well above it.
-- In a ProgressionModal offer card, the description body text sits inside an inner ModalWell panel distinct from the outer card well, so the body has its own visible panel background.
-- Cards for common rewards keep their existing layout and content order (title, sub, then described body, then accept button where present) with no regression to the ModalWell card bodies.
-- A ProgressionModal offer card whose option type is Unique shows a metallic gold/bronze border of at least 3px applied through a duplicated StyleBoxFlat stylebox override, not through add_theme_color_override("panel"), and opening such a card produces no engine error about invalid theme overrides.
-- A Unique offer/listed-selection card shows a small "Unique" badge/chip built from the existing CostBadge variation (or an equivalent small plate), with the literal text "Unique" legible in a screenshot.
-- A Unique card's name label uses the stronger ModalTitle contrast treatment, visibly distinct from Common cards' name styling, while non-Unique cards are unchanged.
-- A RewardsModal listed selection whose stored type is Unique receives the same border, badge, and header contrast treatments as ProgressionModal Unique cards.
+- The `traps_venom_barbs` progression exists in the trap progression pool as a Unique perk and offers exactly 3 levels.
+- With `traps_venom_barbs` at levels 1/2/3, the exposed poison total per trap hit scales strictly by level (level N deals more poison damage than level N−1), and reads as disabled (zero poison) when the perk is not owned.
+- Taking a different trap perk (Serrated Edges or Undermining) does not enable trap poison, and owning `traps_venom_barbs` does not change trap hit damage or armor strip values.
+- When `traps_venom_barbs` is owned, a trap hit applies lingering poison to the hit enemy through the enemy's existing `EffectsManager.apply_poison` path (a `PoisonStatus` appears on that enemy).
+- When `traps_venom_barbs` is not owned, a trap hit applies no poison: no `PoisonStatus` is created on the hit enemy.
+- Poison applied by a trap uses the Venom baseline timing: the same total-duration and tick interval a base Venom hit uses, at every perk level.
+- Poison delivered by a trap keeps dealing damage after the trap hit, with HP decreasing across poison ticks during the poison duration without any further trap hits.
+- Trap-sourced poison does not activate the Venom compounding-stack behavior even when the Venom stacking perk is active: repeated trap hits refresh rather than compound the stack.
+- A debug-build log line with a stable `[VENOM-BARBS]` marker records each trap-sourced poison application (enemy id, trap id, level, poison total, duration, tick interval).
+- A trap-sourced poison shows the same reused poison visual feedback (existing poison cloud/status VFX from `apply_poison`) that a Venom-applied poison shows, while unowned trap hits show none.
+- A focused headless harness scenario proves the perk definition and level scaling: unowned yields no trap poison, and levels 1/2/3 yield strictly increasing poison totals through the exposed getter.
+- A focused headless harness scenario proves live trap-hit poison: a scripted `Trap.perform_hit` on an underground enemy with the perk owned creates a `PoisonStatus`, deals lingering damage over time after the hit, and leaves the enemy's HP lower than an unowned-perk equivalent hit sequence; it also asserts the pre-existing trap hit damage and Undermining armor-strip behavior are unchanged alongside the new poison.
+- The pre-existing `progression_pick` chest-draw scenario passes again: with `traps_venom_barbs` added to the chest-eligible pool, the scenario's exhaustive-grant setup accounts for it so the forced 2-card chest offer still contains `venom_miasma_bloom` and the auto-answered pick applies it (level reads 1 and miasma config enabled at scenario end).

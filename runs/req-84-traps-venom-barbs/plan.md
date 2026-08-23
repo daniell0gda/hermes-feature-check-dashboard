@@ -2,13 +2,13 @@
 
 ## Verification
 
-- Focused test: `["bash", "-lc", "for f in tests/scenarios/traps_venom_barbs_progression.json tests/scenarios/traps_venom_barbs_trap_poison.json; do id=$(basename \"$f\" .json); godot --headless --path . res://scenes/Main.tscn -- \"--harness=res://$f\" > /dev/null 2>&1; s=$(python3 -c \"import json;print(json.load(open('.gen/harness/$id/result.json'))['status'])\" 2>/dev/null); echo \"$id: $s\"; [ \"$s\" = pass ] || exit 1; done"]`
-- Full test: `["bash", "-lc", "for f in tests/scenarios/traps_venom_barbs_progression.json tests/scenarios/traps_venom_barbs_trap_poison.json tests/scenarios/undermining_trap_armor.json tests/scenarios/traps_serrated_edges_progression.json tests/scenarios/enemy_armor_trap.json tests/scenarios/trap_stats_attribution.json tests/scenarios/progression_pick.json; do id=$(basename \"$f\" .json); godot --headless --path . res://scenes/Main.tscn -- \"--harness=res://$f\" > /dev/null 2>&1; s=$(python3 -c \"import json;print(json.load(open('.gen/harness/$id/result.json'))['status'])\" 2>/dev/null); echo \"$id: $s\"; [ \"$s\" = pass ] || exit 1; done"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/traps_venom_barbs_trap_poison.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/traps_venom_barbs_progression.json"]` plus, after it exits 0, the same token array re-run for each of: `traps_venom_barbs_trap_poison.json`, `undermining_trap_armor.json`, `traps_serrated_edges_progression.json`, `enemy_armor_trap.json`, `trap_stats_attribution.json`, `progression_pick.json` — each run must end `[Harness] status=pass exit=0`.
 - Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "120"]`
 
 ## Clusters
 
-1. venom-barbs-perk-definition — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `autoload/ProgressionManager.gd` — depends on: none
+1. venom-barbs-perk-definition — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `autoload/ProgressionManager.gd`, `scripts/testing/HarnessValues.gd` — depends on: none
 - The `traps_venom_barbs` progression exists in the trap progression pool as a Unique perk and offers exactly 3 levels.
 - With `traps_venom_barbs` at levels 1/2/3, the exposed poison total per trap hit scales strictly by level (level N deals more poison damage than level N−1), and reads as disabled (zero poison) when the perk is not owned.
 - Taking a different trap perk (Serrated Edges or Undermining) does not enable trap poison, and owning `traps_venom_barbs` does not change trap hit damage or armor strip values.
@@ -20,9 +20,10 @@
 - Trap-sourced poison does not activate the Venom compounding-stack behavior even when the Venom stacking perk is active: repeated trap hits refresh rather than compound the stack.
 - A debug-build log line with a stable `[VENOM-BARBS]` marker records each trap-sourced poison application (enemy id, trap id, level, poison total, duration, tick interval).
 - A trap-sourced poison shows the same reused poison visual feedback (existing poison cloud/status VFX from `apply_poison`) that a Venom-applied poison shows, while unowned trap hits show none.
-3. venom-barbs-harness-coverage — files: `tests/scenarios/traps_venom_barbs_progression.json`, `tests/scenarios/traps_venom_barbs_trap_poison.json` — depends on: 1, 2
+3. venom-barbs-harness-and-regression-coverage — files: `tests/scenarios/traps_venom_barbs_progression.json`, `tests/scenarios/traps_venom_barbs_trap_poison.json`, `tests/scenarios/progression_pick.json` — depends on: 1, 2
 - A focused headless harness scenario proves the perk definition and level scaling: unowned yields no trap poison, and levels 1/2/3 yield strictly increasing poison totals through the exposed getter.
 - A focused headless harness scenario proves live trap-hit poison: a scripted `Trap.perform_hit` on an underground enemy with the perk owned creates a `PoisonStatus`, deals lingering damage over time after the hit, and leaves the enemy's HP lower than an unowned-perk equivalent hit sequence; it also asserts the pre-existing trap hit damage and Undermining armor-strip behavior are unchanged alongside the new poison.
+- The pre-existing `progression_pick` chest-draw scenario passes again: with `traps_venom_barbs` added to the chest-eligible pool, the scenario's exhaustive-grant setup accounts for it so the forced 2-card chest offer still contains `venom_miasma_bloom` and the auto-answered pick applies it (level reads 1 and miasma config enabled at scenario end).
 
 manual_testing: required
 
@@ -40,3 +41,4 @@ manual_testing: required
 - A trap-sourced poison shows the same reused poison visual feedback (existing poison cloud/status VFX from `apply_poison`) that a Venom-applied poison shows, while unowned trap hits show none.
 - A focused headless harness scenario proves the perk definition and level scaling: unowned yields no trap poison, and levels 1/2/3 yield strictly increasing poison totals through the exposed getter.
 - A focused headless harness scenario proves live trap-hit poison: a scripted `Trap.perform_hit` on an underground enemy with the perk owned creates a `PoisonStatus`, deals lingering damage over time after the hit, and leaves the enemy's HP lower than an unowned-perk equivalent hit sequence; it also asserts the pre-existing trap hit damage and Undermining armor-strip behavior are unchanged alongside the new poison.
+- The pre-existing `progression_pick` chest-draw scenario passes again: with `traps_venom_barbs` added to the chest-eligible pool, the scenario's exhaustive-grant setup accounts for it so the forced 2-card chest offer still contains `venom_miasma_bloom` and the auto-answered pick applies it (level reads 1 and miasma config enabled at scenario end).
