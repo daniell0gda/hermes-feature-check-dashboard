@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation (revision 1)
+# Coder report: implementation (revision 1)
 
 ## Changed files
 - `scripts/testing/HarnessActions.gd` — modified
@@ -33,22 +33,3 @@ All via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godo
   2. `AgentHarness.materialize_engine_out_log` matched a marker identical across runs of one scenario, so log expectations read a stale first-run slice (all `log` expectations failed with empty actual). The activation line and marker now carry `(run <stamp>)`.
 - Scenario money expectation corrected 172 → 180: generic tower base cost is 20 and upgrade cost is round(20 * 1.4^(level-1)) = 20 at level 1.
 - Pre-existing engine warnings (invalid UIDs in HudTheme.tres, missing GLB imports, duplicate signal connects) are unchanged from HEAD and out of scope.
-\n\n# Coder report: revision-summary\n\n# Revision 1 summary — implementation
-
-## What changed
-- `scripts/testing/HarnessActions.gd` — `_press_button` now delivers its click through `Viewport.push_input(event, true)` (motion + down/up). The previous `Control._gui_input(event)` direct call is rejected by Godot 4 ("nonexistent function"), so no press ever landed despite `landed: true`.
-- `scripts/testing/AgentHarness.gd` — activation log line and materialize marker carry a per-run stamp `(run <n>)`, so log expectations never reuse a stale `.out.log` slice from an earlier run of the same scenario (previously all `log` expectations read an empty/first-run slice).
-- `tests/scenarios/hud_controls_state.json` — money expectations corrected 172 → 180 (level-1 upgrade cost is 20, not 28).
-- `.claude/skills/game-test/REFERENCE.md` — headless/delivery documentation updated to match the working mechanism.
-
-## Verification (all via run_project_cmd, project=poke-defense-godot)
-- Typecheck/build (`godot --headless --path . --editor --quit-after 300`) — exit 0
-- Focused test (`hud_controls_state`) — exit 0, `status=pass`; `[HARNESS-CLICK] press_button target=UpgradeBtn landed=true disabled=false`, tower level 1→2, money 200→180
-- Full suite: `hud_layer_roundtrip`, `hud_heart_beat_on_egg_damage`, `hud_other_panels`, `hud_wood_panels` — each exit 0, status=pass
-
-## Artifacts
-- status.md: all 7 criteria moved to Done
-- changes.md: revision-1 entry with gotchas appended
-- quality-notes.md: rewritten (two entries resolved, one new reusable gotcha)
-- coder-reports/implementation.md: full report with exact command results
-\n

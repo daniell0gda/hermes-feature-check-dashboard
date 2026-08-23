@@ -25,5 +25,14 @@
     "duration_ms": 676089,
     "summary": "Check complete. Artifacts written to /workspace/git-workspaces/poke-defense-godot/issue-harness-cannot-inject-gui-input/.gen/check.md and .gen/status.md (plus new .gen/quality-notes.md).\n\nVerified done: 0. Pending: 7 \u2014 0 due to build/test f\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T00:58:21.431Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 2416123,
+    "summary": "Revision 1 complete. All 7 criteria now Done with green verification.\n\nSummary:\n\n- Root cause 1: `_press_button` called `Control._gui_input()` directly, which Godot 4 rejects from GDScript (\"nonexistent function\"), so every press silently d\u2026",
+    "error": null
   }
 ]

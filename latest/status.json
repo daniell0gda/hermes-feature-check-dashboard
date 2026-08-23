@@ -1,21 +1,21 @@
 {
-  "run_id": "tw-104-dead-options-modal-r1",
-  "feature": "dead-options-modal-scene",
+  "run_id": "issue126-harness-press-button",
+  "feature": "harness-cannot-inject-gui-input",
   "status": "running",
-  "started_at": "2026-08-23T00:28:15.410Z",
+  "started_at": "2026-08-22T23:20:19.286Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/tw-104-dead-options-modal-r1/",
-  "heartbeat_at": "2026-08-23T00:57:43.025Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue126-harness-press-button/",
+  "heartbeat_at": "2026-08-23T00:58:21.431Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T00:57:43.025Z",
-  "process_id": 828693,
+  "active_node": null,
+  "last_event_at": "2026-08-23T00:58:21.431Z",
+  "process_id": 793373,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T00:57:47.402153+00:00",
-    "last_success_at": "2026-08-23T00:57:47.401446+00:00",
+    "last_attempt_at": "2026-08-23T00:58:21.431349+00:00",
+    "last_success_at": "2026-08-23T00:18:09.632810+00:00",
     "last_error": null
   },
   "metrics": {
@@ -27,9 +27,9 @@
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 101407,
-        "output_tokens": 4406
+        "cost_status": "estimated",
+        "input_tokens": 148252,
+        "output_tokens": 4675
       },
       {
         "task_id": "code",
@@ -39,8 +39,19 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 236294,
-        "output_tokens": 10060
+        "input_tokens": 223328,
+        "output_tokens": 8265
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 201246,
+        "output_tokens": 12710
       }
     ]
   }

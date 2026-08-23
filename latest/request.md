@@ -1,21 +1,42 @@
-# Request: issue-dead-options-modal-scene (issue #104)
+# Request: harness-cannot-inject-gui-input (issue #126)
 
-## Feature
-Delete dead code: `scenes/ui/Options.tscn` and `scripts/ui/Options.gd` (`class_name OptionsModal`) are unreferenced clones of the live Options surfaces (`scenes/ui/OptionsScreen.tscn`, `scenes/ui/OptionsMenu.tscn`).
+- Repo: daniell0gda/poke-defense-godot
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/126
+- Workspace: /workspace/git-workspaces/poke-defense-godot/issue-harness-cannot-inject-gui-input
+- Branch: issue/harness-cannot-inject-gui-input (cut from origin/master)
+- Runner: project key `godot-td`, workspace `poke-defense-godot/issue-harness-cannot-inject-gui-input` (use exactly these names; invented names cause HTTP 422).
 
-## Acceptance criteria
-1. Re-confirmed nothing references `Options.tscn` or `OptionsModal` anywhere in the project.
-2. Both files deleted from the repo.
-3. Project still opens cleanly (editor/import gate passes).
-4. Options still works from the pause menu (in-game path) and from the main menu.
+## Problem
 
-No new visual required — deletion only. Manual testing: a quick windowed sanity check that both live Options paths open is sufficient; no new visual work.
+The gameplay harness can call UI handler methods but cannot inject real GUI input, so
+"swallowed click" bugs are untestable (e.g. the Upgrade button disabled-flip bug: a
+`disabled` true→false round trip between mouse-down and mouse-up eats the `pressed`
+signal; `BaseButton::set_disabled(true)` clears the pending press).
 
-## Runner / workspace notes (redo notes — do not repeat past mistakes)
-- Project: poke-defense-godot. Runner key: **godot-td** (never folder name).
-- Workspace: **poke-defense-godot/issue-dead-options-modal-scene**
-- Worktree: /workspace/git-workspaces/poke-defense-godot/issue-dead-options-modal-scene (branch issue/dead-options-modal-scene, cut from origin/master)
-- Use run_project_cmd only; explicit scene arg before user args for gameplay harnesses; native Linux Godot, never PowerShell wrappers.
+Existing actions don't cover this:
+- `{"type":"call","target":"ui",...}` invokes the handler directly, skipping the button.
+- Node-path `pressed.emit()` (#106) skips `press_attempt`.
 
-## Historical context
-Fresh claim; no prior attempt. request-id: tw-104-dead-options-modal-r1.
+Headless note from the issue: under `--headless` the dummy display does no GUI picking
+(`gui_get_hovered_control()` is null), so a headless action must drive
+`Control._gui_input` directly rather than `Viewport.push_input`. Either implement a
+working headless path or document that the action requires windowed mode in REFERENCE.md.
+
+## Done when
+
+1. A `press_button` (or `click_at`) harness action exists that reaches a real Button through
+   Godot's input path (not `pressed.emit()`), and reports whether the press actually landed.
+2. It works headless, OR documents the windowed requirement in `REFERENCE.md`.
+3. `tests/scenarios/hud_controls_state.json` gains a step that presses the Upgrade button
+   across at least one selection-poll tick (wait >= 0.5s after opening/selecting) and asserts
+   the tower's level went up — the assertion that would have caught the original bug.
+
+No new visual required — harness capability only. Manual testing: none required beyond
+scenario evidence (headless harness run output); still capture scenario result JSON + logs.
+
+## Redo notes
+
+- Classification line in check.md must be exactly `classification: pass|fixable|design_failure|blocked`.
+- Runner commands via run_project_cmd only; Godot harness invocation pattern:
+  `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json`
+  (explicit scene argument; never rely on project.godot main scene).
