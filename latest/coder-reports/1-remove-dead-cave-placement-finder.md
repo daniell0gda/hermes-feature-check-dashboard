@@ -1,4 +1,4 @@
-# Coder report: 1-remove-dead-cave-placement-finder\n\n# Coder report: 1-remove-dead-cave-placement-finder
+# Coder report: 1-remove-dead-cave-placement-finder
 
 ## Changed files
 - `scripts/game/CaveSystem.gd` — mod (carried from iteration 1; already on disk, unchanged this revision)
@@ -28,4 +28,3 @@ Gotchas for tester:
 - Runner rejects `sh` wrappers; each harness scenario must be invoked individually as a tokenized godot command (same semantics).
 - The scenario JSON keeps its original one-step-per-line formatting; diff shows only coordinate changes plus one added note line.
 - Pre-existing asset-import warnings (invalid UIDs, missing GLBs) are noise present on HEAD too.
-\n

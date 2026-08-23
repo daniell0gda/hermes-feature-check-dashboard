@@ -43,5 +43,14 @@
     "duration_ms": 179317,
     "summary": "The runner tool here only exposes `cmd` execution (no release action), so worker release is left to the leader. All artifacts are written.\n\nVerified done: 6. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to qua\u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-23T03:57:10.071Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 44700,
+    "summary": "Manual-testing gate complete for issue #120 (cave-dead-placement-duplicate).\n\n- Check status: pass (all three cave_discovery scenarios + parse gate green per status.md/plan.md).\n- Decision: `manual_testing: none` \u2014 the change removes an unc\u2026",
+    "error": null
   }
 ]
