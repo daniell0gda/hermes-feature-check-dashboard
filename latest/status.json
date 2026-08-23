@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-120-cave-dead-placement-duplicate/",
   "heartbeat_at": "2026-08-23T03:56:21.029Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "team-leader",
   "last_event_at": "2026-08-23T03:56:21.029Z",
   "process_id": 884648,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T03:56:21.030084+00:00",
-    "last_success_at": "2026-08-23T03:53:26.445155+00:00",
+    "last_attempt_at": "2026-08-23T03:56:25.371150+00:00",
+    "last_success_at": "2026-08-23T03:56:25.370252+00:00",
     "last_error": null
   },
   "metrics": {
@@ -63,6 +63,17 @@
         "cost_status": "unknown",
         "input_tokens": 257167,
         "output_tokens": 7823
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 179146,
+        "output_tokens": 3413
       }
     ]
   }
