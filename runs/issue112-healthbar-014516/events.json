@@ -16,5 +16,14 @@
     "duration_ms": 687987,
     "summary": "The `release_project_worker` tool isn't exposed in this session (only `run_project_cmd`), so the worker container is left running \u2014 flagging that for the orchestrator.\n\nSummary:\n\nDecision (recorded in code): kept the fade. `scripts/ui/Enemy\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-23T02:01:22.402Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 134581,
+    "summary": "Verified done: 3. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes (one advisory note recorded in check.md about a reused debug-log dedupe field). Ve\u2026",
+    "error": null
   }
 ]
