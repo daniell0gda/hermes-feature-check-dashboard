@@ -23,3 +23,9 @@
 - Description is optional per tower: `block` and the four traps carry none, so their tooltips are unchanged (getter returns "").
 - The pre-existing hardcoded Porter/Floodgate tooltip lines in `_build_tower_tooltip` were kept; the data-driven description complements them rather than replacing them.
 - Tester gotcha: `contains` assertions on tooltip text must match exact substrings of the xml attribute text (watch sentence punctuation).
+
+## Revision 1 re-verification
+- `godot --version` — exit 0 (4.4.1.stable.official).
+- `--harness=res://tests/scenarios/tower_descriptions_tooltip.json` — exit 0, status=pass; 15/15 actions ok, both expectations pass=true (Porter "Teleports enemies"). Fresh result.json this revision.
+- Regression `porter_wide_gate_tooltip.json` — exit 0, status=pass; 32/32 actions ok. Fresh run this revision.
+- No source files changed in revision 1; implementation from iteration 1 confirmed green.

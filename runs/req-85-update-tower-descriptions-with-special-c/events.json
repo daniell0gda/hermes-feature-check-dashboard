@@ -25,5 +25,14 @@
     "duration_ms": 222209,
     "summary": "Check complete. Artifacts written.\n\nVerified done: 4. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes (no open entries; feature diff is surgical \u2014 t\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T18:08:48.974Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 243921,
+    "summary": "Done. Summary of revision-code-1 (implementation cluster):\n\nState found: the iteration-1 implementation was already in the worktree and status.md showed all four criteria Done. Revision 1 asked for a redo of the failed criteria, so I re-ver\u2026",
+    "error": null
   }
 ]
