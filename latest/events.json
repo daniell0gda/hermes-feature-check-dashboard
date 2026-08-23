@@ -52,5 +52,14 @@
     "duration_ms": 258086,
     "summary": "Revision-2 work is complete. Summary:\n\n**What was already in the tree (revision 1 redo):** the shared `scripts/ui/modal_unique_styling.gd` helper (`ModalUniqueStyling.apply()`) with both modal scripts delegating their `_apply_unique_styling\u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-23T19:36:59.355Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 93824,
+    "summary": "\u26a0\ufe0f No reply: the model returned empty content after retries and any fallback providers. Try `continue`, switch model/provider, or inspect the tool output above.\n",
+    "error": null
   }
 ]

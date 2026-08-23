@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-reopen-title-desc-unique/",
-  "heartbeat_at": "2026-08-23T19:35:20.122Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T19:35:20.122Z",
+  "heartbeat_at": "2026-08-23T19:36:59.355Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-23T19:36:59.355Z",
   "process_id": 152212,
   "host": "f1a4230ec90b",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T19:35:25.531533+00:00",
-    "last_success_at": "2026-08-23T19:35:25.530848+00:00",
+    "last_attempt_at": "2026-08-23T19:36:59.356120+00:00",
+    "last_success_at": "2026-08-23T19:35:30.188022+00:00",
     "last_error": null
   },
   "metrics": {
