@@ -1,37 +1,39 @@
-# Acceptance Plan: issue-130-middle-drag-carve-bird-view-flip
+# Acceptance Plan: perk-undermining
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/carve_pan_no_flip.json"]`
-- Full test: `["bash", ".gen/run_full_suite.sh"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "3"]`
-
-manual_testing: required
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/undermining_progression.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/enemy_armor_trap.json"]` plus per-scenario runs of `tests/scenarios/trap_stats_attribution.json`, `tests/scenarios/traps_serrated_edges_progression.json`, and each new `undermining_*.json` scenario below (same command shape)
+- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "300"]`
 
 ## Clusters
 
-1. carve-pan-stability — files: `scripts/game/Game.gd` — depends on: none
-- While carve bird view is armed (`_carve_camera_armed`), holding middle mouse and moving it a small amount translates the camera and its view target together without changing the camera's yaw or up direction: the camera's horizontal basis vector (`basis.x`) stays within a near-zero angular delta of its pre-drag value.
-- While carve bird view is armed, larger continued middle-mouse pans keep the camera orientation stable across every motion event — no event during the pan produces a yaw change of roughly 90° or 180°.
-- While the camera is nearly straight down even when carve mode is not armed, the same pan input does not rebuild the camera basis in a way that flips yaw (the degenerate `look_at(..., Vector3.UP)` path never runs for a top-down pose).
-- If zooming while the camera is nearly straight down can rebuild orientation via `look_at`, zooming from the top-down pose also preserves yaw instead of flipping it.
-- With carve bird view armed, holding the right mouse button and dragging still orbits the camera around the target, and the pitch stays inside the armed clamp (~0.05–1.55 rad) so no drag snaps across the pole.
-- A quick right-click while carve mode is active still cancels carve mode.
-- Debug-build `[CARVE_CAMERA]` log line when a middle-mouse pan completes while bird view is armed, containing the pre-pan and post-pan yaw so any future flip is traceable.
-2. carve-pan-regression-scenario — files: `scripts/testing/HarnessValues.gd`, `tests/scenarios/carve_pan_no_flip.json` — depends on: 1
-- A harness value source exposes the post-pan camera yaw/basis delta so scenarios can assert that a scripted middle-drag changed translation only, not orientation.
-- The focused scenario arms carve mode on the underground layer, then drives a middle-button press followed by mouse motion events through the real `_input` path (not a rotate-camera harness shortcut) and asserts the camera position translated by the expected amount while the yaw/basis.x delta is near zero.
-- The existing `carve_camera_drag_spin` and `carve_camera_topdown` scenarios still pass unchanged after the pan fix.
+1. undermining-perk-definition — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `autoload/ProgressionManager.gd` — depends on: none
+- A progression named `undermining` exists in the trap progression pool with type Common, exactly 3 levels, and is offered only for traps (never for any surface tower).
+- With `undermining` at levels 1/2/3, the exposed trap armor-damage bonus is 8/15/25 respectively; when the perk is not owned it is 0.
+2. undermining-trap-runtime — files: `scripts/game/actors/Trap.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — depends on: 1
+- Each hit from any of the four traps (`trap_01`, `trap_02`, `trap_03`, `trap_05`) on an armored enemy removes exactly the current `undermining` level's armor amount (8/15/25), clamped so armor never goes below zero, in addition to normal HP damage.
+- Without the perk owned, a trap hit changes enemy armor by exactly zero (existing behaviour preserved).
+- Surface tower hits are unchanged by `undermining`: owning it does not add armor damage to any non-trap tower's hits.
+- Debug-build `[Undermining]` log line per armor-stripping trap hit
+3. undermining-hit-vfx — files: `scripts/game/actors/Trap.gd`, `scripts/game/actors/effects/EffectsManager.gd` — depends on: 2
+- When an owned-perk trap hit actually strips armor, the trap's existing hit-impact effect shows a distinct tint signalling the armor-strip portion, and the tint is absent on trap hits while the perk is unowned.
+4. undermining-game-test-coverage — files: `tests/scenarios/undermining_progression.json`, `tests/scenarios/undermining_trap_armor.json`, `tests/scenarios/undermining_scope_isolation.json` — depends on: 1, 2, 3
+- A focused harness scenario proves definition and persistence: `undermining` resolves as Common/traps-only with 3 levels, applying levels yields the 8/15/25 armor values through the same accessor Ballista uses, re-applying past level 3 stays at 25, and save/reload restores the level and value.
+- A focused harness scenario proves live trap behavior: a real trap hit on an armored underground enemy reduces armor by exactly the perk amount at each level, and by zero when unowned.
+- A focused harness scenario proves scope isolation: while `undermining` is owned, scripted surface-tower hits apply no perk-derived armor damage.
 
 ## Criteria
 
-- While carve bird view is armed (`_carve_camera_armed`), holding middle mouse and moving it a small amount translates the camera and its view target together without changing the camera's yaw or up direction: the camera's horizontal basis vector (`basis.x`) stays within a near-zero angular delta of its pre-drag value.
-- While carve bird view is armed, larger continued middle-mouse pans keep the camera orientation stable across every motion event — no event during the pan produces a yaw change of roughly 90° or 180°.
-- While the camera is nearly straight down even when carve mode is not armed, the same pan input does not rebuild the camera basis in a way that flips yaw (the degenerate `look_at(..., Vector3.UP)` path never runs for a top-down pose).
-- If zooming while the camera is nearly straight down can rebuild orientation via `look_at`, zooming from the top-down pose also preserves yaw instead of flipping it.
-- With carve bird view armed, holding the right mouse button and dragging still orbits the camera around the target, and the pitch stays inside the armed clamp (~0.05–1.55 rad) so no drag snaps across the pole.
-- A quick right-click while carve mode is active still cancels carve mode.
-- Debug-build `[CARVE_CAMERA]` log line when a middle-mouse pan completes while bird view is armed, containing the pre-pan and post-pan yaw so any future flip is traceable.
-- A harness value source exposes the post-pan camera yaw/basis delta so scenarios can assert that a scripted middle-drag changed translation only, not orientation.
-- The focused scenario arms carve mode on the underground layer, then drives a middle-button press followed by mouse motion events through the real `_input` path (not a rotate-camera harness shortcut) and asserts the camera position translated by the expected amount while the yaw/basis.x delta is near zero.
-- The existing `carve_camera_drag_spin` and `carve_camera_topdown` scenarios still pass unchanged after the pan fix.
+- A progression named `undermining` exists in the trap progression pool with type Common, exactly 3 levels, and is offered only for traps (never for any surface tower).
+- With `undermining` at levels 1/2/3, the exposed trap armor-damage bonus is 8/15/25 respectively; when the perk is not owned it is 0.
+- Each hit from any of the four traps (`trap_01`, `trap_02`, `trap_03`, `trap_05`) on an armored enemy removes exactly the current `undermining` level's armor amount (8/15/25), clamped so armor never goes below zero, in addition to normal HP damage.
+- Without the perk owned, a trap hit changes enemy armor by exactly zero (existing behaviour preserved).
+- Surface tower hits are unchanged by `undermining`: owning it does not add armor damage to any non-trap tower's hits.
+- Debug-build `[Undermining]` log line per armor-stripping trap hit
+- When an owned-perk trap hit actually strips armor, the trap's existing hit-impact effect shows a distinct tint signalling the armor-strip portion, and the tint is absent on trap hits while the perk is unowned.
+- A focused harness scenario proves definition and persistence: `undermining` resolves as Common/traps-only with 3 levels, applying levels yields the 8/15/25 armor values through the same accessor Ballista uses, re-applying past level 3 stays at 25, and save/reload restores the level and value.
+- A focused harness scenario proves live trap behavior: a real trap hit on an armored underground enemy reduces armor by exactly the perk amount at each level, and by zero when unowned.
+- A focused harness scenario proves scope isolation: while `undermining` is owned, scripted surface-tower hits apply no perk-derived armor damage.
+
+manual_testing: required
