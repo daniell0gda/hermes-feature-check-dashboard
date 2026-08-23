@@ -1,25 +1,30 @@
-# Request: Sundering Bolts perk (issue #88)
+# Request: Exposed Plating perk (issue #89)
 
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/88
-- Project: godot-td (runner key `godot-td`, workspace `poke-defense-godot/issue-perk-sundering-bolts`)
-- Branch: issue/perk-sundering-bolts (cut fresh from origin/master @ 97ed515)
-- Slug: perk-sundering-bolts
+- **Repo:** daniell0gda/poke-defense-godot
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/89
+- **Workspace:** poke-defense-godot/issue-exposed-plating
+- **Branch:** issue/exposed-plating (cut from origin/master @ 97ed515)
+- **Runner key:** `godot-td` — workers MUST use runner key `godot-td`, workspace `poke-defense-godot/issue-exposed-plating`. Never invent workspace names.
 
 ## Feature
 
-New progression perk `sundering_bolts`, 3 levels (L1 10%, L2 20%, L3 35%). Each level applies a % of the hit's **final** damage (after all other damage-modifying perks) as additional armor-damage on the same hit, computed at the shared `EnemyHealthController.take_damage()` call site. Applies to every tower except Porter (damage=0). Ballista's flat `armor_dmg=20` still stacks on top. No new VFX — reuses existing armor bar.
+New progression perk `exposed_plating` (Common, global, 3 levels). When an enemy's armor transitions from >0 to 0 (same site as `_consume_armor()`, `EnemyHealthController.gd:337-344`), it gains an "Exposed" status:
+
+- L1: +15% damage taken, 0.5s
+- L2: +25% damage taken, 1s
+- L3: +35% damage taken, 1.5s
 
 ## Acceptance criteria
 
-1. Perk `sundering_bolts` exists with 3 levels: 10% / 20% / 35% of final hit damage converted to armor-damage.
-2. Conversion uses the hit's final post-perk damage, not static base value from towers.xml.
-3. Applied in the shared take_damage path so all damaging towers benefit; Porter unaffected (0 damage → 0 armor-damage).
-4. Ballista flat armor_dmg stacks additively with the perk bonus.
-5. Existing armor bar reflects the drain (no new VFX needed).
-6. Editor/import gate passes; focused gameplay harness through the runner (`godot-td` / `poke-defense-godot/issue-perk-sundering-bolts`) proves the armor-strip math for a representative tower (Ballista) at each level, plus a no-perk baseline.
+1. Perk definition registered like other progression perks; purchasable at 3 levels.
+2. Trigger fires exactly once per shield instance: only on the >0 → 0 transition. Hits while armor is already 0 do NOT re-trigger; re-trigger requires the enemy regaining armor first.
+3. Damage-taken multiplier applies for the debuff duration, per level values above, then expires cleanly.
+4. New VFX: `ExposedStatus`/`ExposedVFX` in `scripts/game/actors/effects/` following the existing `BurnStatus`/`BurnVFX` pattern — cracked-shield emissive overlay swapped onto the enemy's material for the duration, lazily instantiated by `EffectsManager` like `BurnVFX`/`OilVFX`.
+5. Debug logging: `[EXPOSED]` prefix lines on trigger and expiry, gated by `OS.is_debug_build()`.
 
-## Notes / redo guidance
+## Verification requirements (redo notes for workers)
 
-- Runner key is `godot-td`; workspace is `poke-defense-godot/issue-perk-sundering-bolts`. Do not invent other workspace names (HTTP 422 chdir otherwise).
-- Use explicit scene argument before user args in harness commands; never rely on project.godot main scene.
-- Manual testing: visible armor-bar drain — set `manual_testing: required` if a still-captureable user story exists (armor bar draining after hits). Windowed evidence via runner, screenshots to `.gen/screenshots/`.
+- Focused headless harness scenario proving the once-per-shield-instance transition semantics (pre/post checkpoints, exact damage deltas).
+- Manual testing: REQUIRED (player-facing VFX). Windowed screenshots/GIF of the Exposed VFX on a real enemy; no headless-only verification. GIFs must be real 30fps from engine frames via harness `record_frames`.
+- End every manual test with overall UI-sanity pass (`ui_feels_broken: yes|no`).
+- Use native Godot through run_project_cmd; explicit scene argument before user args; windowed runs may need `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`.

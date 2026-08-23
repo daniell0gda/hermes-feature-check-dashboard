@@ -1,21 +1,21 @@
 {
-  "run_id": "perk-sundering-bolts-r3",
-  "feature": "Sundering Bolts perk - % of final damage also strips armor",
+  "run_id": "issue-89-exposed-plating",
+  "feature": "Exposed Plating perk",
   "status": "running",
-  "started_at": "2026-08-23T16:42:32.685Z",
+  "started_at": "2026-08-23T16:36:06.554Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-sundering-bolts-r3/",
-  "heartbeat_at": "2026-08-23T17:17:22.051Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-89-exposed-plating/",
+  "heartbeat_at": "2026-08-23T17:18:23.731Z",
   "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T17:17:22.051Z",
-  "process_id": 77891,
+  "active_node": null,
+  "last_event_at": "2026-08-23T17:18:23.731Z",
+  "process_id": 74545,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T17:17:26.437960+00:00",
-    "last_success_at": "2026-08-23T17:17:26.437143+00:00",
+    "last_attempt_at": "2026-08-23T17:18:23.732119+00:00",
+    "last_success_at": "2026-08-23T17:15:34.008364+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 224992,
-        "output_tokens": 12823
+        "input_tokens": 0,
+        "output_tokens": 0
       },
       {
         "task_id": "code",
@@ -39,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 209681,
-        "output_tokens": 4953
+        "input_tokens": 200729,
+        "output_tokens": 22765
       },
       {
         "task_id": "check",
@@ -50,8 +50,19 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 104456,
-        "output_tokens": 4035
+        "input_tokens": 100314,
+        "output_tokens": 4164
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 130104,
+        "output_tokens": 10594
       }
     ]
   }
