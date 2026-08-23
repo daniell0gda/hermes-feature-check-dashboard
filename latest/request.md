@@ -1,23 +1,20 @@
-# Request: Issue #132 — Move tower details panel to the right side of the screen
+# Request: Underground carve top-down camera rotation (issue #130)
 
-- **Project:** poke-defense-godot
-- **Runner key:** `godot-td` (never the folder name)
-- **Workspace:** `poke-defense-godot/issue-move-tower-details-panel-right-side`
-- **Branch:** `issue/move-tower-details-panel-right-side`
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/132 (status:in-progress, assigned @me)
-- **Revision budget:** 2
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/130
+Branch: issue/underground-carve-topdown-camera-rotation
 
-## Feature description
-When a tower's details are shown, the tower details panel appears on the wrong side of the screen. It should be docked on the **right side** of the screen instead, so it does not overlap gameplay elements or the tower it describes.
+## Goal
+When the carve tool is activated in the underground layer, the camera should automatically rotate to a top-down "bird view" angle so carved paths are visible from above.
 
-## Acceptance criteria (from issue)
-1. Showing a tower's details displays the panel docked on the right side of the screen.
-2. Panel does not overlap gameplay-critical UI or the tower it describes.
-3. Layout stays correct across window resize / different resolutions.
+## Acceptance criteria
+- Entering carve mode on the underground layer rotates the camera to a top-down bird's-eye angle.
+- Only the rotation changes — camera position/zoom are untouched.
+- Canceling carve restores the previous camera angle.
+- If the user manually changed the camera angle while carving, canceling does NOT restore the old angle (keep the user's new angle).
 
-## Notes for workers
-- Runner commands must use project key `godot-td`, workspace `poke-defense-godot/issue-move-tower-details-panel-right-side`. Invented workspace names cause HTTP 422.
-- Visible player-facing UI change ⇒ manual_testing: **required** with windowed screenshots (no `--headless`; use `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` when Vulkan fails in the worker).
-- Manual test must end with an overall UI-sanity pass per final screenshot: judge `ui_feels_broken: yes|no`; a yes fails even if geometry passes. State this in `.gen/manual_testing.md`.
-- Layout assertions must observe rendered geometry (`get_global_rect`), never theme overrides; include at least one real `.tscn` scene in tests.
-- Check panel placement against window size (anchor to right edge), and verify at a second resolution for criterion 3.
+## Notes
+- Visible player-facing UI/camera behavior → manual testing with windowed screenshots is required; underground views need top-down camera shots (side angles hide carved-path lighting).
+- Follow /opt/data/coding_rules.md.
+
+## Redo note (run 1 failed)
+Run 1 ended blocked: every worker call used wrong runner workspace names (`godot-td/issue-underground-carve-topdown-camera-rotation`, `godot-td/issue-130`, `poke-defense-godot/check`) → HTTP 422 chdir failures. Correct usage: project key `godot-td`, workspace `poke-defense-godot/issue-<slug>` (this branch slug: `poke-defense-godot/issue-130` or matching existing convention). Also: `Game.on_carve_camera_mode` does NOT exist yet while `UI._notify_carve_camera` calls it via `has_method` guard — the core carve-camera logic in Game.gd is still missing. Implement it, then re-run all gates with correctly named runner calls.

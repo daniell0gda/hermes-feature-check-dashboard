@@ -1,20 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-23T04:31:46.411Z",
+    "timestamp": "2026-08-23T04:33:38.402Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 1178064,
-    "summary": "API call failed after 3 retries: HTTP 429: The requested model is temporarily at capacity upstream. This is not your API key's rate limit \u2014 please retry shortly.\n",
-    "error": null
-  },
-  {
-    "sequence": 2,
-    "timestamp": "2026-08-23T04:33:39.037Z",
-    "node": "code",
-    "status": "completed",
-    "duration_ms": 107770,
-    "summary": "API call failed after 3 retries: HTTP 429: The requested model is temporarily at capacity upstream. This is not your API key's rate limit \u2014 please retry shortly.\n",
+    "duration_ms": 1665061,
+    "summary": "Plan artifacts are complete and consistent; verification was attempted and is blocked by a workspace-level asset problem, which I'm reporting honestly rather than papering over.\n\nSummary:\n\n- Artifacts confirmed/kept at:\n  - /workspace/poke-\u2026",
     "error": null
   }
 ]

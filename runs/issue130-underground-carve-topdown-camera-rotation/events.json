@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-23T04:33:38.402Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 1665061,
+    "summary": "Plan artifacts are complete and consistent; verification was attempted and is blocked by a workspace-level asset problem, which I'm reporting honestly rather than papering over.\n\nSummary:\n\n- Artifacts confirmed/kept at:\n  - /workspace/poke-\u2026",
+    "error": null
+  }
+]

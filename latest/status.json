@@ -1,21 +1,21 @@
 {
-  "run_id": "issue132-move-tower-details-panel-right-1787458233",
-  "feature": "move-tower-details-panel-right-side",
+  "run_id": "issue130-underground-carve-topdown-camera-rotation",
+  "feature": "underground-carve-topdown-camera-rotation",
   "status": "running",
-  "started_at": "2026-08-23T04:10:33.976Z",
+  "started_at": "2026-08-23T04:05:47.971Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue132-move-tower-details-panel-right-1787458233/",
-  "heartbeat_at": "2026-08-23T04:33:39.037Z",
-  "last_node": "code",
-  "active_node": null,
-  "last_event_at": "2026-08-23T04:33:39.037Z",
-  "process_id": 896032,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue130-underground-carve-topdown-camera-rotation/",
+  "heartbeat_at": "2026-08-23T04:33:38.402Z",
+  "last_node": "plan",
+  "active_node": "code",
+  "last_event_at": "2026-08-23T04:33:38.402Z",
+  "process_id": 894595,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T04:33:39.038023+00:00",
-    "last_success_at": "2026-08-23T04:31:55.659767+00:00",
+    "last_attempt_at": "2026-08-23T04:33:43.156210+00:00",
+    "last_success_at": "2026-08-23T04:33:43.155398+00:00",
     "last_error": null
   },
   "metrics": {
@@ -24,12 +24,12 @@
         "task_id": "plan",
         "cluster_id": null,
         "role": "plan",
-        "model": null,
+        "model": "stealth/ox-alpha",
         "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 190903,
+        "output_tokens": 6607
       }
     ]
   }
