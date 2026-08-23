@@ -32,6 +32,17 @@
       "cost_status": "unknown",
       "input_tokens": 66270,
       "output_tokens": 3941
+    },
+    {
+      "task_id": "manual-testing-gate",
+      "cluster_id": null,
+      "role": "team-leader",
+      "model": "stealth/ox-alpha",
+      "model_tier": null,
+      "cost_usd": 0.0,
+      "cost_status": "unknown",
+      "input_tokens": 24762,
+      "output_tokens": 721
     }
   ]
 }
