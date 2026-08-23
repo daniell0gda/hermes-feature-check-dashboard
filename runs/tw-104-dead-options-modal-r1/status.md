@@ -1,5 +1,5 @@
 ## ✅ Done
-(none — full test gate failed, see Pending)
+(none — full test command still fails; gate rule moves all criteria to Pending)
 
 ## ⬜ Pending
 - A project-wide search finds no reference to `Options.tscn`, `OptionsModal`, or `scripts/ui/Options.gd` in any scene, script, project setting, or documentation file after the deletion.

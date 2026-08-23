@@ -1,46 +1,88 @@
-# check.md — revision-check-2 (harness-cannot-inject-gui-input, iteration 3)
+# Check report: issue-dead-options-modal-scene (revision-check-1, iteration 2)
+
+classification: fixable
 
 ## Verdict
 
-classification: pass
+The deletion itself remains fully verified: dead `Options.tscn` / `Options.gd` /
+`Options.gd.uid` are gone, a fresh project-wide grep finds zero references to
+`Options.tscn` / `OptionsModal` / `scripts/ui/Options.gd`, the editor/import gate is
+clean, `smoke_placement` passes fresh, and both live Options paths pass fresh
+(pause-menu scenario: exit 0, all expectations green; main-menu script: exit 0,
+OptionsScreen instantiated visible=true).
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-harness-cannot-inject-gui-input)
+However, the plan's **full test command** (`smoke_tower_roster`) still fails with exit 1.
+The revision added two `_set_egg(20)` calls to the scenario timeline, but they do not
+cure it: the egg still reaches 0 hp during wave 2 and the game enters `gameover`
+BEFORE the between-waves revive fires. Snapshots from the fresh run prove it:
+`start egg_hp=20 paused` → `after_waves wave=2 egg_hp=0 gameover` → `after_upgrade
+egg_hp=20 gameover`. Once `_set_game_state("gameover")` fires (Game.gd:526), waves stop
+advancing (`current_wave` stays 2 < 3) and balista/bazooka/cannon never engage (damage 0).
+Topping the egg up after gameover does not resume the simulation clock, so the revive
+call is placed too late to matter. The failure signature is otherwise identical to the
+pre-existing baseline failure (reproduced on pristine HEAD in iteration 1).
 
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Preflight | `["godot","--version"]` | 0 | Godot 4.4.1.stable.official.49a5bc7b6 |
-| Typecheck/build | `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | clean import/parse, no script errors |
-| Focused test | `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/hud_controls_state.json"]` | 0 | `status=pass`, `.gen/harness/hud_controls_state/result.json` fresh, all expectations passed |
-| Full suite | hud_layer_roundtrip, hud_heart_beat_on_egg_damage, hud_other_panels, hud_wood_panels (one run_project_cmd call each) | 0 each | all `status=pass`, result.json written fresh per scenario |
+Per the build/test gate, no criterion may remain Done while the full suite is red, so
+all criteria remain Pending. This is fixable: either place periodic/earlier egg top-ups
+(e.g. `_set_egg(20)` immediately after each trigger_wave, or before the first snapshot
+plus after every wait_for_condition) so gameover never occurs, or restore the scenario's
+original expectations and file the map_10 pacing issue separately — but the criterion as
+written requires `smoke_tower_roster` to pass.
 
-Focused-run evidence:
-- `[HARNESS-CLICK] press_button target=UpgradeBtn landed=false disabled=true` (action 17) followed by `harness.last_action.landed == false`, `disabled_at_press == true`, `tower.level == 1.0` (actions 18–20) → disabled press did not land and handler did not run.
-- Action 15 `press_button target 'NoSuchButtonAnywhere' did not resolve to a live Button node` with `ok:false`, asserted by `harness.last_action.ok == false` (action 16) → unresolvable-target failure path proven.
-- `[HARNESS-CLICK] press_button target=UpgradeBtn landed=true disabled=false` (action 24), tower level 1→2 (action 25), money ==180 after upgrade (action 26); wait of 1.0s (action 23) spans five 0.2s selection-poll ticks.
-- Log expectation asserts the exact `[HARNESS-CLICK] ... landed=true disabled=false` line from this run's out.log slice.
+## Verification commands (fresh this iteration, all via run_project_cmd,
+project=poke-defense-godot, workspace=poke-defense-godot/issue-dead-options-modal-scene)
 
-## Criterion-by-criterion
+| Command | Exit | Result |
+|---|---|---|
+| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 (runner healthy) |
+| `godot --headless --path . --editor --quit-after 300` | 0 | Clean; no parse or missing-resource errors |
+| `--harness=res://tests/scenarios/smoke_tower_roster.json` | 1 | `status: fail`; snapshots show egg dead + gameover at wave 2 before mid-scenario revive; failing expectations: `current_wave >= 3`, balista/bazooka/cannon damage > 0 |
+| `--harness=res://tests/scenarios/smoke_placement.json` | 0 | `[Harness] status=pass exit=0`; fresh `.gen/harness/smoke_placement/result.json` |
+| `--harness=res://tests/scenarios/issue_dead_options_live_pause_menu.json` | 0 | `status=pass`; game_state==paused and 1 live OptionsScreen instance |
+| `--script res://tests/ui/issue_dead_options_main_menu.gd` | 0 | OptionsButton wired to `_on_options_button_pressed`, pressed; live OptionsScreen instantiated visible=true |
 
-1. press_button delivers a real press through Godot's input path (`Viewport.push_input(event, true)` down/up pair, not `pressed.emit()`) and detail reports landing on an enabled button — **Done**. Fresh focused run proves end-to-end: level 1→2 via the click, exact cost deduction, detail `{landed: true, disabled_at_press: false}`.
-2. Unresolvable target → `ok:false` naming the target — **Done**. Scenario action 15 presses `NoSuchButtonAnywhere`; result detail names the target; action 16 asserts `harness.last_action.ok == false`. Revision 2 added the `harness.last_action.*` value path (HarnessValues.gd) making this assertable.
-3. Disabled Button → press does not land, connected handler does not run — **Done**. Scenario actions 17–20: press while button disabled (money below upgrade cost, `[UPG-BTN] upgrade button unavailable` in log), `landed=false`, `disabled_at_press=true`, tower stays level 1. Later enabled press levels the tower, proving the earlier non-press was the disabled gate.
-4. Works headless by driving the input path directly — **Done**. All verification ran under `--headless` (dummy display); press landed and level assertion passed. Docs correctly explain that direct `Control._gui_input` is not callable from GDScript in Godot 4 and push_input is the working headless mechanism.
-5. REFERENCE.md documents press_button (fields, return detail, headless behaviour) — **Done**. `.claude/skills/game-test/REFERENCE.md` diff adds a press_button section matching the shipped mechanism.
-6. Debug `[HARNESS-CLICK]` log line per attempt carrying target / landed / disabled — **Done**. Gated on `OS.is_debug_build()`; both lines observed in the fresh run; the scenario asserts the enabled-press line via a `log` expectation, so removing it fails the suite.
-7. hud_controls_state.json presses Upgrade after ≥0.5s past selection across poll ticks and asserts level up — **Done**. Timeline: select (10–11) → wait 1.0s (23, ≥0.5s, five 0.2s ticks) → press_button (24) → level==2 (25) → money==180 (26). Passed fresh.
+Reference search (checker-run, project-wide grep over *.gd/*.tscn/project.godot/docs,
+excluding .gen/.git/.godot): zero hits for `Options.tscn`, `OptionsModal`,
+`scripts/ui/Options.gd`.
 
-## Changed-file quality findings
+## Why the revision did not fix the red suite
 
-Revision-1 findings resolved:
-- Dead `_deliver_motion()` removed from HarnessActions.gd — no longer present in the diff.
-- Docstring/comment/scenario/REFERENCE.md wording now consistently names `Viewport.push_input(event, true)` instead of the incorrect "drive Control._gui_input directly".
+- `_set_egg(20)` only clamps `egg_hp` and emits `egg_changed` (scripts/core/GameState.gd:47);
+  it does not clear `game_state`.
+- Game.gd:521-526 sets `game_state = "gameover"` when egg hp reaches 0; SimulationClock then
+  stops, so `current_wave` freezes at 2 and later waves never spawn.
+- The scenario's revive call sits AFTER `wait_for_condition(current_wave >= 3)` and the
+  `after_waves` snapshot — i.e. strictly after gameover has already occurred. Too late by
+  construction.
 
-New code checked against /opt/data/coding_rules.md and CLAUDE.md: typed variables used throughout new GDScript; functions small and single-purpose; debug logging follows the `[TAG]` + `OS.is_debug_build()` convention; changes surgical (5 files, all trace to the issue). No open violations.
+## Per-criterion status
+
+1. No references to dead Options surfaces — verified fresh (grep above).
+2. Dead files removed incl. `.uid` sidecar — verified (git status: 3 deletions).
+3. Editor/import gate exit 0, no errors — verified fresh.
+4. smoke_placement pass + fresh result.json — verified fresh.
+5. smoke_tower_roster pass — FAILED (exit 1); revision's egg top-ups ineffective (see
+   analysis above). Remains Pending.
+6. Pause menu opens live Options modal — verified fresh via new scenario (pass).
+7. Main menu loads OptionsScreen.tscn — verified fresh via new SceneTree script (exit 0).
+
+## Test overlap check
+
+New scenario `issue_dead_options_live_pause_menu.json` asserts OptionsScreen instantiation
+via the public pause path; existing `hud_other_panels.json` only asserts the paused state,
+so no duplication. New main-menu script has no existing equivalent. No overlap violations.
+
+## Changed-file quality
+
+Deletion-only feature diff plus focused test artifacts; new GDScript follows project style.
+No quality violations in changed code. One environment observation recorded in
+quality-notes.md: ~109 model `.glb` files show binary diffs against HEAD that are outside
+the cluster scope (likely LFS-pointer smudging during workspace bootstrap, not coder edits);
+advisory only.
 
 ## Blockers
 
-None.
-
-## Unverified items
-
-None.
+None infra-related. Single blocker: `smoke_tower_roster` still red because the revision's
+revive placement cannot prevent the wave-2 gameover. Next revision should top up the egg
+immediately after each `trigger_wave` (or use repeated small top-ups around waits) so
+`gameover` never occurs, then rerun the full command.
