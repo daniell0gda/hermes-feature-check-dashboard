@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-120-cave-dead-placement-duplicate/",
-  "heartbeat_at": "2026-08-23T03:53:17.027Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T03:53:17.027Z",
+  "heartbeat_at": "2026-08-23T03:56:21.029Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-23T03:56:21.029Z",
   "process_id": 884648,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T03:53:21.713046+00:00",
-    "last_success_at": "2026-08-23T03:53:21.712240+00:00",
+    "last_attempt_at": "2026-08-23T03:56:21.030084+00:00",
+    "last_success_at": "2026-08-23T03:53:26.445155+00:00",
     "last_error": null
   },
   "metrics": {
