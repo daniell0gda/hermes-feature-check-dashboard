@@ -1,22 +1,21 @@
 {
-  "run_id": "issue112-healthbar-014516",
-  "feature": "health-bar-never-auto-hides",
+  "run_id": "grass-shared-materials-r1",
+  "feature": "grass-mutates-shared-materials",
   "status": "running",
-  "started_at": "2026-08-23T02:04:48.605Z",
+  "started_at": "2026-08-23T02:04:55.783Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue112-healthbar-014516/",
-  "heartbeat_at": "2026-08-23T02:04:48.605Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/grass-shared-materials-r1/",
+  "heartbeat_at": "2026-08-23T02:04:55.783Z",
   "last_node": null,
   "active_node": "plan",
   "last_event_at": null,
-  "process_id": 870064,
+  "process_id": 870210,
   "host": "25e0b2c49eb5",
   "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T02:04:53.918714+00:00",
-    "last_success_at": "2026-08-23T02:04:53.249190+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-23T02:04:59.820133+00:00",
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
   "metrics": {}
 }
