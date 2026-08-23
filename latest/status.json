@@ -1,22 +1,22 @@
 {
-  "run_id": "issue137-earth-continent-map",
-  "feature": "earth-continent-map-integration",
+  "run_id": "grass-shared-materials-r1",
+  "feature": "grass-mutates-shared-materials",
   "status": "running",
-  "started_at": "2026-08-23T00:55:39.079Z",
+  "started_at": "2026-08-23T01:40:11.736Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-23T02:01:24.261Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T02:01:24.261Z",
-  "process_id": 837982,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/grass-shared-materials-r1/",
+  "heartbeat_at": "2026-08-23T02:01:36.540Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-23T02:01:36.540Z",
+  "process_id": 856428,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T02:01:28.155138+00:00",
-    "last_success_at": "2026-08-23T01:40:19.404291+00:00",
-    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
+    "last_attempt_at": "2026-08-23T02:01:36.540278+00:00",
+    "last_success_at": "2026-08-23T02:01:00.814709+00:00",
+    "last_error": null
   },
   "metrics": {
     "invocations": [
@@ -28,19 +28,19 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 114064,
-        "output_tokens": 4854
+        "input_tokens": 62747,
+        "output_tokens": 3692
       },
       {
         "task_id": "code",
         "cluster_id": "implementation",
         "role": "code",
-        "model": "stealth/ox-alpha",
+        "model": null,
         "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 126441,
-        "output_tokens": 3408
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
       },
       {
         "task_id": "check",
@@ -50,8 +50,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 162400,
-        "output_tokens": 7035
+        "input_tokens": 79400,
+        "output_tokens": 3064
       },
       {
         "task_id": "revision-code-1",
@@ -61,8 +61,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 203532,
-        "output_tokens": 28135
+        "input_tokens": 85802,
+        "output_tokens": 7172
       },
       {
         "task_id": "revision-check-1",
@@ -72,19 +72,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 177954,
-        "output_tokens": 3850
-      },
-      {
-        "task_id": "revision-code-2",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 132177,
-        "output_tokens": 4277
+        "input_tokens": 36008,
+        "output_tokens": 2837
       }
     ]
   }
