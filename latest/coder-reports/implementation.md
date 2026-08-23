@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation
+# Coder report: implementation
 
 ## Changed files
 No new source changes this pass (revision-code-3, revision 2). The implementation is present as uncommitted working-tree modifications from iteration 5:
@@ -31,4 +31,3 @@ All via run_project_cmd project=poke-defense-godot workspace=poke-defense-godot/
 - Key live evidence in the undermining_trap_armor log: `[Undermining] strip enemy=Orc Enemy_boss trap=trap_02 armor_damage=8.0 armor 60.0->52.0`, then trap_03 52->37, trap_05 37->12 and 12->0 (clamped); unowned trap_01 hit leaves armor exactly 60.0.
 - Scope isolation: with undermining owned at L3, surface-tower scripted hits change armor only by their explicit armor_damage; no perk-derived loss.
 - Pre-existing benign warnings (invalid UID ext_resources, missing GLB imports, RID leak at exit) appear in all scenarios including baseline ones; unrelated to this feature.
-\n

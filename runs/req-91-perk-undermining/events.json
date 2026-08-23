@@ -34,5 +34,14 @@
     "duration_ms": 31749,
     "summary": "Gate decision written.\n\nmanual_testing: required \u2014 the check passed (classification: pass) and the feature includes a new player-visible story: the amber `UnderminingStripVFX` tint on trap hits when `undermining` strips armor, absent when u\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-23T19:01:33.411Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 1493650,
+    "summary": "Worker release isn't exposed as a callable tool in this session (only `run_project_cmd`), so the container cleanup step couldn't be invoked \u2014 noting that honestly rather than claiming success.\n\nSummary of the run:\n\n- Walked `.gen/ui_scenari\u2026",
+    "error": null
   }
 ]

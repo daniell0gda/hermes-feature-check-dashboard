@@ -1,21 +1,21 @@
 {
-  "run_id": "req-124-cave-carved-path-torches-r3",
-  "feature": "cave-carved-path-torches",
+  "run_id": "req-91-perk-undermining",
+  "feature": "perk-undermining",
   "status": "running",
-  "started_at": "2026-08-23T18:37:07.548Z",
+  "started_at": "2026-08-23T18:24:50.048Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-124-cave-carved-path-torches-r3/",
-  "heartbeat_at": "2026-08-23T18:57:46.569Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T18:57:46.569Z",
-  "process_id": 147735,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-91-perk-undermining/",
+  "heartbeat_at": "2026-08-23T19:01:33.411Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-23T19:01:33.411Z",
+  "process_id": 142241,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T18:57:51.236808+00:00",
-    "last_success_at": "2026-08-23T18:57:51.236202+00:00",
+    "last_attempt_at": "2026-08-23T19:01:33.412266+00:00",
+    "last_success_at": "2026-08-23T18:36:44.217555+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 67959,
-        "output_tokens": 5932
+        "input_tokens": 0,
+        "output_tokens": 0
       },
       {
         "task_id": "code",
@@ -39,8 +39,30 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 203138,
-        "output_tokens": 23336
+        "input_tokens": 106975,
+        "output_tokens": 3424
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 110527,
+        "output_tokens": 3694
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 44624,
+        "output_tokens": 523
       }
     ]
   }
