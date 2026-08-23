@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-unique-shots/",
   "heartbeat_at": "2026-08-23T19:43:20.211Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-23T19:43:20.211Z",
   "process_id": 179464,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T19:43:20.212980+00:00",
-    "last_success_at": "2026-08-23T19:40:52.610751+00:00",
+    "last_attempt_at": "2026-08-23T19:43:24.661552+00:00",
+    "last_success_at": "2026-08-23T19:43:24.660948+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 17486,
         "output_tokens": 50
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 36418,
+        "output_tokens": 2552
       }
     ]
   }
