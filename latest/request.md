@@ -1,29 +1,22 @@
-# Request: cave-dead-placement-duplicate (GitHub issue #120)
+# Request: req-136-padding-closable-panels-close-button
 
-- Project key: `godot-td`
-- Workspace: `poke-defense-godot/issue-cave-dead-placement-duplicate`
-- Branch: `issue/cave-dead-placement-duplicate` (cut from origin/master @ d241462)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/120
-- Type: cleanup / priority:low
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/136
+- Project: poke-defense-godot (runner key: godot-td)
+- Workspace: /workspace/git-workspaces/poke-defense-godot/issue-padding-closable-panels-close-button (branch issue/padding-closable-panels-close-button, base origin/master 5042d9f)
 
-## Problem
+## Acceptance criteria (from issue)
+- Closable panels reserve horizontal padding so the "x" button never overlaps content.
+- Tower details panel shows all its content clear of the "x" button.
+- Verified visually that no other closable panel (e.g. shop, settings) has the overlap either.
 
-`scripts/game/CaveSystem.gd` carries a private `_find_suitable_cave_position(near_position, radius)`
-that nothing calls. All placement goes through `CaveUtils.find_suitable_cave_position(...)`.
-The dead copy is behind the live one: it checks spacing against existing caves only and misses the
-hole/entry spacing rule (`min_entry_spacing`). Two same-named functions with different rules is a trap.
+## Notes
+- Visible UI change: manual_testing expected required (windowed screenshots).
+- Workers must use runner key `godot-td` and workspace `poke-defense-godot/issue-padding-closable-panels-close-button`.
 
-## Done when
-
-1. `CaveSystem._find_suitable_cave_position` is removed.
-2. A search for `_find_suitable_cave_position` under `scripts/` returns nothing.
-3. `cave_discovery_chance`, `cave_discovery_long_carve` and `cave_discovery_pending_placement`
-   scenarios still pass (fresh runs through `run_project_cmd`, runner key `godot-td`,
-   workspace `poke-defense-godot/issue-cave-dead-placement-duplicate`).
-
-## Redo notes
-
-- Workers MUST use runner key `godot-td` and workspace `poke-defense-godot/issue-cave-dead-placement-duplicate`.
-  Invented workspace names produce HTTP 422 chdir failures.
-- Headless harness invocation: explicit scene argument before user args; never rely on project.godot main scene.
-- Manual testing: this is dead-code removal with no visible user-facing change — `manual_testing: none` is appropriate.
+## Revision note (2026-08-22 20:45 UTC)
+- Fix changed at ~20:00 UTC: `_reserve_content_padding` now widens the frame PanelContainer's
+  panel stylebox `content_margin_right` (+90px) instead of shrinking `frame.offset_right`.
+- Existing `.gen/screenshots/*.png` and `.gen/harness/hud_other_panels/shots/*.png` are STALE
+  (19:52, pre-fix). The manual tester MUST capture fresh windowed screenshots after this change.
+- Acceptance addition: ✕ must sit flush INSIDE the frame's top-right corner (not floating outside
+  the panel art). Report `ui_feels_broken: yes|no` per final screenshot.
