@@ -1,32 +1,28 @@
 # Coder report: implementation\n\n# Coder report: implementation
 
 ## Changed files
-- `data/towers.xml` — added a `description` attribute with the tower's special characteristic to all 12 combat towers (fire, water, electric, porter, floodgate, balista, bazooka, cannon, generic, ice, scifi, venom).
-- `systems/TowersConfig.gd` (mod) — parse the new `description` attribute, store it in `tower_descriptions`, expose `get_description(tower_type_id) -> String`.
-- `scripts/ui/UI.gd` (mod) — `_build_tower_tooltip` now appends the catalog description line right under the tower name.
-- `tests/scenarios/tower_descriptions_tooltip.json` (new) — harness UI scenario asserting every combat tower's tooltip states its special behavior; Porter's explicitly says "Teleports enemies to the underground tunnels via the nearest hole" and "deals no damage itself".
+- `scripts/progression/trap.json` — new `undermining` Common progression, maxLevels 3, values 8/15/25
+- `scripts/progression/managers/TrapProgressionManager.gd` — UNDERMINING_NAME handling, `_armor_damage_bonus`, `get_undermining_armor_damage()`
+- `autoload/ProgressionManager.gd` — `get_trap_armor_damage()` accessor
+- `scripts/game/actors/Trap.gd` — `perform_hit()` single hit path with armor component, `[Undermining]` debug log, strip tint
+- `scripts/game/actors/effects/EffectsManager.gd` + `scripts/game/actors/effects/UnderminingStripVFX.gd` (new) — amber armor-strip tint
+- `scripts/testing/HarnessActions.gd` — new `trap_hit` apply_effect action
+- `tests/scenarios/undermining_progression.json`, `undermining_trap_armor.json`, `undermining_scope_isolation.json` (new)
 
 ## Criteria
-- Review towers / identify special characteristics — Done (descriptions derived from actual code paths: Fire burn via Projectile._maybe_apply_fire_burn; Water wet via _apply_wet_status + EnemyHealthController water/electric wet bonuses; Electric chain via Projectile._do_chain_lightning; Ice cone slow via IceTower slow pct/dur; Porter teleport via PorterTower continuous laser + hole requirement + zero damage; Floodgate periodic underground flood via FloodgateTower cycle; Ballista armor strip via armor_dmg 20 vs dmg 5; Bazooka/Cannon explosion radius AoE; SciFi continuous DPS beam via ScifiTowerProjectile; Venom DoT poison via VenomTowerProjectile/PoisonStatus).
-- Add each special characteristic to the tower description — Done (data-driven from towers.xml).
-- Porter description explicitly explains that it teleports enemies — Done ("Teleports enemies to the underground tunnels via the nearest hole; needs a hole within reach and deals no damage itself.").
-- Descriptions clear, consistent, visible in tower UI — Done (one consistent line in every placement tooltip).
+All 10 plan criteria — Done (implementation present as uncommitted working-tree changes; verified end-to-end this pass).
 
 ## Commands and results
-- `godot --headless --path . --editor --quit-after 300` — exit 0; fresh-worktree import done.
-- RED: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/tower_descriptions_tooltip.json` — result status "timeout", action index 1 unmet (`contains Cheap all-round starter tower.`), tooltip had no description line before implementation.
-- GREEN: same command after implementation — `[Harness] status=pass exit=0`; all 13 timeline conditions ok; expectations recorded pass=True including Porter "Teleports enemies".
-- Regression: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/porter_wide_gate_tooltip.json` — `[Harness] status=pass exit=0` (Range lines unchanged by the inserted description line).
-- Note: ran `res://tests/tower/test_tower_armor_damage.tscn` directly once — exit 1 because autoloads are not initialized when a bare tscn is run without the Main scene path context (pre-existing test-harness convention issue, unrelated to this change; the file itself documents running through the project runner with autoloads). No product regression observed; both harness scenarios cover the changed surface.
+- `godot --headless --editor --path . --quit-after 300` — exit 0 (~9s), no GDScript parse errors
+- `--harness=res://tests/scenarios/undermining_progression.json` — exit 0, `[Harness] status=pass exit=0`
+- `--harness=res://tests/scenarios/undermining_trap_armor.json` — exit 0, pass; live log shows trap_02 L1 armor 60→52, trap_03 L2 52→37, trap_05 L3 37→12 then 12→0 clamped, one `[Undermining] strip ...` line per stripping hit, unowned trap_01 hit leaves armor exactly 60
+- `--harness=res://tests/scenarios/undermining_scope_isolation.json` — exit 0, pass; surface hits under owned L3 change only explicit armor_damage (60→40→35)
+- `--harness=res://tests/scenarios/enemy_armor_trap.json` — exit 0, pass (baseline regression)
+- `--harness=res://tests/scenarios/trap_stats_attribution.json` — exit 0, pass
+- `--harness=res://tests/scenarios/traps_serrated_edges_progression.json` — exit 0, pass
 
 ## Notes
-- Description is optional per tower: `block` and the four traps carry none, so their tooltips are unchanged (getter returns "").
-- The pre-existing hardcoded Porter/Floodgate tooltip lines in `_build_tower_tooltip` were kept; the data-driven description complements them rather than replacing them.
-- Tester gotcha: `contains` assertions on tooltip text must match exact substrings of the xml attribute text (watch sentence punctuation).
-
-## Revision 1 re-verification
-- `godot --version` — exit 0 (4.4.1.stable.official).
-- `--harness=res://tests/scenarios/tower_descriptions_tooltip.json` — exit 0, status=pass; 15/15 actions ok, both expectations pass=true (Porter "Teleports enemies"). Fresh result.json this revision.
-- Regression `porter_wide_gate_tooltip.json` — exit 0, status=pass; 32/32 actions ok. Fresh run this revision.
-- No source files changed in revision 1; implementation from iteration 1 confirmed green.
+- All runs through run_project_cmd project=poke-defense-godot workspace=poke-defense-godot/issue-perk-undermining; fresh result.json under `.gen/harness/<scenario>/`.
+- The previous check found an empty tree because it inspected a different/earlier worktree state; the feature files exist as uncommitted modifications in this workspace and all six harness scenarios plus typecheck were executed green against them.
+- Gotchas already recorded in `.gen/changes.md` (progression.type readable only after first apply; scripted Trap must be inside tree before perform_hit; one apply per level).
 \n
