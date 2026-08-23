@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-unique-shots/",
-  "heartbeat_at": "2026-08-23T20:16:47.283Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T20:16:47.283Z",
+  "heartbeat_at": "2026-08-23T20:17:53.547Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-23T20:17:53.547Z",
   "process_id": 179464,
   "host": "f1a4230ec90b",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T20:16:51.493763+00:00",
-    "last_success_at": "2026-08-23T20:16:51.493184+00:00",
+    "last_attempt_at": "2026-08-23T20:17:53.547940+00:00",
+    "last_success_at": "2026-08-23T20:16:55.785208+00:00",
     "last_error": null
   },
   "metrics": {

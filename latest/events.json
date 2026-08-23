@@ -52,5 +52,14 @@
     "duration_ms": 340707,
     "summary": "Artifacts written. Summary of the revision-code-2 implementation pass:\n\nWorktree state\n- No code changes were needed or made this pass. The revision-1 deliverable (TitledPanel inset + min-width plate, ModalWell description wells in both mod\u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-23T20:17:53.547Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 62054,
+    "summary": "\u26a0\ufe0f No reply: the model returned empty content after retries and any fallback providers. Try `continue`, switch model/provider, or inspect the tool output above.\n",
+    "error": null
   }
 ]
