@@ -1,22 +1,20 @@
 {
-  "run_id": "issue132-move-tower-details-panel-right-1787458233",
-  "feature": "move-tower-details-panel-right-side",
+  "run_id": "req-136-padding-closable-panels-close-button",
+  "feature": "padding closable panels close button",
   "status": "running",
-  "started_at": "2026-08-23T04:10:33.976Z",
+  "started_at": "2026-08-23T04:18:23.650Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue132-move-tower-details-panel-right-1787458233/",
-  "heartbeat_at": "2026-08-23T04:10:33.976Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
+  "heartbeat_at": "2026-08-23T04:18:23.650Z",
   "last_node": null,
-  "active_node": "plan",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 896032,
+  "process_id": 898756,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T04:12:08.347805+00:00",
-    "last_success_at": "2026-08-23T04:10:38.271334+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-23T04:18:23.650805+00:00"
   },
   "metrics": {}
 }

@@ -1,23 +1,22 @@
-# Request: Issue #132 — Move tower details panel to the right side of the screen
+# Request: req-136-padding-closable-panels-close-button
 
-- **Project:** poke-defense-godot
-- **Runner key:** `godot-td` (never the folder name)
-- **Workspace:** `poke-defense-godot/issue-move-tower-details-panel-right-side`
-- **Branch:** `issue/move-tower-details-panel-right-side`
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/132 (status:in-progress, assigned @me)
-- **Revision budget:** 2
-
-## Feature description
-When a tower's details are shown, the tower details panel appears on the wrong side of the screen. It should be docked on the **right side** of the screen instead, so it does not overlap gameplay elements or the tower it describes.
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/136
+- Project: poke-defense-godot (runner key: godot-td)
+- Workspace: /workspace/git-workspaces/poke-defense-godot/issue-padding-closable-panels-close-button (branch issue/padding-closable-panels-close-button, base origin/master 5042d9f)
 
 ## Acceptance criteria (from issue)
-1. Showing a tower's details displays the panel docked on the right side of the screen.
-2. Panel does not overlap gameplay-critical UI or the tower it describes.
-3. Layout stays correct across window resize / different resolutions.
+- Closable panels reserve horizontal padding so the "x" button never overlaps content.
+- Tower details panel shows all its content clear of the "x" button.
+- Verified visually that no other closable panel (e.g. shop, settings) has the overlap either.
 
-## Notes for workers
-- Runner commands must use project key `godot-td`, workspace `poke-defense-godot/issue-move-tower-details-panel-right-side`. Invented workspace names cause HTTP 422.
-- Visible player-facing UI change ⇒ manual_testing: **required** with windowed screenshots (no `--headless`; use `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` when Vulkan fails in the worker).
-- Manual test must end with an overall UI-sanity pass per final screenshot: judge `ui_feels_broken: yes|no`; a yes fails even if geometry passes. State this in `.gen/manual_testing.md`.
-- Layout assertions must observe rendered geometry (`get_global_rect`), never theme overrides; include at least one real `.tscn` scene in tests.
-- Check panel placement against window size (anchor to right edge), and verify at a second resolution for criterion 3.
+## Notes
+- Visible UI change: manual_testing expected required (windowed screenshots).
+- Workers must use runner key `godot-td` and workspace `poke-defense-godot/issue-padding-closable-panels-close-button`.
+
+## Revision note (2026-08-22 20:45 UTC)
+- Fix changed at ~20:00 UTC: `_reserve_content_padding` now widens the frame PanelContainer's
+  panel stylebox `content_margin_right` (+90px) instead of shrinking `frame.offset_right`.
+- Existing `.gen/screenshots/*.png` and `.gen/harness/hud_other_panels/shots/*.png` are STALE
+  (19:52, pre-fix). The manual tester MUST capture fresh windowed screenshots after this change.
+- Acceptance addition: ✕ must sit flush INSIDE the frame's top-right corner (not floating outside
+  the panel art). Report `ui_feels_broken: yes|no` per final screenshot.
