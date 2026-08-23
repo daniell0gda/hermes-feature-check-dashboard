@@ -34,5 +34,14 @@
     "duration_ms": 2008779,
     "summary": "Summary (revision-code-1, cluster: implementation):\n\nThe implementation for issue #132 already existed as an uncommitted tree from the interrupted (HTTP 429) prior run; I verified it is real and green rather than redoing it.\n\nState:\n- `scen\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-23T05:33:26.458Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 271758,
+    "summary": "Worker release isn't exposed to me (only `run_project_cmd` with `cmd`); leaving workspace release to the leader. Artifacts written.\n\nVerified done: 2. Pending: 1 \u2014 0 due to build/test failures, 1 due to missing evidence (no assertion for \"o\u2026",
+    "error": null
   }
 ]
