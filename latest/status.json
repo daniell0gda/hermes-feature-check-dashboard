@@ -1,21 +1,21 @@
 {
-  "run_id": "110-grass-grid-misses-far-edges",
-  "feature": "grass-grid-misses-far-edges",
+  "run_id": "issue137-earth-continent-map",
+  "feature": "earth-continent-map-integration",
   "status": "running",
-  "started_at": "2026-08-23T00:32:36.653Z",
+  "started_at": "2026-08-22T22:56:15.876Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/110-grass-grid-misses-far-edges/",
-  "heartbeat_at": "2026-08-23T00:41:12.340Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T00:41:12.340Z",
-  "process_id": 830468,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
+  "heartbeat_at": "2026-08-23T00:54:40.792Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-23T00:54:40.792Z",
+  "process_id": 788449,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T00:41:16.891448+00:00",
-    "last_success_at": "2026-08-23T00:41:16.890631+00:00",
+    "last_attempt_at": "2026-08-23T00:54:40.794131+00:00",
+    "last_success_at": "2026-08-22T23:24:34.434698+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,19 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 110924,
-        "output_tokens": 4733
+        "input_tokens": 109661,
+        "output_tokens": 5803
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 268146,
+        "output_tokens": 5224
       }
     ]
   }

@@ -1,11 +1,29 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-23T00:41:12.340Z",
+    "timestamp": "2026-08-22T23:03:20.210Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 455817,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-grass-grid-misses-far-edges/.gen/plan.md\n",
+    "duration_ms": 419180,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-earth-continent-map-integration/.gen/plan.md\n\nSummary:\n- Artifacts: `.gen/plan.md` (8 criteria, 2 clusters, `manual_testing: required`), cluster files under `.gen/clusters/1-g\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-22T23:24:25.317Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 1260771,
+    "summary": "Worker release: `release_project_worker` is not exposed to this session (only `run_project_cmd` is), so the worker container was left running \u2014 flagging that for the orchestrator.\n\nSummary:\n\n- Verified the grounded-continent implementation \u2026",
+    "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-23T00:54:40.792Z",
+    "node": "check",
+    "status": "failed",
+    "duration_ms": 5411133,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'check', '-z', 'You are the check worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-earth-continent-map-integration.\\\\nThe dura\u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'check', '-z', 'You are the check worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-earth-continent-map-integration.\\\\nThe dura\u2026"
   }
 ]
