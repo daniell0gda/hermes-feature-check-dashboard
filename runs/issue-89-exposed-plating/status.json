@@ -1,12 +1,12 @@
 {
   "run_id": "issue-89-exposed-plating",
   "feature": "Exposed Plating perk",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-23T16:36:06.554Z",
-  "ended_at": null,
+  "ended_at": "2026-08-23T17:25:06.269Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-89-exposed-plating/",
-  "heartbeat_at": "2026-08-23T17:25:02.170Z",
+  "heartbeat_at": "2026-08-23T17:25:06.269Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-23T17:25:02.170Z",
@@ -14,8 +14,8 @@
   "host": "f1a4230ec90b",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T17:25:02.171136+00:00",
-    "last_success_at": "2026-08-23T17:21:08.487560+00:00",
+    "last_attempt_at": "2026-08-23T17:25:06.269689+00:00",
+    "last_success_at": "2026-08-23T17:25:06.267992+00:00",
     "last_error": null
   },
   "metrics": {
@@ -85,6 +85,17 @@
         "cost_status": "unknown",
         "input_tokens": 43849,
         "output_tokens": 3032
+      },
+      {
+        "task_id": "revision-check-2",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 96034,
+        "output_tokens": 3851
       }
     ]
   }
