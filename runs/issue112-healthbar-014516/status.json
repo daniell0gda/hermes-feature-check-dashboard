@@ -1,80 +1,20 @@
 {
   "run_id": "issue112-healthbar-014516",
   "feature": "health-bar-never-auto-hides",
-  "status": "failed",
-  "started_at": "2026-08-23T01:45:16.648Z",
-  "ended_at": "2026-08-23T02:03:44.820Z",
+  "status": "running",
+  "started_at": "2026-08-23T02:04:48.605Z",
+  "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue112-healthbar-014516/",
-  "heartbeat_at": "2026-08-23T02:03:44.820Z",
-  "last_node": "manual-tester",
+  "heartbeat_at": "2026-08-23T02:04:48.605Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-23T02:03:40.224Z",
-  "process_id": 858843,
+  "last_event_at": null,
+  "process_id": 870064,
   "host": "25e0b2c49eb5",
-  "phase": "manual-tester",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T02:03:44.820638+00:00",
-    "last_success_at": "2026-08-23T02:03:44.818560+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-23T02:04:48.605960+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 175005,
-        "output_tokens": 11337
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 110517,
-        "output_tokens": 3109
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 36843,
-        "output_tokens": 686
-      },
-      {
-        "task_id": "manual-tester",
-        "cluster_id": null,
-        "role": "manual-tester",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      }
-    ]
-  }
+  "metrics": {}
 }
