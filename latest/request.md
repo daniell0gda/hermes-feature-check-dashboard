@@ -1,32 +1,26 @@
-# Request: grass-mutates-shared-materials (issue #111)
+# Request: issue-116 game-ready-blocks-map-load
 
-- Project: poke-defense-godot
-- Runner key: `godot-td` (never use folder name)
-- Workspace: `poke-defense-godot/issue-grass-render-settings-mutate-the-shared-`
-- Branch: `issue/grass-render-settings-mutate-the-shared-` (cut from fresh origin/master)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/111
+## Feature
+Split `Game`'s world build into resumable phases so `MapLoadingScreen` can drive it and show real progress during world building.
 
-## Problem
+## Issue
+https://github.com/daniell0gda/poke-defense-godot/issues/116
 
-`NatureDecoration._apply_small_vegetation_render_settings()` edits the material it reads off
-the imported mesh without duplicating it first (`NatureDecoration.gd:488-497`). `surface_get_material()`
-returns the ResourceLoader-cached resource owned by the imported `.gltf`, shared with every instance of
-that model and every later scene that loads it. The tree path directly below duplicates before writing
-(`_apply_tree_render_settings_recursive`, `:740`) — the grass path must do the same.
+Problem: `MapLoadingScreen` threads the `Main.tscn` load, but `scene.instantiate()` + `Game._ready()` (map JSON parse, terrain, paths, decorations, spawners, environment) block the main thread in one go under a static "Building Map" caption. The progress bar finishes before the expensive part starts.
 
-Second latent issue in the same function: it only walks direct children (`:473-474`) where the tree
-version recurses; a nested nature model would silently skip shadow/culling/alpha settings.
+Proposal: split `Game`'s world build into a step list that yields between phases, same shape as `LoadingSequence`'s step list, so `MapLoadingScreen` can drive and report it. See the "Known limitation" section in `LOADING_SYSTEM.md`.
 
 ## Done when
+- `MapLoadingScreen`'s bar advances during the world build rather than jumping over it.
+- No single frame stalls for more than ~100ms during a map load.
 
-1. The grass/flower path duplicates the material before writing to it and writes the duplicate back
-   with `set_surface_override_material` (mirroring the tree path).
-2. The mesh walk recurses so nested nature models get the same treatment.
-3. Grass still renders with alpha-scissor cutout and no shadow casting — verified on a `-Windowed`
-   screenshot (rendering change → manual_testing: required).
+## Runner notes (redo notes)
+- Project key: `godot-td`. Workspace: `poke-defense-godot/issue-game-ready-blocks-map-load`.
+- Use only `run_project_cmd`; no shell operators; use Godot's `--log-file .gen/<name>.log` for full logs.
+- Windowed evidence needs `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` when Vulkan fails.
+- Harness scene arg must precede user args: `godot [--headless] --path . res://scenes/Main.tscn -- ...`.
+- Manual testing: required if the loading screen UI is visibly changed — capture windowed PNGs of the loading screen mid-world-build showing the bar advancing past the threaded-load portion.
 
-## Redo notes for resumed runs
-
-- Runner workspace name is exactly `poke-defense-godot/issue-grass-render-settings-mutate-the-shared-`.
-  Invented workspace names produce HTTP 422 chdir failures.
-- Manual tester must never use `--headless`; windowed screenshots required.
+## Context
+- Branch: `issue/game-ready-blocks-map-load`, cut from fresh `origin/master` (d241462).
+- Worktree clean at claim time.

@@ -52,5 +52,14 @@
     "duration_ms": 602196,
     "summary": "HTTP 400: This request is not valid. Check the model name and other parameters. Additional info: Provider returned error\n",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-23T02:05:10.795Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 1055460,
+    "summary": "Verification complete. Artifacts written to .gen/check.md, .gen/status.md, and .gen/quality-notes.md in the worktree.\n\nVerified done: 4. Pending: 4 \u2014 1 due to build/test failures (frame-budget criterion: fresh cold-cache phases 124/121/121/\u2026",
+    "error": null
   }
 ]

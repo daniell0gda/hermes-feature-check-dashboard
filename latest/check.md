@@ -1,41 +1,114 @@
-# Check Report: grass-mutates-shared-materials (issue #111) — iteration 1 (revision-check)
+# Check report — issue-116 game-ready-blocks-map-load (revision-check 2, iteration 3)
 
-classification: pass
+classification: fixable
 
 ## Verdict
 
-The fix is implemented and verified fresh in this worktree via run_project_cmd
-(project=poke-defense-godot, workspace=poke-defense-godot/issue-grass-render-settings-mutate-the-shared-).
-All automated criteria pass; only the manual windowed screenshot criterion remains open (manual_testing: required — owned by the manual-tester profile).
+Cluster 1 improved but the frame-budget criterion STILL FAILS on a fresh
+cold-cache run. The cast-rule violation from iteration 2 is fixed. Cluster 2's
+new test no longer crashes on typed pairs and now has a 3600-frame watchdog,
+but it never reaches a single assertion: the loading screen's `add_child` of
+the game scene fails inside `_ready` ("Parent node is busy setting up children,
+add_child() failed"), the screen never frees itself, the test spins to its
+watchdog, quits 1, and writes NO result.json — zero checks executed.
+The required windowed PNG manual evidence still does not exist.
 
-## Implementation evidence
+## Verification commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-game-ready-blocks-map-load)
 
-- `scripts/game/NatureDecoration.gd` — `_apply_small_vegetation_render_settings` now delegates to a recursive `_apply_small_vegetation_render_settings_recursive`. Per surface it duplicates the StandardMaterial3D before modification and writes the copy back with `set_surface_override_material` (alpha-scissor transparency, threshold 0.3, no_depth_test false, render_priority -1). Shadow-off, visibility_range_end 0.0, opaque sorting applied to every nested MeshInstance3D. Debug-build `[NatureDecoration] duplicated material for <node> surface <i>` log present.
-- `tests/visuals/test_small_vegetation_render_settings.gd/.tscn` — new focused test asserting all of the above plus cached-material untouched and per-instance independence.
-
-## Verification commands (all via run_project_cmd)
-
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Preflight | `godot --version` | 0 | 4.4.1.stable.official |
-| Build/import | `godot --headless --path . --import` | 0 | Clean import |
-| Focused test | `godot --headless --path . res://tests/visuals/test_small_vegetation_render_settings.tscn` | 0 | `=== small_vegetation_render_settings: 16 ok, 0 failed ===`; debug log lines fired (`[NatureDecoration] duplicated material for Blades surface 0`) |
-| Full test | `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn` | 0 | `=== nature_visibility_range: 5 ok, 0 failed ===`; exit-time dummy-renderer RID leak warnings are baseline headless noise, not failures |
-
-Runner gate: passed (every project command through run_project_cmd; no host Godot).
+- Preflight probe: `["godot","--version"]` → exit 0, Godot 4.4.1.stable.
+- Editor/import gate: `godot --headless --path . --editor --quit-after 300`
+  → exit 0 (clean parse of Game.gd / NatureDecoration.gd /
+  test_map_loading_screen_driving.gd).
+- Focused scenario: `godot --headless --path . res://scenes/Main.tscn --
+  --harness=res://tests/scenarios/map_build_phases.json` → **exit 1,
+  status=fail**; `.gen/harness/map_build_phases/result.json`: 7/8 expectations
+  pass; the failing one is still the `!regex` frame-budget check. Fresh
+  cold-cache timings in `.gen/harness/_logs/map_build_phases.out.log`:
+  'Loading Egg Castle Model' 124 ms, 'Warming Egg Castle Model' 121 ms,
+  'Placing the Egg' 121 ms, 'Growing Vegetation - Trees 1/4' 184 ms,
+  'Dead Trees 1/2' 192 ms — five phases over ~100 ms. A "Warm Models" phase
+  was added before the tree slices, yet the first tree/dead-tree slice still
+  pays the full model-parse cost, so the warm phase is not effective for them.
+- Full suite: level_walkthrough → exit 0, status=pass, but its own log again
+  shows cold phases at 204 / 194 / 127 ms (same budget violation on other
+  maps).
+- Backdrop: menu_backdrop_map → status=pass (exit 0).
+- New cluster-2 test:
+  `godot --headless --path . res://tests/loading/test_map_loading_screen_driving.tscn`
+  → **exit 1 after ~26 s**, watchdog fired:
+  `[SETUP FAIL] test exceeded its 3600-frame watchdog`. Log shows exactly one
+  engine error first: `ERROR: Parent node is busy setting up children,
+  add_child() failed. Consider using add_child.call_deferred(child) instead.`
+  No `.gen/loading_harness/result.json`, no assertion summary line, zero
+  checks ran. Root cause: the harness adds the screen via `add_child` from its
+  own `_ready`; the screen's `_ready → _run_steps → _finish →
+  _build_world_phased` then does `tree.root.add_child(instance)` while the
+  root is still setting up children, so the game instance never enters the
+  tree; the screen waits forever on a world build that can never finish.
+  (Same error also appears when the scene is launched directly.) The test
+  needs `add_child.call_deferred` (or deferred start) in BOTH the harness's
+  screen add and MapLoadingScreen._build_world_phased's game-scene add.
 
 ## Acceptance criteria status
 
-Criteria 1–7 verified Done (see status.md). Criterion 8 (windowed manual screenshot) left Pending — manual_testing required; not executable headless.
+Cluster 1 — game-phased-build:
+- PASS — phased parity (playing state, map_id=map_1, total_waves=4>0, wave-1
+  enemies ≥1): all four gameplay expectations pass in
+  .gen/harness/map_build_phases/result.json.
+- FAIL — no single frame >~100 ms during world build: unchanged from iteration
+  2 — cold-cache 124/121/121/184/192 ms on map_1; level_walkthrough log shows
+  204/194/127 ms. The added warm-model phase does not remove the parse cost
+  from the first vegetation slice, and egg-castle load/warm/place remain just
+  over budget.
+- PASS — direct Main.tscn boot completes the whole build without a driver
+  (harness path reaches playing with all phases run synchronously).
+- PASS — menu_backdrop_map scenario passes unchanged.
+- PASS — `[MAP_BUILD] phase '<name>' done in <n> ms` lines present for every
+  phase in every scenario log.
 
-Test overlap check: no pre-existing test asserted these behaviors (the scenario is new; the existing nature_visibility_range test covers culling only and was rerun unchanged, passing).
+Cluster 2 — loading-screen-driving:
+- UNVERIFIED — bar advances during world build: implementation exists
+  (MapLoadingScreen._build_world_phased + _on_world_build_phase), but the only
+  automated coverage never executes an assertion (watchdog abort above) and no
+  windowed PNG manual evidence exists.
+- UNVERIFIED — building-phase caption replaces "Building Map": same gap.
+- UNVERIFIED — bad map id falls back to map_1 before world build: logic present
+  and ordered before phases in code (`_load_map_config` runs as step 1, before
+  `_finish`/phases), but the only test never executes its checks.
 
-Changed-code quality: diff vs HEAD touches only NatureDecoration.gd + the two new test files; mirrors the existing tree-path pattern, matches existing style, no scope creep. No violations under /opt/data/coding_rules.md or CLAUDE.md. quality-notes.md: created with no open entries.
+Manual testing per plan.md (windowed PNG of the loading screen mid-world-build)
+is REQUIRED and missing (.gen contains no manual-report.md and no screenshots).
+
+## Changed-file quality findings
+
+- RESOLVED — scripts/game/Game.gd `as PackedScene` casts removed; new lines no
+  longer introduce type casts (remaining `as X` occurrences are pre-existing).
+- NEW QUALITY ISSUE — scripts/game/NatureDecoration.gd: newly added lines
+  introduce two type casts forbidden by coding rules:
+  `get_node_or_null(container_name) as Node3D` (get_container, ~line 246) and
+  `_model_cache.get(model_path) as PackedScene` plus `load(model_path) as
+  PackedScene` (_load_nature_model_path, ~lines 657–659). Advisory quality note
+  appended; does not demote criteria beyond what is already recorded.
+- tests/loading/test_map_loading_screen_driving.gd: typed-pair crash fixed and
+  watchdog added (good), but the deferred-add_child defect above means the test
+  still proves nothing; must be fixed and rerun to a written result.json.
 
 ## Blockers
 
-None infra-related.
+None infra-related; runner healthy throughout (probe, import gate, and all
+scenario runs returned promptly).
 
-## Unverified items
+## Required fixes before re-check
 
-- Criterion 8: windowed (never --headless) manual screenshot of a gameplay map showing grass/flowers with cutout foliage edges and no shadows — deferred to the manual-testing pass.
+1. Fix the add_child-inside-_ready failure: use `add_child.call_deferred(...)`
+   in tests/loading/test_map_loading_screen_driving.gd (screen add) AND in
+   scripts/MapLoadingScreen.gd `_build_world_phased` (game-scene add); rerun to
+   a written `.gen/loading_harness/result.json` with all checks passing.
+2. Bring cold-cache world-build phases under ~100 ms: make the vegetation
+   warm-model phase actually pre-parse the tree/dead-tree GLTFs before the
+   first slice (currently Trees 1/4 and Dead Trees 1/2 pay the whole parse),
+   and further amortize egg-castle load/warm/place (each 121–147 ms cold).
+3. Rerun map_build_phases to status=pass.
+4. Provide the required windowed PNG manual evidence of the loading screen
+   mid-world-build (bar advanced past the threaded-load portion).
