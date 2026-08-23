@@ -16,5 +16,14 @@
     "duration_ms": 1378767,
     "summary": "`release_project_worker` isn't exposed in this session's toolset (only `run_project_cmd` is), so worker release is left to the orchestrator. Summary:\n\n**Cluster 1 \u2014 delete-dead-options-modal: implemented**\n\nDeletion:\n- Deleted `scenes/ui/Op\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-23T01:10:59.989Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 792588,
+    "summary": "Release tool isn't exposed to this worker (only `run_project_cmd`); the leader owns workspace lifecycle, so I left the worker in place.\n\nSummary:\n\nVerified done: 0. Pending: 7 \u2014 7 due to build/test failures (full-suite gate), 0 due to missi\u2026",
+    "error": null
   }
 ]

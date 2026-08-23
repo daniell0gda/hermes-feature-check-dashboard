@@ -1,40 +1,40 @@
-# Acceptance Plan: earth-continent-map-integration
+# Acceptance Plan: issue-dead-options-modal-scene
 
-manual_testing: required
+Deletion-only cleanup: remove the unreferenced dead Options surfaces
+(`scenes/ui/Options.tscn`, `scripts/ui/Options.gd` with `class_name OptionsModal`)
+without disturbing the live Options paths (pause-menu modal via
+`scenes/ui/OptionsScreen.tscn` in `scripts/ui/UI.gd`; main-menu screen via
+`scripts/MainMenu.gd`).
 
 ## Verification
 
-All commands run via `run_project_cmd` (project=poke-defense-godot,
-workspace=poke-defense-godot/issue-earth-continent-map-integration), from the repository root.
-Per the check-scope bound in `.gen/request.md`, do NOT run the full 135-scenario suite
-(runner 15-min timeout); the "full test" here is the bounded related-scenario set named there.
-
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/backdrop_earth_visible.json"]` then `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/backdrop_earth_glint.json"]`
-- Full test: `["python3", "-c", "\nimport glob, json, subprocess, sys\nnames = ['backdrop_earth_visible', 'backdrop_earth_glint', 'menu_backdrop_map', 'smoke_placement', 'removed_tower_kinds_no_crash']\nfails = []\nfor n in names:\n    s = 'tests/scenarios/%s.json' % n\n    subprocess.run(['godot', '--headless', '--path', '.', 'res://scenes/Main.tscn', '--', '--harness=res://' + s])\n    try:\n        ok = json.load(open('.gen/harness/' + n + '/result.json'))['status'] == 'pass'\n    except Exception:\n        ok = False\n    print(n, 'PASS' if ok else 'FAIL')\n    if not ok:\n        fails.append(n)\nsys.exit(1 if fails else 0)\n"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_placement.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_tower_roster.json"]`
 - Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
 ## Clusters
 
-1. grounded-continent-placement — files: `scripts/game/visuals/BackdropEarth.gd` — depends on: none
-- The grounded configuration names exactly one continent mesh from `models/stylized_earth_in_clouds.glb`, and a debug-build warning is emitted if that mesh is absent from the instantiated model.
-- After `configure_for_map` on a surface map, the earth rig's applied uniform scale equals `grounded_scale * world_radius / NATIVE_EARTH_RADIUS` (the configured value, not unit scale), observable in the grounding log line.
-- After `configure_for_map` on a surface map, the chosen continent's terrain apex sits flush at the playable plane height (harness `backdrop_earth_center_y == 0`) with no floating gap between board and globe surface.
-- The globe rig pose places the globe body close enough to the board that its horizon lies inside the normal gameplay camera's view frustum (not sunk below the plane nor pushed far behind the board).
-- In the grounded configuration the earth spin never starts: the earth body's world transform sampled at two times several seconds apart is identical.
-- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent and the final rig position/scale/rotation.
-2. backdrop-regression-and-harness-contract — files: `tests/scenarios/backdrop_earth_visible.json`, `tests/scenarios/backdrop_earth_glint.json` — depends on: 1
-- The focused harness scenarios `backdrop_earth_visible` and `backdrop_earth_glint` both pass headless with all their expectations green (present, grounded, flush placement, rotation invariance).
-- From the normal gameplay camera in the windowed build, other continents, ocean, cloud banks, and the atmosphere rim remain visible; only the previously hidden mesh prefixes stay hidden, with no visual regressions to the backdrop look.
-- A windowed run of `backdrop_earth_visible` produces a surface screenshot from the default gameplay camera showing the map sitting on the chosen continent with surrounding continent terrain blending in scale and color into the map field.
+1. delete-dead-options-modal — files: `scenes/ui/Options.tscn`, `scripts/ui/Options.gd`, `scripts/ui/Options.gd.uid` — depends on: none
+- A project-wide search finds no reference to `Options.tscn`, `OptionsModal`, or `scripts/ui/Options.gd` in any scene, script, project setting, or documentation file after the deletion.
+- `scenes/ui/Options.tscn` and `scripts/ui/Options.gd` (plus their orphaned `.uid` sidecar files) no longer exist in the repository.
+- The Godot editor/import gate (`--headless --editor --quit-after`) completes with exit code 0 and no script parse errors or missing-resource errors in its output after the deletion.
+- The focused gameplay harness scenario (`smoke_placement`) completes with `status: pass`, exit code 0, and a fresh `.gen/harness/smoke_placement/result.json` written after the deletion.
+- The broad-shallow harness scenario (`smoke_tower_roster`) completes with `status: pass`, proving the autoload/class cache still loads the full game after the deletion.
+- The in-game pause menu still opens the live Options modal: with the harness active, opening the pause menu and triggering its Options button instantiates a visible Options modal (the `OptionsScreen.tscn` path in `scripts/ui/UI.gd`), not a missing-scene error.
+- The main menu still opens the live Options screen: loading the main menu scene and triggering its Options control loads `res://scenes/ui/OptionsScreen.tscn` successfully with no load errors in the run log.
 
 ## Criteria
 
-- The grounded configuration names exactly one continent mesh from `models/stylized_earth_in_clouds.glb`, and a debug-build warning is emitted if that mesh is absent from the instantiated model.
-- After `configure_for_map` on a surface map, the earth rig's applied uniform scale equals `grounded_scale * world_radius / NATIVE_EARTH_RADIUS` (the configured value, not unit scale), observable in the grounding log line.
-- After `configure_for_map` on a surface map, the chosen continent's terrain apex sits flush at the playable plane height (harness `backdrop_earth_center_y == 0`) with no floating gap between board and globe surface.
-- The globe rig pose places the globe body close enough to the board that its horizon lies inside the normal gameplay camera's view frustum (not sunk below the plane nor pushed far behind the board).
-- In the grounded configuration the earth spin never starts: the earth body's world transform sampled at two times several seconds apart is identical.
-- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent and the final rig position/scale/rotation.
-- The focused harness scenarios `backdrop_earth_visible` and `backdrop_earth_glint` both pass headless with all their expectations green (present, grounded, flush placement, rotation invariance).
-- From the normal gameplay camera in the windowed build, other continents, ocean, cloud banks, and the atmosphere rim remain visible; only the previously hidden mesh prefixes stay hidden, with no visual regressions to the backdrop look.
-- A windowed run of `backdrop_earth_visible` produces a surface screenshot from the default gameplay camera showing the map sitting on the chosen continent with surrounding continent terrain blending in scale and color into the map field.
+- A project-wide search finds no reference to `Options.tscn`, `OptionsModal`, or `scripts/ui/Options.gd` in any scene, script, project setting, or documentation file after the deletion.
+- `scenes/ui/Options.tscn` and `scripts/ui/Options.gd` (plus their orphaned `.uid` sidecar files) no longer exist in the repository.
+- The Godot editor/import gate (`--headless --editor --quit-after`) completes with exit code 0 and no script parse errors or missing-resource errors in its output after the deletion.
+- The focused gameplay harness scenario (`smoke_placement`) completes with `status: pass`, exit code 0, and a fresh `.gen/harness/smoke_placement/result.json` written after the deletion.
+- The broad-shallow harness scenario (`smoke_tower_roster`) completes with `status: pass`, proving the autoload/class cache still loads the full game after the deletion.
+- The in-game pause menu still opens the live Options modal: with the harness active, opening the pause menu and triggering its Options button instantiates a visible Options modal (the `OptionsScreen.tscn` path in `scripts/ui/UI.gd`), not a missing-scene error.
+- The main menu still opens the live Options screen: loading the main menu scene and triggering its Options control loads `res://scenes/ui/OptionsScreen.tscn` successfully with no load errors in the run log.
+
+## Notes
+
+- manual_testing: optional — a quick windowed sanity check that both live Options paths (pause menu and main menu) open is sufficient; no new visual work is required (deletion only).
+- No debug logging criterion: no state transitions are added or changed; this is pure deletion.
+- No `ui_scenario.md`: no new player-visible story; a still cannot prove a deletion beyond what the harness criteria already cover.

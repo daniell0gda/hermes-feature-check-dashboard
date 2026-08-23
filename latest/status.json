@@ -1,21 +1,21 @@
 {
-  "run_id": "issue137-earth-continent-map",
-  "feature": "earth-continent-map-integration",
+  "run_id": "tw-104-dead-options-modal-r1",
+  "feature": "dead-options-modal-scene",
   "status": "running",
-  "started_at": "2026-08-23T00:55:39.079Z",
+  "started_at": "2026-08-23T00:28:15.410Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-23T01:10:29.713Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/tw-104-dead-options-modal-r1/",
+  "heartbeat_at": "2026-08-23T01:10:59.989Z",
   "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T01:10:29.713Z",
-  "process_id": 837982,
+  "active_node": null,
+  "last_event_at": "2026-08-23T01:10:59.989Z",
+  "process_id": 828693,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T01:10:34.398875+00:00",
-    "last_success_at": "2026-08-23T01:10:34.398085+00:00",
+    "last_attempt_at": "2026-08-23T01:10:59.990182+00:00",
+    "last_success_at": "2026-08-23T00:57:51.898207+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 114064,
-        "output_tokens": 4854
+        "input_tokens": 101407,
+        "output_tokens": 4406
       },
       {
         "task_id": "code",
@@ -39,19 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 126441,
-        "output_tokens": 3408
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 162400,
-        "output_tokens": 7035
+        "input_tokens": 236294,
+        "output_tokens": 10060
       }
     ]
   }
