@@ -1,31 +1,34 @@
-# Acceptance Plan: harness-cannot-inject-gui-input
+# Acceptance Plan: grass-grid-misses-far-edges
+
+Manual testing: optional
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/hud_controls_state.json"]`
-- Full test: `["bash", "-lc", "for s in hud_controls_state hud_layer_roundtrip hud_heart_beat_on_egg_damage hud_other_panels hud_wood_panels; do godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/$s.json || exit 1; done"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://tests/visuals/test_nature_visibility_range.tscn"]`
+- Full test: `["godot", "--headless", "--import", "--path", "."]`
+- Typecheck/build: `["godot", "--headless", "--editor", "--quit-after", "2", "--path", "."]`
+
+Note for workers: on a fresh workspace the import/build command must run before the
+focused test, otherwise textures are unimported and the focused run fails with
+"No loader found for resource" parse errors. The focused test exits 0 and prints
+"nature_visibility_range: N ok, 0 failed" on success.
 
 ## Clusters
 
-1. press-button-harness-action — files: `scripts/testing/HarnessActions.gd`, `docs/REFERENCE.md` — depends on: none
-- A `press_button` harness action exists that takes a Button reference (node path or a named UI button) and delivers a real press through Godot's button input path (press attempt / `_gui_input`), not `pressed.emit()`, and its result detail reports whether the press actually landed on an enabled button.
-- A `press_button` action whose target does not resolve to a live Button node fails with `ok: false` and a detail naming the unresolvable target.
-- A `press_button` action against a disabled Button reports that the press did not land and the button's connected handler does not run.
-- The `press_button` action works under `--headless` (dummy display, no GUI picking) by driving `Control._gui_input` directly; if it cannot, `REFERENCE.md` documents that the action requires windowed mode.
-- `REFERENCE.md` documents the `press_button` action: its fields, its return detail, and its headless behaviour.
-- Debug-build `[HARNESS-CLICK]` log line per press_button attempt, carrying the button target, whether the press landed, and the button's disabled state at press time.
-2. upgrade-button-scenario-step — files: `tests/scenarios/hud_controls_state.json` — depends on: 1
-- `tests/scenarios/hud_controls_state.json` gains a step that presses the Upgrade button via the new press action after waiting at least 0.5s past tower selection (spanning at least one 0.2s selection-poll tick), and the scenario asserts the tower's level increased as a result of that press.
+1. grid-extent-helper — files: `scripts/game/NatureDecoration.gd` — depends on: none
+- Grass base-position sampling covers the full playable map extent on both axes for any map_width/map_height and grid_size combination, including sizes where grid_size does not evenly divide the extent (no strip along +X or +Z is left unsampled).
+- The duplicated grass grid-walk logic at both per-instance and MultiMesh placement paths is replaced by one shared helper called from both; changing the helper changes coverage on both paths.
+- On a 50x50 map with default settings, generated grass positions exist in every quadrant band adjacent to all four map edges (within one grid step of each edge), not only near -X/-Z.
+- Debug-build [NATURE] log line per grass-generation pass stating sampled base-position count and the min/max sampled X/Z coordinates, emitted once per path when generation completes.
+2. extent-regression-test — files: `tests/visuals/test_nature_visibility_range.gd`, `tests/visuals/test_nature_visibility_range.tscn` — depends on: 1
+- tests/visuals/test_nature_visibility_range.gd numerically asserts that on a 50x50 map the generated grass extent reaches within one grid step of all four edges on both the per-instance and MultiMesh paths, and the suite fails if any edge band has no grass.
+- Existing assertions in tests/visuals/test_nature_visibility_range.gd still pass: no nature instance carries a camera-distance cull and every test runs to completion.
 
 ## Criteria
 
-- A `press_button` harness action exists that takes a Button reference (node path or a named UI button) and delivers a real press through Godot's button input path (press attempt / `_gui_input`), not `pressed.emit()`, and its result detail reports whether the press actually landed on an enabled button.
-- A `press_button` action whose target does not resolve to a live Button node fails with `ok: false` and a detail naming the unresolvable target.
-- A `press_button` action against a disabled Button reports that the press did not land and the button's connected handler does not run.
-- The `press_button` action works under `--headless` (dummy display, no GUI picking) by driving `Control._gui_input` directly; if it cannot, `REFERENCE.md` documents that the action requires windowed mode.
-- `REFERENCE.md` documents the `press_button` action: its fields, its return detail, and its headless behaviour.
-- Debug-build `[HARNESS-CLICK]` log line per press_button attempt, carrying the button target, whether the press landed, and the button's disabled state at press time.
-- `tests/scenarios/hud_controls_state.json` gains a step that presses the Upgrade button via the new press action after waiting at least 0.5s past tower selection (spanning at least one 0.2s selection-poll tick), and the scenario asserts the tower's level increased as a result of that press.
-
-manual_testing: none
+- Grass base-position sampling covers the full playable map extent on both axes for any map_width/map_height and grid_size combination, including sizes where grid_size does not evenly divide the extent (no strip along +X or +Z is left unsampled).
+- The duplicated grass grid-walk logic at both per-instance and MultiMesh placement paths is replaced by one shared helper called from both; changing the helper changes coverage on both paths.
+- On a 50x50 map with default settings, generated grass positions exist in every quadrant band adjacent to all four map edges (within one grid step of each edge), not only near -X/-Z.
+- Debug-build [NATURE] log line per grass-generation pass stating sampled base-position count and the min/max sampled X/Z coordinates, emitted once per path when generation completes.
+- tests/visuals/test_nature_visibility_range.gd numerically asserts that on a 50x50 map the generated grass extent reaches within one grid step of all four edges on both the per-instance and MultiMesh paths, and the suite fails if any edge band has no grass.
+- Existing assertions in tests/visuals/test_nature_visibility_range.gd still pass: no nature instance carries a camera-distance cull and every test runs to completion.
