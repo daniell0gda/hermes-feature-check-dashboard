@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/",
-  "heartbeat_at": "2026-08-23T16:13:50.875Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T16:13:50.875Z",
+  "heartbeat_at": "2026-08-23T16:27:26.204Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-23T16:27:26.204Z",
   "process_id": 64924,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T16:13:55.098776+00:00",
-    "last_success_at": "2026-08-23T16:13:55.097827+00:00",
+    "last_attempt_at": "2026-08-23T16:27:26.205156+00:00",
+    "last_success_at": "2026-08-23T16:13:59.373398+00:00",
     "last_error": null
   },
   "metrics": {

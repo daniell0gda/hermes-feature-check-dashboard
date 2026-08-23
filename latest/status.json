@@ -1,21 +1,21 @@
 {
-  "run_id": "perk-sundering-bolts-r2",
-  "feature": "Sundering Bolts perk - % of final damage also strips armor",
+  "run_id": "warlords-doctrine-r1",
+  "feature": "Warlord's Doctrine perk",
   "status": "running",
-  "started_at": "2026-08-23T16:13:26.429Z",
+  "started_at": "2026-08-23T15:55:11.713Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-sundering-bolts-r2/",
-  "heartbeat_at": "2026-08-23T16:16:02.933Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T16:16:02.933Z",
-  "process_id": 68198,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/",
+  "heartbeat_at": "2026-08-23T16:27:26.204Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-23T16:27:26.204Z",
+  "process_id": 64924,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T16:16:07.186623+00:00",
-    "last_success_at": "2026-08-23T16:16:07.185805+00:00",
+    "last_attempt_at": "2026-08-23T16:27:26.205156+00:00",
+    "last_success_at": "2026-08-23T16:13:59.373398+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 0,
-        "output_tokens": 0
+        "input_tokens": 118192,
+        "output_tokens": 10003
       }
     ]
   }
