@@ -1,22 +1,22 @@
 {
-  "run_id": "issue116-game-ready-blocks-map-load-r1",
-  "feature": "game-ready-blocks-map-load",
+  "run_id": "issue126-harness-press-button",
+  "feature": "harness-cannot-inject-gui-input",
   "status": "running",
-  "started_at": "2026-08-22T23:17:33.566Z",
+  "started_at": "2026-08-22T23:20:19.286Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r1/",
-  "heartbeat_at": "2026-08-23T01:47:31.542Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue126-harness-press-button/",
+  "heartbeat_at": "2026-08-23T01:51:59.812Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T01:47:31.542Z",
-  "process_id": 792468,
+  "active_node": null,
+  "last_event_at": "2026-08-23T01:51:59.812Z",
+  "process_id": 793373,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T01:47:35.335876+00:00",
-    "last_success_at": "2026-08-23T01:37:33.958999+00:00",
-    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
+    "last_attempt_at": "2026-08-23T01:51:59.812942+00:00",
+    "last_success_at": "2026-08-23T01:07:17.989955+00:00",
+    "last_error": null
   },
   "metrics": {
     "invocations": [
@@ -27,9 +27,9 @@
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 112499,
-        "output_tokens": 5457
+        "cost_status": "estimated",
+        "input_tokens": 148252,
+        "output_tokens": 4675
       },
       {
         "task_id": "code",
@@ -39,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 264145,
-        "output_tokens": 21791
+        "input_tokens": 223328,
+        "output_tokens": 8265
       },
       {
         "task_id": "check",
@@ -50,8 +50,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 154272,
-        "output_tokens": 5631
+        "input_tokens": 201246,
+        "output_tokens": 12710
       },
       {
         "task_id": "revision-code-1",
@@ -61,8 +61,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 204662,
-        "output_tokens": 26515
+        "input_tokens": 366307,
+        "output_tokens": 21136
       },
       {
         "task_id": "revision-check-1",
@@ -72,19 +72,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 142179,
-        "output_tokens": 7795
-      },
-      {
-        "task_id": "revision-code-2",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
+        "input_tokens": 209590,
+        "output_tokens": 5328
       }
     ]
   }

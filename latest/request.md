@@ -1,26 +1,42 @@
-# Request: issue-116 game-ready-blocks-map-load
+# Request: harness-cannot-inject-gui-input (issue #126)
 
-## Feature
-Split `Game`'s world build into resumable phases so `MapLoadingScreen` can drive it and show real progress during world building.
+- Repo: daniell0gda/poke-defense-godot
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/126
+- Workspace: /workspace/git-workspaces/poke-defense-godot/issue-harness-cannot-inject-gui-input
+- Branch: issue/harness-cannot-inject-gui-input (cut from origin/master)
+- Runner: project key `godot-td`, workspace `poke-defense-godot/issue-harness-cannot-inject-gui-input` (use exactly these names; invented names cause HTTP 422).
 
-## Issue
-https://github.com/daniell0gda/poke-defense-godot/issues/116
+## Problem
 
-Problem: `MapLoadingScreen` threads the `Main.tscn` load, but `scene.instantiate()` + `Game._ready()` (map JSON parse, terrain, paths, decorations, spawners, environment) block the main thread in one go under a static "Building Map" caption. The progress bar finishes before the expensive part starts.
+The gameplay harness can call UI handler methods but cannot inject real GUI input, so
+"swallowed click" bugs are untestable (e.g. the Upgrade button disabled-flip bug: a
+`disabled` true→false round trip between mouse-down and mouse-up eats the `pressed`
+signal; `BaseButton::set_disabled(true)` clears the pending press).
 
-Proposal: split `Game`'s world build into a step list that yields between phases, same shape as `LoadingSequence`'s step list, so `MapLoadingScreen` can drive and report it. See the "Known limitation" section in `LOADING_SYSTEM.md`.
+Existing actions don't cover this:
+- `{"type":"call","target":"ui",...}` invokes the handler directly, skipping the button.
+- Node-path `pressed.emit()` (#106) skips `press_attempt`.
+
+Headless note from the issue: under `--headless` the dummy display does no GUI picking
+(`gui_get_hovered_control()` is null), so a headless action must drive
+`Control._gui_input` directly rather than `Viewport.push_input`. Either implement a
+working headless path or document that the action requires windowed mode in REFERENCE.md.
 
 ## Done when
-- `MapLoadingScreen`'s bar advances during the world build rather than jumping over it.
-- No single frame stalls for more than ~100ms during a map load.
 
-## Runner notes (redo notes)
-- Project key: `godot-td`. Workspace: `poke-defense-godot/issue-game-ready-blocks-map-load`.
-- Use only `run_project_cmd`; no shell operators; use Godot's `--log-file .gen/<name>.log` for full logs.
-- Windowed evidence needs `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` when Vulkan fails.
-- Harness scene arg must precede user args: `godot [--headless] --path . res://scenes/Main.tscn -- ...`.
-- Manual testing: required if the loading screen UI is visibly changed — capture windowed PNGs of the loading screen mid-world-build showing the bar advancing past the threaded-load portion.
+1. A `press_button` (or `click_at`) harness action exists that reaches a real Button through
+   Godot's input path (not `pressed.emit()`), and reports whether the press actually landed.
+2. It works headless, OR documents the windowed requirement in `REFERENCE.md`.
+3. `tests/scenarios/hud_controls_state.json` gains a step that presses the Upgrade button
+   across at least one selection-poll tick (wait >= 0.5s after opening/selecting) and asserts
+   the tower's level went up — the assertion that would have caught the original bug.
 
-## Context
-- Branch: `issue/game-ready-blocks-map-load`, cut from fresh `origin/master` (d241462).
-- Worktree clean at claim time.
+No new visual required — harness capability only. Manual testing: none required beyond
+scenario evidence (headless harness run output); still capture scenario result JSON + logs.
+
+## Redo notes
+
+- Classification line in check.md must be exactly `classification: pass|fixable|design_failure|blocked`.
+- Runner commands via run_project_cmd only; Godot harness invocation pattern:
+  `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json`
+  (explicit scene argument; never rely on project.godot main scene).
