@@ -91,7 +91,7 @@
   },
   {
     "run_id": "leader-dispatch",
-    "status": "completed",
+    "status": "running",
     "url": "runs/leader-dispatch/"
   },
   {
