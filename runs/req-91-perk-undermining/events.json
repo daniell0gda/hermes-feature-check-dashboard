@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-23T04:11:05.014Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 353818,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-perk-undermining/.gen/plan.md\n\nSummary: Acceptance plan for issue #91 (Undermining trap perk) with 10 criteria in 4 clusters, plus 4 cluster files and ui_scenario.md. Verifica\u2026",
+    "error": null
+  }
+]
