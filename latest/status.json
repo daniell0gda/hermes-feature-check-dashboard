@@ -1,20 +1,22 @@
 {
-  "run_id": "req-83-traps-frostbite-fangs",
-  "feature": "traps-frostbite-fangs",
+  "run_id": "issue-130-middle-pan-flip-r1",
+  "feature": "issue-130-middle-pan-flip",
   "status": "running",
-  "started_at": "2026-08-23T19:25:08.090Z",
+  "started_at": "2026-08-23T19:21:33.076Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs/",
-  "heartbeat_at": "2026-08-23T19:25:08.090Z",
-  "last_node": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-130-middle-pan-flip-r1/",
+  "heartbeat_at": "2026-08-23T19:25:36.929Z",
+  "last_node": "plan",
   "active_node": null,
-  "last_event_at": null,
-  "process_id": 167882,
+  "last_event_at": "2026-08-23T19:25:36.929Z",
+  "process_id": 165601,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T19:25:08.090908+00:00"
+    "last_attempt_at": "2026-08-23T19:25:36.931197+00:00",
+    "last_success_at": "2026-08-23T19:21:42.590258+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
