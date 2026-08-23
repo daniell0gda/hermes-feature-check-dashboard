@@ -25,5 +25,14 @@
     "duration_ms": 56514,
     "summary": "\u26a0\ufe0f No reply: the model returned empty content after retries and any fallback providers. Try `continue`, switch model/provider, or inspect the tool output above.\n",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T15:19:52.768Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 57839,
+    "summary": "\u26a0\ufe0f No reply: the model returned empty content after retries and any fallback providers. Try `continue`, switch model/provider, or inspect the tool output above.\n",
+    "error": null
   }
 ]
