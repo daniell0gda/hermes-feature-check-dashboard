@@ -7,5 +7,14 @@
     "duration_ms": 53627,
     "summary": "\u26a0\ufe0f No reply: the model returned empty content after retries and any fallback providers. Try `continue`, switch model/provider, or inspect the tool output above.\n",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-23T17:01:29.159Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 1386786,
+    "summary": "Done. Summary:\n\n**Implemented `exposed_plating` (issue #89) in the worktree** \u2014 6 modified files, 3 new files, no unrelated changes.\n\n- Perk: Common, global.json, 3 levels (+15%/0.5s, +25%/1s, +35%/1.5s), wired through CurseProgressionManag\u2026",
+    "error": null
   }
 ]
