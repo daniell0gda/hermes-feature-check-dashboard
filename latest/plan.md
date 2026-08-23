@@ -1,37 +1,40 @@
-# Acceptance Plan: issue-130-middle-drag-carve-bird-view-flip
-
-## Verification
-
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/carve_pan_no_flip.json"]`
-- Full test: `["bash", ".gen/run_full_suite.sh"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "3"]`
+# Acceptance Plan: issue #127 reopen follow-ups (title clip, description wells, Unique styling)
 
 manual_testing: required
 
+## Verification
+
+- Focused test: `["godot", "--headless", "--path", ".", "res://tests/ui/test_titled_panel_close_corner.tscn"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/progression_modal_wood_frame.json"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+
 ## Clusters
 
-1. carve-pan-stability — files: `scripts/game/Game.gd` — depends on: none
-- While carve bird view is armed (`_carve_camera_armed`), holding middle mouse and moving it a small amount translates the camera and its view target together without changing the camera's yaw or up direction: the camera's horizontal basis vector (`basis.x`) stays within a near-zero angular delta of its pre-drag value.
-- While carve bird view is armed, larger continued middle-mouse pans keep the camera orientation stable across every motion event — no event during the pan produces a yaw change of roughly 90° or 180°.
-- While the camera is nearly straight down even when carve mode is not armed, the same pan input does not rebuild the camera basis in a way that flips yaw (the degenerate `look_at(..., Vector3.UP)` path never runs for a top-down pose).
-- If zooming while the camera is nearly straight down can rebuild orientation via `look_at`, zooming from the top-down pose also preserves yaw instead of flipping it.
-- With carve bird view armed, holding the right mouse button and dragging still orbits the camera around the target, and the pitch stays inside the armed clamp (~0.05–1.55 rad) so no drag snaps across the pole.
-- A quick right-click while carve mode is active still cancels carve mode.
-- Debug-build `[CARVE_CAMERA]` log line when a middle-mouse pan completes while bird view is armed, containing the pre-pan and post-pan yaw so any future flip is traceable.
-2. carve-pan-regression-scenario — files: `scripts/testing/HarnessValues.gd`, `tests/scenarios/carve_pan_no_flip.json` — depends on: 1
-- A harness value source exposes the post-pan camera yaw/basis delta so scenarios can assert that a scripted middle-drag changed translation only, not orientation.
-- The focused scenario arms carve mode on the underground layer, then drives a middle-button press followed by mouse motion events through the real `_input` path (not a rotate-camera harness shortcut) and asserts the camera position translated by the expected amount while the yaw/basis.x delta is near zero.
-- The existing `carve_camera_drag_spin` and `carve_camera_topdown` scenarios still pass unchanged after the pan fix.
+1. title-plate-inside-window — files: `scenes/ui/RewardsModal.tscn`, `scenes/ui/ProgressionModal.tscn`, `scripts/ui/hud/TitledPanel.gd` — depends on: none
+- Both modal windows show their TitlePlate caption fully readable with no cut letters or ellipsis: the plate hangs half above the frame rim yet stays entirely inside the window bounds at every title length used by RewardsModal ("Choose a Reward") and ProgressionModal.
+- The plate's width is derived from the title label's combined minimum size so no character is clipped regardless of title text length.
+- TitlePlate remains centre-anchored on the horizontal axis (anchors_preset = 5 behaviour): after opening either modal, the plate stays horizontally centred over the panel.
+- The corner ✕ button still emits close_requested and closes the modal when pressed (existing close behaviour unchanged by the inset change).
+2. description-well — files: `scripts/ui/RewardsModal.gd`, `scripts/ui/ProgressionModal.gd` — depends on: none
+- In a RewardsModal card, the reward description text is rendered inside its own PanelContainer with theme_type_variation "ModalWell", visually distinct from the surrounding card, with the title and sub labels sitting outside that well above it.
+- In a ProgressionModal offer card, the description body text sits inside an inner ModalWell panel distinct from the outer card well, so the body has its own visible panel background.
+- Cards for common rewards keep their existing layout and content order (title, sub, then described body, then accept button where present) with no regression to the ModalWell card bodies.
+3. unique-card-styling — files: `scripts/ui/RewardsModal.gd`, `scripts/ui/ProgressionModal.gd` — depends on: 2
+- A ProgressionModal offer card whose option type is Unique shows a metallic gold/bronze border of at least 3px applied through a duplicated StyleBoxFlat stylebox override, not through add_theme_color_override("panel"), and opening such a card produces no engine error about invalid theme overrides.
+- A Unique offer/listed-selection card shows a small "Unique" badge/chip built from the existing CostBadge variation (or an equivalent small plate), with the literal text "Unique" legible in a screenshot.
+- A Unique card's name label uses the stronger ModalTitle contrast treatment, visibly distinct from Common cards' name styling, while non-Unique cards are unchanged.
+- A RewardsModal listed selection whose stored type is Unique receives the same border, badge, and header contrast treatments as ProgressionModal Unique cards.
 
 ## Criteria
 
-- While carve bird view is armed (`_carve_camera_armed`), holding middle mouse and moving it a small amount translates the camera and its view target together without changing the camera's yaw or up direction: the camera's horizontal basis vector (`basis.x`) stays within a near-zero angular delta of its pre-drag value.
-- While carve bird view is armed, larger continued middle-mouse pans keep the camera orientation stable across every motion event — no event during the pan produces a yaw change of roughly 90° or 180°.
-- While the camera is nearly straight down even when carve mode is not armed, the same pan input does not rebuild the camera basis in a way that flips yaw (the degenerate `look_at(..., Vector3.UP)` path never runs for a top-down pose).
-- If zooming while the camera is nearly straight down can rebuild orientation via `look_at`, zooming from the top-down pose also preserves yaw instead of flipping it.
-- With carve bird view armed, holding the right mouse button and dragging still orbits the camera around the target, and the pitch stays inside the armed clamp (~0.05–1.55 rad) so no drag snaps across the pole.
-- A quick right-click while carve mode is active still cancels carve mode.
-- Debug-build `[CARVE_CAMERA]` log line when a middle-mouse pan completes while bird view is armed, containing the pre-pan and post-pan yaw so any future flip is traceable.
-- A harness value source exposes the post-pan camera yaw/basis delta so scenarios can assert that a scripted middle-drag changed translation only, not orientation.
-- The focused scenario arms carve mode on the underground layer, then drives a middle-button press followed by mouse motion events through the real `_input` path (not a rotate-camera harness shortcut) and asserts the camera position translated by the expected amount while the yaw/basis.x delta is near zero.
-- The existing `carve_camera_drag_spin` and `carve_camera_topdown` scenarios still pass unchanged after the pan fix.
+- Both modal windows show their TitlePlate caption fully readable with no cut letters or ellipsis: the plate hangs half above the frame rim yet stays entirely inside the window bounds at every title length used by RewardsModal ("Choose a Reward") and ProgressionModal.
+- The plate's width is derived from the title label's combined minimum size so no character is clipped regardless of title text length.
+- TitlePlate remains centre-anchored on the horizontal axis (anchors_preset = 5 behaviour): after opening either modal, the plate stays horizontally centred over the panel.
+- The corner ✕ button still emits close_requested and closes the modal when pressed (existing close behaviour unchanged by the inset change).
+- In a RewardsModal card, the reward description text is rendered inside its own PanelContainer with theme_type_variation "ModalWell", visually distinct from the surrounding card, with the title and sub labels sitting outside that well above it.
+- In a ProgressionModal offer card, the description body text sits inside an inner ModalWell panel distinct from the outer card well, so the body has its own visible panel background.
+- Cards for common rewards keep their existing layout and content order (title, sub, then described body, then accept button where present) with no regression to the ModalWell card bodies.
+- A ProgressionModal offer card whose option type is Unique shows a metallic gold/bronze border of at least 3px applied through a duplicated StyleBoxFlat stylebox override, not through add_theme_color_override("panel"), and opening such a card produces no engine error about invalid theme overrides.
+- A Unique offer/listed-selection card shows a small "Unique" badge/chip built from the existing CostBadge variation (or an equivalent small plate), with the literal text "Unique" legible in a screenshot.
+- A Unique card's name label uses the stronger ModalTitle contrast treatment, visibly distinct from Common cards' name styling, while non-Unique cards are unchanged.
+- A RewardsModal listed selection whose stored type is Unique receives the same border, badge, and header contrast treatments as ProgressionModal Unique cards.

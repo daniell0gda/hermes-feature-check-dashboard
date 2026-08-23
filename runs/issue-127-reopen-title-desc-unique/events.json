@@ -16,5 +16,14 @@
     "duration_ms": 719308,
     "summary": "All three clusters implemented and verified via the project runner. Summary:\n\n**Cluster 1 \u2014 title-plate-inside-window: Done**\n- Both `RewardsModal.tscn` / `ProgressionModal.tscn`: Frame inset 27px from window top; TitlePlate offsets 2..52 \u2192\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-23T19:22:48.137Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 304402,
+    "summary": "Verification complete; artifacts written to .gen/check.md and .gen/status.md in the worktree.\n\nVerified done: 0. Pending: 11 \u2014 0 due to build/test failures alone, 11 due to missing evidence (required windowed manual-tester screenshots/manua\u2026",
+    "error": null
   }
 ]

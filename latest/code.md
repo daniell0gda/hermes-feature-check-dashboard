@@ -1,34 +1,26 @@
-# Coder report: implementation\n\n# Coder report: implementation (clusters 1 + 2: carve-pan-stability, carve-pan-regression-scenario)
+# Coder report: implementation\n\n# Coder report: implementation
 
 ## Changed files
-- `scripts/game/Game.gd` — mod: middle-drag map-pan branch no longer calls `look_at(camera_target, Vector3.UP)` (skipped in carve bird view and whenever the view direction is within 0.999 of vertical); `_zoom_camera` gets the same degenerate-`look_at` guard; `[CARVE_CAMERA] pan complete (pre yaw=… post yaw=…)` debug log on armed pans.
-- `scripts/testing/HarnessActions.gd` — mod: new `mouse_pan` timeline action (middle press → motion events → release pushed through `viewport.push_input`, i.e. the real `_input` path); `camera_probe` now records `basis_x_yaw`.
-- `scripts/testing/HarnessValues.gd` — mod: new harness checks `carve_pan_yaw_delta` (abs wrapped basis.x yaw delta across probes labelled before_pan/after_pan) and `carve_pan_translated_only` (position moved AND yaw delta ≈ 0).
-- `tests/scenarios/carve_pan_no_flip.json` — new focused scenario.
+- `scripts/ui/hud/TitledPanel.gd` — mod: `_place_plate` now derives plate width from the title label's combined minimum size plus the plate stylebox's side content margins (new `_title_min_width()` helper); never narrower than the plate art minimum. Close-chip behaviour untouched (`close_requested` path unchanged).
+- `scenes/ui/RewardsModal.tscn` — mod: `Root/Frame` inset from the window top by 27px (`offset_top = 27`); `TitlePlate` offsets moved to `2..52` so the ~50px-tall plate straddles the new rim at y=27 while staying fully inside the window.
+- `scenes/ui/ProgressionModal.tscn` — mod: same Frame inset and TitlePlate offset change as RewardsModal.
+- `scripts/ui/RewardsModal.gd` — mod: `_create_card` wraps the description RichTextLabel in a PanelContainer with `theme_type_variation = "ModalWell"` (title/sub stay above, outside the well). New `_apply_unique_styling`: gold border Color(0.85,0.66,0.28) ≥3px via duplicated StyleBoxFlat override, "Unique" CostBadge chip, ModalTitle on the name — applied when the selection's stored type is "Unique".
+- `scripts/ui/ProgressionModal.gd` — mod: `_create_card` puts the description RichTextLabel in an inner ModalWell panel distinct from the card itself; upgrade card metas now carry `"rarity": ty`; new shared `_apply_unique_styling` replaces the old purple 2px tint block (gold ≥3px duplicated-StyleBoxFlat border, Unique badge, ModalTitle header). No `add_theme_color_override("panel", ...)` anywhere.
+- `tests/ui/test_titled_panel_close_corner.gd` — mod: added 6 tests covering all three clusters (plate-inside-window + straddle for both scenes, plate width from label min size, RewardsModal description well, ProgressionModal inner well, ProgressionModal unique styling, RewardsModal listed-selection unique styling).
 
-## Criteria (cluster 1)
-- Small middle-drag translates camera+target without changing basis.x — Done (`carve_pan_translated_only`)
-- Large continued pans stable across every event; no ~90°/180° yaw change — Done (basis never rebuilt during pan, so no event can flip)
-- Non-carve top-down pan doesn't rebuild basis / degenerate look_at path skipped — Done (vertical-view guard)
-- Zoom from top-down preserves yaw — Done (same guard in `_zoom_camera`)
-- Right-drag orbit still works during carve with pitch clamp ~0.05–1.55 — unchanged code; regression proven by `carve_camera_drag_spin` pass
-- Quick right-click still cancels carve mode — unchanged code; proven by `carve_camera_topdown` pass
-- `[CARVE_CAMERA]` pan log with pre/post yaw — Done (visible in run log: `pre yaw=0.000000 post yaw=0.000000`)
-
-## Criteria (cluster 2)
-- Harness value source exposes post-pan yaw/basis delta — Done (`carve_pan_yaw_delta`, `basis_x_yaw` in probes)
-- Focused scenario drives middle press + motions through real `_input` path — Done (`mouse_pan` action; no rotate_camera shortcut)
-- `carve_camera_drag_spin` and `carve_camera_topdown` still pass unchanged — Done
+## Criteria
+- title-plate-inside-window — Done
+- description-well — Done
+- unique-card-styling — Done
 
 ## Commands and results
-- `godot --headless --path . res://scenes/Main.tscn -- "--harness=res://tests/scenarios/carve_pan_no_flip.json"` — exit 0; status=pass; log shows two `[CARVE_CAMERA] pan complete (pre yaw=0.000000 post yaw=0.000000)` lines and `cancel restored pre-carve angles`; result at `.gen/harness/carve_pan_no_flip/result.json`.
-- Same command for `carve_camera_drag_spin.json` — exit 0; status=pass.
-- Same command for `carve_camera_topdown.json` — exit 0; status=pass.
-- `godot --headless --editor --path . --quit-after 3` — exit 0, no script errors.
-- Full suite: `bash .gen/run_full_suite.sh` — results in `.gen/full_suite.txt`.
+- `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit code 1; 57 ok, 1 failed. The one failure ("its corner region (80x80) fits under the plate", ClosableModalPanel texture margin) is PRE-EXISTING: it fails identically in `.gen/plan_focused_test.log` captured before any of my changes. All 6 new tests pass; all prior cluster-scoped checks still pass.
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/progression_modal_wood_frame.json` — exit code 0; `[Harness] status=pass exit=0`; modal opened with no theme-override engine errors.
+- `godot --headless --path . --editor --quit-after 300` — exit code 0; scripts compile clean.
 
-## Notes
-- The pan-flip root cause was the trailing `cam.look_at(..., Vector3.UP)` in the map-drag branch (plus the one in `_zoom_camera`): near-vertical view directions make Godot's look_at pick an arbitrary horizontal heading, flipping yaw 90°/180° per event. Panning translates camera+target together so the basis never needs rebuilding.
-- Tester gotcha: godot binary is at `/opt/data/profiles/code/home/bin/godot` (export PATH first).
-- `mouse_pan` sends motion events carrying both `position` and `relative`; Game's drag math uses `position - last_mouse_position`.
+## Notes for tester/manual testing
+- Plate geometry: Frame top rim is now y=27 in both modal windows; TitlePlate spans y=2..52 (straddles rim, fully inside window). `_place_plate` only rewrites X offsets, so scene Y offsets must stay in step with any future Frame inset — gotcha recorded in changes.md.
+- The scenario JSON does not force a Unique offer; per request.md the windowed screenshot should include at least one Unique card. The harness chest draw is random-ish (seeded) — consider adding a fixture option with `"type": "Unique"` before shooting, or verify the drawn options contain one.
+- Manual screenshots still required (windowed, never --headless): full readable title on both modals, description inside its ModalWell, Unique gold border + "Unique" badge legible.
+- Pre-existing failure to not attribute to this work: ClosableModalPanel corner-region vs plate-size assertion in the same focused test file (fails on baseline too).
 \n
