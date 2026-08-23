@@ -1,11 +1,16 @@
 ## ✅ Done
-- Grass base-position sampling covers the full playable map extent on both axes for any map_width/map_height and grid_size combination, including sizes where grid_size does not evenly divide the extent (no strip along +X or +Z is left unsampled).
-- The duplicated grass grid-walk logic at both per-instance and MultiMesh placement paths is replaced by one shared helper called from both; changing the helper changes coverage on both paths.
-- On a 50x50 map with default settings, generated grass positions exist in every quadrant band adjacent to all four map edges (within one grid step of each edge), not only near -X/-Z.
-- Debug-build [NATURE] log line per grass-generation pass stating sampled base-position count and the min/max sampled X/Z coordinates, emitted once per path when generation completes.
-- tests/visuals/test_nature_visibility_range.gd numerically asserts that on a 50x50 map the generated grass extent reaches within one grid step of all four edges on both the per-instance and MultiMesh paths, and the suite fails if any edge band has no grass.
-- Existing assertions in tests/visuals/test_nature_visibility_range.gd still pass: no nature instance carries a camera-distance cull and every test runs to completion.
+- The `press_button` action works under `--headless` (dummy display, no GUI picking) by driving the button input path directly; if it cannot, `REFERENCE.md` documents that the action requires windowed mode.
+- `REFERENCE.md` documents the `press_button` action: its fields, its return detail, and its headless behaviour.
+- Debug-build `[HARNESS-CLICK]` log line per press_button attempt, carrying the button target, whether the press landed, and the button's disabled state at press time.
+- `tests/scenarios/hud_controls_state.json` gains a step that presses the Upgrade button via the new press action after waiting at least 0.5s past tower selection (spanning at least one 0.2s selection-poll tick), and the scenario asserts the tower's level increased as a result of that press.
 
 ## ⬜ Pending
+- A `press_button` harness action exists that takes a Button reference (node path or a named UI button) and delivers a real press through Godot's button input path (press attempt / `_gui_input`), not `pressed.emit()`, and its result detail reports whether the press actually landed on an enabled button.
+— quality: scripts/testing/HarnessActions.gd: `_deliver_motion()` is dead code added by this change and never called; remove it or use it. Also `_press_button` docstring claims "drive Control._gui_input directly" while the implementation uses `Viewport.push_input(event, true)` — comment contradicts shipped mechanism.
+- A `press_button` action whose target does not resolve to a live Button node fails with `ok: false` and a detail naming the unresolvable target.
+— quality: missing evidence — no automated test exercises this failure path; add a scenario step asserting ok:false for an unresolvable target.
+- A `press_button` action against a disabled Button reports that the press did not land and the button's connected handler does not run.
+— quality: missing evidence — no automated test presses a disabled Button and asserts landed=false with no handler run.
 
 ## ❌ Impossible
+(empty)

@@ -1,66 +1,40 @@
-# Check report: grass-grid-misses-far-edges (revision-check-1)
-
-classification: pass
+# check.md — revision-check-1 (harness-cannot-inject-gui-input, iteration 2)
 
 ## Verdict
 
-Fresh runner verification confirms all six acceptance criteria remain Done after
-revision 1 (which removed the stale duplicate doc comment flagged as an advisory
-quality note). Build gate, import gate, and the full focused suite are green.
-No open quality violations.
+classification: fixable
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-grass-grid-misses-far-edges)
+## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-harness-cannot-inject-gui-input)
 
-- Typecheck/build: `godot --headless --editor --quit-after 2 --path .` — exit code 0, no parse errors.
-- Full test/import: `godot --headless --import --path .` — exit code 0.
-- Focused: `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn`
-  — exit code 0, prints `=== nature_visibility_range: 16 ok, 0 failed ===`, 4 of 4 tests completed.
-  `[NATURE] grass grid sampling: 289 base positions, min/max X (-24.00, 24.00), min/max Z (-24.00, 24.00)`
-  observed once per generation pass on both paths.
-  Edge-band checks pass on both paths: grid extent x [-24.48, 24.50], z [-24.47, 24.50]
-  (4079 placed instances read from real node world transforms); multimesh extent x/z [-24, 24].
-  Pre-existing dummy-renderer leak warnings after the summary line are unrelated exit noise.
+| Gate | Command | Exit | Result |
+|---|---|---|---|
+| Preflight | `["godot","--version"]` | 0 | Godot 4.4.1.stable |
+| Typecheck/build | `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | clean import/parse |
+| Focused test | `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/hud_controls_state.json"]` | 0 | `status=pass`, `.gen/harness/hud_controls_state/result.json`, 6/6 expectations passed |
+| Full suite | hud_layer_roundtrip, hud_heart_beat_on_egg_damage, hud_other_panels, hud_wood_panels (one run_project_cmd call each) | 0 each | all `status=pass`, expectations all passed |
 
-## Criterion evidence (all six verified)
+Key focused-run evidence: `[HARNESS-CLICK] press_button target=UpgradeBtn landed=true disabled=false`; result.json action 18 detail `{button: /root/Main/UI/Root/UpgPanel/Frame/VBox/UpgButtons/UpgradeBtn, landed: true, disabled_at_press: false}`; tower level 1 → 2 asserted (action 19); money 200 → 180 asserted (action 20).
 
-1. Full-extent sampling — `_sample_grass_grid_base_positions()` walks a float
-   while-loop over [-half+margin, half-margin] inclusive with epsilon clamp on both
-   axes; sampler output spans exactly [-24, 24] on a 50x50 map. Passing tests:
-   `_test_per_instance_grass_reaches_all_four_edges` /
-   `_test_multimesh_grass_reaches_all_four_edges` would fail if any +X/+Z band were
-   unsampled (the old exclusive `range()` bound stopped near +21).
-2. Shared helper — both `_generate_grass_groups` and the multimesh grid branch call
-   the same helper; duplicated range() walks deleted. Verified by diff inspection and
-   by both-path edge tests exercising the helper.
-3. 50x50 four-edge coverage — asserted numerically on both paths; all four band
-   checks ok per path (limits ±22 vs observed extents ±24.x / ±24).
-4. Debug log — `[NATURE]` line emitted inside the helper under `OS.is_debug_build()`,
-   once per pass, with count + min/max X/Z; seen verbatim in fresh runner output.
-5. Numeric extent assertion — new tests assert min/max within one grid step
-   (tolerance = GRID_SIZE = 3.0) of all four edges on both paths and fail via
-   `_check` if any band is empty. No overlap with the pre-existing cull tests
-   (different behavior asserted).
-6. Existing assertions still pass — both no-distance-cull tests green (grid:
-   4106 instances, culled: []; multimesh: culled: []), 4/4 completed, 16 ok / 0 failed.
+## Criterion-by-criterion
+
+1. press_button delivers a real press through Godot's input path and reports landing — **Pending**. Implementation (`HarnessActions.gd::_press_button` → `Viewport.push_input(event, true)` down/up pair) works and the focused scenario proves it end-to-end (level 1→2 via the click, exact cost deduction). Demoted for quality violations in the new code itself (see below).
+2. Unresolvable target → `ok: false` naming the target — **Pending** (missing evidence). Code path exists (`HarnessActions.gd:160`) but no automated scenario exercises it; no passing test would fail if this branch broke.
+3. Disabled Button → press does not land, handler does not run — **Pending** (missing evidence). Code path exists (`landed=false` when `disabled`), but the scenario only presses while enabled (it asserts disabled true→false, then waits and presses enabled). No automated test asserts the disabled-press behaviour.
+4. Works headless by driving the input path directly — **Done**. All verification above ran under `--headless`; press landed and level assertion passed with the dummy display.
+5. REFERENCE.md documents press_button (fields, return detail, headless behaviour) — **Done**. `.claude/skills/game-test/REFERENCE.md` gains a `press_button` table row plus a full section covering target resolution, return-detail table, failure modes, headless behaviour, and the log line. (Plan named `docs/REFERENCE.md`; the repo's game-test reference lives at `.claude/skills/game-test/REFERENCE.md` — treated as the same artifact.)
+6. Debug `[HARNESS-CLICK]` log line per attempt — **Done**. Gated on `OS.is_debug_build()` per CLAUDE.md logging rule, and the scenario asserts the exact line via a `log` expectation (hud_controls_state.json), so removing it fails the suite.
+7. hud_controls_state.json presses Upgrade after ≥0.5s post-selection and asserts level up — **Done**. Timeline: select (10–11) → wait 1.0s (17, five 0.2s poll ticks) → press_button (18) → tower.level==2 (19) → money==180 (20). Passed fresh.
 
 ## Changed-file quality findings
 
-- scripts/game/NatureDecoration.gd: clean typed helper, guard clause, debug-only
-  logging; duplication removed as required. Revision 1 collapsed the duplicate doc
-  comment above `last_grass_base_positions` — quality-notes entry
-  `duplicate-doc-comments` is RESOLVED (verified in diff: single accurate comment remains).
-- tests/visuals/test_nature_visibility_range.gd: new tests assert real behavior,
-  reuse existing `_check`/`_grow` infrastructure, no duplicated coverage.
-- Untracked `focused_test_output.txt` at repo root is implementor scratch, not part
-  of the feature diff; not counted against criteria.
-
-## Quality notes
-
-Re-checked `.gen/quality-notes.md`: the single open entry (`duplicate-doc-comments`)
-already carries a revision-1 RESOLVED marker and the violation is gone in the diff.
-No new entries appended; nothing appended this iteration.
+- scripts/testing/HarnessActions.gd: `_deliver_motion()` is added by this diff but never called — dead code from the change; remove it or wire it into the click sequence.
+- scripts/testing/HarnessActions.gd: `_press_button` docstring says the action "drive[s] Control._gui_input directly", but the implementation uses `Viewport.push_input(event, true)` (the direct call is not callable in Godot 4). Same contradiction appears in `tests/scenarios/hud_controls_state.json` note 13 and in the REFERENCE.md press_button section's framing. Docs/comments must match the shipped mechanism.
+- scripts/testing/AgentHarness.gd run-stamp change: reasonable fix for stale-log reuse; no violation found.
 
 ## Blockers
 
-None.
+None. Runner healthy; all gates green.
+
+## Unverified items
+
+Criteria 2 and 3 (failure paths) are implemented but unproven by any automated test.

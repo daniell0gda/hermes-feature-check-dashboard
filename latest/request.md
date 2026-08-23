@@ -1,32 +1,42 @@
-# Request: issue #110 — Grass grid never reaches the +X/+Z map edges
+# Request: harness-cannot-inject-gui-input (issue #126)
 
-- Project: poke-defense-godot
-- Git workspace: poke-defense-godot/issue-grass-grid-misses-far-edges
-- Runner key: godot-td, workspace `poke-defense-godot/issue-grass-grid-misses-far-edges`
-- Branch: issue/grass-grid-misses-far-edges (reset to origin/master d241462)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/110
-- Request-id: 110-grass-grid-misses-far-edges
-- Labels: type:nature, priority:low
+- Repo: daniell0gda/poke-defense-godot
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/126
+- Workspace: /workspace/git-workspaces/poke-defense-godot/issue-harness-cannot-inject-gui-input
+- Branch: issue/harness-cannot-inject-gui-input (cut from origin/master)
+- Runner: project key `godot-td`, workspace `poke-defense-godot/issue-harness-cannot-inject-gui-input` (use exactly these names; invented names cause HTTP 422).
 
 ## Problem
 
-`NatureDecoration.gd:222-223` (and duplicated at `:649-650`) walks grass grid with an
-exclusive `range()` upper bound, so the last partial step is dropped and a strip along
-the +X/+Z edges never gets grass. For map_width=50, grid_size=3:
-`range(-24, 24, 3)` yields -24…21; x ∈ (21,24] never sampled.
+The gameplay harness can call UI handler methods but cannot inject real GUI input, so
+"swallowed click" bugs are untestable (e.g. the Upgrade button disabled-flip bug: a
+`disabled` true→false round trip between mouse-down and mouse-up eats the `pressed`
+signal; `BaseButton::set_disabled(true)` clears the pending press).
+
+Existing actions don't cover this:
+- `{"type":"call","target":"ui",...}` invokes the handler directly, skipping the button.
+- Node-path `pressed.emit()` (#106) skips `press_attempt`.
+
+Headless note from the issue: under `--headless` the dummy display does no GUI picking
+(`gui_get_hovered_control()` is null), so a headless action must drive
+`Control._gui_input` directly rather than `Viewport.push_input`. Either implement a
+working headless path or document that the action requires windowed mode in REFERENCE.md.
 
 ## Done when
 
-1. Grid covers full playable extent on both axes for any map_width/map_height and
-   grid_size combination, including non-dividing ones.
-2. Duplication between :222-223 and :649-650 removed — one helper called from both.
-3. Verified on a 50x50 map: grass reaches all four edges.
-4. `tests/visuals/test_nature_visibility_range.gd` asserts generated extent numerically.
+1. A `press_button` (or `click_at`) harness action exists that reaches a real Button through
+   Godot's input path (not `pressed.emit()`), and reports whether the press actually landed.
+2. It works headless, OR documents the windowed requirement in `REFERENCE.md`.
+3. `tests/scenarios/hud_controls_state.json` gains a step that presses the Upgrade button
+   across at least one selection-poll tick (wait >= 0.5s after opening/selecting) and asserts
+   the tower's level went up — the assertion that would have caught the original bug.
 
-No new visuals — corrected placement bounds only.
+No new visual required — harness capability only. Manual testing: none required beyond
+scenario evidence (headless harness run output); still capture scenario result JSON + logs.
 
-## Notes
+## Redo notes
 
-- Prior claim on this issue was released by user (2026-08-20); branch was stale and has
-  been reset to origin/master. No prior implementation exists to preserve.
-- Redo budget: default 2.
+- Classification line in check.md must be exactly `classification: pass|fixable|design_failure|blocked`.
+- Runner commands via run_project_cmd only; Godot harness invocation pattern:
+  `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json`
+  (explicit scene argument; never rely on project.godot main scene).

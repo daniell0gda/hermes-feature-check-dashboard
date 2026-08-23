@@ -1,21 +1,21 @@
 {
-  "run_id": "110-grass-grid-misses-far-edges",
-  "feature": "grass-grid-misses-far-edges",
-  "status": "completed",
-  "started_at": "2026-08-23T00:32:36.653Z",
-  "ended_at": "2026-08-23T01:05:16.200Z",
+  "run_id": "issue126-harness-press-button",
+  "feature": "harness-cannot-inject-gui-input",
+  "status": "running",
+  "started_at": "2026-08-22T23:20:19.286Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/110-grass-grid-misses-far-edges/",
-  "heartbeat_at": "2026-08-23T01:05:16.200Z",
-  "last_node": "team-leader",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue126-harness-press-button/",
+  "heartbeat_at": "2026-08-23T01:07:08.720Z",
+  "last_node": "check",
   "active_node": null,
-  "last_event_at": "2026-08-23T01:05:11.905Z",
-  "process_id": 830468,
+  "last_event_at": "2026-08-23T01:07:08.720Z",
+  "process_id": 793373,
   "host": "25e0b2c49eb5",
-  "phase": "team-leader",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T01:05:16.200199+00:00",
-    "last_success_at": "2026-08-23T01:05:16.198544+00:00",
+    "last_attempt_at": "2026-08-23T01:07:08.720425+00:00",
+    "last_success_at": "2026-08-23T00:58:30.564842+00:00",
     "last_error": null
   },
   "metrics": {
@@ -27,9 +27,9 @@
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 110924,
-        "output_tokens": 4733
+        "cost_status": "estimated",
+        "input_tokens": 148252,
+        "output_tokens": 4675
       },
       {
         "task_id": "code",
@@ -39,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 175209,
-        "output_tokens": 18984
+        "input_tokens": 223328,
+        "output_tokens": 8265
       },
       {
         "task_id": "check",
@@ -50,8 +50,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 95388,
-        "output_tokens": 3160
+        "input_tokens": 201246,
+        "output_tokens": 12710
       },
       {
         "task_id": "revision-code-1",
@@ -61,30 +61,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 76761,
-        "output_tokens": 1849
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 112229,
-        "output_tokens": 2478
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 35042,
-        "output_tokens": 376
+        "input_tokens": 366307,
+        "output_tokens": 21136
       }
     ]
   }
