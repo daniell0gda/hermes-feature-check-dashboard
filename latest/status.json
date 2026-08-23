@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-visible-light-revision/",
-  "heartbeat_at": "2026-08-23T10:27:23.422Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-23T10:27:23.422Z",
+  "heartbeat_at": "2026-08-23T10:28:15.432Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-23T10:28:15.432Z",
   "process_id": 13246,
   "host": "f1a4230ec90b",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T10:27:27.905530+00:00",
-    "last_success_at": "2026-08-23T10:27:27.904626+00:00",
+    "last_attempt_at": "2026-08-23T10:28:15.432914+00:00",
+    "last_success_at": "2026-08-23T10:27:32.200117+00:00",
     "last_error": null
   },
   "metrics": {
