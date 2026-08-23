@@ -39,31 +39,30 @@
 - Scenario contracts updated this iteration: `center_y` expectation pinned to literal `0` matching the flush-at-plane contract; visible scenario samples the earth body world transform twice (~3 s apart via layer switch waits) and asserts `rotation_invariant`.
 - Headless runs skip the screenshot step (`reason: "headless"`). A manual tester must run `backdrop_earth_visible` windowed once and save the screenshot under `.gen/` plus `.gen/manual-report.md`; the two windowed criteria above remain open for that pass.
 - Hidden mesh prefixes unchanged (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud`) — no backdrop-look regressions expected from the placement-only change.
-\n\n# Coder report: implementation\n\n# Coder report: implementation (revision 1, clusters 1 + 2)
+\n\n# Coder report: implementation\n\n# Coder report: implementation (revision 2)
 
 ## Changed files
-- `scripts/game/visuals/BackdropEarth.gd` — grounded rig re-posed: z now `half_extent - body_radius * 0.72` so the globe's y=0 limb rises into the gameplay camera frustum; apex-flush sink and scale formula unchanged (scale still baked into basis).
-- `scripts/game/Game.gd` — new `debug_backdrop_earth_horizon_in_view()` (samples the 24-point y=0 limb circle against the live camera frustum, camera-local space); `debug_look_at_backdrop_earth()` reframed to focus on the limb/board junction with `force_update_transform()`.
-- `scripts/testing/HarnessValues.gd` — new `backdrop_earth.horizon_in_view` expectation field.
-- `tests/scenarios/backdrop_earth_visible.json` — added `horizon_in_view == true` expectation.
-- `tests/scenarios/backdrop_earth_glint.json` — added `horizon_in_view == true` expectation.
+- None. Verification-only revision: the revision-1 source changes in `scripts/game/visuals/BackdropEarth.gd`, `scripts/game/Game.gd`, `scripts/testing/HarnessValues.gd`, and both focused scenario JSONs already satisfy every headless-verifiable criterion; re-verification found no defect to fix.
 
 ## Criteria
-- Globe horizon inside normal gameplay camera frustum — Done (automated): limb circle sampled against the default surface camera at (0,18,15) → true.
-- All previously Done cluster-1 criteria and both headless harness criteria remain green after the pose change.
-- Windowed backdrop-look regression check and windowed surface screenshot — Pending manual-testing gate (headless screenshots skip with reason "headless").
+- Grounded config names exactly one continent mesh + debug warning on absence — Done (verified again this run).
+- Applied uniform scale == grounded_scale * world_radius / NATIVE_EARTH_RADIUS — Done (log scale=41.5999984741211 == 2.6*32/2).
+- Continent apex flush at playable plane (center_y == 0) — Done (center_y=-1.2794e-05).
+- Globe horizon inside normal gameplay camera frustum — Done headless (horizon_in_view=true, default camera); windowed visual confirmation still gated on manual testing.
+- Grounded spin never starts (transform invariant over seconds) — Done (rotation_invariant=true over ~3 s gap).
+- Debug `[BACKDROP EARTH]` grounding log per grounding event — Done (observed verbatim in both focused runs).
+- Both focused scenarios pass headless with all expectations green — Done.
+- Windowed backdrop look regression check — Pending manual-testing gate (unchanged).
+- Windowed surface screenshot of map-on-continent — Pending manual-testing gate (unchanged).
 
-## Commands and results
-- RED first: focused harness `backdrop_earth_visible.json` with new expectation against the old sunk pose — exit 1, `horizon_in_view=false`, all other expectations pass. Confirms the test detects the defect.
-- Focused harness `backdrop_earth_visible.json` after fix — exit code 0; status=pass; 7/7 expectations pass (center_y=-1.279e-05, rotation_invariant=true, horizon_in_view=true from default gameplay camera).
-- Focused harness `backdrop_earth_glint.json` after fix — exit code 0; status=pass; 4/4 expectations pass.
+## Commands and results (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-earth-continent-map-integration)
+- Focused harness `backdrop_earth_visible.json` — exit code 0; status=pass; 8/8 expectations pass (present, grounded, center_y=-1.28e-05, horizon_in_view=true, centered_on_board=true, rotation_invariant=true).
+- Focused harness `backdrop_earth_glint.json` — exit code 0; status=pass.
 - Plan's bounded spot-set python3 loop (backdrop_earth_visible, backdrop_earth_glint, menu_backdrop_map, smoke_placement, removed_tower_kinds_no_crash) — exit code 0; all five PASS.
-- `godot --headless --path . --editor --quit-after 300` — exit code 0; clean import/scan incl. stylized_earth_in_clouds.glb.
-- Fresh grounding log line per run: `[BACKDROP EARTH] grounded continent=Continent_Africa pos=(-21.2, -83.7824, -49.904) scale=41.5999984741211 rot_deg=(15.38803, 21.66841, 83.15345)` (scale = 2.6*32/2 exactly).
+- Editor typecheck `godot --headless --path . --editor --quit-after 300` — exit code 0; clean scan incl. stylized_earth_in_clouds.glb.
 
 ## Notes
-- Gotcha: `Camera3D.is_position_in_frustum()` ignores the camera transform; points must be transformed to camera-local space first (local z < 0 = in front of near plane). A single sample point can sit behind the camera even when the limb is visible — hence the 24-point circle sampling.
-- Gotcha: `debug_look_at_backdrop_earth()` needed `force_update_transform()` or frustum expectations evaluated against the stale pre-move camera.
-- Stale `.gen/harness/_logs/*.out.log` content predates this iteration (old pos/scale values); fresh result.json files are authoritative.
-- Full 135-scenario suite not run per request.md check-scope bound (runner timeout known limitation in quality-notes.md).
+- Fresh grounding log line in every run this iteration: `[BACKDROP EARTH] grounded continent=Continent_Africa pos=(-21.2, -83.7824, -49.904) scale=41.5999984741211 rot_deg=(15.38803, 21.66841, 83.15345)` — scale matches the criterion formula exactly; center_y = rig.y + apex*scale = 0 (float noise only).
+- STALE-EVIDENCE WARNING for the tester: `.gen/harness/backdrop_earth_visible/shots/surface_earth_backdrop.png` predates the revision-1 rig re-pose (mtime 2026-08-22 19:43) and shows a bare floating map with NO globe. The current headless result.json records that screenshot action as skipped (reason "headless"). Do not use that PNG as windowed evidence; a fresh windowed capture from a green build is required for criteria 8–9, plus `.gen/manual-report.md`.
+- Full 135-scenario suite intentionally not run per request.md check-scope bound (known runner 15-min timeout, recorded in quality-notes.md as full-suite-runner-timeout).
 \n

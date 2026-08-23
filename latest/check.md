@@ -1,66 +1,66 @@
-# Check report: health-bar-never-auto-hides (issue #112) — iteration 1
+# Check report: revision-check-1 (earth-continent-map-integration)
 
-classification: pass
+classification: fixable
 
 ## Verdict
 
-All three "Done when" criteria verified with fresh runner evidence. The implementor chose the
-"keep the fade" option: `setup()` / `_deferred_setup()` in `scripts/ui/EnemyHealthBar.gd` now arm
-`hide_timer = FADE_OUT_DELAY` immediately AFTER `show_health_bar()` (which resets it to 0), so a
-spawned undamaged full-health bar auto-fades after 2s and reappears on first damage. Decision is
-recorded in code comments. `Enemy.gd`'s `is_menu_backdrop` skip was re-examined and kept with an
-updated comment rationale (removing it would flash a full-green bar on every menu creature for
-FADE_OUT_DELAY) — comment-only change.
+All headless-verifiable criteria are Done with fresh evidence. The two
+windowed-screenshot criteria remain Pending on the manual-testing gate — no
+`.gen/manual-report.md` or screenshot exists in the workspace. That is a
+missing-evidence gap (fixable), not a code defect and not a runner failure.
+
+## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-earth-continent-map-integration)
+
+| Command | Exit | Result |
+|---|---|---|
+| `["godot","--version"]` | 0 | 4.4.1.stable.official runner probe |
+| `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | import/parse gate clean |
+| harness `backdrop_earth_visible.json` | 0 | `.gen/harness/backdrop_earth_visible/result.json`: status=pass; present=true, grounded=true, center_y=-1.28e-05 (==0), horizon_in_view=true, rotation_invariant=true |
+| harness `backdrop_earth_glint.json` | 0 | `.gen/harness/backdrop_earth_glint/result.json`: status=pass; same green set |
+| harness `menu_backdrop_map.json` | 0 | pass (spot-check) |
+| harness `smoke_placement.json` | 0 | pass (spot-check) |
+| harness `removed_tower_kinds_no_crash.json` | 0 | pass (spot-check) |
+
+Grounding log line observed fresh in every run:
+`[BACKDROP EARTH] grounded continent=Continent_Africa pos=(-21.2, -83.7824, -49.904) scale=41.5999984741211 rot_deg=(15.38803, 21.66841, 83.15345)`
+— scale 41.6 == 32.0/2.0 * 2.6 exactly matches the criterion formula.
 
 ## Acceptance criteria evidence
 
-1. Decision recorded in EnemyHealthBar.gd — DONE.
-   Evidence: diff shows `hide_timer = FADE_OUT_DELAY` after `show_health_bar()` in both `setup()`
-   (line ~129) and `_deferred_setup()` (line ~139), with a comment citing issue #112 and the
-   show_health_bar-resets-timer ordering trap.
-
-2. Spawn fade verified on a windowed run; spawn case asserted in tests/ui/test_enemy_armor_bar.gd — DONE.
-   Evidence (fresh, this check, all via run_project_cmd):
-   - `godot --headless --path . --log-file .gen/check_test_armor_bar.log res://tests/ui/test_enemy_armor_bar.tscn`
-     exit 0 — `=== enemy_armor_bar: 41 ok, 0 failed ===`, including the new
-     `_test_spawned_bar_fades_and_reappears_on_first_damage` (8 test functions, EXPECTED_TESTS 7->8):
-     "setup arms the hide timer to FADE_OUT_DELAY", "after FADE_OUT_DELAY the spawned bar stops being
-     shown", "the fully faded spawned bar hides itself", "the first hit shows the bar again".
-   - `godot --path . --rendering-method gl_compatibility --audio-driver Dummy --log-file
-     .gen/check_spawn_fade.log res://tests/ui/verify_enemy_bar_spawn_fade.tscn` (windowed, real
-     frames) exit 0 — `[VERIFY] spawned: is_showing=true hide_timer=2.000000`, `[VERIFY] ok - bar
-     fully faded after 3.50s of real frames`, reappear on first hit, `[VERIFY RESULT] PASSED`.
-     Debug transitions `[ENEMYHEALTHBAR] show/auto_hide` present in the log.
-   - Regression: `godot --headless --path . --log-file .gen/check_menu_backdrop.log
-     res://tests/menu/test_menu_backdrop_camera.tscn` exit 0 — `=== menu_backdrop_camera: 12 ok,
-     0 failed ===`.
-
-3. Enemy.gd is_menu_backdrop skip re-examined — DONE (kept, rationale recorded in comment).
-   The issue allows "remove only if verified safe"; keeping it with a recorded rationale satisfies
-   the criterion. The menu-backdrop regression test passes.
-
-## Commands (all through run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-health-bar-never-auto-hides)
-
-- `["godot","--version"]` — exit 0 (4.4.1.stable.official.49a5bc7b6), runner healthy.
-- armor-bar suite — exit 0, 41 ok / 0 failed.
-- windowed spawn-fade verify scene — exit 0, VERIFY RESULT PASSED.
-- menu-backdrop camera regression — exit 0, 12 ok / 0 failed.
+1. Single continent + debug warning — Done. `scripts/game/visuals/BackdropEarth.gd` const `GROUNDED_CONTINENT = "Continent_Africa"`; `_verify_continent_mesh()` push_warnings in `_place_earth_grounded`. Log confirms selection at runtime.
+2. Applied uniform scale formula — Done. Scale baked into basis (`earth_rig.basis = yaw_basis.scaled(...)`, fixing the iteration-2 unit-scale regression); log value 41.6 equals the formula.
+3. Apex flush at plane — Done. `center_y == 0` expectation passes (-1.28e-05 float noise); sink measured from measured GLB apex 2.014.
+4. Horizon inside gameplay camera frustum — Done headless via harness expectation `horizon_in_view == true` in both scenarios. Visual confirmation still pending windowed screenshot.
+5. Spin never starts grounded — Done. Grounded path never calls `_start_earth_spin()`; harness samples world transform ~3 s apart and asserts `rotation_invariant`.
+6. Debug `[BACKDROP EARTH]` grounding log — Done. Observed verbatim in every run.
+7. Both focused scenarios pass headless — Done (fresh runs above).
+8–9. Windowed backdrop look / screenshot evidence — Pending. Manual-testing gate (`manual_testing: required`); owned by the manual-tester profile.
 
 ## Changed-file quality findings
 
-- New test does not overlap existing coverage: `_test_boss_style_and_fading_survive_the_armor_row`
-  covers damage-driven fade in/out; the new test covers the spawn auto-hide path (`hide_timer`
-  armed at setup) which no prior test asserted.
-- New code follows project rules: typed vars, debug-only `[ENEMYHEALTHBAR]` transition logs per
-  CLAUDE.md logging rule, surgical diff (5 files, one comment-only).
-- Minor (advisory, not demoting): `_log_visibility_transition` reuses the
-  `last_boss_icon_debug_line` field as its dedupe cache — a misnamed shared field, harmless here.
+- No quality violation found in the new/changed feature code
+  (`scripts/game/visuals/BackdropEarth.gd`, scenario JSONs, HarnessValues.gd,
+  Game.gd). Typed GDScript, guard clauses, single-purpose functions, debug-tag
+  logging per CLAUDE.md conventions.
+- Test overlap: the two updated scenario contracts assert this feature's
+  behavior directly; no duplicate pre-existing coverage of the grounded
+  contract was found.
 
 ## Blockers
 
-None.
+None. Runner healthy throughout.
 
-## Unverified items
+## Unverified items / known limitations
 
-None. No full-project typecheck/build command exists for this Godot project beyond scene parse
-(both scenes parsed and ran cleanly headless and windowed).
+- Full 135-scenario suite not run — bounded by request.md check-scope after a
+  proven runner 15-min timeout; recorded as open entry `full-suite-runner-timeout`
+  in quality-notes.md.
+- Open quality-notes entries re-checked: `glb-replaced-via-lfs` (iteration 1)
+  and `balance-csv-regenerated` (iteration 2) remain open — advisory only,
+  neither demotes a criterion. `suite-timeouts-unattributed` remains open.
+
+## Required next step
+
+Manual-tester must run `backdrop_earth_visible` windowed from the normal
+gameplay camera, save the screenshot under `.gen/`, and write
+`.gen/manual-report.md`; then criteria 8–9 can be marked Done.

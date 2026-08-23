@@ -1,22 +1,26 @@
-# Coder report: implementation
+# Coder report: implementation (revision 2)
 
 ## Changed files
-- `scripts/ui/EnemyHealthBar.gd` — mod: `setup()` and `_deferred_setup()` now arm `hide_timer = FADE_OUT_DELAY` after `show_health_bar()`, so a spawned, undamaged full-health bar fades out (decision from request recorded in code). Added debug-only `[ENEMYHEALTHBAR] show/auto_hide is_showing x -> y hp=n/m` transition logs per CLAUDE.md logging rule.
-- `tests/ui/test_enemy_armor_bar.gd` — mod: new test `_test_spawned_bar_fades_and_reappears_on_first_damage` asserting the spawn case (armed timer, fade after FADE_OUT_DELAY, self-hide, reappear on first damage); EXPECTED_TESTS 7 -> 8.
-- `tests/ui/verify_enemy_bar_spawn_fade.gd` + `.tscn` — new: windowed-run verification scene driven by real engine frames (not synthetic deltas), prints `[VERIFY ...]` lines and exits 0/1.
-- `scripts/game/actors/Enemy.gd` — mod: comment-only update on the `is_menu_backdrop` skip at ~line 343 recording the re-examination. The skip STAYS: since spawned bars now show for FADE_OUT_DELAY before fading, removing it would make every menu-backdrop creature flash a full-green bar for ~2s.
+- None. Verification-only revision: the revision-1 source changes in `scripts/game/visuals/BackdropEarth.gd`, `scripts/game/Game.gd`, `scripts/testing/HarnessValues.gd`, and both focused scenario JSONs already satisfy every headless-verifiable criterion; re-verification found no defect to fix.
 
 ## Criteria
-- Decision recorded in EnemyHealthBar.gd (keep fade; arm hide_timer in setup) — Done
-- Windowed verification of spawn fade + reappear-on-first-damage; spawn case asserted in tests/ui/test_enemy_armor_bar.gd — Done
-- Re-examine Enemy.gd is_menu_backdrop skip — Done (kept, with rationale recorded)
+- Grounded config names exactly one continent mesh + debug warning on absence — Done (verified again this run).
+- Applied uniform scale == grounded_scale * world_radius / NATIVE_EARTH_RADIUS — Done (log scale=41.5999984741211 == 2.6*32/2).
+- Continent apex flush at playable plane (center_y == 0) — Done (center_y=-1.2794e-05).
+- Globe horizon inside normal gameplay camera frustum — Done headless (horizon_in_view=true, default camera); windowed visual confirmation still gated on manual testing.
+- Grounded spin never starts (transform invariant over seconds) — Done (rotation_invariant=true over ~3 s gap).
+- Debug `[BACKDROP EARTH]` grounding log per grounding event — Done (observed verbatim in both focused runs).
+- Both focused scenarios pass headless with all expectations green — Done.
+- Windowed backdrop look regression check — Pending manual-testing gate (unchanged).
+- Windowed surface screenshot of map-on-continent — Pending manual-testing gate (unchanged).
 
-## Commands and results
-- `godot --headless --path . res://tests/ui/test_enemy_armor_bar.tscn` (via run_project_cmd) — exit 0; `=== enemy_armor_bar: 41 ok, 0 failed ===`
-- `godot --path . --rendering-method gl_compatibility --audio-driver Dummy res://tests/ui/verify_enemy_bar_spawn_fade.tscn` (windowed, via runner) — exit 0; log shows `[ENEMYHEALTHBAR] show ... hp=100/100` at spawn, `auto_hide` after ~2s of real frames, `[VERIFY] ok - bar fully faded after 3.50s`, reappear on first hit, `[VERIFY RESULT] PASSED`
-- `godot --headless --path . res://tests/menu/test_menu_backdrop_camera.tscn` (menu-backdrop regression) — exit 0; `=== menu_backdrop_camera: 12 ok, 0 failed ===`
+## Commands and results (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-earth-continent-map-integration)
+- Focused harness `backdrop_earth_visible.json` — exit code 0; status=pass; 8/8 expectations pass (present, grounded, center_y=-1.28e-05, horizon_in_view=true, centered_on_board=true, rotation_invariant=true).
+- Focused harness `backdrop_earth_glint.json` — exit code 0; status=pass.
+- Plan's bounded spot-set python3 loop (backdrop_earth_visible, backdrop_earth_glint, menu_backdrop_map, smoke_placement, removed_tower_kinds_no_crash) — exit code 0; all five PASS.
+- Editor typecheck `godot --headless --path . --editor --quit-after 300` — exit code 0; clean scan incl. stylized_earth_in_clouds.glb.
 
 ## Notes
-- Fresh worktree needed one editor import pass (`godot --headless --editor --quit-after 300`) before any test scene ran — otherwise AgentHarness class_name resolution fails with parse errors (known trap).
-- Runner output truncates long Godot stdout; used `--log-file .gen/<name>.log` and read the files host-side for verdicts.
-- The verification scene lives under tests/ui/ so the tester can re-run it; it needs a display or X fallback (gl_compatibility + llvmpipe worked in the worker).
+- Fresh grounding log line in every run this iteration: `[BACKDROP EARTH] grounded continent=Continent_Africa pos=(-21.2, -83.7824, -49.904) scale=41.5999984741211 rot_deg=(15.38803, 21.66841, 83.15345)` — scale matches the criterion formula exactly; center_y = rig.y + apex*scale = 0 (float noise only).
+- STALE-EVIDENCE WARNING for the tester: `.gen/harness/backdrop_earth_visible/shots/surface_earth_backdrop.png` predates the revision-1 rig re-pose (mtime 2026-08-22 19:43) and shows a bare floating map with NO globe. The current headless result.json records that screenshot action as skipped (reason "headless"). Do not use that PNG as windowed evidence; a fresh windowed capture from a green build is required for criteria 8–9, plus `.gen/manual-report.md`.
+- Full 135-scenario suite intentionally not run per request.md check-scope bound (known runner 15-min timeout, recorded in quality-notes.md as full-suite-runner-timeout).
