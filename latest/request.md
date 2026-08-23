@@ -1,26 +1,34 @@
-# Request: issue-116 game-ready-blocks-map-load
+# Request: health-bar-never-auto-hides
 
-## Feature
-Split `Game`'s world build into resumable phases so `MapLoadingScreen` can drive it and show real progress during world building.
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/112
+- Project key (runner): `godot-td`
+- Git workspace: `poke-defense-godot/issue-health-bar-never-auto-hides`
+- Branch: `issue/health-bar-never-auto-hides` (cut from origin/master @ d241462)
+- Claimed: 2026-08-23, by autostart cron pickup.
 
-## Issue
-https://github.com/daniell0gda/poke-defense-godot/issues/116
+## Summary
 
-Problem: `MapLoadingScreen` threads the `Main.tscn` load, but `scene.instantiate()` + `Game._ready()` (map JSON parse, terrain, paths, decorations, spawners, environment) block the main thread in one go under a static "Building Map" caption. The progress bar finishes before the expensive part starts.
+`EnemyHealthBar.setup()` ends with `show_health_bar()` which sets `hide_timer = 0.0`, but the
+auto-hide branch in `_process` requires `hide_timer > 0`, so a freshly spawned undamaged enemy's
+full-health bar never fades. The fade-out plumbing (`FADE_OUT_DELAY`, `FADE_OUT_SPEED`,
+`hide_timer`, `is_showing = false`) is unreachable on spawn.
 
-Proposal: split `Game`'s world build into a step list that yields between phases, same shape as `LoadingSequence`'s step list, so `MapLoadingScreen` can drive and report it. See the "Known limitation" section in `LOADING_SYSTEM.md`.
+## Decision requested (record it in code)
 
-## Done when
-- `MapLoadingScreen`'s bar advances during the world build rather than jumping over it.
-- No single frame stalls for more than ~100ms during a map load.
+Prefer keeping the fade: `setup()` should arm `hide_timer` so a spawned bar fades after
+`FADE_OUT_DELAY` and reappears on first damage. If instead fade-out is removed, delete the dead
+plumbing entirely — do not leave half-states.
 
-## Runner notes (redo notes)
-- Project key: `godot-td`. Workspace: `poke-defense-godot/issue-game-ready-blocks-map-load`.
-- Use only `run_project_cmd`; no shell operators; use Godot's `--log-file .gen/<name>.log` for full logs.
-- Windowed evidence needs `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` when Vulkan fails.
-- Harness scene arg must precede user args: `godot [--headless] --path . res://scenes/Main.tscn -- ...`.
-- Manual testing: required if the loading screen UI is visibly changed — capture windowed PNGs of the loading screen mid-world-build showing the bar advancing past the threaded-load portion.
+## Done when (from issue)
 
-## Context
-- Branch: `issue/game-ready-blocks-map-load`, cut from fresh `origin/master` (d241462).
-- Worktree clean at claim time.
+1. A decision recorded in `scripts/ui/EnemyHealthBar.gd`: either remove fade plumbing, or arm
+   `hide_timer` in `setup()` so a spawned bar fades after `FADE_OUT_DELAY`.
+2. If fade kept: verified on a windowed run that a spawned enemy's bar fades out and reappears on
+   first hit; assert the spawn case in `tests/ui/test_enemy_armor_bar.gd`.
+3. Re-examine `scripts/game/actors/Enemy.gd:339-344` `is_menu_backdrop` skip — if bars self-hide,
+   the menu special case may be removable (remove only if verified safe).
+
+## Redo notes for resumed runs
+
+- Runner names: project `godot-td`, workspace `poke-defense-godot/issue-health-bar-never-auto-hides`. Do NOT invent other workspace names.
+- Godot commands need explicit scene arg before user args; use `--rendering-method gl_compatibility --audio-driver Dummy` for windowed runs.

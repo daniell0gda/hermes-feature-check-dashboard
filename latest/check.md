@@ -1,114 +1,66 @@
-# Check report — issue-116 game-ready-blocks-map-load (revision-check 2, iteration 3)
+# Check report: health-bar-never-auto-hides (issue #112) — iteration 1
 
-classification: fixable
+classification: pass
 
 ## Verdict
 
-Cluster 1 improved but the frame-budget criterion STILL FAILS on a fresh
-cold-cache run. The cast-rule violation from iteration 2 is fixed. Cluster 2's
-new test no longer crashes on typed pairs and now has a 3600-frame watchdog,
-but it never reaches a single assertion: the loading screen's `add_child` of
-the game scene fails inside `_ready` ("Parent node is busy setting up children,
-add_child() failed"), the screen never frees itself, the test spins to its
-watchdog, quits 1, and writes NO result.json — zero checks executed.
-The required windowed PNG manual evidence still does not exist.
+All three "Done when" criteria verified with fresh runner evidence. The implementor chose the
+"keep the fade" option: `setup()` / `_deferred_setup()` in `scripts/ui/EnemyHealthBar.gd` now arm
+`hide_timer = FADE_OUT_DELAY` immediately AFTER `show_health_bar()` (which resets it to 0), so a
+spawned undamaged full-health bar auto-fades after 2s and reappears on first damage. Decision is
+recorded in code comments. `Enemy.gd`'s `is_menu_backdrop` skip was re-examined and kept with an
+updated comment rationale (removing it would flash a full-green bar on every menu creature for
+FADE_OUT_DELAY) — comment-only change.
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-game-ready-blocks-map-load)
+## Acceptance criteria evidence
 
-- Preflight probe: `["godot","--version"]` → exit 0, Godot 4.4.1.stable.
-- Editor/import gate: `godot --headless --path . --editor --quit-after 300`
-  → exit 0 (clean parse of Game.gd / NatureDecoration.gd /
-  test_map_loading_screen_driving.gd).
-- Focused scenario: `godot --headless --path . res://scenes/Main.tscn --
-  --harness=res://tests/scenarios/map_build_phases.json` → **exit 1,
-  status=fail**; `.gen/harness/map_build_phases/result.json`: 7/8 expectations
-  pass; the failing one is still the `!regex` frame-budget check. Fresh
-  cold-cache timings in `.gen/harness/_logs/map_build_phases.out.log`:
-  'Loading Egg Castle Model' 124 ms, 'Warming Egg Castle Model' 121 ms,
-  'Placing the Egg' 121 ms, 'Growing Vegetation - Trees 1/4' 184 ms,
-  'Dead Trees 1/2' 192 ms — five phases over ~100 ms. A "Warm Models" phase
-  was added before the tree slices, yet the first tree/dead-tree slice still
-  pays the full model-parse cost, so the warm phase is not effective for them.
-- Full suite: level_walkthrough → exit 0, status=pass, but its own log again
-  shows cold phases at 204 / 194 / 127 ms (same budget violation on other
-  maps).
-- Backdrop: menu_backdrop_map → status=pass (exit 0).
-- New cluster-2 test:
-  `godot --headless --path . res://tests/loading/test_map_loading_screen_driving.tscn`
-  → **exit 1 after ~26 s**, watchdog fired:
-  `[SETUP FAIL] test exceeded its 3600-frame watchdog`. Log shows exactly one
-  engine error first: `ERROR: Parent node is busy setting up children,
-  add_child() failed. Consider using add_child.call_deferred(child) instead.`
-  No `.gen/loading_harness/result.json`, no assertion summary line, zero
-  checks ran. Root cause: the harness adds the screen via `add_child` from its
-  own `_ready`; the screen's `_ready → _run_steps → _finish →
-  _build_world_phased` then does `tree.root.add_child(instance)` while the
-  root is still setting up children, so the game instance never enters the
-  tree; the screen waits forever on a world build that can never finish.
-  (Same error also appears when the scene is launched directly.) The test
-  needs `add_child.call_deferred` (or deferred start) in BOTH the harness's
-  screen add and MapLoadingScreen._build_world_phased's game-scene add.
+1. Decision recorded in EnemyHealthBar.gd — DONE.
+   Evidence: diff shows `hide_timer = FADE_OUT_DELAY` after `show_health_bar()` in both `setup()`
+   (line ~129) and `_deferred_setup()` (line ~139), with a comment citing issue #112 and the
+   show_health_bar-resets-timer ordering trap.
 
-## Acceptance criteria status
+2. Spawn fade verified on a windowed run; spawn case asserted in tests/ui/test_enemy_armor_bar.gd — DONE.
+   Evidence (fresh, this check, all via run_project_cmd):
+   - `godot --headless --path . --log-file .gen/check_test_armor_bar.log res://tests/ui/test_enemy_armor_bar.tscn`
+     exit 0 — `=== enemy_armor_bar: 41 ok, 0 failed ===`, including the new
+     `_test_spawned_bar_fades_and_reappears_on_first_damage` (8 test functions, EXPECTED_TESTS 7->8):
+     "setup arms the hide timer to FADE_OUT_DELAY", "after FADE_OUT_DELAY the spawned bar stops being
+     shown", "the fully faded spawned bar hides itself", "the first hit shows the bar again".
+   - `godot --path . --rendering-method gl_compatibility --audio-driver Dummy --log-file
+     .gen/check_spawn_fade.log res://tests/ui/verify_enemy_bar_spawn_fade.tscn` (windowed, real
+     frames) exit 0 — `[VERIFY] spawned: is_showing=true hide_timer=2.000000`, `[VERIFY] ok - bar
+     fully faded after 3.50s of real frames`, reappear on first hit, `[VERIFY RESULT] PASSED`.
+     Debug transitions `[ENEMYHEALTHBAR] show/auto_hide` present in the log.
+   - Regression: `godot --headless --path . --log-file .gen/check_menu_backdrop.log
+     res://tests/menu/test_menu_backdrop_camera.tscn` exit 0 — `=== menu_backdrop_camera: 12 ok,
+     0 failed ===`.
 
-Cluster 1 — game-phased-build:
-- PASS — phased parity (playing state, map_id=map_1, total_waves=4>0, wave-1
-  enemies ≥1): all four gameplay expectations pass in
-  .gen/harness/map_build_phases/result.json.
-- FAIL — no single frame >~100 ms during world build: unchanged from iteration
-  2 — cold-cache 124/121/121/184/192 ms on map_1; level_walkthrough log shows
-  204/194/127 ms. The added warm-model phase does not remove the parse cost
-  from the first vegetation slice, and egg-castle load/warm/place remain just
-  over budget.
-- PASS — direct Main.tscn boot completes the whole build without a driver
-  (harness path reaches playing with all phases run synchronously).
-- PASS — menu_backdrop_map scenario passes unchanged.
-- PASS — `[MAP_BUILD] phase '<name>' done in <n> ms` lines present for every
-  phase in every scenario log.
+3. Enemy.gd is_menu_backdrop skip re-examined — DONE (kept, rationale recorded in comment).
+   The issue allows "remove only if verified safe"; keeping it with a recorded rationale satisfies
+   the criterion. The menu-backdrop regression test passes.
 
-Cluster 2 — loading-screen-driving:
-- UNVERIFIED — bar advances during world build: implementation exists
-  (MapLoadingScreen._build_world_phased + _on_world_build_phase), but the only
-  automated coverage never executes an assertion (watchdog abort above) and no
-  windowed PNG manual evidence exists.
-- UNVERIFIED — building-phase caption replaces "Building Map": same gap.
-- UNVERIFIED — bad map id falls back to map_1 before world build: logic present
-  and ordered before phases in code (`_load_map_config` runs as step 1, before
-  `_finish`/phases), but the only test never executes its checks.
+## Commands (all through run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-health-bar-never-auto-hides)
 
-Manual testing per plan.md (windowed PNG of the loading screen mid-world-build)
-is REQUIRED and missing (.gen contains no manual-report.md and no screenshots).
+- `["godot","--version"]` — exit 0 (4.4.1.stable.official.49a5bc7b6), runner healthy.
+- armor-bar suite — exit 0, 41 ok / 0 failed.
+- windowed spawn-fade verify scene — exit 0, VERIFY RESULT PASSED.
+- menu-backdrop camera regression — exit 0, 12 ok / 0 failed.
 
 ## Changed-file quality findings
 
-- RESOLVED — scripts/game/Game.gd `as PackedScene` casts removed; new lines no
-  longer introduce type casts (remaining `as X` occurrences are pre-existing).
-- NEW QUALITY ISSUE — scripts/game/NatureDecoration.gd: newly added lines
-  introduce two type casts forbidden by coding rules:
-  `get_node_or_null(container_name) as Node3D` (get_container, ~line 246) and
-  `_model_cache.get(model_path) as PackedScene` plus `load(model_path) as
-  PackedScene` (_load_nature_model_path, ~lines 657–659). Advisory quality note
-  appended; does not demote criteria beyond what is already recorded.
-- tests/loading/test_map_loading_screen_driving.gd: typed-pair crash fixed and
-  watchdog added (good), but the deferred-add_child defect above means the test
-  still proves nothing; must be fixed and rerun to a written result.json.
+- New test does not overlap existing coverage: `_test_boss_style_and_fading_survive_the_armor_row`
+  covers damage-driven fade in/out; the new test covers the spawn auto-hide path (`hide_timer`
+  armed at setup) which no prior test asserted.
+- New code follows project rules: typed vars, debug-only `[ENEMYHEALTHBAR]` transition logs per
+  CLAUDE.md logging rule, surgical diff (5 files, one comment-only).
+- Minor (advisory, not demoting): `_log_visibility_transition` reuses the
+  `last_boss_icon_debug_line` field as its dedupe cache — a misnamed shared field, harmless here.
 
 ## Blockers
 
-None infra-related; runner healthy throughout (probe, import gate, and all
-scenario runs returned promptly).
+None.
 
-## Required fixes before re-check
+## Unverified items
 
-1. Fix the add_child-inside-_ready failure: use `add_child.call_deferred(...)`
-   in tests/loading/test_map_loading_screen_driving.gd (screen add) AND in
-   scripts/MapLoadingScreen.gd `_build_world_phased` (game-scene add); rerun to
-   a written `.gen/loading_harness/result.json` with all checks passing.
-2. Bring cold-cache world-build phases under ~100 ms: make the vegetation
-   warm-model phase actually pre-parse the tree/dead-tree GLTFs before the
-   first slice (currently Trees 1/4 and Dead Trees 1/2 pay the whole parse),
-   and further amortize egg-castle load/warm/place (each 121–147 ms cold).
-3. Rerun map_build_phases to status=pass.
-4. Provide the required windowed PNG manual evidence of the loading screen
-   mid-world-build (bar advanced past the threaded-load portion).
+None. No full-project typecheck/build command exists for this Godot project beyond scene parse
+(both scenes parsed and ran cleanly headless and windowed).
