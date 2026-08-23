@@ -1,21 +1,21 @@
 {
-  "run_id": "issue116-game-ready-blocks-map-load-r1",
-  "feature": "game-ready-blocks-map-load",
+  "run_id": "issue126-harness-press-button",
+  "feature": "harness-cannot-inject-gui-input",
   "status": "running",
-  "started_at": "2026-08-22T23:17:33.566Z",
+  "started_at": "2026-08-22T23:20:19.286Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r1/",
-  "heartbeat_at": "2026-08-23T00:08:18.723Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T00:08:18.723Z",
-  "process_id": 792468,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue126-harness-press-button/",
+  "heartbeat_at": "2026-08-23T00:18:00.664Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-23T00:18:00.664Z",
+  "process_id": 793373,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T00:08:23.559390+00:00",
-    "last_success_at": "2026-08-23T00:08:23.558546+00:00",
+    "last_attempt_at": "2026-08-23T00:18:00.664807+00:00",
+    "last_success_at": "2026-08-23T00:06:48.592487+00:00",
     "last_error": null
   },
   "metrics": {
@@ -27,9 +27,9 @@
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 112499,
-        "output_tokens": 5457
+        "cost_status": "estimated",
+        "input_tokens": 148252,
+        "output_tokens": 4675
       },
       {
         "task_id": "code",
@@ -39,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 264145,
-        "output_tokens": 21791
+        "input_tokens": 223328,
+        "output_tokens": 8265
       }
     ]
   }
