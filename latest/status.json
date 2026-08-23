@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-84-traps-venom-barbs/",
   "heartbeat_at": "2026-08-23T20:55:28.169Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "team-leader",
   "last_event_at": "2026-08-23T20:55:28.169Z",
   "process_id": 206948,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T20:55:28.169421+00:00",
-    "last_success_at": "2026-08-23T20:50:09.749266+00:00",
+    "last_attempt_at": "2026-08-23T20:55:32.496366+00:00",
+    "last_success_at": "2026-08-23T20:55:32.495461+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 301200,
         "output_tokens": 21535
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 113972,
+        "output_tokens": 4344
       }
     ]
   }
