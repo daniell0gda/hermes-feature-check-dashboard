@@ -8,8 +8,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 101407,
-      "output_tokens": 4406
+      "input_tokens": 112499,
+      "output_tokens": 5457
     },
     {
       "task_id": "code",
@@ -19,8 +19,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 236294,
-      "output_tokens": 10060
+      "input_tokens": 264145,
+      "output_tokens": 21791
     },
     {
       "task_id": "check",
@@ -30,8 +30,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 92674,
-      "output_tokens": 7008
+      "input_tokens": 154272,
+      "output_tokens": 5631
     }
   ]
 }

@@ -1,68 +1,86 @@
-# Check report: issue-dead-options-modal-scene (iteration 1)
+# Check report — issue-116 game-ready-blocks-map-load (iteration 1)
 
 classification: fixable
 
 ## Verdict
 
-The deletion itself is correct and fully verified: dead `Options.tscn` / `Options.gd` /
-`.uid` are gone, nothing references them, the editor/import gate is clean, both live
-Options paths are proven intact by two new non-overlapping automated checks, and the
-focused harness passes fresh. However, the plan's **full test command**
-(`smoke_tower_roster`) fails with exit 1. Per the build/test gate, no criterion may
-remain Done while the full suite is red, so all criteria are moved to Pending. The
-failure was independently reproduced on pristine HEAD with identical failing
-expectations — it is a pre-existing map_10 gameplay-pacing failure, not caused by this
-change, but it still leaves the suite red.
+Implementation direction is correct and most criteria are verified green, but the
+focused `map_build_phases` scenario FAILS its frame-budget expectation: three
+world-build phases exceeded the ~100ms budget in fresh verification. Cluster 2
+(loading-screen driving) also has no automated evidence and no manual windowed PNG
+evidence exists yet.
 
 ## Verification commands (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-dead-options-modal-scene)
+workspace=poke-defense-godot/issue-game-ready-blocks-map-load)
 
-| Command | Exit | Result |
-|---|---|---|
-| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 (runner healthy) |
-| `godot --headless --path . --editor --quit-after 300` | 0 | Clean; no parse or missing-resource errors |
-| `--harness=res://tests/scenarios/smoke_placement.json` | 0 | `[Harness] status=pass exit=0`; fresh `.gen/harness/smoke_placement/result.json` |
-| `--harness=res://tests/scenarios/smoke_tower_roster.json` | 1 | `status: fail`. Failing expectations: `current_wave 2 >= 3`, `damage_by_type.balista/bazooka/cannon 0 > 0` |
-| `--harness=res://tests/scenarios/issue_dead_options_live_pause_menu.json` | 0 | `status=pass`; game paused + 1 live OptionsScreen instance found |
-| `--script res://tests/ui/issue_dead_options_main_menu.gd` | 0 | OptionsButton wired, pressed; live OptionsScreen instantiated visible=true |
+- Preflight: `["godot","--version"]` → exit 0, Godot 4.4.1.stable.
+- Typecheck/build: `godot --headless --path . --import` → exit 0.
+- Focused: `godot --headless --path . res://scenes/Main.tscn --
+  --harness=res://tests/scenarios/map_build_phases.json --log-file
+  .gen/check_map_build_phases.log` → **exit 1, status=fail**
+  (.gen/harness/map_build_phases/result.json). 7/8 expectations pass; the failing
+  one is the `!regex` frame-budget check: phases measured over 100ms were
+  "Placing the Egg" 135ms, "Growing Vegetation - Dead Trees" 200ms,
+  "Growing Vegetation - Trees" 208ms (cold-cache run; second load inside the same
+  run was under budget, but the criterion is about a real first map load).
+- Full suite: `godot --headless --path . res://scenes/Main.tscn --
+  --harness=res://tests/scenarios/level_walkthrough.json` → exit 0, status=pass,
+  10/10 expectations. However its own log shows MAP_BUILD phases of 204ms, 194ms,
+  127ms — same budget issue on other maps.
+- Backdrop: `--harness=res://tests/scenarios/menu_backdrop_map.json` → exit 0,
+  status=pass.
 
-## Baseline control (checker-run)
+## Acceptance criteria status
 
-Stashed the entire feature diff (`git stash push -u`), reran smoke_tower_roster on
-pristine HEAD: exit 1, result.json `status: fail` with byte-identical failing
-expectations (wave 2 vs 3; balista/bazooka/cannon damage 0). Stash popped; worktree
-restored to feature state. Confirmed: pre-existing failure, unrelated to the deletion.
+Cluster 1 — game-phased-build:
+- PASS — phased parity (playing state, map_id, waves>0, wave-1 enemies): harness
+  expectations pass (.gen/harness/map_build_phases/result.json).
+- FAIL — no single frame >~100ms during world build: 135/200/208 ms phases on
+  map_1 cold cache; 204/194/127 ms in level_walkthrough log.
+- PASS — direct Main.tscn boot completes whole build without a driver
+  (AgentHarness path runs all phases to playing).
+- PASS — menu_backdrop_map scenario passes unchanged (exit 0, status=pass).
+- PASS — `[MAP_BUILD] phase '<name>' done in <n> ms` lines present for every
+  phase, debug-build only.
 
-## Per-criterion status
+Cluster 2 — loading-screen-driving:
+- UNVERIFIED — bar advances in increments during world build: code implements it
+  (MapLoadingScreen._build_world_phased + _on_world_build_phase →
+  report_step_progress), but no automated test exercises MapLoadingScreen and no
+  windowed PNG manual evidence exists (.gen has no manual-report.md, no
+  screenshots).
+- UNVERIFIED — status line updates with building-phase caption: same gap.
+- PARTIAL — bad map id falls back to map_1 before world build: fallback logic is
+  unchanged and still runs before any world-building phase (`_build_steps`
+  config-check step precedes `_finish`); no new test asserts it, prior behavior
+  preserved.
 
-1. No references to `Options.tscn` / `OptionsModal` / `scripts/ui/Options.gd` — verified
-   (project-wide grep over scenes/scripts/autoload/project.godot/docs returns zero hits).
-2. Dead files removed incl. `.uid` sidecar — verified via git status (3 deletions).
-3. Editor/import gate exit 0, no errors — verified fresh.
-4. smoke_placement pass + fresh result.json — verified fresh.
-5. smoke_tower_roster pass — FAILED (exit 1); identical failure reproduced on pristine
-   HEAD. Moved to Pending.
-6. Pause menu opens live Options modal — verified fresh via new scenario (pass).
-7. Main menu loads OptionsScreen.tscn — verified fresh via new SceneTree script (exit 0).
+Manual-testing note from plan.md (windowed PNG of loading screen mid-world-build)
+is REQUIRED and missing.
 
-All criteria moved to Pending solely because of gate rule #5 (full-suite red).
+## Changed-file quality findings
 
-## Test overlap check
+No clear quality-rule violations found in the diff (scripts/game/Game.gd,
+scripts/game/NatureDecoration.gd, scripts/MapLoadingScreen.gd, new
+tests/scenarios/map_build_phases.json). Phases are data-driven, typed, functions
+are small, debug logging follows the `[TAG]` convention. The `as Node3D` /
+`as PackedScene` casts in NatureDecoration.gd mirror pre-existing patterns in
+Game.gd (legacy style, not newly introduced violations worth demotion beyond what
+the global rule already flags generally).
 
-New scenario `issue_dead_options_live_pause_menu` asserts OptionsScreen instantiation;
-existing `hud_other_panels.json` calls `_on_pause_options` but only asserts
-`game_state == paused` — no duplication. New main-menu script has no existing
-equivalent. No overlap violations.
-
-## Changed-file quality
-
-Deletion-only diff plus two focused test artifacts. New GDScript follows project style
-(typed vars, guard clauses, single responsibility). No quality violations in changed
-code.
+The new scenario test is genuinely new coverage (phased-build frame budget +
+phase logging) and does not overlap an existing scenario; the 142 other scenarios
+do not assert MAP_BUILD timing.
 
 ## Blockers
 
-None infra-related. The single blocker is the pre-existing `smoke_tower_roster`
-failure on map_10 (egg dies during wave 2 under seeded roster), which must be fixed
-separately (or the plan's full-test criterion rebaselined) before this branch can be
-green.
+None infra-related; runner healthy throughout.
+
+## Required fixes before re-check
+
+1. Bring every world-build phase under ~100ms on a cold cache (split "Placing the
+   Egg", vegetation tree/dead-tree generation further, or amortize across frames).
+2. Rerun focused scenario to status=pass.
+3. Provide the required manual windowed PNG evidence of the loading screen
+   mid-world-build (bar past threaded-load portion, caption showing a phase name),
+   or an automated harness that drives MapLoadingScreen.

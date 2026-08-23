@@ -1,21 +1,21 @@
 {
-  "run_id": "tw-104-dead-options-modal-r1",
-  "feature": "dead-options-modal-scene",
+  "run_id": "issue116-game-ready-blocks-map-load-r1",
+  "feature": "game-ready-blocks-map-load",
   "status": "running",
-  "started_at": "2026-08-23T00:28:15.410Z",
+  "started_at": "2026-08-22T23:17:33.566Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/tw-104-dead-options-modal-r1/",
-  "heartbeat_at": "2026-08-23T01:10:59.989Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T01:10:59.989Z",
-  "process_id": 828693,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r1/",
+  "heartbeat_at": "2026-08-23T01:11:35.390Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-23T01:11:35.390Z",
+  "process_id": 792468,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T01:11:04.351908+00:00",
-    "last_success_at": "2026-08-23T01:11:04.351057+00:00",
+    "last_attempt_at": "2026-08-23T01:11:35.391039+00:00",
+    "last_success_at": "2026-08-23T00:19:17.011155+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 101407,
-        "output_tokens": 4406
+        "input_tokens": 112499,
+        "output_tokens": 5457
       },
       {
         "task_id": "code",
@@ -39,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 236294,
-        "output_tokens": 10060
+        "input_tokens": 264145,
+        "output_tokens": 21791
       },
       {
         "task_id": "check",
@@ -50,8 +50,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 92674,
-        "output_tokens": 7008
+        "input_tokens": 154272,
+        "output_tokens": 5631
       }
     ]
   }

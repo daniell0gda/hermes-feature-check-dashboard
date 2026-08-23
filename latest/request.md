@@ -1,21 +1,26 @@
-# Request: issue-dead-options-modal-scene (issue #104)
+# Request: issue-116 game-ready-blocks-map-load
 
 ## Feature
-Delete dead code: `scenes/ui/Options.tscn` and `scripts/ui/Options.gd` (`class_name OptionsModal`) are unreferenced clones of the live Options surfaces (`scenes/ui/OptionsScreen.tscn`, `scenes/ui/OptionsMenu.tscn`).
+Split `Game`'s world build into resumable phases so `MapLoadingScreen` can drive it and show real progress during world building.
 
-## Acceptance criteria
-1. Re-confirmed nothing references `Options.tscn` or `OptionsModal` anywhere in the project.
-2. Both files deleted from the repo.
-3. Project still opens cleanly (editor/import gate passes).
-4. Options still works from the pause menu (in-game path) and from the main menu.
+## Issue
+https://github.com/daniell0gda/poke-defense-godot/issues/116
 
-No new visual required — deletion only. Manual testing: a quick windowed sanity check that both live Options paths open is sufficient; no new visual work.
+Problem: `MapLoadingScreen` threads the `Main.tscn` load, but `scene.instantiate()` + `Game._ready()` (map JSON parse, terrain, paths, decorations, spawners, environment) block the main thread in one go under a static "Building Map" caption. The progress bar finishes before the expensive part starts.
 
-## Runner / workspace notes (redo notes — do not repeat past mistakes)
-- Project: poke-defense-godot. Runner key: **godot-td** (never folder name).
-- Workspace: **poke-defense-godot/issue-dead-options-modal-scene**
-- Worktree: /workspace/git-workspaces/poke-defense-godot/issue-dead-options-modal-scene (branch issue/dead-options-modal-scene, cut from origin/master)
-- Use run_project_cmd only; explicit scene arg before user args for gameplay harnesses; native Linux Godot, never PowerShell wrappers.
+Proposal: split `Game`'s world build into a step list that yields between phases, same shape as `LoadingSequence`'s step list, so `MapLoadingScreen` can drive and report it. See the "Known limitation" section in `LOADING_SYSTEM.md`.
 
-## Historical context
-Fresh claim; no prior attempt. request-id: tw-104-dead-options-modal-r1.
+## Done when
+- `MapLoadingScreen`'s bar advances during the world build rather than jumping over it.
+- No single frame stalls for more than ~100ms during a map load.
+
+## Runner notes (redo notes)
+- Project key: `godot-td`. Workspace: `poke-defense-godot/issue-game-ready-blocks-map-load`.
+- Use only `run_project_cmd`; no shell operators; use Godot's `--log-file .gen/<name>.log` for full logs.
+- Windowed evidence needs `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` when Vulkan fails.
+- Harness scene arg must precede user args: `godot [--headless] --path . res://scenes/Main.tscn -- ...`.
+- Manual testing: required if the loading screen UI is visibly changed — capture windowed PNGs of the loading screen mid-world-build showing the bar advancing past the threaded-load portion.
+
+## Context
+- Branch: `issue/game-ready-blocks-map-load`, cut from fresh `origin/master` (d241462).
+- Worktree clean at claim time.
