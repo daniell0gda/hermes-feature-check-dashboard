@@ -20,8 +20,6 @@
 ## Criteria
 
 ## ✅ Done
-
-## ⬜ Pending
 - The grass/flower path duplicates any StandardMaterial3D it modifies before writing to it, so the material resource cached by the imported model is left unchanged after decoration generation.
 - After the grass/flower path runs, each affected MeshInstance3D surface carries its own modified copy via set_surface_override_material, with transparency alpha-scissor, alpha scissor threshold applied, no depth test disabled, and render priority -1.
 - Two grass or flower decorations generated from the same model do not share one modified material instance between them.
@@ -30,4 +28,7 @@
 - Debug-build [NatureDecoration] log line per small-vegetation mesh whose material is duplicated, naming the node and surface index.
 - The existing nature visibility-range regression test still passes unchanged after the rewrite.
 
+## ⬜ Pending
+
 ## ❌ Impossible
+

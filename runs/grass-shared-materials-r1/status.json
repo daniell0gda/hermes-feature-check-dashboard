@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/grass-shared-materials-r1/",
-  "heartbeat_at": "2026-08-23T01:52:50.381Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T01:52:50.381Z",
+  "heartbeat_at": "2026-08-23T01:58:16.885Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-23T01:58:16.885Z",
   "process_id": 856428,
   "host": "25e0b2c49eb5",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T01:52:55.002390+00:00",
-    "last_success_at": "2026-08-23T01:52:55.001611+00:00",
+    "last_attempt_at": "2026-08-23T01:58:16.885467+00:00",
+    "last_success_at": "2026-08-23T01:52:59.558991+00:00",
     "last_error": null
   },
   "metrics": {
