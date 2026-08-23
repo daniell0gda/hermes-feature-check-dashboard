@@ -27,6 +27,11 @@
 - Evidence in run log `.gen/harness/_logs/warlords_doctrine.out.log`: `[WARLORDS-DOCTRINE] applied L1 tower_damage_bonus=0.05 total_multiplier=1.05`, `[WARLORDS-DOCTRINE] spawn_bonus level=1 granted_armor=1.76 on Mushnub` (8% of hp 22), `[PROGRESSION] apply tower_dmg L1 multiplier=1.10` proving additive stacking.
 - result.json assertions all pass: Mushnub spawns max_armor > 0 / armor > 0 where the pre-perk baseline scenario asserts 0/0; scripted neutral hit deals exactly 21 (StatsManager instance_summary.8801.damage == 21); owning both perks gives 1.10; reset returns multiplier to 1.0 and level to 0.
 
+## Re-verification (final pass)
+- `Run-Scenario.ps1 warlords_doctrine` via run_project_cmd — exit 0, `status=pass elapsed=1.274s`, "3 scenarios — 3 pass" (warlords_doctrine, progression_global_scaling, enemy_armor_ballista).
+- `Run-Scenario.ps1 -Editor` — exit 0, "OK — no script or parse errors".
+- result.json assertions confirmed: Mushnub spawns `max_armor > 0` / `armor > 0`; scripted armor_hit deals exactly 21 (20 base × 1.05), armor stripped to 0; log shows `[WARLORDS-DOCTRINE] applied L1 tower_damage_bonus=0.05 total_multiplier=1.05` and `spawn_bonus level=1 granted_armor=1.76 on Mushnub`.
+
 ## Notes
 - Scenario design gotchas for the tester: enemy HP is int, so the end-to-end damage leg uses base 20 (×1.05 = 21 integer-exact) instead of 10 (would floor to 10 and prove nothing). The scripted hit carries armor_damage 5 so the 1.76-granted armor strips fully (5 > 1.76 avoids the ARMOR_DAMAGE_REDUCTION halving of the HP component) and the full 21 reaches HP.
 - `warlords_doctrine` has `forceVisibility: false` like other non-flagged globals, so chest draws behave unchanged; the scenario drives picks via `apply_progression` directly (same route as `progression_global_scaling.json`).

@@ -7,5 +7,14 @@
     "duration_ms": 141061,
     "summary": "Verification ran for real in the project worker:\n\n- Focused test (warlords_doctrine scenario): status=pass, exit 0 \u2014 3 scenarios, 3 pass / 0 fail.\n- Typecheck/build (headless editor pass): OK, no script or parse errors.\n\nArtifacts reviewed/\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-23T16:33:55.313Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 134427,
+    "summary": "Implementation complete. All verification passed.\n\nSummary (cluster: implementation, all 3 clusters covered):\n\n- `scripts/progression/global.json` \u2014 new Common perk `warlords_doctrine`, exactly 3 levels (+5/+9/+14% tower damage, armor_bonus\u2026",
+    "error": null
   }
 ]
