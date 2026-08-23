@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-124-glow-tuning-rev4-retry",
-  "feature": "issue-124-glow-tuning-rev4-retry",
+  "run_id": "req-134-upgrade-click-money-animation-r4",
+  "feature": "upgrade-click-money-animation",
   "status": "running",
-  "started_at": "2026-08-23T12:57:05.659Z",
+  "started_at": "2026-08-23T11:57:02.955Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-glow-tuning-rev4-retry/",
-  "heartbeat_at": "2026-08-23T12:59:08.689Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T12:59:08.689Z",
-  "process_id": 46910,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-134-upgrade-click-money-animation-r4/",
+  "heartbeat_at": "2026-08-23T13:04:57.401Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-23T13:04:57.401Z",
+  "process_id": 33290,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T12:59:13.469001+00:00",
-    "last_success_at": "2026-08-23T12:59:13.468168+00:00",
+    "last_attempt_at": "2026-08-23T13:04:57.401862+00:00",
+    "last_success_at": "2026-08-23T12:26:29.884816+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,28 @@
         "cost_status": "unavailable",
         "input_tokens": null,
         "output_tokens": null
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 63103,
+        "output_tokens": 1783
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 260902,
+        "output_tokens": 7658
       }
     ]
   }

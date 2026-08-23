@@ -25,5 +25,14 @@
     "duration_ms": 471729,
     "summary": "\u26a0\ufe0f No reply: the model returned empty content after retries and any fallback providers. Try `continue`, switch model/provider, or inspect the tool output above.\n",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T13:04:57.401Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 2311802,
+    "summary": "The `release_project_worker` tool isn't exposed in this session (only `run_project_cmd` is available), so worker release is left to the orchestrator. Work is complete.\n\nSummary \u2014 task revision-code-1, cluster implementation:\n\nChanged this i\u2026",
+    "error": null
   }
 ]
