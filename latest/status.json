@@ -1,12 +1,12 @@
 {
   "run_id": "issue112-healthbar-014516",
   "feature": "health-bar-never-auto-hides",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-23T02:04:48.605Z",
-  "ended_at": null,
+  "ended_at": "2026-08-23T02:33:17.068Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue112-healthbar-014516/",
-  "heartbeat_at": "2026-08-23T02:33:12.686Z",
+  "heartbeat_at": "2026-08-23T02:33:17.068Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-23T02:33:12.686Z",
@@ -14,8 +14,8 @@
   "host": "25e0b2c49eb5",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T02:33:12.687712+00:00",
-    "last_success_at": "2026-08-23T02:15:13.576595+00:00",
+    "last_attempt_at": "2026-08-23T02:33:17.068735+00:00",
+    "last_success_at": "2026-08-23T02:33:17.067650+00:00",
     "last_error": null
   },
   "metrics": {
@@ -63,6 +63,17 @@
         "cost_status": "unknown",
         "input_tokens": 39168,
         "output_tokens": 535
+      },
+      {
+        "task_id": "manual-tester",
+        "cluster_id": null,
+        "role": "manual-tester",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 142872,
+        "output_tokens": 12460
       }
     ]
   }
