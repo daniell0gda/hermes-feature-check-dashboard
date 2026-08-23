@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue112-healthbar-014516/",
   "heartbeat_at": "2026-08-23T02:10:49.564Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-23T02:10:49.564Z",
   "process_id": 870064,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T02:10:49.564615+00:00",
-    "last_success_at": "2026-08-23T02:07:48.250630+00:00",
+    "last_attempt_at": "2026-08-23T02:10:54.148854+00:00",
+    "last_success_at": "2026-08-23T02:10:54.148059+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 143328,
         "output_tokens": 2854
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 106369,
+        "output_tokens": 2052
       }
     ]
   }
