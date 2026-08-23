@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue112-healthbar-014516/",
   "heartbeat_at": "2026-08-23T02:04:48.605Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
   "process_id": 870064,
   "host": "25e0b2c49eb5",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T02:04:48.605960+00:00"
+    "last_attempt_at": "2026-08-23T02:04:53.918714+00:00",
+    "last_success_at": "2026-08-23T02:04:53.249190+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
