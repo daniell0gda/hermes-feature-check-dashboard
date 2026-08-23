@@ -25,5 +25,14 @@
     "duration_ms": 701738,
     "summary": "Check complete. Summary:\n\nVerified done: 0. Pending: 9 \u2014 9 due to build/test failures (full-suite gate red from three pre-existing baseline failures), 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: app\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T19:27:57.351Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 1100013,
+    "summary": "Done. Summary:\n\n**Task:** revision-code-1, cluster implementation \u2014 redo failed criteria for req-124 cave-carved-path-torches.\n\n**What I did:** The prior torch-coverage implementation was intact and the focused scenario passed; the blocker \u2026",
+    "error": null
   }
 ]
