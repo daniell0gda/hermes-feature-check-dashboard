@@ -8,15 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-91-perk-undermining/",
   "heartbeat_at": "2026-08-23T18:17:30.015Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-23T18:17:30.015Z",
   "process_id": 73877,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T18:17:30.015926+00:00",
+    "last_attempt_at": "2026-08-23T18:17:35.126793+00:00",
     "last_error": null,
-    "last_success_at": "2026-08-23T18:16:29.861528+00:00"
+    "last_success_at": "2026-08-23T18:17:35.125717+00:00"
   },
   "metrics": {
     "invocations": [
@@ -63,6 +63,17 @@
         "cost_status": "unknown",
         "input_tokens": 105832,
         "output_tokens": 3879
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 0,
+        "output_tokens": 0
       }
     ]
   }
