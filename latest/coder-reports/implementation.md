@@ -1,31 +1,31 @@
 # Coder report: implementation
 
 ## Changed files
-- `scripts/progression/trap.json` — new `undermining` Common progression, 3 levels (8/15/25 armor damage)
-- `scripts/progression/managers/TrapProgressionManager.gd` — handles `undermining`, `_armor_damage_bonus` state + `get_undermining_armor_damage()`; reset clears it
-- `autoload/ProgressionManager.gd` — new accessor `get_trap_armor_damage()` (returns 0.0 when unowned)
-- `scripts/game/actors/Trap.gd` — `_undermining_armor_damage()`, new `perform_hit(enemy)` entry point used by both real hit paths; `[Undermining]` debug log; strip tint dispatch
-- `scripts/game/actors/effects/EffectsManager.gd` — preload + `play_undermining_strip()`, counter `undermining_strips`
-- `scripts/game/actors/effects/UnderminingStripVFX.gd` — NEW one-shot amber wash VFX node
-- `scripts/testing/HarnessActions.gd` — new `trap_hit` apply_effect effect (drives real `Trap.perform_hit`; prefers a placed trap near "pos", else a scripted in-tree trap) + `_nearest_trap`
-- `tests/scenarios/undermining_progression.json` — NEW definition/persistence scenario
-- `tests/scenarios/undermining_trap_armor.json` — NEW live trap behavior scenario
-- `tests/scenarios/undermining_scope_isolation.json` — NEW surface-tower scope isolation scenario
+- `data/towers.xml` — added a `description` attribute with the tower's special characteristic to all 12 combat towers (fire, water, electric, porter, floodgate, balista, bazooka, cannon, generic, ice, scifi, venom).
+- `systems/TowersConfig.gd` (mod) — parse the new `description` attribute, store it in `tower_descriptions`, expose `get_description(tower_type_id) -> String`.
+- `scripts/ui/UI.gd` (mod) — `_build_tower_tooltip` now appends the catalog description line right under the tower name.
+- `tests/scenarios/tower_descriptions_tooltip.json` (new) — harness UI scenario asserting every combat tower's tooltip states its special behavior; Porter's explicitly says "Teleports enemies to the underground tunnels via the nearest hole" and "deals no damage itself".
 
 ## Criteria
-All 10 plan criteria — Done.
+- Review towers / identify special characteristics — Done (descriptions derived from actual code paths: Fire burn via Projectile._maybe_apply_fire_burn; Water wet via _apply_wet_status + EnemyHealthController water/electric wet bonuses; Electric chain via Projectile._do_chain_lightning; Ice cone slow via IceTower slow pct/dur; Porter teleport via PorterTower continuous laser + hole requirement + zero damage; Floodgate periodic underground flood via FloodgateTower cycle; Ballista armor strip via armor_dmg 20 vs dmg 5; Bazooka/Cannon explosion radius AoE; SciFi continuous DPS beam via ScifiTowerProjectile; Venom DoT poison via VenomTowerProjectile/PoisonStatus).
+- Add each special characteristic to the tower description — Done (data-driven from towers.xml).
+- Porter description explicitly explains that it teleports enemies — Done ("Teleports enemies to the underground tunnels via the nearest hole; needs a hole within reach and deals no damage itself.").
+- Descriptions clear, consistent, visible in tower UI — Done (one consistent line in every placement tooltip).
 
 ## Commands and results
-- Typecheck: `["godot","--headless","--editor","--path",".","--quit-after","300"]` — exit 0 (~9s); scripts parse clean.
-- Focused: `... --harness=res://tests/scenarios/undermining_progression.json` — exit 0, `[Harness] status=pass exit=0`.
-- `--harness=res://tests/scenarios/undermining_trap_armor.json` — exit 0 pass. Log shows the exact ladder: trap_01 unowned armor 60->60 (no strip), then trap_02 L1 60->52, trap_03 L2 52->37, trap_05 L3 37->12 and 12->0 clamped, with `[Undermining] strip ...` lines per stripping hit.
-- `--harness=res://tests/scenarios/undermining_scope_isolation.json` — exit 0 pass. With undermining at L3, balista/generic armor_hits strip only their explicit armor_damage (60->40->35); fire_hit leaves armor untouched.
-- Full test baseline: `--harness=res://tests/scenarios/enemy_armor_trap.json` — exit 0 pass (armor stays 60 through an unowned-perk trap-attributed hit).
-- Regression: `--harness=res://tests/scenarios/traps_serrated_edges_progression.json` — exit 0 pass.
-- Regression: `--harness=res://tests/scenarios/trap_stats_attribution.json` — exit 0 pass (full wave with live traps still kills via trap_01).
+- `godot --headless --path . --editor --quit-after 300` — exit 0; fresh-worktree import done.
+- RED: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/tower_descriptions_tooltip.json` — result status "timeout", action index 1 unmet (`contains Cheap all-round starter tower.`), tooltip had no description line before implementation.
+- GREEN: same command after implementation — `[Harness] status=pass exit=0`; all 13 timeline conditions ok; expectations recorded pass=True including Porter "Teleports enemies".
+- Regression: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/porter_wide_gate_tooltip.json` — `[Harness] status=pass exit=0` (Range lines unchanged by the inserted description line).
+- Note: ran `res://tests/tower/test_tower_armor_damage.tscn` directly once — exit 1 because autoloads are not initialized when a bare tscn is run without the Main scene path context (pre-existing test-harness convention issue, unrelated to this change; the file itself documents running through the project runner with autoloads). No product regression observed; both harness scenarios cover the changed surface.
 
 ## Notes
-- Trap.gd hit paths were consolidated into `perform_hit(enemy)` (both Area body_entered and overlap poll call it). It returns a detail dict {damage, armor_damage, armor_before/after, stripped} which the harness seam surfaces in result.json for exact arithmetic assertions.
-- The tint is dispatched by EffectsManager.play_undermining_strip -> UnderminingStripVFX child (own-mesh material_override pattern, same as StaticBreachVFX shatter flash); counted in `undermining_strips` even headless so it is assertable without rendering.
-- Scope isolation is structural: the perk value lives only on TrapProgressionManager and is consumed exclusively by Trap.gd; no tower code path reads get_trap_armor_damage.
-- Gotchas for tester: see changes.md entries (progression-field type check must follow first apply; scripted trap must be inside tree).
+- Description is optional per tower: `block` and the four traps carry none, so their tooltips are unchanged (getter returns "").
+- The pre-existing hardcoded Porter/Floodgate tooltip lines in `_build_tower_tooltip` were kept; the data-driven description complements them rather than replacing them.
+- Tester gotcha: `contains` assertions on tooltip text must match exact substrings of the xml attribute text (watch sentence punctuation).
+
+## Revision 1 re-verification
+- `godot --version` — exit 0 (4.4.1.stable.official).
+- `--harness=res://tests/scenarios/tower_descriptions_tooltip.json` — exit 0, status=pass; 15/15 actions ok, both expectations pass=true (Porter "Teleports enemies"). Fresh result.json this revision.
+- Regression `porter_wide_gate_tooltip.json` — exit 0, status=pass; 32/32 actions ok. Fresh run this revision.
+- No source files changed in revision 1; implementation from iteration 1 confirmed green.

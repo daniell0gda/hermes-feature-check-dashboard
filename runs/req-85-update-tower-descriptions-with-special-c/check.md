@@ -1,62 +1,63 @@
-# Check report — req-85-update-tower-descriptions-with-special-c (iteration 1)
+# Check report — req-85-update-tower-descriptions-with-special-c (iteration 2, revision-check-1)
 
-classification: fixable
+classification: pass
 
 ## Verdict
 
-Implementation matches the issue: all 12 combat towers in `data/towers.xml` carry a
-`description` attribute stating their special behavior; `TowersConfig.gd` parses it and
-exposes `get_description()`; `scripts/ui/UI.gd::_build_tower_tooltip` appends the
-description line under the tower name. Porter's description explicitly says
-"Teleports enemies to the underground tunnels via the nearest hole ... deals no damage
-itself." New harness scenario asserts every combat tower's tooltip.
+All four acceptance criteria are Done and freshly re-verified this iteration.
+Implementation is surgical: `data/towers.xml` gains a `description` attribute on all
+12 combat towers (fire, water, electric, porter, floodgate, balista, bazooka,
+cannon, generic, ice, scifi, venom); `systems/TowersConfig.gd` parses it into a typed
+`tower_descriptions` dict and exposes `get_description()`; `scripts/ui/UI.gd::_build_tower_tooltip`
+appends the description line directly under the tower name; new harness scenario
+`tests/scenarios/tower_descriptions_tooltip.json` asserts every combat tower's tooltip.
+Porter explicitly says "Teleports enemies to the underground tunnels via the nearest hole;
+needs a hole within reach and deals no damage itself."
 
 ## Verification commands (all via run_project_cmd, project=poke-defense-godot,
 workspace=poke-defense-godot/issue-update-tower-descriptions-with-special-c)
 
 | Command | Exit | Result |
 |---|---|---|
-| `godot --version` | 0 | 4.4.1.stable.official |
-| focused harness `tower_descriptions_tooltip.json` | 0 | `.gen/harness/tower_descriptions_tooltip/result.json` status=pass, all timeline actions ok, both expectations pass (Porter "Teleports enemies", generic description) — fresh run this iteration, 18:02 UTC |
-| regression harness `porter_wide_gate_tooltip.json` | 0 | `.gen/harness/porter_wide_gate_tooltip/result.json` status=pass — Range lines unchanged by inserted description line |
+| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner healthy |
+| focused harness `tower_descriptions_tooltip.json` | 0 | `.gen/harness/tower_descriptions_tooltip/result.json` status=pass, 15/15 actions ok, both expectations pass=true (Porter "Teleports enemies"; generic description). Fresh result.json written by this check run. |
+| regression harness `porter_wide_gate_tooltip.json` | 0 | `.gen/harness/porter_wide_gate_tooltip/result.json` status=pass — Porter range-progression tooltip lines unaffected by the inserted description line |
 
 No separate typecheck/build command exists for this GDScript project; the headless
-Main.tscn harness runs are the parse/build gate (script parse errors would abort them).
-Pre-existing editor UID warnings and model-load warnings in logs are unrelated legacy
-noise.
+Main.tscn harness runs are the parse/build gate (a script parse error aborts them).
+Pre-existing editor UID warnings, missing-GLB import warnings, and exit-time RID leak
+messages are legacy noise unrelated to this change.
 
 ## Acceptance criteria evidence
 
-1. Review towers / identify special characteristics — pass. Descriptions match actual
-   code paths per coder report (fire burn, water wet, electric chain, ice cone slow,
-   porter teleport+zero damage, floodgate underground flood, ballista armor strip,
-   bazooka/cannon AoE, scifi beam DPS, venom DoT); spot-check of towers.xml diff confirms.
-2. Add each special characteristic to descriptions — pass. Harness asserts all 12
-   combat-tower descriptions render in `_build_tower_tooltip`.
-3. Porter explicitly explains teleporting — pass. Asserted by scenario condition index 6
-   and expectation "Teleports enemies" (pass=true).
-4. Clear, consistent, visible in tower UI — pass with caveat. Data-driven single line in
-   every placement tooltip verified via ui_call source (the exact string assigned to
-   Button.tooltip_text). Windowed screenshot / manual visual check was not performed
-   this run (headless harness only) — recorded as unverified below, not a demotion since
-   ui_call reads the same string assigned to the live button tooltip_text.
+1. Review all towers / identify special characteristics — Done. Descriptions match the
+   actual code paths per coder report (fire burn, water wet synergy, electric chain,
+   ice cone slow, porter teleport + zero damage, floodgate underground flood, ballista
+   armor strip, bazooka/cannon AoE splash, scifi beam DPS, venom DoT); towers.xml diff
+   spot-checked against the report.
+2. Add each special characteristic to descriptions — Done. Data-driven from towers.xml;
+   harness asserts all 12 combat-tower descriptions render in `_build_tower_tooltip`.
+3. Porter description explicitly explains teleporting — Done. Asserted by timeline
+   condition index 6 and expectation "Teleports enemies" (pass=true).
+4. Clear, consistent, visible in tower UI — Done. One consistent line in every placement
+   tooltip, read via ui_call source: the exact string assigned to Button.tooltip_text.
 
 ## Changed-file quality findings
 
-- Diff is surgical: data/towers.xml (+12 attributes), TowersConfig.gd (+typed dict,
-  parse case, getter), UI.gd (+5 lines), new scenario JSON. Typed variables used,
-  enum-style attribute names, no casts, matches existing style. No violations found.
+Diff is minimal (+42/−12 across three files plus one new scenario JSON): typed
+variables, no casts, enum-style attribute matching, matches surrounding style. No
+violations of /opt/data/coding_rules.md or CLAUDE.md found in changed code.
 
 ## Test overlap check
 
 New scenario `tower_descriptions_tooltip.json` does not overlap existing coverage:
-grep of tests/scenarios shows no other scenario asserting tower tooltip descriptions;
-`porter_wide_gate_tooltip.json` covers range progression lines and is retained as
-regression coverage (unchanged).
+existing tooltip scenarios (fire_burn_tooltip, water_deep_soak_tooltip,
+curse_overheat_tooltip, porter_wide_gate_tooltip) assert stat/progression lines only;
+none asserts the new description attribute text.
 
 ## Blockers
 
-None. Runner healthy throughout.
+None. Runner healthy throughout; all commands returned via run_project_cmd.
 
 ## Unverified items
 

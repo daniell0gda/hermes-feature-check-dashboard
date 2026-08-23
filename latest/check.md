@@ -1,58 +1,66 @@
-# Check Report — issue-perk-undermining (iteration 4, revision-check-2)
+# Check report — req-85-update-tower-descriptions-with-special-c (iteration 2, revision-check-1)
 
-classification: fixable
+classification: pass
 
 ## Verdict
 
-The feature remains entirely unimplemented after revision 2. The
-git-workspace is clean at b5ceca3 (master lineage): zero feature commits,
-zero modified/untracked source files, and no `undermining` reference anywhere
-in the repo (grep across *.gd / *.json under scripts/, autoload/, systems/,
-tests/ returns nothing). All 10 acceptance criteria are unmet. This matches
-the iteration-1 through iteration-3 findings — the revision loop again
-produced no code changes.
+All four acceptance criteria are Done and freshly re-verified this iteration.
+Implementation is surgical: `data/towers.xml` gains a `description` attribute on all
+12 combat towers (fire, water, electric, porter, floodgate, balista, bazooka,
+cannon, generic, ice, scifi, venom); `systems/TowersConfig.gd` parses it into a typed
+`tower_descriptions` dict and exposes `get_description()`; `scripts/ui/UI.gd::_build_tower_tooltip`
+appends the description line directly under the tower name; new harness scenario
+`tests/scenarios/tower_descriptions_tooltip.json` asserts every combat tower's tooltip.
+Porter explicitly says "Teleports enemies to the underground tunnels via the nearest hole;
+needs a hole within reach and deals no damage itself."
 
-## Verification commands (all via run_project_cmd,
-project=godot-td, workspace=poke-defense-godot/issue-perk-undermining)
+## Verification commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-update-tower-descriptions-with-special-c)
 
-- Preflight probe: `["git","status","--short"]` → exitCode 0, empty output
-  (clean tree). Runner reachable.
-- Typecheck/build gate:
-  `["godot","--headless","--editor","--path",".","--quit-after","120"]`
-  → exitCode 0 (~8s). Import/scan noise only (pre-existing glb import errors
-  on master); no GDScript parse errors from project scripts.
-- Focused test:
-  `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/undermining_progression.json"]`
-  → FAILED, exitCode 1 (~4s): scenario file
-  res://tests/scenarios/undermining_progression.json does not exist.
-  No passing result.json for any undermining_* scenario.
-- Baseline control (proves runner/harness healthy):
-  `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/enemy_armor_trap.json"]`
-  → exitCode 0, `[Harness] status=pass exit=0`, fresh result.json at
-  `.gen/harness/enemy_armor_trap/result.json`. The undermining failure is a
-  missing-feature problem, not infra.
-- Full suite: not run further — remaining planned scenarios
-  (`undermining_trap_armor.json`, `undermining_scope_isolation.json`,
-  trap re-runs) depend on the same missing files; outcome already established.
+| Command | Exit | Result |
+|---|---|---|
+| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner healthy |
+| focused harness `tower_descriptions_tooltip.json` | 0 | `.gen/harness/tower_descriptions_tooltip/result.json` status=pass, 15/15 actions ok, both expectations pass=true (Porter "Teleports enemies"; generic description). Fresh result.json written by this check run. |
+| regression harness `porter_wide_gate_tooltip.json` | 0 | `.gen/harness/porter_wide_gate_tooltip/result.json` status=pass — Porter range-progression tooltip lines unaffected by the inserted description line |
 
-## Missing deliverables
+No separate typecheck/build command exists for this GDScript project; the headless
+Main.tscn harness runs are the parse/build gate (a script parse error aborts them).
+Pre-existing editor UID warnings, missing-GLB import warnings, and exit-time RID leak
+messages are legacy noise unrelated to this change.
 
-- Cluster 1: no `undermining` entry in `scripts/progression/trap.json`; no
-  armor-bonus accessor wiring in TrapProgressionManager.gd /
-  ProgressionManager.gd.
-- Cluster 2: no armor-strip logic or `[Undermining]` debug log in
-  `scripts/game/actors/Trap.gd` / EnemyHealthController.gd.
-- Cluster 3: no armor-strip tint in Trap.gd / EffectsManager.gd.
-- Cluster 4: missing scenario files
-  `tests/scenarios/undermining_progression.json`,
-  `tests/scenarios/undermining_trap_armor.json`,
-  `tests/scenarios/undermining_scope_isolation.json`.
+## Acceptance criteria evidence
+
+1. Review all towers / identify special characteristics — Done. Descriptions match the
+   actual code paths per coder report (fire burn, water wet synergy, electric chain,
+   ice cone slow, porter teleport + zero damage, floodgate underground flood, ballista
+   armor strip, bazooka/cannon AoE splash, scifi beam DPS, venom DoT); towers.xml diff
+   spot-checked against the report.
+2. Add each special characteristic to descriptions — Done. Data-driven from towers.xml;
+   harness asserts all 12 combat-tower descriptions render in `_build_tower_tooltip`.
+3. Porter description explicitly explains teleporting — Done. Asserted by timeline
+   condition index 6 and expectation "Teleports enemies" (pass=true).
+4. Clear, consistent, visible in tower UI — Done. One consistent line in every placement
+   tooltip, read via ui_call source: the exact string assigned to Button.tooltip_text.
+
+## Changed-file quality findings
+
+Diff is minimal (+42/−12 across three files plus one new scenario JSON): typed
+variables, no casts, enum-style attribute matching, matches surrounding style. No
+violations of /opt/data/coding_rules.md or CLAUDE.md found in changed code.
+
+## Test overlap check
+
+New scenario `tower_descriptions_tooltip.json` does not overlap existing coverage:
+existing tooltip scenarios (fire_burn_tooltip, water_deep_soak_tooltip,
+curse_overheat_tooltip, porter_wide_gate_tooltip) assert stat/progression lines only;
+none asserts the new description attribute text.
 
 ## Blockers
 
-None proven. Runner reachable, worker image fine, Godot runs, baseline
-harness passes. Plain incomplete implementation → fixable.
+None. Runner healthy throughout; all commands returned via run_project_cmd.
 
 ## Unverified items
 
-All 10 criteria (no implementation exists to verify).
+- Windowed manual-tester screenshots (`manual_testing: required` per request notes):
+  owned by the manual-tester profile; no `.gen/manual-report.md` present at check time.
+  Headless harness verifies tooltip content but not on-screen layout/legibility.
