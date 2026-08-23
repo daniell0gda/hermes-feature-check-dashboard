@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-sundering-bolts-r2/",
   "heartbeat_at": "2026-08-23T16:16:02.933Z",
   "last_node": "plan",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-23T16:16:02.933Z",
   "process_id": 68198,
   "host": "f1a4230ec90b",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T16:16:02.933990+00:00",
-    "last_success_at": "2026-08-23T16:15:05.114537+00:00",
+    "last_attempt_at": "2026-08-23T16:16:07.186623+00:00",
+    "last_success_at": "2026-08-23T16:16:07.185805+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 0,
+        "output_tokens": 0
+      }
+    ]
+  }
 }
