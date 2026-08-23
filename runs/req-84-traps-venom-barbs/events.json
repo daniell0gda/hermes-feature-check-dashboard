@@ -34,5 +34,14 @@
     "duration_ms": 32914,
     "summary": "Manual testing gate complete.\n\n- Check report: pass (all 13 criteria verified; typecheck + 7 harness scenarios green).\n- Decision: `manual_testing: required` \u2014 matches the plan's hint. The only unverified item is the player-visible reused p\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-23T21:16:25.300Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 1215374,
+    "summary": "The worker-release tool isn't directly exposed in this session (only `run_project_cmd`), so I'm leaving the worker release to the orchestrator. Everything else is complete.\n\nSummary of the manual test run:\n\n- Executed a windowed harness run\u2026",
+    "error": null
   }
 ]

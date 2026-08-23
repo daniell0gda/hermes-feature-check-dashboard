@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-84-traps-venom-barbs/",
-  "heartbeat_at": "2026-08-23T20:56:05.410Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-23T20:56:05.410Z",
+  "heartbeat_at": "2026-08-23T21:16:25.300Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-23T21:16:25.300Z",
   "process_id": 206948,
   "host": "f1a4230ec90b",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T20:56:09.926325+00:00",
-    "last_success_at": "2026-08-23T20:56:09.925294+00:00",
+    "last_attempt_at": "2026-08-23T21:16:25.301154+00:00",
+    "last_success_at": "2026-08-23T20:56:14.250675+00:00",
     "last_error": null
   },
   "metrics": {
