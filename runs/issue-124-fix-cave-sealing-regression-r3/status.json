@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-fix-cave-sealing-regression-r3/",
-  "heartbeat_at": "2026-08-23T09:10:39.615Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T09:10:39.615Z",
+  "heartbeat_at": "2026-08-23T09:18:10.600Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-23T09:18:10.600Z",
   "process_id": 4796,
   "host": "f1a4230ec90b",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T09:10:43.876629+00:00",
-    "last_success_at": "2026-08-23T09:10:43.875754+00:00",
+    "last_attempt_at": "2026-08-23T09:18:10.601388+00:00",
+    "last_success_at": "2026-08-23T09:10:48.106165+00:00",
     "last_error": null
   },
   "metrics": {
