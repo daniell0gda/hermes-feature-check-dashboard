@@ -1,48 +1,37 @@
-# Issue 124 follow-up: fix cave sealing regression
+# Request: upgrade-click-money-animation
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
-Workspace: poke-defense-godot/issue-cave-carved-path-torches
-Runner: godot-td
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/134
+- **Project:** poke-defense-godot
+- **Git workspace:** /workspace/git-workspaces/poke-defense-godot/issue-upgrade-click-money-animation (branch issue/upgrade-click-money-animation)
+- **Request ID:** req-134-upgrade-click-money-animation-r4
 
-## Required scope
-Preserve the existing issue-124 torch implementation, but fix the regression exposed by `tests/scenarios/cave_pending_seals_entrance_instantly.json`.
+## Goal
 
-The scenario must reliably prove:
-- A hole-to-exit route exists before the dangerous cave is discovered.
-- The instant confirmation is requested, the cave entrance is physically sealed and the route becomes unavailable.
-- Pending cave interior has zero torches.
-- Confirming yes restores the exact route and valid cave lighting.
+Clicking "Upgrade" in the tower details panel must play the same floating "+N coins!" popup chest rewards use, PROVABLY VISIBLE on screen in windowed evidence.
 
-Previous check evidence: the regression failed at the initial route assertion on clean HEAD because RNG-discovered caves on map_9 carved/locked over the test corridor before the assertion. This is now required work, not an acceptable blocker. Diagnose and fix the smallest product/test-fixture boundary that makes this scenario deterministic without weakening its assertions or hiding real sealing behavior. Do not simply remove the regression scenario or reduce assertions.
+## Current state (r1–r3)
 
-## Verification
-Use native Godot through run_project_cmd. Run editor/import gate, issue-124 focused torch scenario, `declined_cave_torches_extinguish.json`, and `cave_pending_seals_entrance_instantly.json`. Scan raw stdout/stderr independently for script errors, parse errors, failed resources, and invalid calls. Then run the required windowed top-down issue-124 scenario and inspect fresh PNGs; stale screenshots/headless screenshot results are not proof.
+- Implementation exists and works headless: `UI.gd::_spawn_upgrade_money_popup` → `ChestRewardSystem.create_reward_popup`, plus `_adjust_anchor_out_of_upgrade_panel` which unprojects the tower, detects the panel rect (≈770,172→1150,674 @1920x1080) and moves the anchor sideways past the panel edge (verified by `[UPGRADE_POPUP]` log in headless run).
+- Headless harness `upgrade_click_money_popup.json` passes; `chest_reward_compatibility.json` passes.
+- BLOCKING evidence gap: windowed frames never show the popup. The 1.5s popup frees before slow windowed frames capture it — in r3's gif run, wall-clock waits between screenshots were ~0.5–0.7s each, so the burst started too late and the later `reward_popups == 1` condition timed out. Prior "yellow pixel" passes were false positives (yellow vegetation).
 
-Do not commit, push, merge, or close the issue.
+## Required work (revision scope)
 
+1. **Evidence timing fix (main blocker):** capture windowed frames starting immediately after the upgrade click — first frame within ~0.1s, then every ~0.2s for ~1.5s. Do not insert long wall-clock waits before the first screenshot. If the harness cannot sample fast enough windowed, reduce per-frame work or take the burst before any wait_for_condition.
+2. **Text proof, not color proof:** verification must distinguish text from yellow vegetation. Acceptable: crop the region where the anchor projects (log the projected screen coords in the run output) and require a compact yellow cluster whose shape/position matches the projected anchor ± margin, confirmed by visual inspection of the crop. Vegetation false-positives must be excluded.
+3. **Debug gating:** gate `[UPGRADE_POPUP]` print on `OS.is_debug_build()`.
+4. **Non-occluded branch coverage:** add a scenario step (or second scenario) where the tower is NOT under the panel and assert the anchor is unchanged.
 
-## REVISION (Daniel confirmed): visual lighting still fails
-The windowed top-down screenshot dungeon_cross_carve_lit.png shows only PARTS of
-the carved cross lit; three arms read fully dark. Torch placement counts pass,
-but the rendered light is not visible along the corridors. Required now:
-- Make carved corridors VISIBLY lit end to end in gl_compatibility (llvmpipe):
-  verify each torch's OmniLight actually renders on corridor floor at distance
-  (radius 2.5 may be clipped by range_item/attenuation or the light may sit
-  inside walls), increase effective visual coverage (e.g. larger radius/energy,
-  light positioned into open corridor space, additional floor lights), and prove
-  with fresh windowed PNGs inspected pixel-by-pixel.
-- Do not weaken headless count_near/unlit assertions.
+## Acceptance criteria
 
+1. Upgrade click triggers the same money-increase animation (headless asserts keep passing).
+2. Windowed burst frames show the yellow "+20 coins!" popup OUTSIDE the panel rect, verified by pixel evidence anchored to the projected screen position AND visual inspection of the crop. Harness `status: pass` alone is not sufficient.
+3. Chest compatibility unchanged.
+4. `[UPGRADE_POPUP]` print debug-build gated.
+5. Non-occluded branch exercised by a test.
 
-## REVISION 2 (hard pixel evidence): warm light still confined to one region
-Numeric analysis of dungeon_cross_carve_lit.png (1920x1080): warm (torch) pixels
-cluster ONLY around x=1000-1400 / y=450-750 (~1000 of 1226 warm pixels). The rest
-of the carved cross has NO measurable warm light. The previous "visibly lit"
-verdicts were wrong — vision-model summaries cannot be trusted for this gate.
-Required:
-- Fix actual rendered light coverage along the full carve (investigate whether
-  lights render at all outside that region — e.g. per-light range/attenuation,
-  light count culling, or lights parented to nodes that end up off-camera).
-- Verification gate MUST be numeric, not vision-summary: script a brightness/
-  warm-pixel measurement along each arm of the cross in the PNG and require
-  warm-light presence in every arm segment before calling pass.
+## Notes
+
+- manual_testing: required (windowed screenshots mandatory).
+- Prior attempts archived: `.gen-blocked-req134-attempt1/`, r2/r3 evidence under `.gen/harness/`, `.gen/check.md` (r3 = fixable, budget exhausted).
+- Do not close or push unless Daniel asks.
