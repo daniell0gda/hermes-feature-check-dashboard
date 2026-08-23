@@ -1,12 +1,12 @@
 {
   "run_id": "issue-127-unique-shots",
   "feature": "window-modals-skip-wood-frame",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-23T19:37:42.124Z",
-  "ended_at": null,
+  "ended_at": "2026-08-23T20:17:58.588Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-unique-shots/",
-  "heartbeat_at": "2026-08-23T20:17:53.547Z",
+  "heartbeat_at": "2026-08-23T20:17:58.588Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-23T20:17:53.547Z",
@@ -14,8 +14,8 @@
   "host": "f1a4230ec90b",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T20:17:53.547940+00:00",
-    "last_success_at": "2026-08-23T20:16:55.785208+00:00",
+    "last_attempt_at": "2026-08-23T20:17:58.588261+00:00",
+    "last_success_at": "2026-08-23T20:17:58.587362+00:00",
     "last_error": null
   },
   "metrics": {
@@ -85,6 +85,17 @@
         "cost_status": "unknown",
         "input_tokens": 123009,
         "output_tokens": 7473
+      },
+      {
+        "task_id": "revision-check-2",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 0,
+        "output_tokens": 0
       }
     ]
   }

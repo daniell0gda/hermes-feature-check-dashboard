@@ -436,7 +436,7 @@
   },
   {
     "run_id": "issue-127-unique-shots",
-    "status": "running",
+    "status": "failed",
     "url": "runs/issue-127-unique-shots/"
   },
   {
