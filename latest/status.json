@@ -1,12 +1,12 @@
 {
   "run_id": "warlords-doctrine-r1",
   "feature": "Warlord's Doctrine perk",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-23T16:29:10.889Z",
-  "ended_at": null,
+  "ended_at": "2026-08-23T16:35:04.050Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/",
-  "heartbeat_at": "2026-08-23T16:34:59.756Z",
+  "heartbeat_at": "2026-08-23T16:35:04.050Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-23T16:34:59.756Z",
@@ -14,8 +14,8 @@
   "host": "f1a4230ec90b",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T16:34:59.756770+00:00",
-    "last_success_at": "2026-08-23T16:34:03.755981+00:00",
+    "last_attempt_at": "2026-08-23T16:35:04.050654+00:00",
+    "last_success_at": "2026-08-23T16:35:04.049639+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 34424,
         "output_tokens": 1922
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 0,
+        "output_tokens": 0
       }
     ]
   }
