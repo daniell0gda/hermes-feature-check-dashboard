@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/grass-shared-materials-r1/",
-  "heartbeat_at": "2026-08-23T01:44:30.710Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T01:44:30.710Z",
+  "heartbeat_at": "2026-08-23T01:52:50.381Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-23T01:52:50.381Z",
   "process_id": 856428,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T01:44:35.302837+00:00",
-    "last_success_at": "2026-08-23T01:44:35.301818+00:00",
+    "last_attempt_at": "2026-08-23T01:52:50.381597+00:00",
+    "last_success_at": "2026-08-23T01:47:39.366021+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 62747,
         "output_tokens": 3692
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
       }
     ]
   }
