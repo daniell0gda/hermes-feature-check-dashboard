@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-update-tower-descriptions-with-special-c/",
   "heartbeat_at": "2026-08-23T18:08:48.974Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-23T18:08:48.974Z",
   "process_id": 108056,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T18:08:48.975088+00:00",
-    "last_success_at": "2026-08-23T18:04:49.159104+00:00",
+    "last_attempt_at": "2026-08-23T18:08:53.148540+00:00",
+    "last_success_at": "2026-08-23T18:08:53.147729+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 66650,
         "output_tokens": 2736
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 62756,
+        "output_tokens": 3788
       }
     ]
   }
