@@ -1,21 +1,21 @@
 {
-  "run_id": "req-85-update-tower-descriptions-with-special-c",
-  "feature": "update-tower-descriptions-with-special-c",
+  "run_id": "117-gen-hud-20260823",
+  "feature": "gen-hud-textures-py-cannot-run-all-three",
   "status": "running",
-  "started_at": "2026-08-23T17:40:17.423Z",
+  "started_at": "2026-08-23T17:45:20.100Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-update-tower-descriptions-with-special-c/",
-  "heartbeat_at": "2026-08-23T18:11:53.472Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/117-gen-hud-20260823/",
+  "heartbeat_at": "2026-08-23T18:12:38.697Z",
   "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-23T18:11:53.472Z",
-  "process_id": 108056,
+  "active_node": null,
+  "last_event_at": "2026-08-23T18:12:38.697Z",
+  "process_id": 111567,
   "host": "f1a4230ec90b",
-  "phase": "team-leader",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T18:11:57.687594+00:00",
-    "last_success_at": "2026-08-23T18:11:57.686600+00:00",
+    "last_attempt_at": "2026-08-23T18:12:38.697786+00:00",
+    "last_success_at": "2026-08-23T18:08:27.170566+00:00",
     "last_error": null
   },
   "metrics": {
@@ -39,41 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 121420,
-        "output_tokens": 16300
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 66650,
-        "output_tokens": 2736
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 62756,
-        "output_tokens": 3788
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 62176,
-        "output_tokens": 2579
+        "input_tokens": 64448,
+        "output_tokens": 20991
       }
     ]
   }
