@@ -52,5 +52,14 @@
     "duration_ms": 152234,
     "summary": "Revision 2 (implementation cluster) complete. Summary:\n\nScope: revision instruction was \"redo the failed criteria.\" The only failed item is criterion 4's mandated windowed/manual VFX evidence \u2014 manual-tester-profile scope that a headless ru\u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-23T17:25:02.170Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 238036,
+    "summary": "Check complete (revision-check-2). Wrote `.gen/check.md`, `.gen/status.md`, `.gen/quality-notes.md` under /workspace/git-workspaces/poke-defense-godot/issue-exposed-plating/.gen/.\n\nVerified done: 4. Pending: 1 \u2014 0 due to build/test failures\u2026",
+    "error": null
   }
 ]

@@ -1,88 +1,85 @@
-# Check report: Warlord's Doctrine (iteration 3, fresh verification)
+# Check report — Exposed Plating perk (issue #89) — revision-check-2
 
-classification: pass
+classification: fixable
 
 ## Verdict
-Fresh verification this iteration confirms all automated gates green via `run_project_cmd`
-(project=poke-defense-godot, workspace=poke-defense-godot/issue-warlords-doctrine).
-8 of 9 criteria remain Done with adequate automated evidence; the windowed armor-bar
-visual criterion stays Pending — it is an explicit windowed checkpoint owned by the
-manual tester (`manual_testing: required` in plan.md; `.gen/manual-report.md` absent),
-not missing implementation or missing harness coverage.
 
-## Fresh verification (this run, all exit codes from run_project_cmd)
-- Probe: `godot --version` — exit 0 (4.4.1.stable.official.49a5bc7b6).
-- Typecheck/build: `godot --headless --path . --editor --quit-after 300` — exit 0,
-  no script errors.
-- Focused: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/warlords_doctrine.json`
-  — exit 0, `[Harness] status=pass exit=0`; fresh result at
-  `.gen/harness/warlords_doctrine/result.json`: all 47 timeline actions ok=true, all 3
-  end-of-run expectations pass=true.
-- Full-suite legs (each its own invocation): `enemy_armor_ballista.json` — exit 0,
-  status=pass; `enemy_armor_trap.json` — exit 0, status=pass;
-  `enemy_armor_bar_visual.json` — exit 0, status=pass (doctrine leg first: Mushnub with
-  granted armor 1.76, screenshots at full/partial/depleted beats; innate-armor map_7 leg
-  second after reset).
+Fresh re-verification this iteration confirms the implementation is green through
+the approved runner (`project=poke-defense-godot`, `workspace=poke-defense-godot/issue-exposed-plating`).
+Four of five criteria are Done with passing automated harness evidence produced
+in this run. Criterion 4 remains Pending only because the request mandates
+player-facing windowed VFX evidence (screenshots / real-30fps `record_frames`
+GIF + `ui_feels_broken` pass), owned by the manual-tester profile; no
+`.gen/manual-report.md` exists yet and this headless worker cannot produce pixel
+evidence. No build, parse, or test failures; no source changes since revision-1
+review.
 
-## Criteria evidence
+## Verification commands (all via run_project_cmd, exit codes from runner)
 
-Cluster 1 — perk-definition-and-damage-chain:
-- Catalog definition: DONE — `scripts/progression/global.json` contains `warlords_doctrine`,
-  type Common, maxLevels 3, L1 value 0.05/armor_bonus 0.08, L2 0.09/0.12, L3 0.14/0.15.
-- Multiplier exactly 1.05/1.09/1.14 per level: DONE — fresh focused run log shows
-  `[WARLORDS-DOCTRINE] applied L1/L2/L3 tower_damage_bonus=... total_multiplier=1.05/1.09/1.14`;
-  result.json progression_call assertions pass for each level.
-- Additive stacking with tower_dmg: DONE — log `[PROGRESSION] apply tower_dmg L1 multiplier=1.10`
-  (tower_dmg on top of doctrine); implementation adds `_warlords_damage_ratio` to
-  `get_global_damage_multiplier()` alongside `_global_damage_ratio_sum`, never overriding.
-- reset_for_new_game → multiplier 1.0 / armor ratio 0: DONE — result.json final expectations:
-  progression_call == 0 (level) and == 1.0 (multiplier) both pass;
-  `_warlords_damage_ratio` cleared in both `reset_for_new_game()` and `_load_state_and_apply()`.
+1. Preflight: `["godot","--version"]` — exit 0, Godot 4.4.1.stable.official.49a5bc7b6.
+2. Import/parse gate: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
+   — exit 0 (9.2s). Scripts register cleanly, no script errors.
+3. Focused semantics harness:
+   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]`
+   — exit 0, `status=pass`, 6/6 expectations. Fresh result:
+   `.gen/harness/exposed_plating_once_per_shield/result.json`. Run log shows per-level legs
+   L1 1625→1614→1603 (×1.15), L2 →1613→1601 (×1.25), L3 →1612→1599 (×1.35), exactly one
+   `[EXPOSED] triggered` line per leg, `[EXPOSED] expire on Orc Enemy_boss`, post-expiry hit
+   at hp 1589 (exact −10 unamplified).
+4. VFX lifecycle bed:
+   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]`
+   — exit 0, `status=pass`, 7/7 expectations including `exposed_vfx == true` during the Exposed
+   window; screenshots/record_frames correctly skipped headless. Fresh result:
+   `.gen/harness/exposed_plating_vfx/result.json`.
 
-Cluster 2 — spawn-bonus-armor-and-health-bar:
-- Unarmored enemy armored by perk / zero without: DONE — fresh log
-  `[WARLORDS-DOCTRINE] spawn_bonus level=1 granted_armor=1.76 on Mushnub` (= 8% × hp 22);
-  zero-armor baseline proven by pre-perk legs (`enemy_armor_ballista`/`enemy_armor_trap`:
-  same Mushnub spawns with config armor 0.0 and raw damage lands).
-- Innate armor additive: DONE — map_7 leg spawns Orc Enemy_boss (innate armor 60, hp 1625)
-  at doctrine L3: fresh log `[WARLORDS-DOCTRINE] spawn_bonus level=3 granted_armor=303.75 on Orc Enemy_boss`
-  (= 60 + 15% × 1625); scenario asserts max_armor==303.75 then strips exactly the granted
-  portion back to innate 60. Code: `max_armor += float(max_hp) * armor_ratio` — additive.
-- Scripted armor hit strips granted first / bonus lands in HP: DONE — result.json actions
-  pass: armor_hit on doctrine-armored Mushnub → `[Armor] Mushnub depleted: 1.76 armor removed by 5.0
-  armor damage`, hp==1 asserted, instance_summary damage==21 asserted.
-- Armor bar windowed visual: PENDING — headless `enemy_armor_bar_visual` passes end-to-end
-  including the doctrine-granted leg with screenshot beats, but the criterion explicitly
-  requires a windowed pixel check owned by the manual tester; `.gen/manual-report.md` absent.
-  Reserved manual checkpoint, not missing code.
-- `[WARLORDS-DOCTRINE]` debug lines: DONE — both shapes observed verbatim in fresh output
-  (`applied L%d tower_damage_bonus=%.2f total_multiplier=%.2f`,
-  `spawn_bonus level=N granted_armor=X on <id>`), gated by `OS.is_debug_build()`, marker-filterable.
+## Criterion-by-criterion
 
-Cluster 3 — harness-scenarios:
-- Scenario activates perk + asserts armor>0/max_armor at spawn: DONE — warlords_doctrine.json
-  actions/expectations all pass (fresh result.json).
-- Tower damage bonus asserted end-to-end at one level: DONE — progression_call assertions of
-  1.05/1.09/1.14 pass through the harness timeline.
-- Pre-existing scenarios still pass unchanged: DONE — enemy_armor_ballista and enemy_armor_trap
-  each exit 0, status=pass fresh this run.
+1. Perk registration / purchasable at 3 levels — **Done.** `scripts/progression/global.json`
+   defines `exposed_plating` Common, maxLevels 3 (0.15/0.5s, 0.25/1s, 0.35/1.5s);
+   `CurseProgressionManager.HANDLED` + `_apply_exposed_plating` apply absolute per-level figures;
+   harness exercised apply_progression L1→L2→L3.
+2. Once-per-shield-instance trigger (>0→0 only) — **Done.** Guard at `_consume_armor()`
+   (`before > 0.0 and enemy.armor <= 0.0`); second hits against zero armor deal baseline damage
+   with `exposed_multiplier == 1.0` (asserted in result.json expectations).
+3. Multiplier per level for duration, clean expiry — **Done.** Exact hp deltas above match
+   ×1.15/×1.25/×1.35; after 2s wait hp dropped exactly 10 (unamplified); expiry logged once.
+4. ExposedStatus/ExposedVFX following BurnStatus/BurnVFX pattern — **Pending** (visual evidence
+   only). Code exists: `scripts/game/status/ExposedStatus.gd`,
+   `scripts/game/actors/effects/ExposedVFX.gd`, lazy `show_exposed()`/`hide_exposed()` in
+   EffectsManager. Headless machine proof passes (`exposed_vfx == true` during window). Remaining:
+   mandated windowed screenshots / real-30fps GIF + `ui_feels_broken` pass — manual-tester scope,
+   not yet produced (no `.gen/manual-report.md`). Run `tests/scenarios/exposed_plating_vfx.json`
+   windowed (`--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`);
+   captures land in `.gen/harness/exposed_plating_vfx/{shots,record}/`.
+5. `[EXPOSED]` debug logging gated by `OS.is_debug_build()` — **Done.** Trigger/expiry lines all
+   behind `OS.is_debug_build()`; observed in fresh run output.
 
-## Changed-file quality review (diff vs baseline 97ed515)
-Files changed: `autoload/ProgressionManager.gd`, `scripts/game/actors/Enemy.gd`,
-`scripts/progression/global.json`, `tests/scenarios/enemy_armor_bar_visual.json`;
-new file `tests/scenarios/warlords_doctrine.json`.
-Reviewed against `/opt/data/coding_rules.md` + worktree `CLAUDE.md`: typed locals throughout
-new code, small additive branches inside existing apply/spawn paths, no dead code, no
-speculative abstraction, debug logs follow the project's `OS.is_debug_build()` + `[TAG]`
-convention, indentation valid. No demotions.
-- Test overlap: `warlords_doctrine.json` does not duplicate existing coverage — the
-  `enemy_armor_*` scenarios run without the perk and serve as its zero-armor baseline.
-- Open advisory (unchanged since iteration 1): `global-json-reformat-noise` — whitespace-only
-  reformatting of unrelated entries in `scripts/progression/global.json` inflates the diff.
-  Advisory only; remains open in `.gen/quality-notes.md`.
+## Changed files reviewed
+
+Feature diff (git status): autoload/ProgressionManager.gd,
+scripts/game/actors/effects/EffectsManager.gd,
+scripts/game/actors/enemy/parts/EnemyHealthController.gd, scripts/progression/global.json,
+scripts/progression/managers/CurseProgressionManager.gd, scripts/testing/AgentHarness.gd,
+scripts/testing/HarnessValues.gd + new ExposedVFX.gd, ExposedStatus.gd,
+tests/scenarios/exposed_plating_once_per_shield.json, exposed_plating_vfx.json. Identical to
+revision-1 reviewed diff; only declared workflow artifacts additionally changed; no scope creep.
+
+- Typed vars, guard clauses, small functions throughout new code; follows sibling perk patterns
+  (frozen_fracture / static_breach). No coding-rules violation found in changed files.
+- Test overlap: searched tests/scenarios — no prior exposed_plating coverage; both scenarios are
+  new, non-overlapping, and each asserts its own criterion (exact hp deltas / multiplier values /
+  vfx visibility), not mere execution.
+
+## Quality notes
+
+quality-notes.md did not exist; created with one advisory entry (Static Breach bypass) —
+advisory only, does not demote any criterion.
 
 ## Blockers
-None. Runner healthy throughout; no infra failures.
+
+None infra. Runner healthy throughout (probe, import gate, both harnesses exit 0).
 
 ## Unverified items
-- Windowed armor-bar visual check — awaiting `.gen/manual-report.md` from the manual tester.
+
+- Windowed/manual pixel evidence for criterion 4 (`ui_feels_broken` pass included) —
+  manual-tester profile owns `.gen/manual-report.md`; not yet present.

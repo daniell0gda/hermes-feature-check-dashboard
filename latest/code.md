@@ -1,37 +1,53 @@
-# Coder report: implementation\n\n# Coder report: implementation (iteration 3)
+# Coder report: implementation\n\n# Coder report: implementation — revision 2
+
+## Scope of this iteration
+
+Revision 2 instruction: "Redo the failed criteria, then wait for check."
+The single Pending/failed item is criterion 4's mandated player-facing windowed
+VFX evidence (screenshots / real-30fps `record_frames` GIF + `ui_feels_broken`
+pass). That evidence is manual-tester-profile scope: this runner worker is
+headless-only, so no code change can produce it here. This iteration therefore
+redid the full automated verification of the implementation from a clean
+worker to prove nothing regressed, and refreshed all `.gen` harness evidence.
+
+No source files were changed in this iteration (git status identical to
+revision 1's reviewed diff).
 
 ## Changed files
-- `tests/scenarios/enemy_armor_bar_visual.json` — modified
+- (none this iteration)
 
-## Criteria addressed (was Pending: armor-bar windowed visual on previously-unarmored enemy)
-- The existing armor bar row becomes visible on a previously-unarmored enemy once the perk grants it armor:
-  the visual scenario now opens with a doctrine leg — apply `warlords_doctrine` L1, load map_3,
-  trigger wave 1 so Mushnub (config names no armor) spawns with granted armor = 8% × 22 = 1.76
-  (log: `[WARLORDS-DOCTRINE] spawn_bonus level=1 granted_armor=1.76 on Mushnub`). Screenshots at
-  full / partial (armor 0.76 after one armor_hit of armor_damage=1) / depleted (bar hidden),
-  exactly the beats in `.gen/ui_scenario.md`. The pre-existing innate-armor leg (map_7 Orc
-  Enemy_boss, armor 60) runs second after `reset_for_new_game`, preserving its regression coverage.
-- The actual windowed pixel check remains owned by the manual tester (`manual_testing: required`
-  in plan.md); this revision makes the harness timeline they run exercise the doctrine-granted
-  case directly instead of only innate armor.
+## Criteria
+- 1. Perk registered / purchasable at 3 levels — Done (unchanged)
+- 2. Once-per-shield-instance trigger (>0→0 only) — Done (unchanged)
+- 3. Multiplier per level for duration, clean expiry — Done (unchanged)
+- 4. ExposedStatus/ExposedVFX pattern — code Done; windowed pixel evidence still owned by manual-tester profile (headless machine proof passes)
+- 5. `[EXPOSED]` debug logs gated by `OS.is_debug_build()` — Done (unchanged)
 
-## Commands and results (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-warlords-doctrine)
-- Focused: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/warlords_doctrine.json`
-  — exit 0, `[Harness] status=pass exit=0`; log shows `[WARLORDS-DOCTRINE] applied L1/L2/L3 ...
-  total_multiplier=1.05/1.09/1.14` and `spawn_bonus level=1 granted_armor=1.76 on Mushnub`,
-  `spawn_bonus level=3 granted_armor=303.75 on Orc Enemy_boss`.
-- `enemy_armor_bar_visual.json` (new two-leg version) — exit 0, status=pass; log shows
-  `[Armor] Mushnub depleted: 0.76 armor removed by 1.0 armor damage` and screenshots
-  armor_full / armor_partial / armor_depleted taken during the doctrine leg.
-- Full legs: `enemy_armor_ballista.json`, `enemy_armor_trap.json` — each exit 0, status=pass
-  (armor arithmetic regression intact).
-- Typecheck/build: `godot --headless --path . --editor --quit-after 300` — exit 0, no script errors.
+## Commands and results (all via run_project_cmd, project=poke-defense-godot)
+- `["godot","--version"]` — exit 0; Godot 4.4.1.stable.official.49a5bc7b6.
+- `["git","status","--short"]` — exit 0; exactly the 7 modified + 4 new feature files from the reviewed diff, nothing new.
+- Focused semantics harness:
+  `godot --headless --path . res://scenes/Main.tscn --audio-driver Dummy -- --harness=res://tests/scenarios/exposed_plating_once_per_shield.json`
+  — exit 0, status=pass, 6/6 expectations. Run log confirms per-level legs:
+  L1 hp 1625→1614→1603 (×1.15), L2 →1613→1601 (×1.25), L3 →1612→1599 (×1.35);
+  one `[EXPOSED] triggered` line per leg; after expiry wait hp 1589 (exact −10,
+  unamplified) and `[EXPOSED] expire on Orc Enemy_boss`. Fresh result:
+  `.gen/harness/exposed_plating_once_per_shield/result.json`.
+- VFX lifecycle bed:
+  `godot --headless --path . res://scenes/Main.tscn --audio-driver Dummy -- --harness=res://tests/scenarios/exposed_plating_vfx.json`
+  — exit 0, status=pass, 7/7 expectations (`exposed_vfx` asserted true during
+  the Exposed window); screenshots and record_frames correctly skipped headless.
+  Fresh result: `.gen/harness/exposed_plating_vfx/result.json`.
 
-## Notes
-- No production code changed this iteration; iteration-1 gotchas still apply (int HP damage,
-  reset-only removal, single-valued armor pool).
-- Harness float assertions are epsilon-based, so armor 0.76 asserts cleanly after the first strip hit.
-- Open advisory from quality-notes.md unchanged: `global-json-reformat-noise` (whitespace-only diff in
-  scripts/progression/global.json), functional no-op.
+## Notes / handoff for tester
+- Remaining blocker to Done on criterion 4 is ONLY windowed evidence. Run
+  `tests/scenarios/exposed_plating_vfx.json` windowed, e.g.:
+  `godot --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy res://scenes/Main.tscn -- --harness=res://tests/scenarios/exposed_plating_vfx.json`
+  Captures land in `.gen/harness/exposed_plating_vfx/{shots,record}/`
+  (`before_breach_no_wash`, `exposed_wash_on_breach`, `wash_cleared_after_expiry`,
+  plus real engine frames for GIF export). End with `ui_feels_broken: yes|no`.
+- Gotchas unchanged from revision 1: breaching hit itself IS amplified; Static
+  Breach armor-zero path bypasses `_consume_armor` so it never fires Exposed;
+  harness runs need the explicit scene arg before `--`; enemy model GLB missing
+  in this worktree is pre-existing and unrelated (fallback path exercised).
 \n
