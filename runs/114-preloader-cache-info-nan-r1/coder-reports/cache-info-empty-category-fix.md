@@ -1,4 +1,4 @@
-# Coder report: cache-info-empty-category-fix\n\n# Coder report: cache-info-empty-category-fix
+# Coder report: cache-info-empty-category-fix
 
 ## Changed files
 - `scripts/utils/AssetPreloader.gd` — modified: `get_cache_info()` now guards the percentage division; empty categories report `percentage 0.0` instead of NaN, with a debug-build log line naming the category.
@@ -24,4 +24,3 @@
 - The debug log fires on every `get_cache_info()` call while categories are empty (3 calls in the test = 6 lines). This matches the criterion ("per empty-category percentage substitution").
 - `focused_test.log` left in workspace root is a diagnostic artifact of the RED run capture; safe to delete, untracked.
 - Pre-existing harness warnings (invalid UIDs, missing GLBs like stylized_earth_in_clouds.glb) are unrelated to this change and present before it.
-\n

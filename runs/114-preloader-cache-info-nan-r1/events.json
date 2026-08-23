@@ -7,5 +7,14 @@
     "duration_ms": 292279,
     "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-preloader-cache-info-nan/.gen/plan.md\n",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-23T02:55:03.584Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 1394040,
+    "summary": "The `release_project_worker` tool isn't exposed in this session (only `run_project_cmd`), so worker release is left to the orchestrator.\n\nSummary:\n\n- get_cache_info() empty-category NaN \u2014 RED (new focused test, 3 failures with NaN in SOUNDS\u2026",
+    "error": null
   }
 ]
