@@ -1,111 +1,90 @@
 # Team-leader report
 
 - **Result:** failed
-- **Classification:** unknown
-- **Feature:** earth-continent-map-integration
-- **Run:** issue137-earth-continent-map
+- **Classification:** pass
+- **Feature:** grass-mutates-shared-materials
+- **Run:** grass-shared-materials-r1
 - **Lifecycle:** dashboard publish only; project commit/push/close not implied
 
 ## Status
 
+# Acceptance Plan: grass-mutates-shared-materials
+
+## Verification
+
+- Focused test: `["godot", "--headless", "--path", ".", "res://tests/visuals/test_small_vegetation_render_settings.tscn"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://tests/visuals/test_nature_visibility_range.tscn"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]`
+
+## Clusters
+
+1. grass-material-duplication-and-recursion — files: `scripts/game/NatureDecoration.gd`, `tests/visuals/test_small_vegetation_render_settings.gd`, `tests/visuals/test_small_vegetation_render_settings.tscn` — depends on: none
+- The grass/flower path duplicates any StandardMaterial3D it modifies before writing to it, so the material resource cached by the imported model is left unchanged after decoration generation.
+- After the grass/flower path runs, each affected MeshInstance3D surface carries its own modified copy via set_surface_override_material, with transparency alpha-scissor, alpha scissor threshold applied, no depth test disabled, and render priority -1.
+- Two grass or flower decorations generated from the same model do not share one modified material instance between them.
+- The small-vegetation mesh walk reaches MeshInstance3D nodes nested deeper than direct children of the passed node (e.g. inside a sub-node of a nature model), applying shadow-off, no distance cull, opaque sorting, and the alpha-scissor material settings to them.
+- A MeshInstance3D under the grass path still has cast_shadow off and visibility_range_end 0 after the fix.
+- Debug-build [NatureDecoration] log line per small-vegetation mesh whose material is duplicated, naming the node and surface index.
+- The existing nature visibility-range regression test still passes unchanged after the rewrite.
+
+## Criteria
+
 ## ✅ Done
-(none — build/test gate not green)
+- The grass/flower path duplicates any StandardMaterial3D it modifies before writing to it, so the material resource cached by the imported model is left unchanged after decoration generation.
+- After the grass/flower path runs, each affected MeshInstance3D surface carries its own modified copy via set_surface_override_material, with transparency alpha-scissor, alpha scissor threshold applied, no depth test disabled, and render priority -1.
+- Two grass or flower decorations generated from the same model do not share one modified material instance between them.
+- The small-vegetation mesh walk reaches MeshInstance3D nodes nested deeper than direct children of the passed node (e.g. inside a sub-node of a nature model), applying shadow-off, no distance cull, opaque sorting, and the alpha-scissor material settings to them.
+- A MeshInstance3D under the grass path still has cast_shadow off and visibility_range_end 0 after the fix.
+- Debug-build [NatureDecoration] log line per small-vegetation mesh whose material is duplicated, naming the node and surface index.
+- The existing nature visibility-range regression test still passes unchanged after the rewrite.
 
 ## ⬜ Pending
-- The grounded configuration targets exactly one named continent mesh from `stylized_earth_in_clouds.glb`, and the chosen mesh name is recorded in code or project documentation so it can be checked against the GLB's mesh list.
-- After `configure_for_map`, from the normal gameplay camera on a surface map, the playable field sits flush on the chosen continent with no visible gap or floating edge between the board and the globe surface (verified by windowed screenshot).
-- In the windowed screenshot from the normal gameplay camera, the continent terrain around the board reads as continuous with the map field (scale and color blend), with no hard seam between board and globe surface.
-- During play, the globe does not rotate: the earth body's world rotation measured at two times several seconds apart is identical in the grounded configuration.
-- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent mesh and the final rig position/scale/rotation.
-- With the grounded configuration active, other continents, ocean, cloud banks, and the atmosphere rim remain visible from the normal gameplay camera; only the previously hidden meshes (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud` prefixed) stay hidden (windowed screenshot).
-- The existing focused harness scenario `backdrop_earth_visible` still passes: map loads, `backdrop_earth_present` is true, `backdrop_earth_center_y` equals 0, and the surface screenshot is produced. — fails: actual `backdrop_earth_center_y` = -83.2 (fresh run 2026-08-22T15:41:57, exit 1); grounded rig sinks globe by body_radius below y=0 while the scenario still expects 0
+- Windowed (never --headless) manual screenshot of a gameplay map shows grass/flowers rendering correctly with cutout foliage edges and casting no shadows.
 
 ## ❌ Impossible
-(none)
+
+classification: pass
 
 ## Check
 
-# Check Report — earth-continent-map-integration (issue #137)
+# Check Report: grass-mutates-shared-materials (issue #111) — iteration 1 (revision-check)
 
-Iteration: 1 · Classification: **fixable**
-
-## Verification commands (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-earth-continent-map-integration)
-
-| Command | Exit | Result |
-|---|---|---|
-| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner reachable |
-| `godot --headless --path . --editor --quit-after 300` (import/build gate) | 0 | Import completed; stylized_earth_in_clouds.glb reimported |
-| Focused harness `backdrop_earth_visible.json` | 1 | status: fail — `backdrop_earth_center_y == -83.2`, expected 0 |
-| Harness `backdrop_earth_glint.json` | 1 | status: fail — same center_y failure |
-| Full suite loop (`bash -c for f in tests/scenarios/*.json ...`) | n/a | `bash` not on profile allowlist ("cmd executable is not allowed"); not run |
-| Windowed screenshots / manual visual pass | not run | manual-tester owns `.gen/manual-report.md`; none present |
-
-Fresh harness evidence: `.gen/harness/backdrop_earth_visible/result.json`
-(finished_at 2026-08-22T15:41:57), log `.gen/harness/_logs/backdrop_earth_visible.out.log`.
-
-## Acceptance criteria
-
-### Cluster 1: grounded-continent-placement
-
-- Continent mesh named and recorded — **verified in code**:
-  `GROUNDED_CONTINENT = "Continent_Africa"` in `scripts/game/visuals/BackdropEarth.gd`,
-  with the full GLB node list in a comment. Checker independently parsed
-  `models/stylized_earth_in_clouds.glb`: node/mesh `Continent_Africa` exists. PASS.
-- Flush placement from gameplay camera (windowed screenshot) — **NOT VERIFIED**.
-  No windowed run or screenshot exists in this workspace; headless screenshots are
-  skipped (`reason: "headless"`). Manual report absent. PENDING.
-- Terrain continuity / no hard seam (windowed screenshot) — NOT VERIFIED. Same reason. PENDING.
-- Globe does not rotate during play — **partially verified by code inspection only**:
-  grounded path never calls `_start_earth_spin()`. No automated test asserts
-  rotation equality at two times. PENDING (missing evidence).
-- Debug `[BACKDROP EARTH]` log per grounding event naming mesh + pos/scale/rot —
-  **verified**: fresh log line `[BACKDROP EARTH] grounded continent=Continent_Africa
-  pos=(-21.2, -83.2, -51.76) scale=0.9999… rot_deg=(15.39, 21.67, 83.15)`. PASS.
-
-### Cluster 2: backdrop-regression-coverage
-
-- Other continents/ocean/clouds/atmosphere visible; hidden prefixes unchanged
-  (windowed screenshot) — NOT VERIFIED. No windowed run. PENDING.
-- Existing focused scenario `backdrop_earth_visible` still passes — **FAILS**.
-  `backdrop_earth_present` is true but `backdrop_earth_center_y` equals −83.2
-  instead of 0. The grounded rig sinks the globe by body_radius below y=0, so
-  center_y is now negative by design of the change — but the plan requires the
-  existing expectation to still hold and it was neither updated nor satisfied.
-  This is a real regression against the plan's own criterion. FAIL → Pending.
-
-## Build/test gate
-
-Import/editor gate passes. The full test suite was NOT run: the plan's full-suite
-command uses `bash`, which is rejected by the runner profile allowlist
-("cmd executable is not allowed by the project profile"). A python3-based loop
-was attempted as substitute and also failed to produce green results because the
-focused earth scenarios fail (see above). Since the build/test gate is not green,
-no item may remain Done; all criteria go to Pending.
-
-## Changed-file quality findings
-
-- `models/stylized_earth_in_clouds.glb`: replaced via Git LFS pointer update
-  (9.58 MB new object). Content itself unreviewable here; noted, no violation.
-- `scripts/game/visuals/BackdropEarth.gd`: typed variables used throughout, small
-  focused functions, guard clauses, debug-only `[TAG]` logging — complies with
-  CLAUDE.md and coding_rules.md. No quality violation found in changed code.
-- Scope creep: none beyond the two intended files.
-
-## Blockers
-
-- None infrastructural. Runner healthy. Failures are implementation-level.
-
-## Unverified items
-
-- Windowed screenshots (flush fit, seam blend, backdrop regression view).
-- Rotation-invariance measurement at two times.
-- Full test suite (allowlist blocks `bash`; needs a python3-loop variant command
-  in the plan or an updated profile allowlist).
+classification: pass
 
 ## Verdict
 
-fixable — the grounding code is present and partially evidenced, but the focused
-harness regressed (`backdrop_earth_center_y = -83.2 ≠ 0`), the full suite could not
-run under the profile allowlist, and all windowed/manual visual criteria have no
-evidence.
+The fix is implemented and verified fresh in this worktree via run_project_cmd
+(project=poke-defense-godot, workspace=poke-defense-godot/issue-grass-render-settings-mutate-the-shared-).
+All automated criteria pass; only the manual windowed screenshot criterion remains open (manual_testing: required — owned by the manual-tester profile).
+
+## Implementation evidence
+
+- `scripts/game/NatureDecoration.gd` — `_apply_small_vegetation_render_settings` now delegates to a recursive `_apply_small_vegetation_render_settings_recursive`. Per surface it duplicates the StandardMaterial3D before modification and writes the copy back with `set_surface_override_material` (alpha-scissor transparency, threshold 0.3, no_depth_test false, render_priority -1). Shadow-off, visibility_range_end 0.0, opaque sorting applied to every nested MeshInstance3D. Debug-build `[NatureDecoration] duplicated material for <node> surface <i>` log present.
+- `tests/visuals/test_small_vegetation_render_settings.gd/.tscn` — new focused test asserting all of the above plus cached-material untouched and per-instance independence.
+
+## Verification commands (all via run_project_cmd)
+
+| Gate | Command | Exit | Result |
+|---|---|---|---|
+| Preflight | `godot --version` | 0 | 4.4.1.stable.official |
+| Build/import | `godot --headless --path . --import` | 0 | Clean import |
+| Focused test | `godot --headless --path . res://tests/visuals/test_small_vegetation_render_settings.tscn` | 0 | `=== small_vegetation_render_settings: 16 ok, 0 failed ===`; debug log lines fired (`[NatureDecoration] duplicated material for Blades surface 0`) |
+| Full test | `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn` | 0 | `=== nature_visibility_range: 5 ok, 0 failed ===`; exit-time dummy-renderer RID leak warnings are baseline headless noise, not failures |
+
+Runner gate: passed (every project command through run_project_cmd; no host Godot).
+
+## Acceptance criteria status
+
+Criteria 1–7 verified Done (see status.md). Criterion 8 (windowed manual screenshot) left Pending — manual_testing required; not executable headless.
+
+Test overlap check: no pre-existing test asserted these behaviors (the scenario is new; the existing nature_visibility_range test covers culling only and was rerun unchanged, passing).
+
+Changed-code quality: diff vs HEAD touches only NatureDecoration.gd + the two new test files; mirrors the existing tree-path pattern, matches existing style, no scope creep. No violations under /opt/data/coding_rules.md or CLAUDE.md. quality-notes.md: created with no open entries.
+
+## Blockers
+
+None infra-related.
+
+## Unverified items
+
+- Criterion 8: windowed (never --headless) manual screenshot of a gameplay map showing grass/flowers with cutout foliage edges and no shadows — deferred to the manual-testing pass.

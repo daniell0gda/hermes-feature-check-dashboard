@@ -1,88 +1,41 @@
-# Check report: revision-check-2 (iteration 4)
+# Check Report: grass-mutates-shared-materials (issue #111) — iteration 1 (revision-check)
 
-classification: fixable
+classification: pass
 
 ## Verdict
 
-All headless verification passes through `run_project_cmd`. The code-level
-grounded-continent criteria are genuinely met and evidenced by the focused
-harnesses. The two windowed/manual visual criteria remain Pending: the only
-windowed screenshot on disk is stale (predates the current code) and shows the
-map floating on plain sky with no globe — i.e. it does not evidence the fixed
-behavior. No `.gen/manual-report.md` exists. This is missing manual evidence,
-not a code or infra failure → `fixable`.
+The fix is implemented and verified fresh in this worktree via run_project_cmd
+(project=poke-defense-godot, workspace=poke-defense-godot/issue-grass-render-settings-mutate-the-shared-).
+All automated criteria pass; only the manual windowed screenshot criterion remains open (manual_testing: required — owned by the manual-tester profile).
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-earth-continent-map-integration)
+## Implementation evidence
 
-1. Preflight `["git","status","--short"]` — exit 0.
-2. Build/import gate `["godot","--headless","--path",".","--editor","--quit-after","300"]`
-   — exit 0, import clean, no script errors.
-3. Focused harness `backdrop_earth_visible.json` — exit 0, status=pass; all 8
-   expectations green including present=true, grounded=true,
-   center_y=-0.0000128 (== 0 with harness tolerance), horizon_in_view=true,
-   centered_on_board=true, rotation_invariant=true. Log line:
-   `[BACKDROP EARTH] grounded continent=Continent_Africa pos=(-21.2, -83.7824, -49.904) scale=41.5999984741211 rot_deg=(15.38803, 21.66841, 83.15345)`.
-4. Focused harness `backdrop_earth_glint.json` — exit 0, status=pass;
-   present/grounded/center_y==0/horizon_in_view all green.
-5. Bounded spot-check set (`backdrop_earth_visible`, `backdrop_earth_glint`,
-   `menu_backdrop_map`, `smoke_placement`, `removed_tower_kinds_no_crash`)
-   via the plan's python3 loop — exit 0, all five PASS.
+- `scripts/game/NatureDecoration.gd` — `_apply_small_vegetation_render_settings` now delegates to a recursive `_apply_small_vegetation_render_settings_recursive`. Per surface it duplicates the StandardMaterial3D before modification and writes the copy back with `set_surface_override_material` (alpha-scissor transparency, threshold 0.3, no_depth_test false, render_priority -1). Shadow-off, visibility_range_end 0.0, opaque sorting applied to every nested MeshInstance3D. Debug-build `[NatureDecoration] duplicated material for <node> surface <i>` log present.
+- `tests/visuals/test_small_vegetation_render_settings.gd/.tscn` — new focused test asserting all of the above plus cached-material untouched and per-instance independence.
 
-## Criterion-by-criterion evidence
+## Verification commands (all via run_project_cmd)
 
-- Continent naming + debug warning — Done. `BackdropEarth.gd` line 20:
-  `GROUNDED_CONTINENT = "Continent_Africa"`; `_verify_continent_mesh()`
-  emits debug-build `push_warning("[BACKDROP EARTH] grounded continent mesh not found: ...")`
-  when absent from the instantiated GLB. Harness log confirms the mesh exists.
-- Applied scale formula — Done. `_place_earth_grounded()`:
-  `scale_factor = world_radius / NATIVE_EARTH_RADIUS * grounded_scale`,
-  baked into basis as `yaw_basis.scaled(Vector3.ONE * scale_factor)`;
-  grounding log shows scale=41.6 (not unit).
-- Flush placement (center_y == 0) — Done. Harness expectation green in both
-  scenarios; actual -0.0000128 is float noise around 0; sink depth derived
-  from measured GLB apex GROUNDED_CONTINENT_APEX = 2.014.
-- Horizon inside gameplay camera frustum — Done at harness level
-  (`horizon_in_view == true`, `centered_on_board == true` in
-  backdrop_earth_visible). Rig center (-21.2, -83.7824, -49.904), body radius
-  ~83.2, limb crosses y=0 just past the far field edge per code comments.
-  Windowed visual confirmation still pending (see Pending).
-- Spin never starts in grounded config — Done. Grounded path calls
-  `_place_earth_grounded()` which never calls `_start_earth_spin()`
-  (only `_place_earth_floating()` does). Harness asserts
-  `rotation_invariant == true` sampling the body transform twice ~3 s apart.
-- Debug `[BACKDROP EARTH]` grounding log line — Done. Observed live in every
-  run this iteration with continent name, pos, scale, rot_deg.
-- Both focused harnesses pass headless with expectations green — Done (commands
-  3–4 above).
+| Gate | Command | Exit | Result |
+|---|---|---|---|
+| Preflight | `godot --version` | 0 | 4.4.1.stable.official |
+| Build/import | `godot --headless --path . --import` | 0 | Clean import |
+| Focused test | `godot --headless --path . res://tests/visuals/test_small_vegetation_render_settings.tscn` | 0 | `=== small_vegetation_render_settings: 16 ok, 0 failed ===`; debug log lines fired (`[NatureDecoration] duplicated material for Blades surface 0`) |
+| Full test | `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn` | 0 | `=== nature_visibility_range: 5 ok, 0 failed ===`; exit-time dummy-renderer RID leak warnings are baseline headless noise, not failures |
 
-## Pending items (why)
+Runner gate: passed (every project command through run_project_cmd; no host Godot).
 
-- Windowed backdrop look (other continents/ocean/clouds/atmosphere rim visible)
-  — Pending on evidence: only screenshot on disk is
-  `.gen/harness/backdrop_earth_visible/shots/surface_earth_backdrop.png`
-  dated 2026-08-22 19:43, BEFORE BackdropEarth.gd (08-23 01:21) and Game.gd
-  (01:52); image inspection shows map on plain sky, no globe — stale evidence
-  of the pre-fix state.
-- Windowed screenshot showing map sitting on the chosen continent blending into
-  the map field — same reason; requires a fresh windowed run of
-  `backdrop_earth_visible` from current code plus `.gen/manual-report.md`.
+## Acceptance criteria status
 
-## Changed-file quality findings
+Criteria 1–7 verified Done (see status.md). Criterion 8 (windowed manual screenshot) left Pending — manual_testing required; not executable headless.
 
-No new rule violations found in the feature diff for this iteration's files
-(`scripts/game/visuals/BackdropEarth.gd`, scenario JSONs, `Game.gd`,
-`HarnessValues.gd`). Typed variables used throughout changed functions; debug
-logging follows the CLAUDE.md `[TAG]` convention; no leaked nodes observed.
-Carried-over advisory notes remain open in quality-notes.md (glb replacement,
-balance CSV regeneration — unrelated shared files, do not demote criteria).
+Test overlap check: no pre-existing test asserted these behaviors (the scenario is new; the existing nature_visibility_range test covers culling only and was rerun unchanged, passing).
+
+Changed-code quality: diff vs HEAD touches only NatureDecoration.gd + the two new test files; mirrors the existing tree-path pattern, matches existing style, no scope creep. No violations under /opt/data/coding_rules.md or CLAUDE.md. quality-notes.md: created with no open entries.
 
 ## Blockers
 
-None. Runner worked normally throughout; no host-shell Godot was used.
+None infra-related.
 
 ## Unverified items
 
-The two windowed/manual criteria above. Full-suite timeout remains a known
-limitation per request.md check-scope bound (recorded in quality-notes.md,
-iteration 3 entry).
+- Criterion 8: windowed (never --headless) manual screenshot of a gameplay map showing grass/flowers with cutout foliage edges and no shadows — deferred to the manual-testing pass.
