@@ -1,14 +1,36 @@
+# Acceptance Plan: grass-mutates-shared-materials
+
+## Verification
+
+- Focused test: `["godot", "--headless", "--path", ".", "res://tests/visuals/test_small_vegetation_render_settings.tscn"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://tests/visuals/test_nature_visibility_range.tscn"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]`
+
+## Clusters
+
+1. grass-material-duplication-and-recursion — files: `scripts/game/NatureDecoration.gd`, `tests/visuals/test_small_vegetation_render_settings.gd`, `tests/visuals/test_small_vegetation_render_settings.tscn` — depends on: none
+- The grass/flower path duplicates any StandardMaterial3D it modifies before writing to it, so the material resource cached by the imported model is left unchanged after decoration generation.
+- After the grass/flower path runs, each affected MeshInstance3D surface carries its own modified copy via set_surface_override_material, with transparency alpha-scissor, alpha scissor threshold applied, no depth test disabled, and render priority -1.
+- Two grass or flower decorations generated from the same model do not share one modified material instance between them.
+- The small-vegetation mesh walk reaches MeshInstance3D nodes nested deeper than direct children of the passed node (e.g. inside a sub-node of a nature model), applying shadow-off, no distance cull, opaque sorting, and the alpha-scissor material settings to them.
+- A MeshInstance3D under the grass path still has cast_shadow off and visibility_range_end 0 after the fix.
+- Debug-build [NatureDecoration] log line per small-vegetation mesh whose material is duplicated, naming the node and surface index.
+- The existing nature visibility-range regression test still passes unchanged after the rewrite.
+
+## Criteria
+
 ## ✅ Done
-(none — the plan's full test command (`smoke_tower_roster`) fails with exit 1; gate rule moves every criterion to Pending)
+- The grass/flower path duplicates any StandardMaterial3D it modifies before writing to it, so the material resource cached by the imported model is left unchanged after decoration generation.
+- After the grass/flower path runs, each affected MeshInstance3D surface carries its own modified copy via set_surface_override_material, with transparency alpha-scissor, alpha scissor threshold applied, no depth test disabled, and render priority -1.
+- Two grass or flower decorations generated from the same model do not share one modified material instance between them.
+- The small-vegetation mesh walk reaches MeshInstance3D nodes nested deeper than direct children of the passed node (e.g. inside a sub-node of a nature model), applying shadow-off, no distance cull, opaque sorting, and the alpha-scissor material settings to them.
+- A MeshInstance3D under the grass path still has cast_shadow off and visibility_range_end 0 after the fix.
+- Debug-build [NatureDecoration] log line per small-vegetation mesh whose material is duplicated, naming the node and surface index.
+- The existing nature visibility-range regression test still passes unchanged after the rewrite.
 
 ## ⬜ Pending
-- A project-wide search finds no reference to `Options.tscn`, `OptionsModal`, or `scripts/ui/Options.gd` in any scene, script, project setting, or documentation file after the deletion.
-- `scenes/ui/Options.tscn` and `scripts/ui/Options.gd` (plus their orphaned `.uid` sidecar files) no longer exist in the repository.
-- The Godot editor/import gate (`--headless --editor --quit-after`) completes with exit code 0 and no script parse errors or missing-resource errors in its output after the deletion.
-- The focused gameplay harness scenario (`smoke_placement`) completes with `status: pass`, exit code 0, and a fresh `.gen/harness/smoke_placement/result.json` written after the deletion.
-- The broad-shallow harness scenario (`smoke_tower_roster`) completes with `status: pass`, proving the autoload/class cache still loads the full game after the deletion.
-- The in-game pause menu still opens the live Options modal: with the harness active, opening the pause menu and triggering its Options button instantiates a visible Options modal (the `OptionsScreen.tscn` path in `scripts/ui/UI.gd`), not a missing-scene error.
-- The main menu still opens the live Options screen: loading the main menu scene and triggering its Options control loads `res://scenes/ui/OptionsScreen.tscn` successfully with no load errors in the run log.
+- Windowed (never --headless) manual screenshot of a gameplay map shows grass/flowers rendering correctly with cutout foliage edges and casting no shadows.
 
 ## ❌ Impossible
-(none)
+
+classification: pass

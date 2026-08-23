@@ -24,4 +24,9 @@
 - Debug log is gated on `OS.is_debug_build()`; verified firing in the headless run ("[NatureDecoration] duplicated material for Blades surface 0").
 - Gotcha for tester: runner output truncates long Godot logs; during RED only the test wrote a temp result file which was removed before handoff — final test writes nothing extra.
 - The manual windowed screenshot criterion remains for the manual-testing pass.
+
+## Revision-2 code pass (fresh verification, no code change)
+- `godot --headless --path . --import` — exit 0, clean import
+- `godot --headless --path . res://tests/visuals/test_small_vegetation_render_settings.tscn` — exit 0, `=== small_vegetation_render_settings: 16 ok, 0 failed ===`, `[NatureDecoration] duplicated material ...` debug lines fired
+- `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn` — exit 0, `=== nature_visibility_range: 5 ok, 0 failed ===`
 \n

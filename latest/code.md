@@ -1,32 +1,32 @@
-# Coder report: 1-delete-dead-options-modal\n\n# Coder report: 1-delete-dead-options-modal
+# Coder report: 1-grass-material-duplication-and-recursion\n\n# Coder report: 1-grass-material-duplication-and-recursion
 
 ## Changed files
-- `scenes/ui/Options.tscn` — deleted (git rm)
-- `scripts/ui/Options.gd` — deleted (git rm)
-- `scripts/ui/Options.gd.uid` — deleted (git rm)
-- `tests/scenarios/issue_dead_options_live_pause_menu.json` — new harness scenario proving the live pause-menu Options path
-- `tests/ui/issue_dead_options_main_menu.gd` — new SceneTree script proving the live main-menu Options path
+- `scripts/game/NatureDecoration.gd` — modified
+- `tests/visuals/test_small_vegetation_render_settings.gd` — new
+- `tests/visuals/test_small_vegetation_render_settings.tscn` — new
 
 ## Criteria
-- No project-wide reference to `Options.tscn` / `OptionsModal` / `scripts/ui/Options.gd` — Done (`grep -rn` over repo excluding `.godot`/`.gen` finds nothing outside the deleted files)
-- Dead files gone (incl. `.uid` sidecar) — Done (`git status`: three deletions staged/unstaged)
-- Editor/import gate clean — Done
-- Focused harness `smoke_placement` pass + fresh result.json — Done
-- Broad harness `smoke_tower_roster` pass — Pending: fails identically on pristine HEAD (pre-existing gameplay issue, see Notes)
-- Pause menu still opens live Options modal — Done (new scenario passes)
-- Main menu still loads `OptionsScreen.tscn` — Done (new script exits 0)
+- The grass/flower path duplicates any StandardMaterial3D it modifies before writing to it — Done
+- Each affected surface carries its own modified copy via set_surface_override_material with alpha-scissor, threshold, no depth-test disable, render priority -1 — Done
+- Two decorations from the same model do not share one modified material instance — Done
+- Mesh walk reaches MeshInstance3D nested deeper than direct children — Done
+- cast_shadow off and visibility_range_end 0 preserved under grass path — Done
+- Debug-build [NatureDecoration] log per duplicated mesh naming node and surface index — Done
+- Existing nature visibility-range regression test still passes unchanged — Done
 
 ## Commands and results
-- `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit code 0. First cold-import run had expected first-scan import noise (glb/png "Make sure resources have been imported"); second warm run completed with zero ERROR lines of any kind.
-- `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/smoke_placement.json"]` — exit code 0; `[Harness] status=pass exit=0`; fresh `.gen/harness/smoke_placement/result.json` written.
-- `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/smoke_tower_roster.json"]` — exit code 1; result.json `status: fail`. Failed expectations: `gamestate.current_wave >= 3` (actual 2), `damage_by_type.balista/bazooka/cannon > 0`. Egg reaches 0 hp → gameover at wave 2 on map_10.
-- Baseline control: identical command run with the deletion stashed (pristine HEAD) — exit code 1, byte-for-byte same four failing expectations, same final snapshot (`egg_hp: 0`, `game_state: gameover`, wave 2). Failure is pre-existing and unrelated to the deletion; stash popped afterwards.
-- `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/issue_dead_options_live_pause_menu.json"]` — exit code 0; `status: pass`; both expectations green (`game_state == paused`, `ui_call find_children("*","OptionsScreen",...) size >= 1` → actual 1).
-- `["godot","--headless","--path",".","--script","res://tests/ui/issue_dead_options_main_menu.gd"]` — exit code 0; log shows `options control found: OptionsButton`, `MainMenu: Options button pressed`, `live OptionsScreen instantiated: Control visible=true`; no load error for any Options scene.
+- `godot --headless --path . res://tests/visuals/test_small_vegetation_render_settings.tscn` — exit code 1 before fix (RED: cast_shadow off failed, no override set); exit code 0 after fix, "16 ok, 0 failed" (GREEN)
+- `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn` — exit code 0, "5 ok, 0 failed"
+- `godot --headless --path . --import` — exit code 0, clean import (registered NatureDecoration + new test script)
 
 ## Notes
-- The broad-scenario failure is a deterministic gameplay pacing problem (map_10 egg dies during wave 2 under the seeded roster), not a resource/class-cache regression: it reproduces identically without the deletion. Recommend the checker treat that criterion against the baseline or file it as a pre-existing issue.
-- New pause-menu scenario asserts through the public path: `show_pause_menu()` then `_on_pause_options()` — exactly the callable `PauseMenu.options_btn.pressed` connects to (`UI.gd:1770`, preload of `res://scenes/ui/OptionsScreen.tscn`).
-- Harness gotcha reused: editor import gate was run before any harness call on this fresh worktree; `--harness=` kept as a single token.
-- Exit-time RID/ObjectDB leak errors appear in every headless run including baseline — engine shutdown noise, not scenario failures.
+- Fix shape: `_apply_small_vegetation_render_settings` delegates to a recursive `_apply_small_vegetation_render_settings_recursive` (mirrors the existing tree-settings function). Per surface it takes override-or-mesh material, duplicates it if StandardMaterial3D, applies TRANSPARENCY_ALPHA_SCISSOR / threshold 0.3 / no_depth_test false / render_priority -1, and sets it via `set_surface_override_material`. Shadow-off, visibility_range_end 0 and opaque sorting are applied to every nested MeshInstance3D regardless of material type.
+- Debug log is gated on `OS.is_debug_build()`; verified firing in the headless run ("[NatureDecoration] duplicated material for Blades surface 0").
+- Gotcha for tester: runner output truncates long Godot logs; during RED only the test wrote a temp result file which was removed before handoff — final test writes nothing extra.
+- The manual windowed screenshot criterion remains for the manual-testing pass.
+
+## Revision-2 code pass (fresh verification, no code change)
+- `godot --headless --path . --import` — exit 0, clean import
+- `godot --headless --path . res://tests/visuals/test_small_vegetation_render_settings.tscn` — exit 0, `=== small_vegetation_render_settings: 16 ok, 0 failed ===`, `[NatureDecoration] duplicated material ...` debug lines fired
+- `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn` — exit 0, `=== nature_visibility_range: 5 ok, 0 failed ===`
 \n

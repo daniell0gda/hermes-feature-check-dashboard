@@ -1,21 +1,32 @@
-# Request: issue-dead-options-modal-scene (issue #104)
+# Request: grass-mutates-shared-materials (issue #111)
 
-## Feature
-Delete dead code: `scenes/ui/Options.tscn` and `scripts/ui/Options.gd` (`class_name OptionsModal`) are unreferenced clones of the live Options surfaces (`scenes/ui/OptionsScreen.tscn`, `scenes/ui/OptionsMenu.tscn`).
+- Project: poke-defense-godot
+- Runner key: `godot-td` (never use folder name)
+- Workspace: `poke-defense-godot/issue-grass-render-settings-mutate-the-shared-`
+- Branch: `issue/grass-render-settings-mutate-the-shared-` (cut from fresh origin/master)
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/111
 
-## Acceptance criteria
-1. Re-confirmed nothing references `Options.tscn` or `OptionsModal` anywhere in the project.
-2. Both files deleted from the repo.
-3. Project still opens cleanly (editor/import gate passes).
-4. Options still works from the pause menu (in-game path) and from the main menu.
+## Problem
 
-No new visual required — deletion only. Manual testing: a quick windowed sanity check that both live Options paths open is sufficient; no new visual work.
+`NatureDecoration._apply_small_vegetation_render_settings()` edits the material it reads off
+the imported mesh without duplicating it first (`NatureDecoration.gd:488-497`). `surface_get_material()`
+returns the ResourceLoader-cached resource owned by the imported `.gltf`, shared with every instance of
+that model and every later scene that loads it. The tree path directly below duplicates before writing
+(`_apply_tree_render_settings_recursive`, `:740`) — the grass path must do the same.
 
-## Runner / workspace notes (redo notes — do not repeat past mistakes)
-- Project: poke-defense-godot. Runner key: **godot-td** (never folder name).
-- Workspace: **poke-defense-godot/issue-dead-options-modal-scene**
-- Worktree: /workspace/git-workspaces/poke-defense-godot/issue-dead-options-modal-scene (branch issue/dead-options-modal-scene, cut from origin/master)
-- Use run_project_cmd only; explicit scene arg before user args for gameplay harnesses; native Linux Godot, never PowerShell wrappers.
+Second latent issue in the same function: it only walks direct children (`:473-474`) where the tree
+version recurses; a nested nature model would silently skip shadow/culling/alpha settings.
 
-## Historical context
-Fresh claim; no prior attempt. request-id: tw-104-dead-options-modal-r1.
+## Done when
+
+1. The grass/flower path duplicates the material before writing to it and writes the duplicate back
+   with `set_surface_override_material` (mirroring the tree path).
+2. The mesh walk recurses so nested nature models get the same treatment.
+3. Grass still renders with alpha-scissor cutout and no shadow casting — verified on a `-Windowed`
+   screenshot (rendering change → manual_testing: required).
+
+## Redo notes for resumed runs
+
+- Runner workspace name is exactly `poke-defense-godot/issue-grass-render-settings-mutate-the-shared-`.
+  Invented workspace names produce HTTP 422 chdir failures.
+- Manual tester must never use `--headless`; windowed screenshots required.
