@@ -25,5 +25,14 @@
     "duration_ms": 391673,
     "summary": "Verification complete; artifacts written.\n\nVerified done: 6. Pending: 3 \u2014 0 due to build/test failures, 3 due to missing evidence (windowed screenshot / manual-tester criteria). Impossible: 0. Quality notes: appended full-suite-runner-timeo\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T01:35:34.230Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 1499831,
+    "summary": "Revision-1 implementation complete. Summary:\n\n**Problem (from revisions.md / check.md):** the grounded globe was sunk a full body radius below the plane and pushed ~52 units behind the board \u2014 entirely outside the gameplay camera frame; the\u2026",
+    "error": null
   }
 ]
