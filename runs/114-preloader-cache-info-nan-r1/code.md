@@ -24,4 +24,19 @@
 - The debug log fires on every `get_cache_info()` call while categories are empty (3 calls in the test = 6 lines). This matches the criterion ("per empty-category percentage substitution").
 - `focused_test.log` left in workspace root is a diagnostic artifact of the RED run capture; safe to delete, untracked.
 - Pre-existing harness warnings (invalid UIDs, missing GLBs like stylized_earth_in_clouds.glb) are unrelated to this change and present before it.
+\n\n# Coder report: implementation-rev1\n\n# Coder report: implementation (revision 1)
+
+## Changed files
+- `scripts/utils/AssetPreloader.gd` — modified: typed `var total: int` / `var percentage: float` in get_cache_info() category loop (fixes iteration-1 quality violation; no behavioral change)
+
+## Criteria
+- All 5 criteria — Done
+
+## Commands and results
+- `godot --headless --path . --check-only --script scripts/utils/AssetPreloader.gd` — exit 0
+- `godot --headless --path . res://tests/utils/test_asset_preloader_cache_info.tscn` — exit 0; "8 ok, 0 failed"; debug log lines for SOUNDS and UI_TEXTURES present
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/smoke_placement.json` — exit 0; `[Harness] status=pass exit=0`
+
+## Notes
+- Only fix required this revision was explicit typing in the changed hunk per CLAUDE.md Typed Variables rule. No other code touched.
 \n
