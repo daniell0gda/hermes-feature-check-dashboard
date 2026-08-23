@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/117-gen-hud-20260823/",
   "heartbeat_at": "2026-08-23T17:45:20.100Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
   "process_id": 111567,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T17:45:20.100252+00:00"
+    "last_attempt_at": "2026-08-23T17:46:25.785632+00:00",
+    "last_success_at": "2026-08-23T17:45:24.413782+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
