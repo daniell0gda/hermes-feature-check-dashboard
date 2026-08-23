@@ -15,7 +15,7 @@
   "phase": "check",
   "dashboard_publish": {
     "last_attempt_at": "2026-08-23T19:37:03.832774+00:00",
-    "last_success_at": "2026-08-23T19:37:03.831505+00:00",
+    "last_success_at": "2026-08-23T19:37:08.263501+00:00",
     "last_error": null
   },
   "metrics": {
