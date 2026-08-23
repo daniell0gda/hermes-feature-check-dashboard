@@ -1,21 +1,21 @@
 {
-  "run_id": "perk-sundering-bolts-r3",
-  "feature": "Sundering Bolts perk - % of final damage also strips armor",
+  "run_id": "req-91-perk-undermining",
+  "feature": "perk-undermining",
   "status": "running",
-  "started_at": "2026-08-23T16:42:32.685Z",
+  "started_at": "2026-08-23T18:24:50.048Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-sundering-bolts-r3/",
-  "heartbeat_at": "2026-08-23T18:36:28.442Z",
-  "last_node": "manual-tester",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-91-perk-undermining/",
+  "heartbeat_at": "2026-08-23T18:36:35.375Z",
+  "last_node": "team-leader",
   "active_node": null,
-  "last_event_at": "2026-08-23T18:36:28.442Z",
-  "process_id": 77891,
+  "last_event_at": "2026-08-23T18:36:35.375Z",
+  "process_id": 142241,
   "host": "f1a4230ec90b",
-  "phase": "manual-tester",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T18:36:28.442793+00:00",
-    "last_success_at": "2026-08-23T18:07:57.878464+00:00",
+    "last_attempt_at": "2026-08-23T18:36:35.376224+00:00",
+    "last_success_at": "2026-08-23T18:36:07.917227+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 224992,
-        "output_tokens": 12823
+        "input_tokens": 0,
+        "output_tokens": 0
       },
       {
         "task_id": "code",
@@ -39,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 209681,
-        "output_tokens": 4953
+        "input_tokens": 106975,
+        "output_tokens": 3424
       },
       {
         "task_id": "check",
@@ -50,41 +50,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 104456,
-        "output_tokens": 4035
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 224492,
-        "output_tokens": 10896
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 80434,
-        "output_tokens": 3690
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 26712,
-        "output_tokens": 469
+        "input_tokens": 110527,
+        "output_tokens": 3694
       }
     ]
   }

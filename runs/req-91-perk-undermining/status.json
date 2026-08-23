@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-91-perk-undermining/",
-  "heartbeat_at": "2026-08-23T18:35:59.351Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-23T18:35:59.351Z",
+  "heartbeat_at": "2026-08-23T18:36:35.375Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-23T18:36:35.375Z",
   "process_id": 142241,
   "host": "f1a4230ec90b",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T18:36:03.627179+00:00",
-    "last_success_at": "2026-08-23T18:36:03.626253+00:00",
+    "last_attempt_at": "2026-08-23T18:36:35.376224+00:00",
+    "last_success_at": "2026-08-23T18:36:07.917227+00:00",
     "last_error": null
   },
   "metrics": {

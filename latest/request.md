@@ -1,25 +1,22 @@
-# Request: Sundering Bolts perk (issue #88)
+# Request — Issue #91: Progression perk "Undermining"
 
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/88
-- Project: godot-td (runner key `godot-td`, workspace `poke-defense-godot/issue-perk-sundering-bolts`)
-- Branch: issue/perk-sundering-bolts (cut fresh from origin/master @ 97ed515)
-- Slug: perk-sundering-bolts
+- **Project:** poke-defense-godot (runner key `godot-td`, workspace `poke-defense-godot/issue-perk-undermining`)
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/91
+- **Branch:** issue/perk-undermining (cut fresh from origin/master @ d241462)
+- **Labels:** status:in-progress, priority:medium, type:common, type:progression-perk, type:traps, type:armor
 
-## Feature
+## Problem
+None of the underground traps (`trap_01`/Jaw, `trap_03`/Spike, `trap_02`/Saw, `trap_05`/Blender, `data/towers.xml:35-38`) have an `armor_dmg` stat, so armored enemies routed underground are just as shielded there as on the surface.
 
-New progression perk `sundering_bolts`, 3 levels (L1 10%, L2 20%, L3 35%). Each level applies a % of the hit's **final** damage (after all other damage-modifying perks) as additional armor-damage on the same hit, computed at the shared `EnemyHealthController.take_damage()` call site. Applies to every tower except Porter (damage=0). Ballista's flat `armor_dmg=20` still stacks on top. No new VFX — reuses existing armor bar.
+## Done when (exact acceptance criteria from the issue)
+1. New perk `undermining`, type Common, traps only, 3 levels.
+2. All 4 traps gain flat armor-damage per hit — L1 8, L2 15, L3 25 — added the same way Ballista's `armor_dmg` is read via `TowersConfig.get_armor_damage()` (`systems/TowersConfig.gd:184-186`).
+3. Does not affect any surface tower.
+4. Visual: tint traps' existing hit-impact effect to flag the armor-strip portion; if a given trap currently has no impact VFX at all, note that as a pre-existing gap rather than scope creep for this issue.
 
-## Acceptance criteria
-
-1. Perk `sundering_bolts` exists with 3 levels: 10% / 20% / 35% of final hit damage converted to armor-damage.
-2. Conversion uses the hit's final post-perk damage, not static base value from towers.xml.
-3. Applied in the shared take_damage path so all damaging towers benefit; Porter unaffected (0 damage → 0 armor-damage).
-4. Ballista flat armor_dmg stacks additively with the perk bonus.
-5. Existing armor bar reflects the drain (no new VFX needed).
-6. Editor/import gate passes; focused gameplay harness through the runner (`godot-td` / `poke-defense-godot/issue-perk-sundering-bolts`) proves the armor-strip math for a representative tower (Ballista) at each level, plus a no-perk baseline.
-
-## Notes / redo guidance
-
-- Runner key is `godot-td`; workspace is `poke-defense-godot/issue-perk-sundering-bolts`. Do not invent other workspace names (HTTP 422 chdir otherwise).
-- Use explicit scene argument before user args in harness commands; never rely on project.godot main scene.
-- Manual testing: visible armor-bar drain — set `manual_testing: required` if a still-captureable user story exists (armor bar draining after hits). Windowed evidence via runner, screenshots to `.gen/screenshots/`.
+## Notes / redo guidance for workers
+- Runner workspace naming pitfall: use exactly project key `godot-td` and workspace `poke-defense-godot/issue-perk-undermining`. Invented names cause HTTP 422 chdir failures that look like infra blockers.
+- Native Linux Godot verification through the runner only. Editor gate: `godot --headless --path . --editor --quit-after 300`. Gameplay harnesses need explicit scene arg before user args.
+- Visible player-facing perk → manual_testing should be `required`; manual-tester must never use `--headless`; windowed evidence via `--rendering-method gl_compatibility --audio-driver Dummy` when Vulkan fails; screenshots/GIFs into `.gen/screenshots/`.
+- Check profile must emit the literal line `classification: <pass|fixable|design_failure|blocked>` (lowercase value, no bold) so leader routing parses it.
+- Historical reference only (previous abandoned claim): commit 84c8e60 "bird view centers..." was on this branch before reset — unrelated to this issue; branch was reset to origin/master d241462.

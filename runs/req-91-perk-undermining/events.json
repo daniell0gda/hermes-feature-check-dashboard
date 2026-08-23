@@ -25,5 +25,14 @@
     "duration_ms": 378693,
     "summary": "Check complete. Wrote /workspace/git-workspaces/poke-defense-godot/issue-perk-undermining/.gen/check.md and .gen/status.md.\n\nVerified done: 10. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violation\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T18:36:35.375Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 31749,
+    "summary": "Gate decision written.\n\nmanual_testing: required \u2014 the check passed (classification: pass) and the feature includes a new player-visible story: the amber `UnderminingStripVFX` tint on trap hits when `undermining` strips armor, absent when u\u2026",
+    "error": null
   }
 ]
