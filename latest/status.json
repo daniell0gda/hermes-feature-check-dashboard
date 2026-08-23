@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/",
   "heartbeat_at": "2026-08-23T16:31:36.841Z",
   "last_node": "plan",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-23T16:31:36.841Z",
   "process_id": 71667,
   "host": "f1a4230ec90b",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T16:31:36.842084+00:00",
-    "last_success_at": "2026-08-23T16:29:19.758733+00:00",
+    "last_attempt_at": "2026-08-23T16:31:40.885693+00:00",
+    "last_success_at": "2026-08-23T16:31:40.884913+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 47882,
+        "output_tokens": 1341
+      }
+    ]
+  }
 }
