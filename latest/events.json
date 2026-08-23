@@ -25,5 +25,14 @@
     "duration_ms": 44503,
     "summary": "API call failed after 3 retries: HTTP 429: Provider returned error\n",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T12:45:25.915Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 47340,
+    "summary": "Gate decision written to /workspace/git-workspaces/poke-defense-godot/issue-cave-carved-path-torches/.gen/manual_testing.md:\n\nmanual_testing: required\n- Check report classifies pass; all 15 criteria Done, including the revision-3 localized-\u2026",
+    "error": null
   }
 ]
