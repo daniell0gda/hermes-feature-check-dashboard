@@ -1,13 +1,17 @@
 ## ✅ Done
-- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
-- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
-- The CloseChip remains flush in the frame's top-right corner and pressing it still emits exactly one `close_requested` (existing contract preserved).
-- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
-- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
-- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
+- (none)
 
 ## ⬜ Pending
-- (none)
+- A progression named `undermining` exists in the trap progression pool with type Common, exactly 3 levels, and is offered only for traps (never for any surface tower).
+- With `undermining` at levels 1/2/3, the exposed trap armor-damage bonus is 8/15/25 respectively; when the perk is not owned it is 0.
+- Each hit from any of the four traps (`trap_01`, `trap_02`, `trap_03`, `trap_05`) on an armored enemy removes exactly the current `undermining` level's armor amount (8/15/25), clamped so armor never goes below zero, in addition to normal HP damage.
+- Without the perk owned, a trap hit changes enemy armor by exactly zero (existing behaviour preserved).
+- Surface tower hits are unchanged by `undermining`: owning it does not add armor damage to any non-trap tower's hits.
+- Debug-build `[Undermining]` log line per armor-stripping trap hit
+- When an owned-perk trap hit actually strips armor, the trap's existing hit-impact effect shows a distinct tint signalling the armor-strip portion, and the tint is absent on trap hits while the perk is unowned.
+- A focused harness scenario proves definition and persistence: `undermining` resolves as Common/traps-only with 3 levels, applying levels yields the 8/15/25 armor values through the same accessor Ballista uses, re-applying past level 3 stays at 25, and save/reload restores the level and value.
+- A focused harness scenario proves live trap behavior: a real trap hit on an armored underground enemy reduces armor by exactly the perk amount at each level, and by zero when unowned.
+- A focused harness scenario proves scope isolation: while `undermining` is owned, scripted surface-tower hits apply no perk-derived armor damage.
 
 ## ❌ Impossible
 - (none)

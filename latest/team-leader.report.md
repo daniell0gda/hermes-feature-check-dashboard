@@ -1,62 +1,80 @@
 # Team-leader report
 
 - **Result:** failed
-- **Classification:** **fixable**
-- **Feature:** padding closable panels close button
-- **Run:** req-136-padding-closable-panels-close-button
+- **Classification:** fixable
+- **Feature:** perk-undermining
+- **Run:** issue-91-perk-undermining-211435
 - **Lifecycle:** dashboard publish only; project commit/push/close not implied
 
 ## Status
 
 ## ✅ Done
-- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
-- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
-- The CloseChip remains flush in the frame's top-right corner and pressing it still emits exactly one `close_requested` (existing contract preserved).
-- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
-- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
+- (none)
 
 ## ⬜ Pending
-- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
-  — missing evidence: no test instantiates the actual UpgPanel scene (coverage is via synthetic panels and ManageTowersPanel/OptionsScreen), and the plan marks manual_testing: required (windowed screenshots of panel_tower_details / panel_manage_towers / panel_options) which was not produced in this run.
+- A progression named `undermining` exists in the trap progression pool with type Common, exactly 3 levels, and is offered only for traps (never for any surface tower).
+- With `undermining` at levels 1/2/3, the exposed trap armor-damage bonus is 8/15/25 respectively; when the perk is not owned it is 0.
+- Each hit from any of the four traps (`trap_01`, `trap_02`, `trap_03`, `trap_05`) on an armored enemy removes exactly the current `undermining` level's armor amount (8/15/25), clamped so armor never goes below zero, in addition to normal HP damage.
+- Without the perk owned, a trap hit changes enemy armor by exactly zero (existing behaviour preserved).
+- Surface tower hits are unchanged by `undermining`: owning it does not add armor damage to any non-trap tower's hits.
+- Debug-build `[Undermining]` log line per armor-stripping trap hit
+- When an owned-perk trap hit actually strips armor, the trap's existing hit-impact effect shows a distinct tint signalling the armor-strip portion, and the tint is absent on trap hits while the perk is unowned.
+- A focused harness scenario proves definition and persistence: `undermining` resolves as Common/traps-only with 3 levels, applying levels yields the 8/15/25 armor values through the same accessor Ballista uses, re-applying past level 3 stays at 25, and save/reload restores the level and value.
+- A focused harness scenario proves live trap behavior: a real trap hit on an armored underground enemy reduces armor by exactly the perk amount at each level, and by zero when unowned.
+- A focused harness scenario proves scope isolation: while `undermining` is owned, scripted surface-tower hits apply no perk-derived armor damage.
 
 ## ❌ Impossible
 - (none)
 
 ## Check
 
-# Check report: req-136-padding-closable-panels-close-button (iteration check)
+# Check Report — issue-perk-undermining (iteration 1)
 
-Classification: **fixable**
+classification: fixable
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-padding-closable-panels-close-button)
+## Verdict
 
-- `godot --version` — exit 0 (4.4.1.stable.official.49a5bc7b6)
-- `godot --headless --path . --import` — exit 0 (UID warnings only, pre-existing theme UID staleness)
-- `godot --headless --path . --check-only --script res://scripts/ui/hud/TitledPanel.gd` — exit 0
-- `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit 0; "29 ok, 0 failed"
-- `godot --headless --path . res://tests/ui/test_enemy_armor_bar.tscn` — exit 0; "35 ok, 0 failed"
-- `godot --headless --path . res://tests/ui/test_enemy_health_bar_boss_icon.tscn` — exit 0; "18 ok, 0 failed"
-- `godot --headless --path . res://tests/ui/test_enemy_health_bar_oiled_icon.tscn` — exit 0; "8 ok, 0 failed"
+The feature is not implemented. The git-workspace is clean at origin/master
+(d241462): zero commits, zero modified files, and no `undermining` references
+anywhere in the repo (grep across *.gd / *.json excluding .gen/.godot returns
+nothing). No cluster report content was found beyond the plan-derived files.
+All 10 acceptance criteria are unmet.
 
-## Acceptance criteria evidence
+## Verification commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-perk-undermining)
 
-1. Closable panel reserves padding so no content control intersects the CloseChip rect — PASS. `_reserve_content_padding()` in `scripts/ui/hud/TitledPanel.gd` pulls `Frame.offset_right` to `-CLOSE_CORNER_SIZE.x`; test asserts offset <= -90 and leaf-rect overlap check passes.
-2. Padding applies only when closable / scene-placed chip exists — PASS. Tests: non-closable frame keeps `offset_right == 0` and full-rect anchors; scene-placed CloseChip reserves same padding.
-3. CloseChip flush top-right and emits exactly one `close_requested` — PASS ("it sits flush in the top-right corner", "pressing it emits close_requested once (got 1)").
-4. UpgPanel-style tower details content clear of chip — NOT PROVEN. The focused test covers synthetic closable panels plus ManageTowersPanel/OptionsScreen scenes, but never instantiates the actual UpgPanel scene; plan marks manual_testing: required and no windowed screenshots were produced. Moved to Pending.
-5. Manage Towers + Options keep content clear of chip — PASS (`_test_real_closable_scenes_keep_content_clear_of_the_chip`, both scenes).
-6. Debug `[TITLED_PANEL]` log naming panel and inset — PASS (log lines visible in headless run output: "reserves 90px of right padding for the close corner").
+- Preflight: `["git","status","--short"]` → exit 0, empty output (clean tree at d241462).
+- Typecheck/build gate: `["godot","--headless","--editor","--path",".","--quit-after","120"]`
+  → exitCode 0, durationMs ~97s. Import noise only (pre-existing glb import
+  errors on master: tower GLBs, portal/earth/shed glb, icon pngs); no GDScript
+  parse errors from project scripts. Gate technically passes but proves nothing
+  about this issue since no feature code exists.
+- Focused test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/undermining_progression.json"]`
+  → FAILED, exitCode 1 (scenario file does not exist). No result.json written.
+- Baseline control (proves runner/harness healthy):
+  `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/enemy_armor_trap.json"]`
+  → exitCode 0, `[Harness] status=pass exit=0`, wrote
+  `.gen/harness/enemy_armor_trap/result.json`. So the failure of the
+  undermining harnesses is a missing-feature problem, not infra.
+- Full suite: not run to completion — it would abort on the first missing
+  `undermining_*` scenario file; outcome already established by the focused run.
 
-## Changed-file quality
+## Missing deliverables
 
-- `scripts/ui/hud/TitledPanel.gd`: small, typed, documented helpers; debug-only log per CLAUDE.md convention. No violations found.
-- `tests/ui/test_titled_panel_close_corner.gd`: new tests assert real criteria (rect overlap math), not smoke loads. No duplicate coverage of existing tests found in the suite. Minor note (non-blocking): `_content_rects_outside_chip` only fails on overlapping *leaf* controls (childless), so a container that fully contains the chip region but has its own visual could slip through; acceptable for this criterion.
-
-## Scope creep / quality notes
-
-- Untracked stray file `.gen-test-report.txt` at repo root written by the test script into `res://`. Should live under `.gen/` per coding rules; advisory only, not a criterion demotion.
-- No prior open quality-notes entries existed.
+- `scripts/progression/trap.json` has no `undermining` entry (cluster 1).
+- `Trap.gd` / `EnemyHealthController.gd` have no armor-strip logic or
+  `[Undermining]` debug log (cluster 2).
+- No armor-strip tint in Trap.gd / EffectsManager.gd (cluster 3).
+- Missing scenario files: `tests/scenarios/undermining_progression.json`,
+  `tests/scenarios/undermining_trap_armor.json`,
+  `tests/scenarios/undermining_scope_isolation.json` (cluster 4).
+- No `.gen/status.md`, no quality-notes.md, no coder reports with evidence.
 
 ## Blockers
 
-None. Runner reachable, all gates green. Remaining work is small: add an UpgPanel-scene-based assertion (or produce the required windowed screenshots) for criterion 4, then re-run the focused test.
+None. Runner reachable (`git status` probe OK), worker image fine, Godot runs.
+This is plain incomplete implementation → fixable.
+
+## Unverified items
+
+All 10 criteria (no implementation exists to verify).
