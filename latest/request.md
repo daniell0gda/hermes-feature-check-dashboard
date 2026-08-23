@@ -1,52 +1,38 @@
-# Request: #127 follow-up (reopen)
+# Request
 
-Rebase is already done on this worktree (`f744f23` on `origin/master` `bc1fdf4`).
-Do not redo the rebase. Implement the three remaining visual follow-ups.
+- request_id: req-124-cave-carved-path-torches-r3
+- issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
+- project runner key: `godot-td` (never folder name)
+- workspace: `poke-defense-godot/issue-cave-carved-path-torches`
+- branch: `issue/cave-carved-path-torches` on origin/master
+- prior run `req-124-cave-carved-path-torches-r2` archived: planner returned empty (no `.gen/plan.md`). Restart from scratch. Do not treat r2 as evidence.
 
-https://github.com/daniell0gda/poke-defense-godot/issues/127
+## Problem
 
-## Required (Daniel)
+Not all carved cave path tiles get torches. Especially **curve / bent tunnels** stay dark.
 
-1. **Panel title must not be trimmed.**
-   Both `RewardsModal` and `ProgressionModal` use `TitledPanel` + `TitlePlate`.
-   The plate sits at `offset_top = -23` so it hangs out of the Window and gets clipped
-   (titles like "Choose a Reward" look cut off). Keep the plate fully inside the
-   window: inset the Frame from the top (or add a top spacer) so the straddling plate
-   is fully visible, and size the plate from the title's combined minimum size
-   (`TitledPanel._place_plate`) with enough width that no ellipsis/clip happens.
-   See team-work `references/titledpanel-anchor-plate-pitfall.md`.
-   TitlePlate stays center-anchored (`anchors_preset = 5`).
-   Vision-check screenshots: full readable title, no cut letters.
+## Required verification path (Daniel)
 
-2. **Add a panel around each reward perk description.**
-   In `RewardsModal._create_card` the description is a bare RichTextLabel.
-   Wrap the description in its own `PanelContainer` with `theme_type_variation = "ModalWell"`
-   (same inset well as tower-details Stats). Title/sub stay above that well.
-   ProgressionModal reward-card descriptions should also sit inside a ModalWell
-   (the card itself is already ModalWell — nest a description well or keep card
-   ModalWell and put description in a second inner well so the body text has a
-   distinct panel).
+- Go underground.
+- Carve a path **from side to side** (full crossing).
+- Inspect **curve tunnels** — not only straight corridors.
+- Missing torches on those curves is the failure.
 
-3. **Professional look for Unique perks.**
-   When a card's type is Unique (ProgressionModal offer cards and RewardsModal
-   listed selections):
-   - gold/bronze metallic border (duplicated StyleBoxFlat, width ≥ 3) — not the
-     old invalid `add_theme_color_override("panel")`
-   - Unique rarity chip/badge using existing `CostBadge` (or TitlePlate-style
-     small plate) with text "Unique"
-   - slightly stronger header contrast (ModalTitle on the name)
-   - no new art assets
-   Force at least one Unique card in the windowed screenshot scenario so this
-   is actually visible (do not leave Unique styling unphotographed).
+## Hard constraint
 
-## Preserve
-- Wood ModalPanel + TitlePlate + corner ✕ / close_requested
-- CaveSystem Window-typed return; `node is ProgressionModal` auto-answer
-- ModalWell card bodies for common rewards
-- Runner: project `godot-td`, workspace `poke-defense-godot/issue-window-modals-skip-wood-frame`
-- All Godot via run_project_cmd. manual_testing required, windowed screenshots,
-  never --headless for manual-tester. ui_feels_broken: no.
-- Do not commit, push, merge, or close.
+- **Do not change torch light intensity.** Current intensity is correct. Fix placement/coverage only.
 
-## Project path
-/workspace/git-workspaces/poke-defense-godot/issue-window-modals-skip-wood-frame
+## Done when
+
+- Every carved cave path tile that should be lit has a torch (or equivalent cave light)
+- New carve operations also get torches on the new path, including curves
+- No leftover dark carved corridors in the same cave as lit path (except intentional uncarved/dark rock)
+- Torch OmniLight / energy / range / intensity values stay unchanged
+
+## Planner must write
+
+A real non-empty `.gen/plan.md` plus `.gen/clusters/*.md` and `.gen/ui_scenario.md`. Empty plan is a failed phase — do not proceed to code.
+
+## Manual testing
+
+required. Windowed screenshots, top-down underground, after a side-to-side carve that includes curves. Do not use `--headless` for manual tester. Camera must aim at `camera_target`.
