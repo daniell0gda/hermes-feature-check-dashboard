@@ -1,47 +1,22 @@
 {
-  "run_id": "issue-89-exposed-plating",
-  "feature": "Exposed Plating perk",
+  "run_id": "corrosive-soak-90-r1",
+  "feature": "corrosive-soak-perk",
   "status": "running",
-  "started_at": "2026-08-23T16:36:06.554Z",
+  "started_at": "2026-08-23T16:55:30.645Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-89-exposed-plating/",
-  "heartbeat_at": "2026-08-23T17:01:29.159Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T17:01:29.159Z",
-  "process_id": 74545,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/corrosive-soak-90-r1/",
+  "heartbeat_at": "2026-08-23T17:02:19.071Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-23T17:02:19.071Z",
+  "process_id": 83991,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T17:01:33.200590+00:00",
-    "last_success_at": "2026-08-23T17:01:33.199984+00:00",
+    "last_attempt_at": "2026-08-23T17:02:19.072250+00:00",
+    "last_success_at": "2026-08-23T16:56:38.687507+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 0,
-        "output_tokens": 0
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 200729,
-        "output_tokens": 22765
-      }
-    ]
-  }
+  "metrics": {}
 }
