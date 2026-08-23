@@ -1,21 +1,21 @@
 {
-  "run_id": "req-84-traps-venom-barbs",
-  "feature": "traps-venom-barbs",
+  "run_id": "issue-130-middle-pan-flip-r1",
+  "feature": "issue-130-middle-pan-flip",
   "status": "running",
-  "started_at": "2026-08-23T20:16:12.656Z",
+  "started_at": "2026-08-23T19:21:33.076Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-84-traps-venom-barbs/",
-  "heartbeat_at": "2026-08-23T20:25:50.569Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T20:25:50.569Z",
-  "process_id": 206948,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-130-middle-pan-flip-r1/",
+  "heartbeat_at": "2026-08-23T20:27:37.372Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-23T20:27:37.372Z",
+  "process_id": 165601,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T20:25:55.203784+00:00",
-    "last_success_at": "2026-08-23T20:25:55.203135+00:00",
+    "last_attempt_at": "2026-08-23T20:27:37.374081+00:00",
+    "last_success_at": "2026-08-23T19:25:46.303220+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 153281,
-        "output_tokens": 10688
+        "input_tokens": 52453,
+        "output_tokens": 3647
       }
     ]
   }
