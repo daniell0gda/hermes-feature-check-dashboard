@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-23T19:05:35.609Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 982236,
+    "summary": "All artifacts written and verification run. Summary:\n\nPlan artifacts:\n- /workspace/git-workspaces/poke-defense-godot/issue-window-modals-skip-wood-frame/.gen/plan.md \u2014 11 acceptance criteria across 3 clusters (1 title-plate-inside-window, 2\u2026",
+    "error": null
+  }
+]
