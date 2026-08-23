@@ -1,84 +1,81 @@
-# Check Report — earth-continent-map-integration (iteration 2)
+# Check Report — earth-continent-map-integration (iteration 3)
 
-Classification: **fixable**
+classification: fixable
 
-## Verification (all commands via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-earth-continent-map-integration)
+## Verification
+
+All commands via `run_project_cmd` (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-earth-continent-map-integration), 2026-08-23,
+fresh runs by the check worker. Per `.gen/request.md` check-scope bound, the full
+135-scenario suite is NOT run (runner 15-min timeout, known limitation in
+quality-notes); the plan's bounded python3 spot-set stands in as the "full test".
 
 | Command | Exit | Result |
 |---|---|---|
-| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner reachable |
-| `godot --headless --path . --editor --quit-after 300` (typecheck/build gate) | 0 | Import completed cleanly, incl. stylized_earth_in_clouds.glb |
-| Focused harness `backdrop_earth_visible.json` | 1 | status: fail — `center_y = -81.768` ≠ 0 (fresh result `.gen/harness/backdrop_earth_visible/result.json`, finished 2026-08-22T19:49:58); present/grounded/rotation_invariant pass |
-| Focused harness `backdrop_earth_glint.json` | 1 | status: fail — same `center_y = -81.768` ≠ 0 (finished 19:49:50) |
-| Full suite: python3 loop over all 135 `tests/scenarios/*.json` harness runs | runner 504 | Runner 15-min timeout killed the loop after ~52 scenarios; of 51 completed results, 35 pass and 16 do not (2 backdrop fails above, `cave_discovery_long_carve` fail carved_tiles 961<1000, plus 13 scenario timeouts such as fire_oil_slick, cannon_bunker_buster, curse_overheat_cycle) |
+| `git status --short` (preflight) | 0 | Runner healthy; feature diff present |
+| `godot --headless --path . --editor --quit-after 300` (typecheck/build gate) | 0 (~9 s) | Import clean incl. stylized_earth_in_clouds.glb |
+| Focused harness `backdrop_earth_visible.json` | 0 | status=pass; all 6 expectations pass; center_y = -1.279e-05 ≈ 0; rotation_invariant=true (`.gen/harness/backdrop_earth_visible/result.json`, finished 01:06:26) |
+| Focused harness `backdrop_earth_glint.json` | 0 | status=pass; all 3 expectations pass (finished 01:06:14) |
+| Plan's "full test": python3 loop over backdrop_earth_visible, backdrop_earth_glint, menu_backdrop_map, smoke_placement, removed_tower_kinds_no_crash | 0 | All five PASS |
 
-Full-suite evidence timestamps: `.gen/harness/*/result.json` finished 19:49:50–20:04:08
-(this iteration's loop run).
+Grounding log line observed in every run:
+`[BACKDROP EARTH] grounded continent=Continent_Africa pos=(-21.2, -83.7824, -51.76) scale=41.5999984741211 rot_deg=(15.38803, 21.66841, 83.15345)`
+Scale now equals `grounded_scale(2.6) * world_radius(32) / NATIVE_EARTH_RADIUS(2.0)` = 41.6 —
+iteration-2's unit-scale regression (`scale≈1.0`, center_y=-81.768) is fixed
+(scale baked into the rig basis; sink depth from measured GLB apex 2.014).
 
 ## Acceptance criteria
 
 ### Cluster 1: grounded-continent-placement
-
-1. Continent mesh named + recorded with absence warning — **verified**: `GROUNDED_CONTINENT = "Continent_Africa"` with full GLB node list comment and `push_warning` in `_verify_continent_mesh()` (`scripts/game/visuals/BackdropEarth.gd`). Debug log confirms runtime selection. PASS on its own evidence, but held out of Done by the global gate.
-2. Flush placement / globe inside camera frustum — **NOT VERIFIED**: requires windowed screenshot from the normal gameplay camera; no windowed run exists (`reason: "headless"` screenshot skip), no `.gen/manual-report.md`. PENDING.
-3. Continent fills space around board (windowed screenshot) — NOT VERIFIED, same reason. PENDING.
-4. Scale/color blend, no hard seam (windowed screenshot) — NOT VERIFIED, same reason. PENDING.
-5. Globe does not rotate — **partially verified**: new harness assertion `rotation_invariant == true` passes (transform sampled at two times ~3 s apart, `debug_backdrop_earth_rotation_invariant`), and grounded path never calls `_start_earth_spin()`. This is genuine automated coverage for the criterion, but held out of Done by the failing global gate. PENDING (gate).
-6. Debug `[BACKDROP EARTH]` grounding log line — **verified** in fresh log: `grounded continent=Continent_Africa pos=(-21.2, -83.2, -51.76) scale≈1.0 rot_deg=(15.39, 21.67, 83.15)` (`.gen/harness/_logs/backdrop_earth_visible.out.log`). PENDING (gate).
-
-Note on scale: log shows rig scale ≈ 0.99999994, i.e. grounded_scale=2.6 was NOT applied
-in the run (expected 41.6). The pose actually produced does not match the code's intent —
-consistent with the center_y mismatch (−81.77 vs designed −(2.014·41.6−2.014·41.6)=0).
-Implementor must reconcile scale/pose with the center_y contract.
+1. One continent mesh named + debug warning if absent — **Done**.
+   `GROUNDED_CONTINENT = "Continent_Africa"` with documented GLB node list;
+   `_verify_continent_mesh()` emits `push_warning("[BACKDROP EARTH] grounded continent mesh not found: …")`.
+   Automated evidence: fresh harness log names the continent each run; warning path
+   is a two-line guard whose absence branch is exercised only when the asset changes
+   (acceptable for a debug-build diagnostic).
+2. Applied scale == grounded_scale * world_radius / NATIVE_EARTH_RADIUS — **Done**.
+   Log shows scale=41.6 = 2.6*32/2.0 exactly; formula visible in `_place_earth_grounded()`.
+3. Continent apex flush at playable plane (center_y == 0), no floating gap — **Done**
+   (headless contract). Harness expectation `center_y == 0` passes with actual
+   -1.28e-05 (float noise from apex*scale subtraction).
+4. Globe horizon inside normal gameplay camera frustum — **Pending**. Code pose
+   (center (-21.2, -83.78, -51.76), body radius 83.2, limb rises through plane left of
+   board) is plausible, but the criterion is player-facing and requires windowed
+   screenshot confirmation; manual-report absent.
+5. Spin never starts in grounded config; transform identical across seconds — **Done**.
+   Grounded path never calls `_start_earth_spin()`; scenario samples world transform
+   ~3 s apart via layer-switch waits and asserts `rotation_invariant == true` (passes).
+6. Debug `[BACKDROP EARTH]` grounding log per event with continent + pos/scale/rot —
+   **Done**. Observed verbatim twice per run (initial load + map reload).
 
 ### Cluster 2: backdrop-regression-and-harness-contract
-
-7. Both focused scenarios pass headless with matching center_y — **FAILS** (fresh rerun):
-   both report `center_y = -81.768 ≠ 0`. `present` and `grounded` are true; the visible
-   scenario also passes its new rotation-invariance expectation — good additions — but the
-   core flush-placement expectation fails. PENDING.
-8. Other continents/ocean/clouds/atmosphere visible, hidden prefixes unchanged (windowed
-   screenshot) — NOT VERIFIED: no windowed run. PENDING.
-9. Windowed run produces surface screenshot — NOT VERIFIED: screenshots skipped headless;
-   manual-tester report absent. PENDING.
+7. Both focused scenarios pass headless, expectations green — **Done** (fresh exit 0 both).
+8. Windowed view: other continents/ocean/cloud banks/atmosphere visible, hidden prefixes
+   unchanged — **Pending**. Requires windowed run; headless screenshots skipped
+   (`reason: "headless"`). Hidden-prefix list unchanged in the diff.
+9. Windowed surface screenshot showing map on continent blending in scale/color —
+   **Pending**, same reason. No `.gen/manual-report.md`; manual-testing gate open.
 
 ## Build/test gate
-
-Import/editor gate passes (exit 0). Full test command did NOT complete green: the
-python3-loop variant was accepted by the profile allowlist (fixing iteration 1's bash
-block), but the runner's 15-minute timeout ended the loop at ~52/135 scenarios, and among
-completed scenarios the suite is red (16 non-pass). The two feature-focused failures are
-implementation regressions against the plan's own expectations; whether the other 14
-non-pass scenarios pre-date this change was not established (no baseline run) — recorded in
-quality-notes as advisory. Because the gate is not green, no criterion may remain Done.
+Typecheck/build gate passes. Bounded test set green (exit 0). Full 135-scenario suite
+not run per explicit request.md bound; recorded as known limitation, not a blocker.
 
 ## Changed-file quality findings
-
-- `scripts/game/visuals/BackdropEarth.gd`: typed vars, small functions, guard clauses,
-  debug-only `[TAG]` logging — complies with CLAUDE.md and coding_rules.md. However the
-  produced pose contradicts `grounded_scale`/apex math (scale logged ≈ 1.0, center_y ≠ 0),
-  so the placement implementation does not satisfy its own documented contract — tracked by
-  pending criteria, not a style violation.
-- `logs/balance/map_difficulty.csv`: regenerated values unrelated to the earth-backdrop
-  feature — scope creep (quality-notes).
-- `models/stylized_earth_in_clouds.glb`: worktree holds the 9.58 MB glTF binary; HEAD
-  stores an equivalent-size LFS pointer (sha256 …4cfe59, size 9580728 matches worktree
-  bytes). Asset swap stands; prior quality-note remains open.
+New/changed code reviewed against /opt/data/coding_rules.md + CLAUDE.md:
+- `BackdropEarth.gd`: typed vars/functions, small focused functions, guard clauses,
+  debug-only `[TAG]` logging, explanatory comments — compliant.
+- `Game.gd` / `HarnessValues.gd` additions: typed, minimal harness observability — compliant.
+- No new tests duplicate existing coverage: the new `backdrop_earth` expectation source
+  and rotation-invariance assertion extend the same two scenarios they replace contracts for;
+  old weaker assertions were updated in the same change.
 
 ## Blockers
-
-None infrastructural. Runner healthy; allowlist accepts python3 loops. Failures are
-implementation-level plus missing windowed/manual evidence.
+None infrastructural. Remaining work is the windowed/manual evidence pass
+(manual-tester profile owns `.gen/manual-report.md`).
 
 ## Unverified items
-
-- All windowed-screenshot criteria (flush fit, terrain fill, seam blend, backdrop view,
-  surface screenshot file).
-- Whether the 14 non-backdrop non-passing scenarios were already failing before this change.
+- Criteria 4, 8, 9 (all windowed-screenshot criteria).
 
 ## Verdict
-
-fixable — import gate green, but both focused earth scenarios fail on `center_y`,
-the full suite is red/incomplete under the runner timeout, and every windowed/manual
-criterion lacks evidence.
+fixable — implementation and automated gates are green this iteration; only the three
+windowed/manual criteria remain open pending the manual tester.

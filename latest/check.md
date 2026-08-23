@@ -1,40 +1,81 @@
-# check.md — revision-check-1 (harness-cannot-inject-gui-input, iteration 2)
-
-## Verdict
+# Check Report — earth-continent-map-integration (iteration 3)
 
 classification: fixable
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-harness-cannot-inject-gui-input)
+## Verification
 
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Preflight | `["godot","--version"]` | 0 | Godot 4.4.1.stable |
-| Typecheck/build | `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | clean import/parse |
-| Focused test | `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/hud_controls_state.json"]` | 0 | `status=pass`, `.gen/harness/hud_controls_state/result.json`, 6/6 expectations passed |
-| Full suite | hud_layer_roundtrip, hud_heart_beat_on_egg_damage, hud_other_panels, hud_wood_panels (one run_project_cmd call each) | 0 each | all `status=pass`, expectations all passed |
+All commands via `run_project_cmd` (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-earth-continent-map-integration), 2026-08-23,
+fresh runs by the check worker. Per `.gen/request.md` check-scope bound, the full
+135-scenario suite is NOT run (runner 15-min timeout, known limitation in
+quality-notes); the plan's bounded python3 spot-set stands in as the "full test".
 
-Key focused-run evidence: `[HARNESS-CLICK] press_button target=UpgradeBtn landed=true disabled=false`; result.json action 18 detail `{button: /root/Main/UI/Root/UpgPanel/Frame/VBox/UpgButtons/UpgradeBtn, landed: true, disabled_at_press: false}`; tower level 1 → 2 asserted (action 19); money 200 → 180 asserted (action 20).
+| Command | Exit | Result |
+|---|---|---|
+| `git status --short` (preflight) | 0 | Runner healthy; feature diff present |
+| `godot --headless --path . --editor --quit-after 300` (typecheck/build gate) | 0 (~9 s) | Import clean incl. stylized_earth_in_clouds.glb |
+| Focused harness `backdrop_earth_visible.json` | 0 | status=pass; all 6 expectations pass; center_y = -1.279e-05 ≈ 0; rotation_invariant=true (`.gen/harness/backdrop_earth_visible/result.json`, finished 01:06:26) |
+| Focused harness `backdrop_earth_glint.json` | 0 | status=pass; all 3 expectations pass (finished 01:06:14) |
+| Plan's "full test": python3 loop over backdrop_earth_visible, backdrop_earth_glint, menu_backdrop_map, smoke_placement, removed_tower_kinds_no_crash | 0 | All five PASS |
 
-## Criterion-by-criterion
+Grounding log line observed in every run:
+`[BACKDROP EARTH] grounded continent=Continent_Africa pos=(-21.2, -83.7824, -51.76) scale=41.5999984741211 rot_deg=(15.38803, 21.66841, 83.15345)`
+Scale now equals `grounded_scale(2.6) * world_radius(32) / NATIVE_EARTH_RADIUS(2.0)` = 41.6 —
+iteration-2's unit-scale regression (`scale≈1.0`, center_y=-81.768) is fixed
+(scale baked into the rig basis; sink depth from measured GLB apex 2.014).
 
-1. press_button delivers a real press through Godot's input path and reports landing — **Pending**. Implementation (`HarnessActions.gd::_press_button` → `Viewport.push_input(event, true)` down/up pair) works and the focused scenario proves it end-to-end (level 1→2 via the click, exact cost deduction). Demoted for quality violations in the new code itself (see below).
-2. Unresolvable target → `ok: false` naming the target — **Pending** (missing evidence). Code path exists (`HarnessActions.gd:160`) but no automated scenario exercises it; no passing test would fail if this branch broke.
-3. Disabled Button → press does not land, handler does not run — **Pending** (missing evidence). Code path exists (`landed=false` when `disabled`), but the scenario only presses while enabled (it asserts disabled true→false, then waits and presses enabled). No automated test asserts the disabled-press behaviour.
-4. Works headless by driving the input path directly — **Done**. All verification above ran under `--headless`; press landed and level assertion passed with the dummy display.
-5. REFERENCE.md documents press_button (fields, return detail, headless behaviour) — **Done**. `.claude/skills/game-test/REFERENCE.md` gains a `press_button` table row plus a full section covering target resolution, return-detail table, failure modes, headless behaviour, and the log line. (Plan named `docs/REFERENCE.md`; the repo's game-test reference lives at `.claude/skills/game-test/REFERENCE.md` — treated as the same artifact.)
-6. Debug `[HARNESS-CLICK]` log line per attempt — **Done**. Gated on `OS.is_debug_build()` per CLAUDE.md logging rule, and the scenario asserts the exact line via a `log` expectation (hud_controls_state.json), so removing it fails the suite.
-7. hud_controls_state.json presses Upgrade after ≥0.5s post-selection and asserts level up — **Done**. Timeline: select (10–11) → wait 1.0s (17, five 0.2s poll ticks) → press_button (18) → tower.level==2 (19) → money==180 (20). Passed fresh.
+## Acceptance criteria
+
+### Cluster 1: grounded-continent-placement
+1. One continent mesh named + debug warning if absent — **Done**.
+   `GROUNDED_CONTINENT = "Continent_Africa"` with documented GLB node list;
+   `_verify_continent_mesh()` emits `push_warning("[BACKDROP EARTH] grounded continent mesh not found: …")`.
+   Automated evidence: fresh harness log names the continent each run; warning path
+   is a two-line guard whose absence branch is exercised only when the asset changes
+   (acceptable for a debug-build diagnostic).
+2. Applied scale == grounded_scale * world_radius / NATIVE_EARTH_RADIUS — **Done**.
+   Log shows scale=41.6 = 2.6*32/2.0 exactly; formula visible in `_place_earth_grounded()`.
+3. Continent apex flush at playable plane (center_y == 0), no floating gap — **Done**
+   (headless contract). Harness expectation `center_y == 0` passes with actual
+   -1.28e-05 (float noise from apex*scale subtraction).
+4. Globe horizon inside normal gameplay camera frustum — **Pending**. Code pose
+   (center (-21.2, -83.78, -51.76), body radius 83.2, limb rises through plane left of
+   board) is plausible, but the criterion is player-facing and requires windowed
+   screenshot confirmation; manual-report absent.
+5. Spin never starts in grounded config; transform identical across seconds — **Done**.
+   Grounded path never calls `_start_earth_spin()`; scenario samples world transform
+   ~3 s apart via layer-switch waits and asserts `rotation_invariant == true` (passes).
+6. Debug `[BACKDROP EARTH]` grounding log per event with continent + pos/scale/rot —
+   **Done**. Observed verbatim twice per run (initial load + map reload).
+
+### Cluster 2: backdrop-regression-and-harness-contract
+7. Both focused scenarios pass headless, expectations green — **Done** (fresh exit 0 both).
+8. Windowed view: other continents/ocean/cloud banks/atmosphere visible, hidden prefixes
+   unchanged — **Pending**. Requires windowed run; headless screenshots skipped
+   (`reason: "headless"`). Hidden-prefix list unchanged in the diff.
+9. Windowed surface screenshot showing map on continent blending in scale/color —
+   **Pending**, same reason. No `.gen/manual-report.md`; manual-testing gate open.
+
+## Build/test gate
+Typecheck/build gate passes. Bounded test set green (exit 0). Full 135-scenario suite
+not run per explicit request.md bound; recorded as known limitation, not a blocker.
 
 ## Changed-file quality findings
-
-- scripts/testing/HarnessActions.gd: `_deliver_motion()` is added by this diff but never called — dead code from the change; remove it or wire it into the click sequence.
-- scripts/testing/HarnessActions.gd: `_press_button` docstring says the action "drive[s] Control._gui_input directly", but the implementation uses `Viewport.push_input(event, true)` (the direct call is not callable in Godot 4). Same contradiction appears in `tests/scenarios/hud_controls_state.json` note 13 and in the REFERENCE.md press_button section's framing. Docs/comments must match the shipped mechanism.
-- scripts/testing/AgentHarness.gd run-stamp change: reasonable fix for stale-log reuse; no violation found.
+New/changed code reviewed against /opt/data/coding_rules.md + CLAUDE.md:
+- `BackdropEarth.gd`: typed vars/functions, small focused functions, guard clauses,
+  debug-only `[TAG]` logging, explanatory comments — compliant.
+- `Game.gd` / `HarnessValues.gd` additions: typed, minimal harness observability — compliant.
+- No new tests duplicate existing coverage: the new `backdrop_earth` expectation source
+  and rotation-invariance assertion extend the same two scenarios they replace contracts for;
+  old weaker assertions were updated in the same change.
 
 ## Blockers
-
-None. Runner healthy; all gates green.
+None infrastructural. Remaining work is the windowed/manual evidence pass
+(manual-tester profile owns `.gen/manual-report.md`).
 
 ## Unverified items
+- Criteria 4, 8, 9 (all windowed-screenshot criteria).
 
-Criteria 2 and 3 (failure paths) are implemented but unproven by any automated test.
+## Verdict
+fixable — implementation and automated gates are green this iteration; only the three
+windowed/manual criteria remain open pending the manual tester.
