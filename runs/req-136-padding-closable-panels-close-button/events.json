@@ -34,5 +34,14 @@
     "duration_ms": 106038,
     "summary": "Gate complete.\n\n- Read request.md, plan.md, check.md, status.md; check is `pass` (all six criteria verified fresh, including vision inspection of post-fix windowed shots).\n- Decision: manual testing required \u2014 the story (closable panels res\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-23T04:09:27.206Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 351493,
+    "summary": "Manual test complete.\n\nWhat I did:\n- Read plan/changes/manual_testing focus; ui_scenario.md was already present.\n- Ran the windowed screenshot scenario `hud_other_panels.json` fresh through run_project_cmd (project poke-defense-godot, windo\u2026",
+    "error": null
   }
 ]

@@ -1,20 +1,22 @@
-# Request: Underground carve top-down camera rotation (issue #130)
+# Request: req-136-padding-closable-panels-close-button
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/130
-Branch: issue/underground-carve-topdown-camera-rotation
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/136
+- Project: poke-defense-godot (runner key: godot-td)
+- Workspace: /workspace/git-workspaces/poke-defense-godot/issue-padding-closable-panels-close-button (branch issue/padding-closable-panels-close-button, base origin/master 5042d9f)
 
-## Goal
-When the carve tool is activated in the underground layer, the camera should automatically rotate to a top-down "bird view" angle so carved paths are visible from above.
-
-## Acceptance criteria
-- Entering carve mode on the underground layer rotates the camera to a top-down bird's-eye angle.
-- Only the rotation changes — camera position/zoom are untouched.
-- Canceling carve restores the previous camera angle.
-- If the user manually changed the camera angle while carving, canceling does NOT restore the old angle (keep the user's new angle).
+## Acceptance criteria (from issue)
+- Closable panels reserve horizontal padding so the "x" button never overlaps content.
+- Tower details panel shows all its content clear of the "x" button.
+- Verified visually that no other closable panel (e.g. shop, settings) has the overlap either.
 
 ## Notes
-- Visible player-facing UI/camera behavior → manual testing with windowed screenshots is required; underground views need top-down camera shots (side angles hide carved-path lighting).
-- Follow /opt/data/coding_rules.md.
+- Visible UI change: manual_testing expected required (windowed screenshots).
+- Workers must use runner key `godot-td` and workspace `poke-defense-godot/issue-padding-closable-panels-close-button`.
 
-## Redo note (run 1 failed)
-Run 1 ended blocked: every worker call used wrong runner workspace names (`godot-td/issue-underground-carve-topdown-camera-rotation`, `godot-td/issue-130`, `poke-defense-godot/check`) → HTTP 422 chdir failures. Correct usage: project key `godot-td`, workspace `poke-defense-godot/issue-<slug>` (this branch slug: `poke-defense-godot/issue-130` or matching existing convention). Also: `Game.on_carve_camera_mode` does NOT exist yet while `UI._notify_carve_camera` calls it via `has_method` guard — the core carve-camera logic in Game.gd is still missing. Implement it, then re-run all gates with correctly named runner calls.
+## Revision note (2026-08-22 20:45 UTC)
+- Fix changed at ~20:00 UTC: `_reserve_content_padding` now widens the frame PanelContainer's
+  panel stylebox `content_margin_right` (+90px) instead of shrinking `frame.offset_right`.
+- Existing `.gen/screenshots/*.png` and `.gen/harness/hud_other_panels/shots/*.png` are STALE
+  (19:52, pre-fix). The manual tester MUST capture fresh windowed screenshots after this change.
+- Acceptance addition: ✕ must sit flush INSIDE the frame's top-right corner (not floating outside
+  the panel art). Report `ui_feels_broken: yes|no` per final screenshot.

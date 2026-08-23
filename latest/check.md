@@ -1,98 +1,69 @@
-# Check report — underground-carve-topdown-camera-rotation (iteration 1)
+# Check report: req-136-padding-closable-panels-close-button (iteration 6, fresh verification)
 
-classification: blocked
+classification: pass
 
-## Verdict
+## Verification (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-padding-closable-panels-close-button)
 
-Blocked by runner infrastructure, not by the project alone. `run_project_cmd` was
-used (never the host shell) for every attempted verification command, and every
-invocation failed at container start:
+| Gate | Command | Exit | Result |
+|---|---|---|---|
+| Runner probe | `git status --short` | 0 | feature diff present as expected |
+| Typecheck/import | `godot --headless --path . --import` | 0 | clean import |
+| Focused test | `godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` | 0 | 33 ok, 0 failed; all 11 groups ran |
+| Full suite 1/3 | `res://tests/ui/test_enemy_armor_bar.tscn` | 0 | 35 ok, 0 failed |
+| Full suite 2/3 | `res://tests/ui/test_enemy_health_bar_boss_icon.tscn` | 0 | 18 ok, 0 failed |
+| Full suite 3/3 | `res://tests/ui/test_enemy_health_bar_oiled_icon.tscn` | 0 | 8 ok, 0 failed |
 
-- `{"project":"godot-td","workspace":"godot-td/issue-underground-carve-topdown-camera-rotation","cmd":["git","status","--short"]}` → HTTP 422, exit 126:
-  `OCI runtime exec failed: exec failed: unable to start container process: chdir to cwd ("/workspaces/godot-td/issue-underground-carve-topdown-camera-rotation") set in config.json failed: no such file or directory`
-- `godot --version` @ `godot-td/issue-130` → same 422 chdir failure.
-- `git status --short` @ `poke-defense-godot/check` → same 422 chdir failure.
-- Host: `/workspaces` does not exist; `docker ps` → `Cannot connect to the Docker daemon at unix:///var/run/docker.sock`.
+All commands fresh this iteration through `run_project_cmd`; no host-shell Godot.
+Pre-existing HudTheme.tres / UI.tscn invalid-UID warnings fall back to text paths —
+legacy noise, not this change.
 
-The runner's pre-provisioned workspace directory is missing and Hermes has no
-Docker socket access to create it; the project-runner skill prohibits
-bootstrapping the workspace through the host shell. Therefore the typecheck/build
-gate and the full test gate could not be executed and are treated as failed.
+## Criterion-by-criterion
 
-## Gate results
+1. Closable TitledPanel reserves horizontal padding; no content control intersects the
+   CloseChip rect at any size — PASS. `_reserve_content_padding()` duplicates the frame
+   stylebox and widens right/top content margins by CLOSE_CORNER_SIZE. Fresh run asserts
+   right margin ≥ 90 (got 136), top ≥ 103-equivalent inset (got 76), and "no leaf content
+   control intersects the CloseChip rect".
+2. Padding only when `is_closable` / scene-placed chip exists — PASS. Gated on
+   `_close_chip() != null`; fresh assertions: "a non-closable panel keeps its full-width
+   content area (20 < 90)", anchors untouched, scene-placed chip reserves same margin (136).
+3. Chip flush inside frame's top-right corner; exactly one `close_requested` per press —
+   PASS. Fresh: "sits flush in the top-right corner (offset 0.0, 0.0)", "✕ sits inside the
+   full-size frame, not floating outside it", "pressing it emits close_requested once (got 1)".
+4. Tower details (UpgPanel) content clear — PASS. Fresh assertions on real UI.tscn at
+   380x420 and 620x480: header/badge/stat rows/buttons all clear of the chip.
+5. Manage Towers + Options clear after layout — PASS. Fresh headless assertions for both
+   scenes ("keeps every visible content control clear of the CloseChip"), plus checker
+   vision inspection of fresh windowed shots (2026-08-23 03:53 UTC,
+   `.gen/harness/hud_other_panels/shots/`, post-fix): tower_details — ✕ flush inside frame
+   art, no overlap; manage_towers — ✕ flush, no overlap; pause_menu — ✕ clear of "Paused"
+   menu; options — frame's own metal X corner ornament present, no *content* overlaps the
+   corner region. ui_feels_broken: no on all four shots.
+6. Debug `[TITLED_PANEL]` log naming panel + reserved inset — PASS. Observed in fresh
+   output for ManageTowersPanel, Panel (Options), UpgPanel and synthetic panels:
+   "[TITLED_PANEL] <name> reserves 90x103px of top-right padding for the close corner",
+   debug-gated by `OS.is_debug_build()`.
 
-| Gate | Command | Result |
-|---|---|---|
-| Typecheck/build | `["godot","--headless","--editor","--path",".","--quit-after","3"]` | NOT RUN — runner 422 chdir failure (infra) |
-| Focused test | `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/carve_camera_topdown.json"]` | NOT RUN this session — runner 422 chdir failure (infra) |
-| Full test loop | plan.md full-test command | NOT RUN — runner 422 chdir failure (infra) |
+## Changed-file quality
 
-## Evidence from the implementor's own stored run
+Diff scope: `scripts/ui/hud/TitledPanel.gd` (+35), `scripts/ui/UI.gd` (+12),
+`scenes/UI.tscn` (one line), `tests/ui/test_titled_panel_close_corner.gd` (+186),
+`.gitignore` (one line). Checked against `/opt/data/coding_rules.md` and project CLAUDE.md:
+typed variables throughout, small focused helpers (`_reserve_content_padding`,
+`_close_chip`), guard clauses with ≤2 nesting, debug-gated `[TAG]` log per convention,
+surgical diff with doc comments explaining why stylebox margins are widened rather than
+shrinking the frame. No scope creep; untracked files are `.gen/` workflow artifacts only.
 
-`.gen/harness/carve_camera_topdown/result.json` (written 2026-08-22T12:18:12,
-before the runner broke) records `"status": "fail"`:
+Quality notes: open entry `manual-test-padding-closable-panels-close-button (iteration 1)`
+re-checked against the fresher 03:53 UTC shots — conclusion unchanged, appended a RESOLVED
+marker. No new cross-cutting violations found.
 
-- 6 timeline actions failed with `ui has no method '_on_dig_hole'`,
-  `_clear_dig_mode`, `_on_carve` (×2), `clear_carve_mode` (×2).
-- Expectation `dig_hole_camera_top_down` FAILED (actual true, expected false —
-  the dig-hole probe was taken without dig mode ever being entered, so the check
-  is both failing and vacuous).
-- The three `carve_camera_*` expectations "passed" only vacuously: every probe
-  captured the identical untouched camera basis because carve mode was never
-  actually entered. They assert nothing about the feature.
-- All three `[CARVE_CAMERA]` log regex expectations failed (`actual: ""`).
+## Manual path (plan-required)
 
-## Source inspection of the diff (`git diff HEAD`, 6 files, +184)
+Windowed harness `hud_other_panels.json` evidence is fresh (2026-08-23 03:53 UTC, after the
+padding fix): four screenshots in `.gen/harness/hud_other_panels/shots/`, vision-inspected
+by the checker this iteration. ui_feels_broken: no on every final screenshot.
 
-- `scripts/ui/UI.gd`: `carving_active` setter now calls
-  `game.on_carve_camera_mode(armed)` — **no such method exists anywhere**
-  (`grep -rn on_carve_camera_mode scripts/` matches only the call site). At
-  runtime this is guarded by `has_method`, so it silently does nothing.
-- `scripts/game/Game.gd`: contains NO carve-camera logic and NO `[CARVE_CAMERA]`
-  logging. The only addition is `debug_look_down_underground()` (orthogonal
-  camera teleport for screenshots) which implements none of the acceptance
-  criteria and looks like manual-test scaffolding, possibly scope creep.
-- No code anywhere rotates the camera to top-down on carve arm, restores it on
-  cancel, or tracks manual rotation during carve.
-- `scripts/testing/HarnessValues.gd` / `HarnessActions.gd` / `AgentHarness.gd`:
-  camera_probe / rotate_camera / camera value source are implemented and look
-  reasonable, but they test a feature that does not exist.
-- `tests/scenarios/carve_camera_topdown.json` references four UI methods that do
-  not exist (`_on_dig_hole`, `_clear_dig_mode`, `_on_carve`, `clear_carve_mode`);
-  grep finds none of them in `scripts/ui/UI.gd`.
+## Blockers / unverified items
 
-## Acceptance criteria status (all unmet)
-
-Every criterion below is Pending: the implementing logic is absent from the diff
-and/or its scenario actions fail against real UI methods.
-
-1. Carve on underground rotates camera top-down, position/zoom unchanged — Pending (no implementation; during_carve probe identical to before).
-2. Only rotation changes across arm — Pending (vacuous pass only).
-3. Plain cancel restores pre-carve rotation — Pending (no implementation).
-4. Manual rotation during carve survives cancel — Pending (no implementation).
-5. Camera rotation input still works while carving — Pending (untested; rotate_camera action ran outside carve mode).
-6. Dig-hole/place-exit/place-block/tower-selection do not trigger rotation — Pending (scenario calls nonexistent UI methods; expectation fails).
-7. `[CARVE_CAMERA]` debug log lines — Pending (absent from source; log assertions fail).
-8. Harness value source exposes camera orientation/placement — implemented (camera source + probes present in HarnessValues/HarnessActions) but unverifiable this session; kept Pending pending a runnable gate.
-9. Focused scenario asserts top-down / position-unchanged / restore / kept-player-angle — Pending (scenario currently fails: 4 bad action targets, 3 failed log checks, 1 failed expectation).
-
-## Manual testing
-
-Required by plan (`manual_testing: required`) and request notes. No windowed
-screenshot evidence found under `.gen/harness/carve_camera_topdown`
-(`"screenshots": []`). Not performed.
-
-## Blockers
-
-1. Runner infrastructure unavailable: `run_project_cmd` 422 chdir failures for
-   every workspace slug; `/workspaces` missing; Docker socket unreachable from
-   Hermes. Re-provision the runner workspace (host/root side) and re-run check.
-2. Implementation incomplete: `Game.on_carve_camera_mode` and all
-   `[CARVE_CAMERA]` logging missing; scenario targets four nonexistent UI
-   methods. Coder must implement cluster 1 and fix the scenario action names.
-
-## Quality notes
-
-See `.gen/quality-notes.md` (appended: silent no-op notification pattern;
-vacuous harness passes masking a missing feature; suspected scope creep in
-`debug_look_down_underground`). Advisory only.
+None. All six criteria hold under fresh automated + visual verification.
