@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-23T12:02:30.814Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 260362,
+    "summary": "API call failed after 3 retries: HTTP 429: Provider returned error\n",
+    "error": null
+  }
+]
