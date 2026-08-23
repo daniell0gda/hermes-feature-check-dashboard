@@ -1,21 +1,21 @@
 {
-  "run_id": "warlords-doctrine-r1",
-  "feature": "Warlord's Doctrine perk",
+  "run_id": "issue-89-exposed-plating",
+  "feature": "Exposed Plating perk",
   "status": "running",
-  "started_at": "2026-08-23T17:09:13.035Z",
+  "started_at": "2026-08-23T16:36:06.554Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/",
-  "heartbeat_at": "2026-08-23T17:20:33.536Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-89-exposed-plating/",
+  "heartbeat_at": "2026-08-23T17:20:59.984Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T17:20:33.536Z",
-  "process_id": 93127,
+  "active_node": null,
+  "last_event_at": "2026-08-23T17:20:59.984Z",
+  "process_id": 74545,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T17:20:37.797834+00:00",
-    "last_success_at": "2026-08-23T17:20:37.797254+00:00",
+    "last_attempt_at": "2026-08-23T17:20:59.984395+00:00",
+    "last_success_at": "2026-08-23T17:18:31.944733+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 167095,
-        "output_tokens": 5385
+        "input_tokens": 0,
+        "output_tokens": 0
       },
       {
         "task_id": "code",
@@ -39,8 +39,41 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 98687,
-        "output_tokens": 8036
+        "input_tokens": 200729,
+        "output_tokens": 22765
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 100314,
+        "output_tokens": 4164
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 130104,
+        "output_tokens": 10594
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 93421,
+        "output_tokens": 3498
       }
     ]
   }
