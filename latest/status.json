@@ -1,21 +1,21 @@
 {
-  "run_id": "110-grass-grid-misses-far-edges",
-  "feature": "grass-grid-misses-far-edges",
+  "run_id": "issue137-earth-continent-map",
+  "feature": "earth-continent-map-integration",
   "status": "running",
-  "started_at": "2026-08-23T00:32:36.653Z",
+  "started_at": "2026-08-23T00:55:39.079Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/110-grass-grid-misses-far-edges/",
-  "heartbeat_at": "2026-08-23T01:01:20.451Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
+  "heartbeat_at": "2026-08-23T01:03:53.629Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T01:01:20.451Z",
-  "process_id": 830468,
+  "active_node": null,
+  "last_event_at": "2026-08-23T01:03:53.629Z",
+  "process_id": 837982,
   "host": "25e0b2c49eb5",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T01:01:25.049678+00:00",
-    "last_success_at": "2026-08-23T01:01:25.048950+00:00",
+    "last_attempt_at": "2026-08-23T01:03:53.630750+00:00",
+    "last_success_at": "2026-08-23T00:59:37.681878+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,41 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 110924,
-        "output_tokens": 4733
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 175209,
-        "output_tokens": 18984
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 95388,
-        "output_tokens": 3160
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 76761,
-        "output_tokens": 1849
+        "input_tokens": 114064,
+        "output_tokens": 4854
       }
     ]
   }
