@@ -1,21 +1,21 @@
 {
-  "run_id": "issue-89-exposed-plating",
-  "feature": "Exposed Plating perk",
+  "run_id": "warlords-doctrine-r1",
+  "feature": "Warlord's Doctrine perk",
   "status": "running",
-  "started_at": "2026-08-23T16:36:06.554Z",
+  "started_at": "2026-08-23T16:35:26.314Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-89-exposed-plating/",
-  "heartbeat_at": "2026-08-23T17:04:59.227Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T17:04:59.227Z",
-  "process_id": 74545,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/",
+  "heartbeat_at": "2026-08-23T17:08:37.259Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-23T17:08:37.259Z",
+  "process_id": 73860,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T17:05:02.942273+00:00",
-    "last_success_at": "2026-08-23T17:01:37.807579+00:00",
+    "last_attempt_at": "2026-08-23T17:08:37.259419+00:00",
+    "last_success_at": "2026-08-23T17:04:26.757627+00:00",
     "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 0,
-        "output_tokens": 0
+        "input_tokens": 154526,
+        "output_tokens": 6961
       },
       {
         "task_id": "code",
@@ -39,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 200729,
-        "output_tokens": 22765
+        "input_tokens": 150803,
+        "output_tokens": 3916
       },
       {
         "task_id": "check",
@@ -50,8 +50,41 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 100314,
-        "output_tokens": 4164
+        "input_tokens": 101875,
+        "output_tokens": 3846
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 161410,
+        "output_tokens": 11037
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 93818,
+        "output_tokens": 4288
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 42366,
+        "output_tokens": 385
       }
     ]
   }
