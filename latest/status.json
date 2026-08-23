@@ -1,36 +1,22 @@
 {
-  "run_id": "warlords-doctrine-r1",
-  "feature": "Warlord's Doctrine perk",
+  "run_id": "perk-sundering-bolts-r2",
+  "feature": "Sundering Bolts perk - % of final damage also strips armor",
   "status": "running",
-  "started_at": "2026-08-23T15:55:11.713Z",
+  "started_at": "2026-08-23T16:13:26.429Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/",
-  "heartbeat_at": "2026-08-23T16:13:50.875Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T16:13:50.875Z",
-  "process_id": 64924,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/perk-sundering-bolts-r2/",
+  "heartbeat_at": "2026-08-23T16:13:26.429Z",
+  "last_node": null,
+  "active_node": "plan",
+  "last_event_at": null,
+  "process_id": 68198,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T16:13:55.098776+00:00",
-    "last_success_at": "2026-08-23T16:13:55.097827+00:00",
+    "last_attempt_at": "2026-08-23T16:15:01.046630+00:00",
+    "last_success_at": "2026-08-23T16:13:30.591723+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 118192,
-        "output_tokens": 10003
-      }
-    ]
-  }
+  "metrics": {}
 }

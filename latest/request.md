@@ -1,28 +1,25 @@
-# Request: Warlord's Doctrine progression perk
+# Request: Sundering Bolts perk (issue #88)
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/87
-- **Project:** poke-defense-godot
-- **Git workspace:** /workspace/git-workspaces/poke-defense-godot/issue-warlords-doctrine
-- **Branch:** issue/warlords-doctrine (cut from origin/master @ 97ed515)
-- **Request ID:** warlords-doctrine-r1
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/88
+- Project: godot-td (runner key `godot-td`, workspace `poke-defense-godot/issue-perk-sundering-bolts`)
+- Branch: issue/perk-sundering-bolts (cut fresh from origin/master @ 97ed515)
+- Slug: perk-sundering-bolts
 
-## Feature (plain English)
-New Common global progression perk `warlords_doctrine`: towers deal more damage, but every enemy spawns with bonus armor as a share of its max HP. Give/take perk.
+## Feature
 
-## Acceptance criteria (from issue #87, exact)
-1. New perk `warlords_doctrine`, type Common, global (`scripts/progression/global.json`), 3 levels:
-   - L1: +5% tower damage, enemies spawn with bonus armor = 8% of max HP
-   - L2: +9% tower damage, bonus armor = 12% of max HP
-   - L3: +14% tower damage, bonus armor = 15% of max HP
-2. Bonus armor is additive on top of innate `armor` from `enemies.xml`, applied at the same spawn site as `Enemy.gd:107-109` — not a replacement.
-3. Damage bonus goes through the existing tower-damage modifier chain (`scripts/progression/handlers/global/TowerDamage.gd`), stacking correctly alongside the existing `tower_dmg` perk rather than overriding it.
-4. Existing armor bar (`EnemyHealthBar.gd` ArmorRow/ArmorBar, `_update_armor_bar()` ~line 330) correctly shows/animates newly granted armor on previously-unarmored enemies.
-5. A `game-test` scenario spawns a normally-unarmored enemy with the perk active and asserts `enemy.armor > 0` at spawn.
+New progression perk `sundering_bolts`, 3 levels (L1 10%, L2 20%, L3 35%). Each level applies a % of the hit's **final** damage (after all other damage-modifying perks) as additional armor-damage on the same hit, computed at the shared `EnemyHealthController.take_damage()` call site. Applies to every tower except Porter (damage=0). Ballista's flat `armor_dmg=20` still stacks on top. No new VFX — reuses existing armor bar.
 
-## Runner notes (redo pins)
-- Runner key: `godot-td`; workspace: `poke-defense-godot/issue-warlords-doctrine`.
-- Use native Godot via run_project_cmd; harness scene args before user args.
-- Manual testing: visible player-facing perk — set `manual_testing: required` with windowed screenshots (no --headless for manual tester). UI-sanity criterion required.
+## Acceptance criteria
 
-## Historical context
-Fresh claim; no prior worktree or diff.
+1. Perk `sundering_bolts` exists with 3 levels: 10% / 20% / 35% of final hit damage converted to armor-damage.
+2. Conversion uses the hit's final post-perk damage, not static base value from towers.xml.
+3. Applied in the shared take_damage path so all damaging towers benefit; Porter unaffected (0 damage → 0 armor-damage).
+4. Ballista flat armor_dmg stacks additively with the perk bonus.
+5. Existing armor bar reflects the drain (no new VFX needed).
+6. Editor/import gate passes; focused gameplay harness through the runner (`godot-td` / `poke-defense-godot/issue-perk-sundering-bolts`) proves the armor-strip math for a representative tower (Ballista) at each level, plus a no-perk baseline.
+
+## Notes / redo guidance
+
+- Runner key is `godot-td`; workspace is `poke-defense-godot/issue-perk-sundering-bolts`. Do not invent other workspace names (HTTP 422 chdir otherwise).
+- Use explicit scene argument before user args in harness commands; never rely on project.godot main scene.
+- Manual testing: visible armor-bar drain — set `manual_testing: required` if a still-captureable user story exists (armor bar draining after hits). Windowed evidence via runner, screenshots to `.gen/screenshots/`.
