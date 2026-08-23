@@ -1,67 +1,123 @@
-# Manual Test Report – Upgrade click money popup (issue #134)
+# Manual Test Report – issue-124 cave-carved-path-torches (iteration 5, numeric-gate re-run)
 
 ## Summary
 
 - Result: PASSED
-- Tested on: 2026-08-22, windowed Godot 4.4.1 (gl_compatibility, Dummy audio) via run_project_cmd, workspace poke-defense-godot/issue-upgrade-click-money-animation
-- Scenario: tests/scenarios/upgrade_click_money_popup.json
+- Tested on: 2026-08-23 12:46 UTC, windowed Godot 4.4.1 gl_compatibility (llvmpipe), map_9, seed 1
+- Scenario: tests/scenarios/cave_carved_path_torches.json
 - Tester: Manual-tester profile
 
-Overall: I ran the upgrade-click money popup scenario in a real windowed game session.
-Clicking "Upgrade" in the tower details panel spawned the same floating yellow money popup a chest payout uses ("+20 coins!"), charged 20 coins (1500 -> 1460), leveled the tower to Lv. 2, and the popup cleaned itself up afterwards. Harness result: status=pass, headless=false, all actions and all expectations green.
+Re-ran the harness scenario `cave_carved_path_torches.json` in a real windowed
+gl_compatibility run through `run_project_cmd` (`godot --path . --rendering-method
+gl_compatibility --audio-driver Dummy res://scenes/Main.tscn --
+--harness=res://tests/scenarios/cave_carved_path_torches.json`; never headless).
+Result: `status=pass exit=0`. `[TORCH]` recomputes observed in stdout:
+active=29 → 148 → 153 → 149. Three fresh PNGs were captured by the harness at the
+scripted beats and copied to `.gen/screenshots/` (timestamps 12:47, matching this run).
+
+The scripted numeric warm-pixel gate was run over the fresh PNGs with
+`uv run --with pillow python .gen/measure_warm_pixels.py ...`
+(raw output: `.gen/warm_pixel_measurement.txt`, summary: `.gen/warm_pixel_summary.json`).
 
 ## Scenario Walkthrough
 
-### Step 1 – Starting state: tower placed and details panel open
+### Step 1 – Before the cross carve (open cave lit, rock dark)
 
-- Action: Loaded map_10, set money to 1500, placed a Generic tower at (-5.684, 0, -5.213), selected it so the tower details panel opened showing "Lv. 1", waited past the scene fade-in (~1.8 s), captured before shot.
-- Expected: Details panel visible with UPGRADE button, no popup on screen.
-- Observed: Exactly that — Tower Details panel shows Generic Tower "Lv. 1" with UPGRADE (20 coins) and SELL buttons; no floating text anywhere. Money reads 1480 on the top bar at capture time (map starting money was applied before the scenario's _set_money(1500); the upgrade charge of 20 lands later: 1500 - 20 = 1460 confirmed in the end snapshot).
+- Action: Confirmed dangerous cave 9101 ("yes"), switched to underground layer,
+  looked straight down top-down (`debug_look_down_underground`), screenshot taken.
+- Expected: The confirmed-open cave room is visibly lit by torch light; solid rock
+  elsewhere still dark.
+- Observed: One small warm-lit open room at top-center of the play area; everything
+  else dark unlit rock. Measurement: north[0..3] segments covering the cave room show
+  7–41% warm pixels; segments where no corridor has been carved yet read 0% — correct,
+  since those corridors do not exist until beat 2.
 - Status: PASS
+- ![open cave before cross carve](screenshots/open_cave_before_cross_carve.png)
 
+### Step 2 – After the plus-cross carve (all four arms lit end to end)
 
-
-### Step 2 – Click "Upgrade"
-
-- Action: Triggered UI._on_upgrade_pressed (the real handler behind clicking the UPGRADE button), waited 0.3 s while the 1.5 s popup animation runs.
-- Expected: A floating yellow "+20 coins!" popup rises above the tower; money is charged; tower levels up.
-- Observed: Harness asserted reward_popups == 1 and reward_popup_text contains "+20 coins!" — both green. Game log shows `[CHEST REWARD] Created popup for 20 coins at (-5.684, 1.5, -5.213)` — i.e. exactly above the tower.
+- Action: Carved the 2x18 vertical + 18x2 horizontal cross; torch recompute
+  active=148; all count_near assertions at ±2..±8 on both axes passed; looked down,
+  screenshot taken.
+- Expected: Entire carved cross visibly lit by warm torch light along walls; no dark
+  gaps inside carved corridors.
+- Observed: Numeric gate over this PNG: every one of the 32 arm segments has warm
+  pixels — north min=5.58%/mean=15.18%, south min=4.65%/mean=12.10%,
+  west min=3.39%/mean=11.84%, east min=5.66%/mean=19.68%. Warmth is non-uniform
+  per segment (pool centers vs edges) and no segment saturates toward white —
+  small localized torch pools, not floodlight.
 - Status: PASS
+- ![cross carve fully lit](screenshots/dungeon_cross_carve_lit.png)
 
-### Step 3 – Popup visible on screen (screenshot proof)
+### Step 3 – New connecting corridor lit along its length
 
-- Action: Deselected the tower so the details panel could not occlude the popup, then captured the after shot while the popup was still animating.
-- Expected: Floating yellow "+20 …" label visible above the tower.
-- Observed: The after shot shows a small yellow floating "+20 …" label above the path/tower area (screen ~(730–1060, 350–470)) which is completely absent from the before shot. Independent pixel analysis found ~1,900 new yellow pixels forming the text cluster in exactly that region between the two shots. Note: the label is small at 1920x1080 and sits over busy terrain, so it is easiest to see in the zoom crop below.
+- Action: Carved the short connecting corridor (carve_rectangle [3.5,-3,-8] 4x1);
+  torch recompute active=153; count_near ≥1 verified at x=1.5/3.5/5.5 on the new
+  corridor; unlit_carved_in_cave == 0.
+- Expected: The new corridor fully lit along its length, blending into the network.
+- Observed: Final screenshot shows one continuous warm-lit network; numeric gate on
+  the final PNG passes all 32 arm segments again (north min=5.35%, south min=12.02%,
+  west min=3.61%, east min=6.45%). Vision inspection confirms zero dark carved
+  corridor segments and high contrast between lit paths and dark rock.
 - Status: PASS
+- ![network fully lit incl. new corridor](screenshots/open_cave_no_dark_corridor.png)
 
+### Step 4 – Declined caves stay dark
 
+- Action: Declined and sealed overlapping cave 9102 and isolated cave 9103;
+  harness asserted count_in_cave == 0 for both after sealing + 1 s wait (both passed);
+  looked down, final screenshot.
+- Expected: Declined cave interiors completely dark despite surrounding lit path.
+- Observed: Harness state assertions confirm zero active torches inside 9102/9103
+  even where they overlap carved path. The final screenshot shows the dark sealed
+  interiors adjacent to the fully lit cross; vision inspection confirms dark sealed
+  areas frame the lit path while no carved corridor segment reads dark.
+- Status: PASS
+- ![declined caves dark](screenshots/open_cave_no_dark_corridor.png)
 
 ## Criteria
 
-- Clicking "Upgrade" triggers the same floating money-increase popup used for chest payouts
-  - Before click — details panel open, no popup:
-    - ![before](screenshots/before_upgrade_click.png)
-  - After click — floating yellow "+20 …" popup above the tower:
-    - ![after](screenshots/after_upgrade_click_popup_visible.png)
-    - ![popup zoom](screenshots/popup_zoom_after_upgrade_click.png)
+- Carved cross fully lit along all four arms end to end (player-visible)
+  - ![cross carve fully lit](screenshots/dungeon_cross_carve_lit.png)
+- Open cave lit / solid rock dark before carving
+  - ![open cave before cross carve](screenshots/open_cave_before_cross_carve.png)
+- New connected corridor lit along its entire length
+  - ![network fully lit incl. new corridor](screenshots/open_cave_no_dark_corridor.png)
+- Pending and declined cave interiors contain zero torches / stay dark even when
+  overlapping carved path (harness count_in_cave == 0 for 9102 and 9103 after decline;
+  visual: dark sealed interiors beside the lit network)
+  - ![declined caves dark](screenshots/open_cave_no_dark_corridor.png)
+- Scripted numeric warm-pixel measurement (manual tester run, not a vision summary):
+  `uv run --with pillow python .gen/measure_warm_pixels.py` over the three fresh PNGs.
+  Both post-carve screenshots pass every sampled arm segment (>0 warm pixels in all
+  32 segments each); per-segment warmth varies measurably (≈3.4%–65.4%) showing
+  distinct pools rather than uniform floodlight, and no segment saturates toward
+  uniform white. Raw output: `.gen/warm_pixel_measurement.txt`; structured summary:
+  `.gen/warm_pixel_summary.json`.
+- Headless-side criteria (count_near coverage every ~2 units on all four arms,
+  unlit_carved_in_cave == 0, [TORCH] log lines per recompute) verified via fresh
+  `.gen/harness/cave_carved_path_torches/result.json`: status=pass, exit 0, [TORCH]
+  recomputes active=29→148→153→149.
 
-- Animation visually matches the existing money-increase effect
-  - Verified: the game log identifies the popup as the shared chest-reward popup (`[CHEST REWARD] Created popup for 20 coins`), and the screenshot shows the same yellow floating-label style used for chest payouts.
-
-- Money actually charged / tower actually leveled (harness state assertions)
-  - money 1500 -> 1460 (-20), tower level 1 -> 2, popup freed after animation (reward_popups back to 0). All three result.json expectations passed; status=pass, headless=false.
+Note on the measurement script's exit code: the script prints RESULT: FAIL only
+because it also samples the *before-carve* screenshot, whose arm positions contain
+no carved corridor yet (correctly dark). Both post-carve screenshots — where the
+carved cross actually exists — pass every segment. This matches the criterion
+"no arm segment with zero warm pixels", which can only apply once arms exist.
 
 ## Issues and Observations
 
-- Low: At 1920x1080 the popup text is small and renders over textured grass/path, so it can be missed at a glance in full-frame screenshots; the zoomed crop proves it clearly. Cosmetic/readability nit only.
-- Low: Pre-existing benign log noise unrelated to this feature (missing optional GLB models like backdrop earth / portal arch, HudTheme UID warnings, GL resource cleanup messages at exit). No impact on gameplay or this criterion.
-- Harness quirk (already handled by revision 2): the details panel must be deselected before the after shot, otherwise it occludes the popup.
+- Low, pre-existing: heavy HudTheme.tres "Failed loading resource"/Parse Error noise
+  in stdout (missing textures/ui/hud/*.png). Known repo noise; no SCRIPT ERROR or
+  Invalid call observed in this run.
+- Low, cosmetic: exit-time dummy-renderer/GLES leak warnings after run end. Known
+  noise, does not affect rendered frames.
+- Low, process note: measure_warm_pixels.py needs Pillow via uv
+  (`uv run --with pillow`); system python3 lacks PIL on this host.
 
 ## Recommendation
 
-Ready. The player-visible story holds: clicking Upgrade plays the chest-style floating "+20 coins!" popup, charges the cost, and levels the tower. No code changes needed.
-
----
-
-Manual-test result: PASSED. Scenario: tests/scenarios/upgrade_click_money_popup.json. Report: .gen/manual-report.md. Escalation: no.
+Ready. The carved corridor lighting renders correctly on screen end-to-end with
+small, warm, non-uniform torch pools, pending/declined caves stay dark even where
+they overlap carved path, and the scripted numeric gate passes on both post-carve
+screenshots. No code changes needed from this manual pass.
