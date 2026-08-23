@@ -1,75 +1,74 @@
-# Check report: req-83-traps-frostbite-fangs (iteration 1)
+# Check report — issue #127 reopen follow-ups (iteration 3, continuation)
 
 classification: fixable
 
 ## Verdict
 
-Implementation matches the request. Fresh verification through `run_project_cmd`
-(project=godot-td, workspace=poke-defense-godot/issue-traps-frostbite-fangs) is
-green: editor/parse gate exit 0, focused harness `traps_frostbite_fangs_progression`
-status=pass exit 0, and both trap regression harnesses pass.
+Automated verification is fully green this run: editor/import gate exit 0, focused
+test suite `titled_panel_close_corner` **58 ok, 0 failed** (exit 0 — the
+previously failing corner-region assertion is now green via the HudTheme
+texture_margin_right 80→75 fix), and the full harness scenario passes with no
+theme-override engine errors. The shared `ModalUniqueStyling` helper resolves the
+revision-1 duplication. However, the run's stated purpose was visual closeout:
+request.md required a forced Unique offer in the windowed scenario, fresh windowed
+PNGs in `.gen/screenshots/` and `.gen/harness/.../shots/`, and a manual-tester
+report. None of that exists: `.gen/manual-report.md` and `.gen/screenshots/` are
+absent, `tests/scenarios/progression_modal_wood_frame.json` is unchanged (git
+shows it unmodified) and still draws only Common cards (`force_mode=false`,
+`chosen=2`, all Common; the sole forceVisibility Unique entry `scifi_overclock`
+is chest-incompatible without a scifi tower). 5 of 11 criteria remain Pending;
+6 structural criteria are verified Done by automated tests.
 
-One residual item keeps this from `pass`: the player-facing "frost overlay
-renders" criterion has only headless state-level proof (`ice_slow_fx >= 1` on a
-live trap hit); the windowed screenshot checkpoint (`frostbite_fangs_aftermath`)
-was skipped under `--headless` and awaits the manual tester
-(`manual_testing: required` per request.md). That is a fixable handoff item, not
-a code defect.
+## Commands run (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-window-modals-skip-wood-frame)
 
-## Verification commands (all fresh, this run)
+- `["git","status","--short"]` — exit 0. Runner reachable. Changed: 7 modified files + new `scripts/ui/modal_unique_styling.gd`. Scenario JSON unchanged.
+- `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0. Import/typecheck gate green.
+- `["godot","--headless","--path",".","res://tests/ui/test_titled_panel_close_corner.tscn"]` — **exit 0**, "58 ok, 0 failed", "every test ran to completion (17 of 17)". Covers plate-inside-window geometry for both scenes, min-size-derived plate width, centre anchoring, ✕ close_requested, RewardsModal description well, ProgressionModal inner well, common-card order, gold ≥3px border via StyleBoxFlat duplicate, "Unique" badge presence, ModalTitle contrast, and identical treatment on RewardsModal listed selections.
+- `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/progression_modal_wood_frame.json"]` — exit 0, `[Harness] status=pass exit=0`, fresh `.gen/harness/progression_modal_wood_frame/result.json`. Modal opened (`[PROGRESSION_MODAL] open money=30 options=3`) with **no invalid-theme-override errors**. Screenshot step skipped headless (expected).
 
-| Command | Exit | Result |
-|---|---|---|
-| `["godot","--version"]` | 0 | 4.4.1.stable.official.49a5bc7b6 |
-| `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | import/parse gate clean (only pre-existing invalid-UID warnings) |
-| `["godot","--headless","--path",\n".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_frostbite_fangs_progression.json"]` | 0 | `.gen/harness/traps_frostbite_fangs_progression/result.json`: `status=pass`, all 53 timeline steps ok |
-| same runner cmd, `traps_serrated_edges_progression.json` | 0 | status=pass (regression) |
-| same runner cmd, `undermining_trap_armor.json` | 0 | status=pass (regression; Undermining strip path unaffected by the new `perform_hit` hook) |
+## Per-criterion evidence
 
-## Acceptance criteria evidence
+Done (automated test evidence, all passing):
+- Plate width from `_title_min_width()` (`TitledPanel.gd`) — test asserts width == label min + stylebox margins.
+- Centre anchor preset 5 / symmetric offsets — both scenes asserted.
+- ✕ emits close_requested once, closes modal — pre-existing tests pass; close path untouched.
+- Unique gold border Color(0.85,0.66,0.28) ≥3px all sides through duplicated StyleBoxFlat override, no color override, no engine errors on open (focused suite + harness).
+- Unique name uses ModalTitle; common card name styling unchanged.
+- RewardsModal listed Unique selection gets identical border/badge/header treatments.
 
-1. **Add Unique `traps_frostbite_fangs` (L1-3)** — Done.
-   `scripts/progression/trap.json` adds the Unique with maxLevels 3; harness asserts
-   `type == Unique`, eligibility true at L1/L2 and false at L3.
-2. **Trap hits apply chill/slow via `EffectsManager.apply_frozen`** — Done.
-   `Trap.gd::_apply_frostbite_fangs` calls `em.call("apply_frozen", magnitude,
-   duration, -1)` from `perform_hit`; live log shows `[FROSTBITE_FANGS] trap=trap_01
-   chill=0.6 dur=3.0 enemy=Cactoro` on real trap hits.
-3. **Duration or magnitude scales per level** — Done. Harness walks L1→L2→L3 asserting
-   0.4/2.0s → 0.5/2.5s → 0.6/3.0s (absolute values, idempotent on save/reload).
-4. **Reuse existing frost overlay VFX from `apply_frozen`** — Done. No new assets;
-   routes through the unchanged `EffectsManager.apply_frozen` → `apply_slow` +
-   `_ensure_ice_slow_fx` path.
-5. **Confirm frost overlay renders when triggered from a trap** — Done at headless
-   bar: live-arm asserts `enemies.frozen_count >= 1`, `slow_magnitude == 0.6`,
-   `ice_slow_fx >= 1`. Windowed pixel confirmation deferred to manual tester
-   (screenshot action skipped: reason=headless). Unowned control arm proves zero chill
-   without the perk (`!regex "[FROSTBITE_FANGS] trap=trap_03"`).
-6. **Preserve existing frozen-effect ownership and stacking semantics** — Done.
-   Chill goes through the untouched `apply_frozen` path (burn-exclusivity + slow
-   ownership preserved); unowned config returns before any effect call.
-   Regression harnesses pass.
-7. **Focused coverage for level scaling and trap-triggered visual/effect behavior** — Done.
-   New `tests/scenarios/traps_frostbite_fangs_progression.json`; no pre-existing
-   scenario covered frostbite (no overlap found).
-8. **Verify the relevant trap gameplay path** — Done. Live underground arm:
-   cave fixtures → force spawn → placed trap_01 → overlap-poll `perform_hit`.
+Pending (missing required visual/manual evidence):
+- Title readability at real rendered size (geometry proven; pixels not).
+- Visual distinctness of ModalWell in both modals (structure proven).
+- Common card layout order in render (order proven structurally).
+- "Unique" badge legible **in a screenshot** — criterion wording demands a screenshot; none exists, and the scenario was not updated to force a Unique draw as request.md item 1 required.
 
 ## Changed-file quality findings
 
-- Diff reviewed against `/opt/data/coding_rules.md` + worktree `CLAUDE.md`:
-  typed variables, guard clauses (nesting ≤2), debug-only `[TAG]` logs, surgical
-  scope (4 modified files + 1 new scenario), no dead code or duplication. No violations.
-- No quality-notes.md entries open; no new cross-cutting issues found
-  (`git diff HEAD` / untracked = only feature files).
+No quality violations found in this iteration's changed code: duplication from
+revision 1 is resolved via `scripts/ui/modal_unique_styling.gd` (typed, documented,
+single-purpose); TitledPanel change is minimal and commented; HudTheme margin
+change is explained inline. Test-overlap check: the 6 new tests assert new
+behaviour not covered elsewhere in the suite — no overlap.
+
+Pre-existing noise (not attributed to this diff): invalid-UID ext_resource warnings
+in HudTheme.tres/UI.tscn, dummy-renderer RID-leak errors at exit, one harmless
+exclusive-child Window ERROR when both modals are instantiated in one test tree,
+failed loads for unimported GLBs in headless mode.
 
 ## Blockers
 
-None. Runner healthy throughout; no host-shell Godot used.
+None infra-related. The gap is work, not tooling:
+1. Requested scenario fixture (forced Unique offer) was not delivered — `progression_modal_wood_frame.json` unchanged.
+2. Windowed screenshot capture + copy to `.gen/screenshots/` and `.gen/harness/.../shots/` not done (runner runs headless; windowed capture must come from the manual-tester/windowed worker as request.md prescribes).
+3. Manual tester has not produced `.gen/manual-report.md`.
 
-## Unverified items / handoff
+## Unverified items
 
-- Windowed screenshot of visible frost overlay on trap hit → manual tester
-  (scenario checkpoints already wired: `frostbite_fangs_chilled_hit` capture point
-  and optional aftermath shot).
-- Lifecycle respected: nothing committed/pushed/merged/closed by check.
+- Rendered-pixel claims: full unclipped titles ("Rewards", "Choose a Reward"), ModalWell visual distinction, gold border visibility, "Unique" badge legibility.
+- Whether a Unique offer can be forced into the chest draw without a scifi tower (fixture design needed — e.g. seed a selection or extend the harness to inject options).
+
+## Classification rationale
+
+Runner healthy, build green, full automated suite green — but the run's explicit
+deliverable (forced-Unique windowed screenshots + manual report) is missing, so 5
+criteria stay Pending. All recoverable within current design → fixable.
