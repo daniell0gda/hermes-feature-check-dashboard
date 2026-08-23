@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation
+# Coder report: implementation
 
 ## Changed files
 - `scenes/UI.tscn` — modified: `Root/UpgPanel` re-anchored from top-center (anchors_preset 5, anchor_left/right = 0.5, offsets ±190) to right-edge dock (anchors_preset 1, anchor_left/right = 1.0, offset_left -390 / offset_right -16, grow_horizontal 0). `Root/UpgPanel/TitlePlate` re-anchored to the panel's right rim to match (anchors_preset 1, anchor 1.0, grow_horizontal 0); TitledPanel._place_plate still recentres it at runtime.
@@ -37,4 +37,3 @@ All commands below were re-run via run_project_cmd project=godot-td workspace=po
 - Regression `--harness=res://tests/scenarios/tower_details_panel.json` — exit 0, status=pass
 
 All three acceptance criteria stand Done on this verified evidence. Manual testing (windowed screenshots + ui_feels_broken verdict) remains required per request and is not produced by this code node.
-\n
