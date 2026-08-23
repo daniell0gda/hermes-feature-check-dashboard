@@ -8,15 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-89-exposed-plating/",
   "heartbeat_at": "2026-08-23T17:15:25.437Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-23T17:15:25.437Z",
   "process_id": 74545,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T17:15:25.437561+00:00",
-    "last_success_at": "2026-08-23T17:01:37.807579+00:00",
-    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
+    "last_attempt_at": "2026-08-23T17:15:29.844647+00:00",
+    "last_success_at": "2026-08-23T17:15:29.844077+00:00",
+    "last_error": null
   },
   "metrics": {
     "invocations": [
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 100314,
         "output_tokens": 4164
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 130104,
+        "output_tokens": 10594
       }
     ]
   }
