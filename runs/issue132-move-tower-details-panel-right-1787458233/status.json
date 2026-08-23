@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue132-move-tower-details-panel-right-1787458233/",
   "heartbeat_at": "2026-08-23T05:28:50.033Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-23T05:28:50.033Z",
   "process_id": 896032,
   "host": "25e0b2c49eb5",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T05:28:50.033879+00:00",
-    "last_success_at": "2026-08-23T04:55:26.122091+00:00",
+    "last_attempt_at": "2026-08-23T05:28:54.700942+00:00",
+    "last_success_at": "2026-08-23T05:28:54.700119+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 144782,
         "output_tokens": 4395
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 153575,
+        "output_tokens": 3377
       }
     ]
   }
