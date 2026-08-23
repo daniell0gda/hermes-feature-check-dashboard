@@ -1,17 +1,3 @@
-# Acceptance Plan: issue-124-cave-carved-path-torches
-
-## Verification
-
-All project commands run through Hermes `run_project_cmd` (project `godot-td`, workspace `poke-defense-godot/issue-cave-carved-path-torches`).
-
-- Focused test: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_carved_path_torches.json"]
-- Full test: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/declined_cave_torches_extinguish.json"] then ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_pending_seals_entrance_instantly.json"] then repeat ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_pending_seals_entrance_instantly.json"] a second consecutive time
-- Typecheck/build: ["godot","--headless","--path",".","--editor","--quit-after","300"]
-
-Raw-output rule: scan fresh runner stdout/stderr independently from harness status for `Parse Error`, `SCRIPT ERROR`, `Failed loading resource`, `Invalid call`; pre-existing HudTheme missing-texture noise and exit-time dummy-renderer leak warnings are not failures. A harness pass alone is not acceptance evidence. Windowed PNGs must be fresh (timestamps match the run) and pixel-inspected with a NUMERIC measurement; vision-model summaries are not proof.
-
-manual_testing: required
-
 ## ✅ Done
 - Debug-build `[TORCH]` log line appears per torch recompute event, naming the trigger (initial placement vs incremental carve) and the number of torches placed.
 - After carving a 2-by-18 plus 18-by-2 cross underground, every sampled point along all four arms at roughly 2-unit intervals has at least one active torch within its light coverage radius.
