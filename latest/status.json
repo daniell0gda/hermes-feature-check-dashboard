@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-136-padding-closable-panels-close-button/",
   "heartbeat_at": "2026-08-23T04:28:39.370Z",
   "last_node": "plan",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-23T04:28:39.370Z",
   "process_id": 898756,
   "host": "25e0b2c49eb5",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T04:28:39.374353+00:00",
-    "last_success_at": "2026-08-23T04:18:32.903238+00:00",
+    "last_attempt_at": "2026-08-23T04:28:44.218975+00:00",
+    "last_success_at": "2026-08-23T04:28:44.218388+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "estimated",
+        "input_tokens": 80028,
+        "output_tokens": 1488
+      }
+    ]
+  }
 }
