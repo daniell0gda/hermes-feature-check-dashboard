@@ -1,4 +1,4 @@
-# Check report — upgrade-click-money-animation (req-134 r4, check iteration 4)
+# Check report — upgrade-click-money-animation (req-134 r5, check iteration 5)
 
 classification: fixable
 
@@ -7,41 +7,48 @@ classification: fixable
 | Gate | Command | Exit | Result |
 |---|---|---|---|
 | Runner probe | `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 |
-| Editor/parse gate | `godot --headless --path . --editor --quit-after 300` | 0 | Parse clean; only pre-existing legacy UID/GLB warnings. (First attempt hit runner exec exit 137; identical rerun passed — transient infra, not a code failure.) |
-| Focused harness | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` | 0 | status=pass, 3/3 expectations. Log: `[UPGRADE_POPUP] tower screen (803.8431, 403.5959) inside panel [P:(770,172) S:(380,502)] - anchor moved (-5.684,1.5,-5.213) -> (8.371838,1.5,-5.212997)` + `[CHEST REWARD] Created popup for 20 coins` |
-| Full/compat harness | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/chest_reward_compatibility.json` | 0 | status=pass, 3/3 expectations |
+| Editor/parse gate | `godot --headless --path . --editor --quit-after 300` | 0 | Parse clean; only pre-existing legacy UID/GLB import warnings. |
+| Focused harness | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` | 0 | status=pass, 3/3 expectations (money<1500, level==2, reward_popups==0). Log: `[UPGRADE_POPUP] tower screen (803.8431, 403.5959) inside panel [P: (770.0, 172.0), S: (380.0, 502.0)] - anchor moved ... -> (8.371838, 1.5, -5.212997)` + `popup anchor ... projected screen (1190.0, 403.5959)` |
+| Non-occluded scenario | `... --harness=res://tests/scenarios/upgrade_click_money_popup_unoccluded.json` | 0 | status=pass, 4/4 expectations incl. `was_last_upgrade_popup_occluded == false` and `get_last_upgrade_popup_screen_pos != (0,0)` (projected (701.7532, 403.5959)); log shows no "inside panel" line — anchor untouched. |
+| Full/compat harness | `... --harness=res://tests/scenarios/chest_reward_compatibility.json` | 0 | status=pass, 3/3 expectations |
+| Burst scenario | `... --harness=res://tests/scenarios/upgrade_click_money_popup_gif.json` | 0 | status=pass; `[UPGRADE_POPUP_BURST] 11 frames over 2.002s (first at 0.000s, engine time_scale 0.20)` |
 
-Fresh result files this iteration: `.gen/harness/upgrade_click_money_popup/result.json`, `.gen/harness/chest_reward_compatibility/result.json`.
+Fresh result files this iteration: `.gen/harness/{upgrade_click_money_popup,upgrade_click_money_popup_unoccluded,upgrade_click_money_popup_gif,chest_reward_compatibility}/result.json`.
 
 ## Acceptance criteria evidence
 
-1. **Windowed capture starts immediately after the click (~0.1s first frame, ~0.2s interval, ~1.5s span, no pre-waits)** — **Pending.** The windowed run on record (`.gen/harness/upgrade_click_money_popup_gif/result.json`, headless:false) still has `wait_for_duration seconds=0.18` between the click and the first screenshot whose `elapsed_wall_sec` is **0.913**, and every subsequent frame gap is 0.52–0.79s wall — not ~0.2s. The final `wait_for_condition reward_popups == 1` fails (`actual: 0`, action `ok: false`) and the scenario's overall status is timeout-shaped: by the sampled frames the 1.5s popup was already dead. The revision-scope timing fix was not made.
-2. **Run output logs the projected screen coords of the anchor** — **Pending as stated.** No dedicated log line for a *projected anchor* exists; the only coordinates logged are inside the ungated `[UPGRADE_POPUP] print` of the tower's *pre-adjustment* screen position plus world-space anchors. In windowed runs that log did not appear at all (0 matches in `.gen/harness/_logs/upgrade_click_money_popup_gif.out.log`).
-3. **Windowed frames show compact yellow "+20 coins!" cluster at projected anchor ± margin OUTSIDE panel rect, text-vs-vegetation distinguished, crop visually inspected** — **Pending.** Independent vision inspection this iteration of the saved crops (`.gen/screenshots/popup_zoom_after_upgrade_click.png`, `after_upgrade_click_popup_visible.png`): the "popup" in the zoom crop is small dark-outlined yellow glyphs over the stone path, but the full-frame after shot shows **no readable popup anywhere**, including x≈730–1060/y≈350–470 where the manual report places it; nothing demonstrably sits outside the details panel rect (the panel itself is closed in that shot). Yellow vegetation false-positive risk remains unexcluded. Manual-report claims are not independently reproducible from the saved frames.
-4. **Debug-build [UPGRADE_POPUP] log per occlusion adjustment, gated on OS.is_debug_build(); release prints nothing** — **Pending (quality).** `scripts/ui/UI.gd:1210` uses a bare `print(...)`. It fires ungated in my fresh headless run; a release build would also print.
-5. **Non-occluded branch exercised by test (unchanged anchor asserted)** — **Pending.** Neither scenario places a tower outside the panel rect; the guard-clause path (`not panel_rect.has_point(screen_pos)` / hidden panel) has zero automated coverage.
-6. **Headless harness upgrade_click_money_popup.json keeps passing with existing expectations** — Done (fresh this iteration): status=pass, money<1500, level==2, reward_popups==0, inline wait asserts `reward_popup_text contains "+20 coins!"`.
-7. **Chest compatibility unchanged** — Done (fresh full harness pass).
+1. **Upgrade click triggers the same money-increase animation (headless asserts keep passing)** — **Done.** Fresh focused run: status=pass; `[CHEST REWARD] Created popup for 20 coins at (8.371838, 1.5, -5.212997)`; money 1500→1460, level→2, reward_popups back to 0.
+2. **Windowed burst frames show the yellow "+20 coins!" popup OUTSIDE the panel rect, pixel-anchored to the projected screen position AND visually inspected** — **Pending.** The capture mechanism now meets the timing spec: fresh burst run fired `_on_upgrade_pressed` immediately before `burst_capture` (no wait between, result.json actions 8→9) and logged 11 frames at wall offsets 0.000/0.187/0.387/0.587/0.788/0.988/1.188/1.388/1.588/1.795/2.002s — first frame at 0.0s, ~0.2s cadence, 2.0s span. However, the saved frames on disk are from the Aug 22 windowed run (file mtimes Aug 22/23 12:4x, before this iteration's runs; this iteration's runs were headless, where screenshot checkpoints are `skipped: headless` and produce no pixels). Independent inspection of those saved frames — crops centered on the logged projected anchor (screen 1190, 403.6) at 2–3x zoom, plus a frame-02 vs frame-09 pixel-diff scan — found **no yellow "+20 coins!" text cluster anywhere near the anchor or in any high-diff region**; only yellow vegetation speckles on the grass slope. The prior manual-report PASSED claim is not reproducible from the saved evidence. A fresh windowed (headless:false) burst run with the fixed cadence, followed by crop inspection at the logged anchor, is still required.
+3. **Chest compatibility unchanged** — **Done.** Fresh full harness pass (3/3).
+4. **`[UPGRADE_POPUP]` print debug-build gated; release prints nothing** — **Done (quality violation fixed).** Both print sites (`UI.gd` ~1191 projected-anchor log, ~1229 occlusion log) are wrapped in `if OS.is_debug_build():`; the gated lines fired in the fresh debug headless run. Prior quality-notes entry resolved.
+5. **Run output logs the popup anchor's projected screen coordinates** — **Done.** `[UPGRADE_POPUP] popup anchor (8.371838, 1.5, -5.212997) projected screen (1190.0, 403.5959)` in the fresh focused-run log (and the unoccluded variant logs (701.7532, 403.5959)).
+6. **Non-occluded branch exercised by a test asserting an unchanged anchor** — **Done.** `upgrade_click_money_popup_unoccluded.json`: status=pass, 4/4; tower at (-9.4, 1.5, -5.213) projects to (701.7532, 403.5959) — outside the panel rect — with `was_last_upgrade_popup_occluded == false` and no occlusion log line.
+7. **Headless harness upgrade_click_money_popup.json keeps passing with existing expectations** — **Done.** Fresh status=pass, 3/3.
+
+## Revision-scope mechanism review (coder report claims vs evidence)
+
+- `AgentHarness.gd::_burst_capture` now reads `interval_sec`, `span_sec`, `time_scale`, `downscale`; `HarnessScreenshot.gd` supports `downscale` on capture; scenario JSON uses `interval_sec: 0.2, span_sec: 2.0, time_scale: 0.2, downscale: 0.5`. The recorded wall offsets confirm the r4 blocker (0.9s first-frame latency, 0.5–0.8s gaps) is fixed at the mechanism level. `time_scale 0.2` stretches the 1.5s popup to ~7.5s engine-time during the burst so slow grabs sample it end-to-end — a reasonable, documented approach.
+- Claim "windowed pixel confirmation is the manual tester's step" is not yet satisfied: the newest saved windowed frames predate the cadence fix, and the crops cut from them (crop_anchor_frame_02.png etc.) show no popup. The windowed re-run remains outstanding.
 
 ## Changed-file quality review
 
-Diff vs HEAD: `scripts/ui/UI.gd` (+44), `scripts/game/ChestRewardSystem.gd` (+8/-2), `scripts/testing/HarnessValues.gd` (+19), new `tests/scenarios/upgrade_click_money_popup.json`, `tests/scenarios/upgrade_click_money_popup_gif.json`.
+Diff vs HEAD: `scripts/ui/UI.gd` (+~70), `scripts/game/ChestRewardSystem.gd`, `scripts/testing/AgentHarness.gd`, `scripts/testing/HarnessScreenshot.gd`, `scripts/testing/HarnessValues.gd`, new `tests/scenarios/upgrade_click_money_popup.json`, `upgrade_click_money_popup_unoccluded.json`, `upgrade_click_money_popup_gif.json`.
 
-- Typed GDScript, guard clauses, surgical diff; chest callers unchanged via default `parent_path`; no test-overlap with prior suite (no earlier upgrade-popup coverage existed).
-- quality: scripts/ui/UI.gd:1210 — `[UPGRADE_POPUP]` log is a bare `print()`, not gated on `OS.is_debug_build()` (criterion 4 demoted with `— quality:` suffix).
+- Typed GDScript, guard clauses, focused helpers, debug-gated logging per CLAUDE.md conventions; surgical diff; chest callers unchanged via default `parent_path`.
+- No test-overlap: no prior upgrade-popup or unoccluded-branch coverage existed in the suite; the new unoccluded scenario covers a previously untested guard path.
+- No new quality violations found in this iteration's changed files. The prior UI.gd debug-gating violation is fixed and marked RESOLVED in `.gen/quality-notes.md`.
 
 ## Quality notes
 
-No prior `.gen/quality-notes.md` existed (created fresh this iteration); the UI.gd debug-gating violation is recorded there as an open entry. Feature diff inspected (`git diff HEAD` + untracked): `.gen-blocked-req134-attempt1/`, scenario JSONs, and `.gen/` artifacts are declared workflow/verification state, not scope creep.
+`.gen/quality-notes.md`: open `debug-gating` entry from iteration 4 resolved this iteration (both print sites now gated on `OS.is_debug_build()`). Feature diff inspected (`git diff HEAD` + untracked): scenario JSONs and declared workflow artifacts (`.gen*`) are not scope creep.
 
 ## Blockers / unverified
 
-- Windowed burst-capture rework (criteria 1–3) was the entire point of r4 and is still missing: same late/slow frame cadence, same failed `reward_popups == 1` condition, no anchored pixel proof outside the panel.
-- Non-occluded branch has no automated coverage.
-- Manual tester's PASSED verdict rests on the same saved shots I could not confirm show a popup; treated as unverified rather than accepted.
+- Criterion 2 (windowed yellow-cluster pixel proof at the projected anchor, visually inspected crop) remains unverified: no post-fix windowed frames exist. Everything needed to produce them (fast burst, projected-coord log, downscale) is in place and verified headless; only the windowed execution + crop inspection is missing.
+- Manual tester's earlier PASSED verdict rests on frames this check could not confirm; treat as superseded by a fresh windowed run.
 
 ## Verdict
 
-Build/typecheck and both headless harnesses are green through the runner, but all three windowed-evidence criteria, the debug-gating criterion, and non-occluded-branch coverage remain open. Targeted revision can fix it.
+Build/typecheck and all three headless harnesses (focused, unoccluded, compat) are green through the runner; burst-capture timing, projected-coord logging, debug gating, and non-occluded coverage are now Done. One criterion (windowed pixel evidence) remains Pending and is achievable with a single windowed run of the existing gif scenario plus crop inspection.
 
 classification: fixable
