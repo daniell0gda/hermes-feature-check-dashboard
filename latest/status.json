@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-visible-light-revision/",
   "heartbeat_at": "2026-08-23T10:27:23.422Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "team-leader",
   "last_event_at": "2026-08-23T10:27:23.422Z",
   "process_id": 13246,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T10:27:23.423364+00:00",
-    "last_success_at": "2026-08-23T10:15:25.203503+00:00",
+    "last_attempt_at": "2026-08-23T10:27:27.905530+00:00",
+    "last_success_at": "2026-08-23T10:27:27.904626+00:00",
     "last_error": null
   },
   "metrics": {
@@ -63,6 +63,17 @@
         "cost_status": "unknown",
         "input_tokens": 293365,
         "output_tokens": 4115
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 308390,
+        "output_tokens": 7645
       }
     ]
   }
