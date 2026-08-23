@@ -1,7 +1,5 @@
 # Cluster 4: cave-sealing-regression-determinism
 
-Issue #124 follow-up: make `cave_pending_seals_entrance_instantly.json` deterministic without weakening its assertions. Known failure mode (clean HEAD too): map_9 has `caves.spawn.chance = 0.8`; with scenario seed 1, RNG-discovered caves can be placed and sealed over the hole↔exit corridor before the scenario's first route assertion. The smallest fix is at the product/test-fixture boundary — harness suppression of RNG cave discovery honored on every carve event — NOT by deleting or loosening scenario assertions. Preserve all existing issue-124 torch behavior.
-
 files: `scripts/testing/HarnessActions.gd`, `scripts/testing/HarnessValues.gd`, `scripts/testing/HarnessScenario.gd`, `tests/scenarios/cave_pending_seals_entrance_instantly.json`, `scripts/game/CaveSystem.gd`
 dependencies: none
 parallel: true
@@ -12,11 +10,9 @@ parallel: true
 - At the moment the dangerous-cave confirmation question is presented (before any player decision), `has_route_from` for the scenario's hole returns false while the cave is marked pending, proving the entrance is physically sealed rather than logically locked.
 - One second after sealing, the pending dangerous cave's interior contains zero active torches.
 - Confirming "yes" restores the exact hole-to-exit route (`has_route_from == true`) and the cave interior again reports valid lighting (nonzero torch coverage within the confirmed cave).
-- The scenario keeps its original assertions unchanged: no expectation, wait_for_condition, or threshold may be removed or loosened by the determinism fix.
+- The scenario keeps its original assertions unchanged: no expectation, wait_for_condition, or threshold may be removed or loosened by the determinism or lighting fixes.
 
 ## Verification commands
 - Focused test: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_pending_seals_entrance_instantly.json"]
-- Full test: rerun the focused token form twice more consecutively (all runs pass), then ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_carved_path_torches.json"] and ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/declined_cave_torches_extinguish.json"] as regression guards
+- Full test: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_pending_seals_entrance_instantly.json"] run twice consecutively (both must pass), plus ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/declined_cave_torches_extinguish.json"]
 - Typecheck/build: ["godot","--headless","--path",".","--editor","--quit-after","300"]
-
-Raw-output rule: scan fresh stdout/stderr independently for `SCRIPT ERROR`, `Parse Error`, `Invalid call`, and unexpected `Failed loading resource` (pre-existing HudTheme missing-texture noise and exit-time dummy-renderer leak warnings on clean HEAD are not failures).

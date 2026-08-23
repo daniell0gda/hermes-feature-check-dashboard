@@ -1,23 +1,24 @@
-# Acceptance Plan: issue-124-cave-carved-path-torches (follow-up: cave sealing regression determinism)
+# Acceptance Plan: issue-124-cave-carved-path-torches (follow-up: sealing regression + visible corridor lighting)
 
 ## Verification
 
-All project commands run through Hermes `run_project_cmd` (project `godot-td`, workspace `poke-defense-godot/issue-cave-carved-path-torches`). Token arrays are passed verbatim as run_project_cmd commands.
+All project commands run through Hermes `run_project_cmd` (project `godot-td`, workspace `poke-defense-godot/issue-cave-carved-path-torches`). Token arrays verbatim.
 
-- Focused test: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_pending_seals_entrance_instantly.json"]
-- Full test: rerun the focused token form twice more consecutively (all runs pass), then ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_carved_path_torches.json"] and ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/declined_cave_torches_extinguish.json"] as regression guards
+- Focused test: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_carved_path_torches.json"]
+- Full test: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/declined_cave_torches_extinguish.json"] then ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_pending_seals_entrance_instantly.json"] then repeat ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_pending_seals_entrance_instantly.json"] a second consecutive time
 - Typecheck/build: ["godot","--headless","--path",".","--editor","--quit-after","300"]
 
-Raw-output rule: scan fresh runner stdout/stderr independently from harness status for `Parse Error`, `SCRIPT ERROR`, `Failed loading resource` not attributable to the pre-existing HudTheme missing-texture noise, and `Invalid call`; a harness `status=pass` alone is not acceptance evidence. Exit-time dummy-renderer leak warnings are engine shutdown noise on clean HEAD, not failures.
+Raw-output rule: scan fresh runner stdout/stderr independently from harness `status` for `Parse Error`, `SCRIPT ERROR`, `Failed loading resource`, `Invalid call`; pre-existing HudTheme missing-texture noise and exit-time dummy-renderer leak warnings are not failures. A harness pass alone is not acceptance evidence. Windowed PNGs must be fresh (timestamps match the run) and pixel-inspected; stale or headless screenshots are not proof.
 
 manual_testing: required
 
 ## Clusters
 
-1. torch-coverage-along-carved-corridors — files: `scripts/game/underground/TorchPlacer.gd`, `scripts/game/underground/TorchManager.gd` — depends on: none
-- After carving a 2-by-18 plus 18-by-2 cross underground, every sampled point along all four arms at roughly 2-unit intervals has at least one active torch within its light coverage radius.
-- When a new corridor is carved that connects to an already-lit carved path, torches appear along the new corridor's entire length, not only near the junction.
+1. visible-corridor-lighting — files: `scripts/game/underground/Torch.gd`, `scripts/game/underground/TorchPlacer.gd`, `scripts/game/underground/TorchManager.gd` — depends on: none
+- After carving the 2-by-18 plus 18-by-2 cross underground, every sampled point along all four arms at roughly 2-unit intervals has at least one active torch within its light coverage radius (headless count_near assertions unchanged in threshold and coverage).
 - Every carved cell reachable in the connected carved network lies within coverage of at least one placed torch (no unlit carved cells reported by the torch state source).
+- When a new corridor is carved that connects to an already-lit carved path, torches appear along the new corridor's entire length, not only near the junction.
+- In a fresh windowed gl_compatibility (llvmpipe) top-down run of `cave_carved_path_torches.json`, each of the four carved cross arms shows visibly lit floor pixels along its entire length — no arm reads fully dark — verified by inspecting the fresh PNGs per-arm.
 2. dark-pending-and-declined-caves — files: `scripts/game/underground/TorchPlacer.gd`, `scripts/game/underground/TorchManager.gd`, `scripts/game/CaveSystem.gd` — depends on: none
 - A pending (unconfirmed) dangerous cave interior contains zero torches even when it overlaps already-carved, otherwise-lit path cells.
 - After a dangerous cave is declined and sealed, its interior contains zero active torches, including any cells that overlap previously carved path.
@@ -31,13 +32,14 @@ manual_testing: required
 - At the moment the dangerous-cave confirmation question is presented (before any player decision), `has_route_from` for the scenario's hole returns false while the cave is marked pending, proving the entrance is physically sealed rather than logically locked.
 - One second after sealing, the pending dangerous cave's interior contains zero active torches.
 - Confirming "yes" restores the exact hole-to-exit route (`has_route_from == true`) and the cave interior again reports valid lighting (nonzero torch coverage within the confirmed cave).
-- The scenario keeps its original assertions unchanged: no expectation, wait_for_condition, or threshold may be removed or loosened by the determinism fix.
+- The scenario keeps its original assertions unchanged: no expectation, wait_for_condition, or threshold may be removed or loosened by the determinism or lighting fixes.
 
 ## Criteria
 
-- After carving a 2-by-18 plus 18-by-2 cross underground, every sampled point along all four arms at roughly 2-unit intervals has at least one active torch within its light coverage radius.
-- When a new corridor is carved that connects to an already-lit carved path, torches appear along the new corridor's entire length, not only near the junction.
+- After carving the 2-by-18 plus 18-by-2 cross underground, every sampled point along all four arms at roughly 2-unit intervals has at least one active torch within its light coverage radius (headless count_near assertions unchanged in threshold and coverage).
 - Every carved cell reachable in the connected carved network lies within coverage of at least one placed torch (no unlit carved cells reported by the torch state source).
+- When a new corridor is carved that connects to an already-lit carved path, torches appear along the new corridor's entire length, not only near the junction.
+- In a fresh windowed gl_compatibility (llvmpipe) top-down run of `cave_carved_path_torches.json`, each of the four carved cross arms shows visibly lit floor pixels along its entire length — no arm reads fully dark — verified by inspecting the fresh PNGs per-arm.
 - A pending (unconfirmed) dangerous cave interior contains zero torches even when it overlaps already-carved, otherwise-lit path cells.
 - After a dangerous cave is declined and sealed, its interior contains zero active torches, including any cells that overlap previously carved path.
 - The headless `cave_carved_path_torches` scenario passes with count_near expectations sampled along the full length of all four cross arms (~every 2 units), not only inside the cave room.
@@ -48,12 +50,18 @@ manual_testing: required
 - At the moment the dangerous-cave confirmation question is presented (before any player decision), `has_route_from` for the scenario's hole returns false while the cave is marked pending, proving the entrance is physically sealed rather than logically locked.
 - One second after sealing, the pending dangerous cave's interior contains zero active torches.
 - Confirming "yes" restores the exact hole-to-exit route (`has_route_from == true`) and the cave interior again reports valid lighting (nonzero torch coverage within the confirmed cave).
-- The scenario keeps its original assertions unchanged: no expectation, wait_for_condition, or threshold may be removed or loosened by the determinism fix.
+- The scenario keeps its original assertions unchanged: no expectation, wait_for_condition, or threshold may be removed or loosened by the determinism or lighting fixes.
 
-## Verification status (fresh run_project_cmd evidence)
+## Planning-gate observations (current HEAD evidence)
 
-- Editor/import gate: exit 0, no script/parse errors beyond pre-existing HudTheme missing-texture noise.
-- `cave_pending_seals_entrance_instantly`: two consecutive runs, both `status=pass exit=0`, with `[CAVE] discovery suppressed: harness scenario forbids RNG cave discovery` on every carve event and the full seal → dark-torches → confirm-yes → route-restored sequence logged.
-- `cave_carved_path_torches`: `status=pass exit=0` (`[TORCH] cave-path update active=154` full-cross coverage observed).
+- Prior windowed screenshot `.gen/screenshots/dungeon_cross_carve_lit.png` was pixel-inspected during planning: only one warm-lit region is visible; carved cross arms read fully dark. Cluster 1 exists to close exactly this gap; headless counts already pass, so the fix must raise *visible* coverage without weakening headless assertions.
+- `cave_pending_seals_entrance_instantly.json` already carries `suppress_rng_cave_discovery: true`; cluster 4 verifies that suppression actually holds on every carve event and that the seal → dark → confirm-yes sequence is deterministic across consecutive runs.
+
+## Verification status (fresh run_project_cmd evidence, this planning run)
+
+- Probe `godot --version`: 4.4.1.stable.official.49a5bc7b6, exit 0.
+- Editor/import gate (`--editor --quit-after 300`): exit 0, no script/parse errors beyond the pre-existing HudTheme missing-texture noise.
+- `cave_carved_path_torches`: `status=pass exit=0`; `[TORCH] cave-path update active=154` full-cross coverage observed; screenshots written fresh by the run.
 - `declined_cave_torches_extinguish`: `status=pass exit=0`.
-- Remaining manual item: fresh windowed top-down screenshots with pixel inspection (cluster 3 criterion).
+- `cave_pending_seals_entrance_instantly`: two consecutive runs, both `status=pass exit=0`; `[CAVE] discovery suppressed: harness scenario forbids RNG cave discovery` logged on every carve event in both runs; initial route found → sealed (no valid path) with cave pending → zero-torch wait satisfied → confirm yes → route restored (17-waypoint path both times). Raw stdout/stderr scanned: only pre-existing HudTheme noise and exit-time dummy-renderer leak warnings.
+- Remaining manual item for check/manual tester: windowed top-down PNGs of the carved cross must be captured fresh and pixel-inspected per arm (cluster 1/3 criteria); prior `.gen/screenshots/dungeon_cross_carve_lit.png` shows arms dark and is the regression to close.
