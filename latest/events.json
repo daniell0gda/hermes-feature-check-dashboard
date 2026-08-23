@@ -1,29 +1,20 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-23T18:42:03.720Z",
+    "timestamp": "2026-08-23T19:05:35.609Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 211546,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-cave-carved-path-torches/.gen/plan.md\n",
+    "duration_ms": 982236,
+    "summary": "All artifacts written and verification run. Summary:\n\nPlan artifacts:\n- /workspace/git-workspaces/poke-defense-godot/issue-window-modals-skip-wood-frame/.gen/plan.md \u2014 11 acceptance criteria across 3 clusters (1 title-plate-inside-window, 2\u2026",
     "error": null
   },
   {
     "sequence": 2,
-    "timestamp": "2026-08-23T18:57:46.569Z",
+    "timestamp": "2026-08-23T19:17:39.485Z",
     "node": "code",
     "status": "completed",
-    "duration_ms": 938184,
-    "summary": "Implementation complete. Summary:\n\n**Cluster 1 \u2014 torch placement coverage** (TorchPlacer.gd, TorchManager.gd)\n- Kept the legacy wall-spacing placement unchanged for straight corridors, then added a coverage layer: any non-interior carved co\u2026",
-    "error": null
-  },
-  {
-    "sequence": 3,
-    "timestamp": "2026-08-23T19:09:32.974Z",
-    "node": "check",
-    "status": "completed",
-    "duration_ms": 701738,
-    "summary": "Check complete. Summary:\n\nVerified done: 0. Pending: 9 \u2014 9 due to build/test failures (full-suite gate red from three pre-existing baseline failures), 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: app\u2026",
+    "duration_ms": 719308,
+    "summary": "All three clusters implemented and verified via the project runner. Summary:\n\n**Cluster 1 \u2014 title-plate-inside-window: Done**\n- Both `RewardsModal.tscn` / `ProgressionModal.tscn`: Frame inset 27px from window top; TitlePlate offsets 2..52 \u2192\u2026",
     "error": null
   }
 ]

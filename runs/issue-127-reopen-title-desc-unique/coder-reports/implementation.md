@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation
+# Coder report: implementation
 
 ## Changed files
 - `scripts/ui/hud/TitledPanel.gd` — mod: `_place_plate` now derives plate width from the title label's combined minimum size plus the plate stylebox's side content margins (new `_title_min_width()` helper); never narrower than the plate art minimum. Close-chip behaviour untouched (`close_requested` path unchanged).
@@ -23,4 +23,3 @@
 - The scenario JSON does not force a Unique offer; per request.md the windowed screenshot should include at least one Unique card. The harness chest draw is random-ish (seeded) — consider adding a fixture option with `"type": "Unique"` before shooting, or verify the drawn options contain one.
 - Manual screenshots still required (windowed, never --headless): full readable title on both modals, description inside its ModalWell, Unique gold border + "Unique" badge legible.
 - Pre-existing failure to not attribute to this work: ClosableModalPanel corner-region vs plate-size assertion in the same focused test file (fails on baseline too).
-\n
