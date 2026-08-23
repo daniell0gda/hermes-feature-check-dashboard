@@ -12,13 +12,6 @@ Raw-output rule: scan fresh runner stdout/stderr independently from harness stat
 
 manual_testing: required
 
-## Clusters
-
-1. visible-corridor-lighting — files: `scripts/game/underground/Torch.gd`, `scripts/game/underground/TorchPlacer.gd`, `scripts/game/underground/TorchManager.gd` — depends on: none
-2. dark-pending-and-declined-caves — files: `scripts/game/underground/TorchPlacer.gd`, `scripts/game/underground/TorchManager.gd`, `scripts/game/CaveSystem.gd` — depends on: none
-3. harness-scenario-and-evidence — files: `tests/scenarios/cave_carved_path_torches.json` — depends on: 1, 2
-4. cave-sealing-regression-determinism — depends on: none
-
 ## ✅ Done
 - Debug-build `[TORCH]` log line appears per torch recompute event, naming the trigger (initial placement vs incremental carve) and the number of torches placed.
 - After carving a 2-by-18 plus 18-by-2 cross underground, every sampled point along all four arms at roughly 2-unit intervals has at least one active torch within its light coverage radius.

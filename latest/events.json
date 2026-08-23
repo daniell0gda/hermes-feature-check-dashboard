@@ -34,5 +34,14 @@
     "duration_ms": 393389,
     "summary": "Revision 2 complete. Summary:\n\n**Fix landed:** `scripts/game/underground/Torch.gd` \u2014 added a per-torch `FloorGlow`: an unshaded, additive-blend plane (radius 2.5, matching LIGHT_RADIUS) with a soft radial-falloff gradient texture, sitting j\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-23T11:15:10.279Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 369134,
+    "summary": "Revision-check-1 complete.\n\nVerified done: 13. Pending: 2 \u2014 0 due to build/test failures, 2 due to missing evidence (no fresh windowed gl_compatibility PNGs + scripted numeric warm-pixel measurement exist post-fix), 0 due to quality violati\u2026",
+    "error": null
   }
 ]
