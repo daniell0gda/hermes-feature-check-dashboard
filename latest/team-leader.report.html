@@ -1,65 +1,58 @@
 <!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Feature-check report</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:16px/1.6 system-ui}article{max-width:860px;margin:36px auto;padding:28px;background:#fff;border:1px solid #e4e7ec;border-radius:16px;box-shadow:0 12px 32px rgba(16,24,40,.08)}h1,h2{letter-spacing:-.03em}a{color:#2563eb}pre{background:#f8fafc;padding:14px;border-radius:10px}img{display:block;max-width:100%;height:auto;margin:16px 0;border:1px solid #e4e7ec;border-radius:10px}</style><article><h1>Team-leader report</h1>
 <ul>
-<li>**Result:** completed</li>
-<li>**Classification:** pass</li>
-<li>**Feature:** cave-dead-placement-duplicate</li>
-<li>**Run:** issue-120-cave-dead-placement-duplicate</li>
+<li>**Result:** failed</li>
+<li>**Classification:** **fixable**</li>
+<li>**Feature:** padding closable panels close button</li>
+<li>**Run:** req-136-padding-closable-panels-close-button</li>
 <li>**Lifecycle:** dashboard publish only; project commit/push/close not implied</li>
 </ul>
 <h2>Status</h2>
 <h2>✅ Done</h2>
 <ul>
-<li>A case-sensitive search for `_find_suitable_cave_position` under `scripts/` returns zero matches after the change.</li>
-<li>The only cave-placement lookup used at runtime remains the shared helper (`CaveUtils.find_suitable_cave_position`); no second same-named placement routine exists anywhere under `scripts/`.</li>
-<li>The `cave_discovery_chance` scenario passes a fresh headless harness run (status pass, exit code 0, all expectations met).</li>
-<li>The `cave_discovery_long_carve` scenario passes a fresh headless harness run (status pass, exit code 0, all expectations met).</li>
-<li>The `cave_discovery_pending_placement` scenario passes a fresh headless harness run (status pass, exit code 0, all expectations met).</li>
-<li>The headless editor parse gate completes without script parse or class-cache errors after the removal.</li>
+<li>A closable TitledPanel reserves horizontal padding inside its frame so that no content control&#x27;s rect intersects the CloseChip&#x27;s rect at any panel size.</li>
+<li>The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel&#x27;s content layout is unchanged.</li>
+<li>The CloseChip remains flush in the frame&#x27;s top-right corner and pressing it still emits exactly one `close_requested` (existing contract preserved).</li>
+<li>On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.</li>
+<li>Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.</li>
 </ul>
 <h2>⬜ Pending</h2>
+<ul>
+<li>On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.</li>
+<p>  — missing evidence: no test instantiates the actual UpgPanel scene (coverage is via synthetic panels and ManageTowersPanel/OptionsScreen), and the plan marks manual_testing: required (windowed screenshots of panel_tower_details / panel_manage_towers / panel_options) which was not produced in this run.</p>
+</ul>
 <h2>❌ Impossible</h2>
+<ul>
+<li>(none)</li>
+</ul>
 <h2>Check</h2>
-<h1>Check report: cave-dead-placement-duplicate (issue #120) — iteration 2 (revision-check-1)</h1>
-<p>classification: pass</p>
-<h2>Verdict</h2>
-<p>All six acceptance criteria are verified Done with fresh runner evidence. The iteration-1</p>
-<p>blocker (`cave_discovery_long_carve` failing with carved_tiles=961) was resolved by the</p>
-<p>coder as a scenario geometry bug, not a threshold recalibration: the original 5x5 rects</p>
-<p>centred at ±7.5 had their +X/+Z edge exactly at 10.0 world units, which `world_to_grid`</p>
-<p>maps to out-of-range grid index 40 on map_6&#x27;s 40x40 grid (valid indices 0–39), so</p>
-<p>`_carve_area_exceeds_grid` rejected every rect touching positive edges. Edge centres were</p>
-<p>nudged to ±7.45 (neighbours ±2.483 for tile alignment); the scenario now carves the full</p>
-<p>grid deterministically (1600/1600 tiles at seed 20260820) and the &gt;=1000 threshold was</p>
-<p>kept unchanged.</p>
-<h2>Verification (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-cave-dead-placement-duplicate)</h2>
+<h1>Check report: req-136-padding-closable-panels-close-button (iteration check)</h1>
+<p>Classification: **fixable**</p>
+<h2>Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-padding-closable-panels-close-button)</h2>
 <ul>
-<li>Preflight `git status --short` — exit 0. Changed files: `M scripts/game/CaveSystem.gd`, `M tests/scenarios/cave_discovery_long_carve.json`.</li>
-<li>Typecheck/build gate: `godot --headless --path . --editor --quit-after 300` — exit 0. Zero script parse or class-cache errors; only pre-existing asset-import noise present on HEAD too.</li>
-<li>Focused test: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/cave_discovery_chance.json` — exit 0, `[Harness] status=pass exit=0`, 4/4 expectations pass. Result `.gen/harness/cave_discovery_chance/result.json`.</li>
-<li>Focused test: same invocation for `cave_discovery_long_carve.json` — exit 0, `[Harness] status=pass exit=0`, 5/5 expectations pass including `carved_tiles &gt;= 1000` actual 1600. Result `.gen/harness/cave_discovery_long_carve/result.json`.</li>
-<li>Focused test: same invocation for `cave_discovery_pending_placement.json` — exit 0, `[Harness] status=pass exit=0`, 2/2 expectations pass. Result `.gen/harness/cave_discovery_pending_placement/result.json`.</li>
-<li>Postflight grep `_find_suitable_cave_position` under scripts/ — zero matches (exit 1).</li>
-<li>Note: plan&#x27;s full-suite loop used a `sh -c` wrapper rejected by the runner allowlist; each scenario was invoked individually as an equivalent tokenized godot command.</li>
+<li>`godot --version` — exit 0 (4.4.1.stable.official.49a5bc7b6)</li>
+<li>`godot --headless --path . --import` — exit 0 (UID warnings only, pre-existing theme UID staleness)</li>
+<li>`godot --headless --path . --check-only --script res://scripts/ui/hud/TitledPanel.gd` — exit 0</li>
+<li>`godot --headless --path . res://tests/ui/test_titled_panel_close_corner.tscn` — exit 0; &quot;29 ok, 0 failed&quot;</li>
+<li>`godot --headless --path . res://tests/ui/test_enemy_armor_bar.tscn` — exit 0; &quot;35 ok, 0 failed&quot;</li>
+<li>`godot --headless --path . res://tests/ui/test_enemy_health_bar_boss_icon.tscn` — exit 0; &quot;18 ok, 0 failed&quot;</li>
+<li>`godot --headless --path . res://tests/ui/test_enemy_health_bar_oiled_icon.tscn` — exit 0; &quot;8 ok, 0 failed&quot;</li>
 </ul>
-<h2>Criterion evidence and status (all Done)</h2>
-<p>1. `_find_suitable_cave_position` search under scripts/ returns zero matches — verified fresh this session (grep no matches); diff shows clean 29-line removal from `scripts/game/CaveSystem.gd`.</p>
-<p>2. Only runtime placement lookup remains `CaveUtils.find_suitable_cave_position` — verified: only definition in `scripts/utils/CaveUtils.gd:73` plus single call site at `scripts/game/CaveSystem.gd:245`.</p>
-<p>3. `cave_discovery_chance` passes fresh headless harness run — PASS (status pass, exit 0, 4/4 expectations).</p>
-<p>4. `cave_discovery_long_carve` passes fresh headless harness run — PASS (status pass, exit 0, 5/5 expectations, carved_tiles=1600).</p>
-<p>5. `cave_discovery_pending_placement` passes fresh headless harness run — PASS (status pass, exit 0, 2/2 expectations).</p>
-<p>6. Headless editor parse gate completes without script parse or class-cache errors — PASS (exit 0).</p>
-<h2>Changed-file quality findings</h2>
+<h2>Acceptance criteria evidence</h2>
+<p>1. Closable panel reserves padding so no content control intersects the CloseChip rect — PASS. `_reserve_content_padding()` in `scripts/ui/hud/TitledPanel.gd` pulls `Frame.offset_right` to `-CLOSE_CORNER_SIZE.x`; test asserts offset &lt;= -90 and leaf-rect overlap check passes.</p>
+<p>2. Padding applies only when closable / scene-placed chip exists — PASS. Tests: non-closable frame keeps `offset_right == 0` and full-rect anchors; scene-placed CloseChip reserves same padding.</p>
+<p>3. CloseChip flush top-right and emits exactly one `close_requested` — PASS (&quot;it sits flush in the top-right corner&quot;, &quot;pressing it emits close_requested once (got 1)&quot;).</p>
+<p>4. UpgPanel-style tower details content clear of chip — NOT PROVEN. The focused test covers synthetic closable panels plus ManageTowersPanel/OptionsScreen scenes, but never instantiates the actual UpgPanel scene; plan marks manual_testing: required and no windowed screenshots were produced. Moved to Pending.</p>
+<p>5. Manage Towers + Options keep content clear of chip — PASS (`_test_real_closable_scenes_keep_content_clear_of_the_chip`, both scenes).</p>
+<p>6. Debug `[TITLED_PANEL]` log naming panel and inset — PASS (log lines visible in headless run output: &quot;reserves 90px of right padding for the close corner&quot;).</p>
+<h2>Changed-file quality</h2>
 <ul>
-<li>`scripts/game/CaveSystem.gd`: pure removal of an uncalled private function; no new code; no violations of `/opt/data/coding_rules.md` or project `CLAUDE.md`.</li>
-<li>`tests/scenarios/cave_discovery_long_carve.json`: coordinate-only changes plus one documented note line; threshold preserved; rationale recorded in scenario notes. No quality demotions.</li>
-<li>Test overlap check: the three scenarios are distinct pre-existing scenarios exercising different behaviors (chance floor, full-grid carve, pending placement retry); no new duplicate tests added.</li>
+<li>`scripts/ui/hud/TitledPanel.gd`: small, typed, documented helpers; debug-only log per CLAUDE.md convention. No violations found.</li>
+<li>`tests/ui/test_titled_panel_close_corner.gd`: new tests assert real criteria (rect overlap math), not smoke loads. No duplicate coverage of existing tests found in the suite. Minor note (non-blocking): `_content_rects_outside_chip` only fails on overlapping *leaf* controls (childless), so a container that fully contains the chip region but has its own visual could slip through; acceptable for this criterion.</li>
 </ul>
-<h2>Quality notes</h2>
+<h2>Scope creep / quality notes</h2>
 <ul>
-<li>Iteration-1 open entry &quot;cave_discovery_long_carve carved_tiles threshold&quot; is now RESOLVED by the iteration-2 geometry fix (appended resolution entry to `.gen/quality-notes.md`).</li>
+<li>Untracked stray file `.gen-test-report.txt` at repo root written by the test script into `res://`. Should live under `.gen/` per coding rules; advisory only, not a criterion demotion.</li>
+<li>No prior open quality-notes entries existed.</li>
 </ul>
 <h2>Blockers</h2>
-<p>None.</p>
-<h2>Unverified items</h2>
-<p>None material. Full suite beyond the three named scenarios was not separately executed; the request defines the focused set as these three scenarios plus the parse gate, and all are green.</p>
-<p>manual_testing: none (dead-code removal plus test-scenario geometry fix, no user-facing change)</p></article>
+<p>None. Runner reachable, all gates green. Remaining work is small: add an UpgPanel-scene-based assertion (or produce the required windowed screenshots) for criterion 4, then re-run the focused test.</p></article>

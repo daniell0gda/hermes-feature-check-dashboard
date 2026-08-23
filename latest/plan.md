@@ -1,31 +1,45 @@
-# Acceptance Plan: cave-dead-placement-duplicate (issue #120)
+# Acceptance Plan: req-136-padding-closable-panels-close-button
+
+Closable `TitledPanel` panels reserve horizontal padding so the painted corner "x" (`CloseChip`, 90x103, flush top-right *inside* the frame art) never overlaps panel content; verified on tower details and every other closable panel (Manage Towers, Options).
+
+manual_testing: required
 
 ## Verification
 
-- Focused test: ["sh", "-c", "for s in cave_discovery_chance cave_discovery_long_carve cave_discovery_pending_placement; do godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/$s.json || exit 1; done"]
-- Full test: ["sh", "-c", "for f in tests/scenarios/*.json; do s=$(basename \"$f\" .json); godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/$s.json || exit 1; done"]
-- Typecheck/build: ["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]
+- Focused test: `["godot", "--headless", "--path", ".", "res://tests/ui/test_titled_panel_close_corner.tscn"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_armor_bar.tscn"]` then `["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_health_bar_boss_icon.tscn"]` then `["godot", "--headless", "--path", ".", "res://tests/ui/test_enemy_health_bar_oiled_icon.tscn"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]`
 
-(All commands run through the approved project runner with runner key `godot-td` and
-workspace `poke-defense-godot/issue-cave-dead-placement-duplicate`, from the repository root.)
+Note: the visual overlap claim itself cannot be proven headless. Run the existing
+`tests/scenarios/hud_other_panels.json` scenario windowed (fresh screenshots of tower details,
+Manage Towers and Options taken AFTER the 20:00 UTC padding fix — pre-fix `.gen/screenshots/*.png`
+and `.gen/harness/hud_other_panels/shots/*.png` are stale) via
+`["godot", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/hud_other_panels.json"]`
+and report `ui_feels_broken: yes|no` per final screenshot. This is the manual path below.
 
 ## Clusters
 
-1. remove-dead-cave-placement-finder — files: `scripts/game/CaveSystem.gd` — depends on: none
-- A case-sensitive search for `_find_suitable_cave_position` under `scripts/` returns zero matches after the change.
-- The only cave-placement lookup used at runtime remains the shared helper (`CaveUtils.find_suitable_cave_position`); no second same-named placement routine exists anywhere under `scripts/`.
-- The `cave_discovery_chance` scenario passes a fresh headless harness run (status pass, exit code 0, all expectations met).
-- The `cave_discovery_long_carve` scenario passes a fresh headless harness run (status pass, exit code 0, all expectations met).
-- The `cave_discovery_pending_placement` scenario passes a fresh headless harness run (status pass, exit code 0, all expectations met).
-- The headless editor parse gate completes without script parse or class-cache errors after the removal.
-
-manual_testing: none
+1. closable-panel-content-padding — files: `scripts/ui/hud/TitledPanel.gd`, `tests/ui/test_titled_panel_close_corner.gd`, `tests/ui/test_titled_panel_close_corner.tscn` — depends on: none
+- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
+- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
+- The CloseChip sits flush INSIDE the frame's top-right corner (enclosed by the full-size frame art, not floating outside it) and pressing it still emits exactly one `close_requested` (existing contract preserved).
+- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
+- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
+- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
 
 ## Criteria
 
-- A case-sensitive search for `_find_suitable_cave_position` under `scripts/` returns zero matches after the change.
-- The only cave-placement lookup used at runtime remains the shared helper (`CaveUtils.find_suitable_cave_position`); no second same-named placement routine exists anywhere under `scripts/`.
-- The `cave_discovery_chance` scenario passes a fresh headless harness run (status pass, exit code 0, all expectations met).
-- The `cave_discovery_long_carve` scenario passes a fresh headless harness run (status pass, exit code 0, all expectations met).
-- The `cave_discovery_pending_placement` scenario passes a fresh headless harness run (status pass, exit code 0, all expectations met).
-- The headless editor parse gate completes without script parse or class-cache errors after the removal.
+- A closable TitledPanel reserves horizontal padding inside its frame so that no content control's rect intersects the CloseChip's rect at any panel size.
+- The reserved padding applies only when `is_closable` is true (or a scene-placed CloseChip exists); a plain non-closable panel's content layout is unchanged.
+- The CloseChip sits flush INSIDE the frame's top-right corner (enclosed by the full-size frame art, not floating outside it) and pressing it still emits exactly one `close_requested` (existing contract preserved).
+- On a closable panel built like the tower details panel (UpgPanel), every visible content control (header, level badge, stat rows, buttons) lies fully outside the CloseChip rect once the panel is laid out.
+- On the Manage Towers panel and the Options screen, no visible content intersects the CloseChip rect after layout.
+- Debug-build `[TITLED_PANEL]` log line when a closable panel applies its content-padding reservation, naming the panel and the reserved inset.
+
+## Manual testing (required)
+
+Windowed screenshot run of `tests/scenarios/hud_other_panels.json` through the godot-td runner:
+inspect fresh post-fix shots of tower details / pause menu / Manage Towers / Options for any
+content/"x" overlap and for the ✕ sitting flush inside the frame corner (not floating outside the
+panel art). Report `ui_feels_broken: yes|no` per final screenshot. Pre-fix screenshots are stale —
+recapture.
