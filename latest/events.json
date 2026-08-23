@@ -25,5 +25,14 @@
     "duration_ms": 481363,
     "summary": "Check complete. Artifacts written to /workspace/git-workspaces/poke-defense-godot/issue-cave-carved-path-torches/.gen/check.md and .gen/status.md.\n\nVerified done: 14. Pending: 1 \u2014 0 due to build/test failures, 0 due to missing evidence, 1 d\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T10:15:16.386Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 299665,
+    "summary": "Summary (revision-code-1, cluster: implementation):\n\nWork done\n- Only one criterion was pending (a quality annotation): the `[TORCH]` debug log didn't name its trigger. Fixed in `scripts/game/underground/TorchManager.gd` \u2014 added `has_placed\u2026",
+    "error": null
   }
 ]

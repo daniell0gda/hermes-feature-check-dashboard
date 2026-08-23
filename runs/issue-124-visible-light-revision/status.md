@@ -18,6 +18,7 @@ Raw-output rule: scan fresh runner stdout/stderr separately from harness status 
 4. cave-sealing-regression-determinism — depends on: none
 
 ## ✅ Done
+- Debug-build `[TORCH]` log line appears per torch recompute event, naming the trigger (initial placement vs incremental carve) and the number of torches placed.
 - After carving a 2-by-18 plus 18-by-2 cross underground, every sampled point along all four arms at roughly 2-unit intervals has at least one active torch within its light coverage radius.
 - When a new corridor is carved that connects to an already-lit carved path, torches appear along the new corridor's entire length, not only near the junction.
 - Every carved cell reachable in the connected carved network lies within coverage of at least one placed torch (no unlit carved cells reported by the torch state source).
@@ -34,6 +35,5 @@ Raw-output rule: scan fresh runner stdout/stderr separately from harness status 
 - The scenario keeps its original assertions unchanged: no expectation, wait_for_condition, or threshold may be removed or loosened by the determinism fix.
 
 ## ⬜ Pending
-- Debug-build `[TORCH]` log line appears per torch recompute event, naming the trigger (initial placement vs incremental carve) and the number of torches placed. — quality: scripts/game/underground/TorchManager.gd: `[TORCH] cave-path update active=N` logs the count but does not name the trigger kind; add initial-placement vs incremental-carve trigger labeling.
 
 ## ❌ Impossible
