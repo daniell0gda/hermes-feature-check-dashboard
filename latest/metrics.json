@@ -8,8 +8,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 114064,
-      "output_tokens": 4854
+      "input_tokens": 112499,
+      "output_tokens": 5457
     },
     {
       "task_id": "code",
@@ -19,8 +19,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 126441,
-      "output_tokens": 3408
+      "input_tokens": 264145,
+      "output_tokens": 21791
     },
     {
       "task_id": "check",
@@ -30,8 +30,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 162400,
-      "output_tokens": 7035
+      "input_tokens": 154272,
+      "output_tokens": 5631
     },
     {
       "task_id": "revision-code-1",
@@ -41,8 +41,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 203532,
-      "output_tokens": 28135
+      "input_tokens": 204662,
+      "output_tokens": 26515
     }
   ]
 }

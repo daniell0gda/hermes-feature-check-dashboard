@@ -1,21 +1,21 @@
 {
-  "run_id": "issue137-earth-continent-map",
-  "feature": "earth-continent-map-integration",
+  "run_id": "issue116-game-ready-blocks-map-load-r1",
+  "feature": "game-ready-blocks-map-load",
   "status": "running",
-  "started_at": "2026-08-23T00:55:39.079Z",
+  "started_at": "2026-08-22T23:17:33.566Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue137-earth-continent-map/",
-  "heartbeat_at": "2026-08-23T01:35:34.230Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T01:35:34.230Z",
-  "process_id": 837982,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r1/",
+  "heartbeat_at": "2026-08-23T01:37:24.778Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-23T01:37:24.778Z",
+  "process_id": 792468,
   "host": "25e0b2c49eb5",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T01:35:38.639406+00:00",
-    "last_success_at": "2026-08-23T01:35:38.638641+00:00",
+    "last_attempt_at": "2026-08-23T01:37:24.778793+00:00",
+    "last_success_at": "2026-08-23T01:11:43.815609+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 114064,
-        "output_tokens": 4854
+        "input_tokens": 112499,
+        "output_tokens": 5457
       },
       {
         "task_id": "code",
@@ -39,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 126441,
-        "output_tokens": 3408
+        "input_tokens": 264145,
+        "output_tokens": 21791
       },
       {
         "task_id": "check",
@@ -50,8 +50,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 162400,
-        "output_tokens": 7035
+        "input_tokens": 154272,
+        "output_tokens": 5631
       },
       {
         "task_id": "revision-code-1",
@@ -61,8 +61,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 203532,
-        "output_tokens": 28135
+        "input_tokens": 204662,
+        "output_tokens": 26515
       }
     ]
   }

@@ -5,9 +5,10 @@
 - Debug-build `[MAP_BUILD]` log line per world-build phase completion, naming the phase and its elapsed milliseconds.
 
 ## ⬜ Pending
-- No single frame during the world build exceeds ~100ms wall-clock, measurable from the scenario run log (per-phase elapsed timings or an equivalent frame-time record written during the load).
-- During the world-build portion of a map load, `MapLoadingScreen`'s progress bar advances in multiple observable increments beyond its post-threaded-load value, rather than sitting at or near 100% while the world builds.
-- The status line updates at least once during the world build (a building-phase caption replaces the static "Building Map" line before the screen is replaced by the game scene).
-- A selected map id that is missing or unparseable still falls back to `map_1` before any world-building phase begins, and the run proceeds with `map_1`.
+- No single frame during the world build exceeds ~100ms wall-clock, measurable from the scenario run log (per-phase elapsed timings or an equivalent frame-time record written during the load). — fresh cold-cache run still shows 124/121/121/184/192 ms phases (map_1) and 204/194/127 ms in level_walkthrough; focused scenario status=fail on this expectation — quality: scripts/game/Game.gd: new `as PackedScene` casts (type casts forbidden by coding rules)
+- During the world-build portion of a map load, `MapLoadingScreen`'s progress bar advances in multiple observable increments beyond its post-threaded-load value, rather than sitting at or near 100% while the world builds. — new test crashes at tests/loading/test_map_loading_screen_driving.gd:46 before any assertion; no manual PNG evidence
+- The status line updates at least once during the world build (a building-phase caption replaces the static "Building Map" line before the screen is replaced by the game scene). — same broken test; no evidence
+- A selected map id that is missing or unparseable still falls back to `map_1` before any world-building phase begins, and the run proceeds with `map_1`. — fallback logic present in code but its only test never executes its checks
 
 ## ❌ Impossible
+

@@ -34,5 +34,14 @@
     "duration_ms": 3142865,
     "summary": "I've diagnosed the remaining frame-budget failures. The evidence so far:\n\n1. **Castle phases** (Loading/Warming/Placing each ~120-130ms): `ResourceLoader.load` with default cache mode is not deduplicating across the three phases \u2014 each phas\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-23T01:37:24.778Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 1545296,
+    "summary": "Revision-check 1 complete. Artifacts written to .gen/check.md, .gen/status.md, and quality-notes.md appended.\n\nclassification: fixable\n\nVerified done: 4. Pending: 4 \u2014 1 due to build/test failures (frame-budget criterion: focused map_build_p\u2026",
+    "error": null
   }
 ]

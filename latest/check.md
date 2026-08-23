@@ -1,81 +1,108 @@
-# Check Report — earth-continent-map-integration (iteration 3)
+# Check report — issue-116 game-ready-blocks-map-load (revision-check 1, iteration 2)
 
 classification: fixable
 
-## Verification
+## Verdict
 
-All commands via `run_project_cmd` (project=poke-defense-godot,
-workspace=poke-defense-godot/issue-earth-continent-map-integration), 2026-08-23,
-fresh runs by the check worker. Per `.gen/request.md` check-scope bound, the full
-135-scenario suite is NOT run (runner 15-min timeout, known limitation in
-quality-notes); the plan's bounded python3 spot-set stands in as the "full test".
+Cluster 1 is mostly verified but the frame-budget criterion still FAILS on a
+fresh cold-cache run. Cluster 2 gained a new headless test
+(`tests/loading/test_map_loading_screen_driving.gd`), but that test is broken:
+it crashes every frame with a typed-assignment script error and hangs forever
+(no result file, runner timeout after 15 min on the first attempt). The required
+windowed PNG manual evidence still does not exist.
 
-| Command | Exit | Result |
-|---|---|---|
-| `git status --short` (preflight) | 0 | Runner healthy; feature diff present |
-| `godot --headless --path . --editor --quit-after 300` (typecheck/build gate) | 0 (~9 s) | Import clean incl. stylized_earth_in_clouds.glb |
-| Focused harness `backdrop_earth_visible.json` | 0 | status=pass; all 6 expectations pass; center_y = -1.279e-05 ≈ 0; rotation_invariant=true (`.gen/harness/backdrop_earth_visible/result.json`, finished 01:06:26) |
-| Focused harness `backdrop_earth_glint.json` | 0 | status=pass; all 3 expectations pass (finished 01:06:14) |
-| Plan's "full test": python3 loop over backdrop_earth_visible, backdrop_earth_glint, menu_backdrop_map, smoke_placement, removed_tower_kinds_no_crash | 0 | All five PASS |
+## Verification commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-game-ready-blocks-map-load)
 
-Grounding log line observed in every run:
-`[BACKDROP EARTH] grounded continent=Continent_Africa pos=(-21.2, -83.7824, -51.76) scale=41.5999984741211 rot_deg=(15.38803, 21.66841, 83.15345)`
-Scale now equals `grounded_scale(2.6) * world_radius(32) / NATIVE_EARTH_RADIUS(2.0)` = 41.6 —
-iteration-2's unit-scale regression (`scale≈1.0`, center_y=-81.768) is fixed
-(scale baked into the rig basis; sink depth from measured GLB apex 2.014).
+- Preflight probe: `["godot","--version"]` → exit 0, Godot 4.4.1.stable.
+- Typecheck/build: `godot --headless --path . --import` → exit 0 (clean parse of
+  Game.gd / NatureDecoration.gd).
+- Focused scenario: `godot --headless --path . res://scenes/Main.tscn --
+  --harness=res://tests/scenarios/map_build_phases.json --log-file
+  .gen/check_map_build_phases.log` → **exit 1, status=fail**,
+  `.gen/harness/map_build_phases/result.json`: 7/8 expectations pass; the failing
+  one remains the `!regex` frame-budget check. Fresh cold-cache phase timings in
+  `.gen/harness/_logs/map_build_phases.out.log`: 'Loading Egg Castle Model'
+  124 ms, 'Warming Egg Castle Model' 121 ms, 'Placing the Egg' 121 ms, 'Growing
+  Vegetation - Trees 1/4' 184 ms, 'Dead Trees 1/2' 192 ms — five phases over the
+  ~100 ms budget. (The second load inside the same run is fully warm and under
+  budget; the criterion concerns real first loads.) Note: the `--log-file`
+  argument produced no file at `.gen/check_map_build_phases.log`; evidence was
+  taken from the harness out-log instead.
+- Full suite: level_walkthrough → exit 0, status=pass, but its own log still
+  shows phases at 204 ms / 194 ms / 127 ms (same budget violation on other
+  maps).
+- Backdrop: menu_backdrop_map → status=pass.
+- New cluster-2 test: `godot --headless --path .
+  res://tests/loading/test_map_loading_screen_driving.tscn` → first run hit the
+  15-minute runner timeout with no output past autoload init (no watchdog in the
+  test). Rerun bounded with `--quit-after 1200` → exited via frame limit with
+  ~1200 repetitions of `SCRIPT ERROR: Trying to assign a value of type "String"
+  to a variable of type "Array[String]"` at
+  `tests/loading/test_map_loading_screen_driving.gd:46` plus `ERROR: Parent node
+  is busy setting up children, add_child() failed`. No
+  `.gen/loading_harness/result.json` was ever written; zero assertions ran. Root
+  cause: `_process` builds `pair` as an untyped `Array`, so `var captions:
+  Array[String] = pair[2]` fails at runtime and aborts `_process` each frame;
+  the sampling loop never records anything and the awaited screen-free loops
+  spin indefinitely.
 
-## Acceptance criteria
+## Acceptance criteria status
 
-### Cluster 1: grounded-continent-placement
-1. One continent mesh named + debug warning if absent — **Done**.
-   `GROUNDED_CONTINENT = "Continent_Africa"` with documented GLB node list;
-   `_verify_continent_mesh()` emits `push_warning("[BACKDROP EARTH] grounded continent mesh not found: …")`.
-   Automated evidence: fresh harness log names the continent each run; warning path
-   is a two-line guard whose absence branch is exercised only when the asset changes
-   (acceptable for a debug-build diagnostic).
-2. Applied scale == grounded_scale * world_radius / NATIVE_EARTH_RADIUS — **Done**.
-   Log shows scale=41.6 = 2.6*32/2.0 exactly; formula visible in `_place_earth_grounded()`.
-3. Continent apex flush at playable plane (center_y == 0), no floating gap — **Done**
-   (headless contract). Harness expectation `center_y == 0` passes with actual
-   -1.28e-05 (float noise from apex*scale subtraction).
-4. Globe horizon inside normal gameplay camera frustum — **Pending**. Code pose
-   (center (-21.2, -83.78, -51.76), body radius 83.2, limb rises through plane left of
-   board) is plausible, but the criterion is player-facing and requires windowed
-   screenshot confirmation; manual-report absent.
-5. Spin never starts in grounded config; transform identical across seconds — **Done**.
-   Grounded path never calls `_start_earth_spin()`; scenario samples world transform
-   ~3 s apart via layer-switch waits and asserts `rotation_invariant == true` (passes).
-6. Debug `[BACKDROP EARTH]` grounding log per event with continent + pos/scale/rot —
-   **Done**. Observed verbatim twice per run (initial load + map reload).
+Cluster 1 — game-phased-build:
+- PASS — phased parity (playing state, map_id=map_1, total_waves=4>0, wave-1
+  enemies ≥1): harness expectations pass in
+  .gen/harness/map_build_phases/result.json.
+- FAIL — no single frame >~100 ms during world build: cold-cache phases measured
+  124/121/121/184/192 ms on map_1 this iteration; level_walkthrough log shows
+  204/194/127 ms on other maps. The new slicing (Trees 1/4..4/4, Dead Trees
+  1/2..2/2) reduced some phases but the first slice still pays the whole model
+  parse cost, and egg-castle load/warm/place each sit just over budget.
+- PASS — direct Main.tscn boot completes the whole build without a driver
+  (`setup()` runs all phases synchronously when no driver registered; harness
+  reaches playing).
+- PASS — menu_backdrop_map scenario passes unchanged.
+- PASS — `[MAP_BUILD] phase '<name>' done in <n> ms` lines present for every
+  phase.
 
-### Cluster 2: backdrop-regression-and-harness-contract
-7. Both focused scenarios pass headless, expectations green — **Done** (fresh exit 0 both).
-8. Windowed view: other continents/ocean/cloud banks/atmosphere visible, hidden prefixes
-   unchanged — **Pending**. Requires windowed run; headless screenshots skipped
-   (`reason: "headless"`). Hidden-prefix list unchanged in the diff.
-9. Windowed surface screenshot showing map on continent blending in scale/color —
-   **Pending**, same reason. No `.gen/manual-report.md`; manual-testing gate open.
+Cluster 2 — loading-screen-driving:
+- UNVERIFIED — bar advances during world build: implementation exists
+  (MapLoadingScreen._build_world_phased + _on_world_build_phase →
+  report_step_progress), but the new automated test crashes before asserting
+  anything and no windowed PNG manual evidence exists.
+- UNVERIFIED — building-phase caption replaces "Building Map": same gap.
+- UNVERIFIED — bad map id falls back to map_1 before world build: fallback logic
+  present and ordered before world-build phases in code, but the only test for
+  it never executes its checks.
 
-## Build/test gate
-Typecheck/build gate passes. Bounded test set green (exit 0). Full 135-scenario suite
-not run per explicit request.md bound; recorded as known limitation, not a blocker.
+Manual testing per plan.md (windowed PNG of loading screen mid-world-build) is
+REQUIRED and missing (.gen has no manual-report.md and no screenshots).
 
 ## Changed-file quality findings
-New/changed code reviewed against /opt/data/coding_rules.md + CLAUDE.md:
-- `BackdropEarth.gd`: typed vars/functions, small focused functions, guard clauses,
-  debug-only `[TAG]` logging, explanatory comments — compliant.
-- `Game.gd` / `HarnessValues.gd` additions: typed, minimal harness observability — compliant.
-- No new tests duplicate existing coverage: the new `backdrop_earth` expectation source
-  and rotation-invariance assertion extend the same two scenarios they replace contracts for;
-  old weaker assertions were updated in the same change.
+
+- tests/loading/test_map_loading_screen_driving.gd:46 — runtime type error from
+  reading untyped `Array` elements into `Array[String]` / relying on pair typing;
+  also no watchdog/timeout, so any stall wedges the runner for 15 min. This is
+  the direct cause of the cluster-2 verification failure.
+- scripts/game/Game.gd adds new `as PackedScene` casts (e.g.
+  `_preload_egg_castle_scene`) — global coding rules forbid type casts. These
+  are in newly added lines for a demoted criterion's own files; recorded as
+  quality note, consistent with iteration 1 treatment.
 
 ## Blockers
-None infrastructural. Remaining work is the windowed/manual evidence pass
-(manual-tester profile owns `.gen/manual-report.md`).
 
-## Unverified items
-- Criteria 4, 8, 9 (all windowed-screenshot criteria).
+None infra-related; the runner was healthy throughout (probe, import, and all
+harness runs returned promptly except the hung broken test).
 
-## Verdict
-fixable — implementation and automated gates are green this iteration; only the three
-windowed/manual criteria remain open pending the manual tester.
+## Required fixes before re-check
+
+1. Fix the typed-pair bug at tests/loading/
+   test_map_loading_screen_driving.gd:46 (use typed tuples or two parallel
+   branches), add a frame-count watchdog so the test can never hang the runner.
+2. Bring cold-cache world-build phases under ~100 ms: amortize the first tree /
+   dead-tree slice's model-parse cost (warm models before slicing or smaller
+   first slices) and split or overlap egg-castle load/warm/place.
+3. Rerun map_build_phases to status=pass and the loading-screen test to a
+   written result.json with all checks passing.
+4. Provide the required windowed PNG manual evidence of the loading screen
+   mid-world-build.
