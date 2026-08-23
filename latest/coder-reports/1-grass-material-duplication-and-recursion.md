@@ -1,4 +1,4 @@
-# Coder report: 1-grass-material-duplication-and-recursion\n\n# Coder report: 1-grass-material-duplication-and-recursion
+# Coder report: 1-grass-material-duplication-and-recursion
 
 ## Changed files
 - `scripts/game/NatureDecoration.gd` — modified
@@ -24,4 +24,3 @@
 - Debug log is gated on `OS.is_debug_build()`; verified firing in the headless run ("[NatureDecoration] duplicated material for Blades surface 0").
 - Gotcha for tester: runner output truncates long Godot logs; during RED only the test wrote a temp result file which was removed before handoff — final test writes nothing extra.
 - The manual windowed screenshot criterion remains for the manual-testing pass.
-\n

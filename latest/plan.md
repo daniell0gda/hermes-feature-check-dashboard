@@ -19,7 +19,6 @@
 
 ## Criteria
 
-## ✅ Done
 - The grass/flower path duplicates any StandardMaterial3D it modifies before writing to it, so the material resource cached by the imported model is left unchanged after decoration generation.
 - After the grass/flower path runs, each affected MeshInstance3D surface carries its own modified copy via set_surface_override_material, with transparency alpha-scissor, alpha scissor threshold applied, no depth test disabled, and render priority -1.
 - Two grass or flower decorations generated from the same model do not share one modified material instance between them.
@@ -27,10 +26,6 @@
 - A MeshInstance3D under the grass path still has cast_shadow off and visibility_range_end 0 after the fix.
 - Debug-build [NatureDecoration] log line per small-vegetation mesh whose material is duplicated, naming the node and surface index.
 - The existing nature visibility-range regression test still passes unchanged after the rewrite.
-
-## ⬜ Pending
 - Windowed (never --headless) manual screenshot of a gameplay map shows grass/flowers rendering correctly with cutout foliage edges and casting no shadows.
 
-## ❌ Impossible
-
-classification: pass
+manual_testing: required
