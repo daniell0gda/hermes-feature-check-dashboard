@@ -1,79 +1,59 @@
-# Check report: health-bar-never-auto-hides (issue #112) — iteration 1
+# Check Report: grass-mutates-shared-materials (issue #111) — iteration 2
 
 classification: pass
 
 ## Verdict
 
-All three "Done when" criteria verified with fresh runner evidence (this check, all through
-run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-health-bar-never-auto-hides;
-no host-shell Godot). The implementor chose the "keep the fade" option: `setup()` and
-`_deferred_setup()` in `scripts/ui/EnemyHealthBar.gd` arm `hide_timer = FADE_OUT_DELAY` immediately
-AFTER `show_health_bar()` (which resets it to 0), with the ordering trap documented in code comments —
-decision recorded in code. `Enemy.gd`'s `is_menu_backdrop` skip was re-examined and kept with an
-updated recorded rationale (comment-only change).
+Fresh verification in this worktree via run_project_cmd
+(project=poke-defense-godot, workspace=poke-defense-godot/issue-grass-render-settings-mutate-the-shared-)
+confirms all automated acceptance criteria. The only open criterion is the
+windowed manual screenshot (manual_testing: required — owned by the manual-tester
+profile; not executable headless), which stays Pending.
 
-## Acceptance criteria evidence
+## Implementation evidence
 
-1. Decision recorded in EnemyHealthBar.gd — DONE.
-   Evidence: `git diff` (via runner) shows `hide_timer = FADE_OUT_DELAY` after `show_health_bar()`
-   in both `setup()` and `_deferred_setup()`, with a comment citing issue #112 and explaining that
-   show_health_bar resets hide_timer to 0.
+- `scripts/game/NatureDecoration.gd` — `_apply_small_vegetation_render_settings`
+  now delegates to recursive `_apply_small_vegetation_render_settings_recursive`.
+  Per surface it duplicates the StandardMaterial3D before modification and writes
+  it back via `set_surface_override_material` (TRANSPARENCY_ALPHA_SCISSOR,
+  threshold 0.3, no_depth_test false, render_priority -1). Shadow-off,
+  visibility_range_end 0.0, opaque sorting applied to every nested MeshInstance3D.
+  Debug-build `[NatureDecoration] duplicated material for <node> surface <i>` log present.
+- `tests/visuals/test_small_vegetation_render_settings.gd/.tscn` — new focused test
+  asserting nested reachability, cached-material immutability, per-instance material
+  independence, plus all alpha-scissor/shadow/cull settings.
 
-2. Spawned bar fades after FADE_OUT_DELAY and reappears on first damage; asserted in
-   tests/ui/test_enemy_armor_bar.gd — DONE. Fresh evidence:
-   - Parse/type gate: `godot --headless --path . --check-only -s res://scripts/ui/EnemyHealthBar.gd`
-     exit 0, clean parse.
-   - Focused suite: `godot --headless --path . --log-file .gen/check_test_armor_bar.log
-     res://tests/ui/test_enemy_armor_bar.tscn` exit 0 — `=== enemy_armor_bar: 41 ok, 0 failed ===`,
-     including the new `_test_spawned_bar_fades_and_reappears_on_first_damage` asserting:
-     timer armed to FADE_OUT_DELAY (2.0), bar stops being shown after FADE_OUT_DELAY, fully faded bar
-     hides itself, first hit shows the bar again, damaged bar not auto-hidden.
-   - Windowed real-frame verification:
-     `godot --path . --rendering-method gl_compatibility --audio-driver Dummy --log-file
-     .gen/check_spawn_fade.log res://tests/ui/verify_enemy_bar_spawn_fade.tscn` exit 0 —
-     `[VERIFY] spawned: is_showing=true hide_timer=2.000000`, `[VERIFY] ok - bar fully faded after
-     3.50s of real frames`, `[VERIFY] ok - bar stayed shown for 1.00s after damage`,
-     `[VERIFY RESULT] PASSED`. Debug transitions `[ENEMYHEALTHBAR] show`/`auto_hide` with hp context
-     present in the log (criterion 4 satisfied).
-   - Regression: menu-backdrop camera test exit 0 — `=== menu_backdrop_camera: 12 ok, 0 failed ===`.
+## Verification commands (all via run_project_cmd)
 
-3. Both direct and deferred setup paths arm the hide timer — DONE. Diff shows the identical
-   `show_health_bar(); hide_timer = FADE_OUT_DELAY` sequence in both paths; focused suite passes.
+| Gate | Command | Exit | Result |
+|---|---|---|---|
+| Preflight | `godot --version` | 0 | 4.4.1.stable.official |
+| Build/import | `godot --headless --path . --import` | 0 | Clean import, no errors |
+| Focused test | `godot --headless --path . res://tests/visuals/test_small_vegetation_render_settings.tscn` | 0 | `=== small_vegetation_render_settings: 16 ok, 0 failed ===`; debug duplication logs fired for each scenario (`[NatureDecoration] duplicated material for Blades surface 0`) |
+| Full test | `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn` | 0 | `=== nature_visibility_range: 5 ok, 0 failed ===`; dummy-renderer RID warnings at exit are baseline headless noise |
 
-4. Debug [ENEMYHEALTHBAR] auto_hide log line per transition with hp context — DONE.
-   `_log_visibility_transition("auto_hide", ...)` emits `[ENEMYHEALTHBAR] auto_hide is_showing true
-   -> false hp=100/100` in debug builds; observed in both fresh logs; deduped against repeats.
+Runner gate: passed — every project command ran through run_project_cmd; no host Godot.
 
-5. Enemy.gd is_menu_backdrop skip kept with recorded rationale — DONE (comment-only diff; rationale
-   updated for the new behavior). Menu-backdrop regression passes.
+## Acceptance criteria status
 
-6. Test overlap check: the new test covers the spawn auto-hide path (`hide_timer` armed at setup).
-   The existing `_test_boss_style_and_fading_survive_the_armor_row` covers only damage-driven fade;
-   no prior test asserted the spawn path. EXPECTED_TESTS bumped 7 -> 8 in the same change. No overlap.
+Criteria 1–7 verified Done (see status.md). Criterion 8 (windowed manual
+screenshot) remains Pending: it requires a windowed (never --headless) run and is
+assigned to the manual-testing pass.
 
-## Commands (fresh, this check)
+Test overlap check: searched the existing suite — no pre-existing test asserted
+material duplication or nested-walk behavior; the new scenario is non-overlapping.
+The existing nature_visibility_range test was rerun unchanged and passes.
 
-- `git status --short` via runner — exit 0 (5 changed/new files as claimed).
-- `[godot, --headless, --path, ., --check-only, -s, res://scripts/ui/EnemyHealthBar.gd]` — exit 0.
-- `[godot, --headless, --path, ., --log-file, .gen/check_test_armor_bar.log,
-  res://tests/ui/test_enemy_armor_bar.tscn]` — exit 0, 41 ok / 0 failed.
-- `[godot, --path, ., --rendering-method, gl_compatibility, --audio-driver, Dummy, --log-file,
-  .gen/check_spawn_fade.log, res://tests/ui/verify_enemy_bar_spawn_fade.tscn]` — exit 0,
-  VERIFY RESULT PASSED.
-- `[godot, --headless, --path, ., --log-file, .gen/check_menu_backdrop.log,
-  res://tests/menu/test_menu_backdrop_camera.tscn]` — exit 0, 12 ok / 0 failed.
-
-## Changed-file quality findings
-
-New/changed code follows project rules: typed vars, debug-only `[TAG]` state-transition logging per
-CLAUDE.md, surgical diff (5 files, one comment-only), no scope creep beyond the issue's three items.
-Minor advisory item recorded in quality-notes.md (misnamed shared dedupe cache field); not demoting.
+Changed-code quality: diff vs HEAD touches only NatureDecoration.gd + the two new
+test files. Typed variables throughout, debug-build tagged log line, mirrors the
+existing tree-path pattern, surgical scope. No violations under
+/opt/data/coding_rules.md or CLAUDE.md. quality-notes.md has no open entries.
 
 ## Blockers
 
-None.
+None infra-related.
 
 ## Unverified items
 
-None. No full-project typecheck/build command exists for this Godot project beyond script parse
-(check-only passed) plus scene execution (both suites ran cleanly headless; verify scene ran windowed).
+- Criterion 8: windowed manual screenshot of a gameplay map showing grass/flowers
+  with cutout foliage edges and no shadows — deferred to manual testing.

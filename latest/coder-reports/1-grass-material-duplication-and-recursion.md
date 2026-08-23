@@ -1,4 +1,4 @@
-# Coder report: 1-grass-material-duplication-and-recursion\n\n# Coder report: 1-grass-material-duplication-and-recursion
+# Coder report: 1-grass-material-duplication-and-recursion
 
 ## Changed files
 - `scripts/game/NatureDecoration.gd` — modified
@@ -29,4 +29,3 @@
 - `godot --headless --path . --import` — exit 0, clean import
 - `godot --headless --path . res://tests/visuals/test_small_vegetation_render_settings.tscn` — exit 0, `=== small_vegetation_render_settings: 16 ok, 0 failed ===`, `[NatureDecoration] duplicated material ...` debug lines fired
 - `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn` — exit 0, `=== nature_visibility_range: 5 ok, 0 failed ===`
-\n
