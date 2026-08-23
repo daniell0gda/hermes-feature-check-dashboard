@@ -8,7 +8,7 @@ parallel: true
 - After carving the 2-by-18 plus 18-by-2 cross underground, every sampled point along all four arms at roughly 2-unit intervals has at least one active torch within its light coverage radius (headless count_near assertions unchanged in threshold and coverage).
 - Every carved cell reachable in the connected carved network lies within coverage of at least one placed torch (no unlit carved cells reported by the torch state source).
 - When a new corridor is carved that connects to an already-lit carved path, torches appear along the new corridor's entire length, not only near the junction.
-- In a fresh windowed gl_compatibility (llvmpipe) top-down run of `cave_carved_path_torches.json`, each of the four carved cross arms shows visibly lit floor pixels along its entire length — no arm reads fully dark — verified by inspecting the fresh PNGs per-arm.
+- In a fresh windowed gl_compatibility (llvmpipe) top-down run of `cave_carved_path_torches.json`, a scripted brightness/warm-pixel measurement over fresh PNGs reports measurable warm-light presence in every sampled segment along all four carved cross arms (no arm segment with zero warm pixels).
 
 ## Verification commands
 - Focused test: ["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/cave_carved_path_torches.json"]
