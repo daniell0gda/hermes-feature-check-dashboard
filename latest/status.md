@@ -1,10 +1,16 @@
+# Status
+
 ## ✅ Done
-- Decision recorded in `scripts/ui/EnemyHealthBar.gd`: keep the fade — `setup()` and `_deferred_setup()` arm `hide_timer = FADE_OUT_DELAY` after `show_health_bar()` (issue #112 decision in code comments)
-- Spawned bar fades out after FADE_OUT_DELAY and reappears on first damage, verified on a windowed run (`tests/ui/verify_enemy_bar_spawn_fade.tscn`: VERIFY RESULT PASSED, real frames) and asserted in `tests/ui/test_enemy_armor_bar.gd` (`_test_spawned_bar_fades_and_reappears_on_first_damage`; suite 41 ok, 0 failed, exit 0)
-- `Enemy.gd` `is_menu_backdrop` skip re-examined and kept with recorded rationale (comment-only change); menu-backdrop regression `tests/menu/test_menu_backdrop_camera.tscn` passes (12 ok, 0 failed, exit 0)
+- The grounded configuration names exactly one continent mesh from `models/stylized_earth_in_clouds.glb`, and a debug-build warning is emitted if that mesh is absent from the instantiated model.
+- After `configure_for_map` on a surface map, the earth rig's applied uniform scale equals `grounded_scale * world_radius / NATIVE_EARTH_RADIUS` (the configured value, not unit scale), observable in the grounding log line.
+- After `configure_for_map` on a surface map, the chosen continent's terrain apex sits flush at the playable plane height (harness `backdrop_earth_center_y == 0`) with no floating gap between board and globe surface.
+- In the grounded configuration the earth spin never starts: the earth body's world transform sampled at two times several seconds apart is identical.
+- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent and the final rig position/scale/rotation.
+- The focused harness scenarios `backdrop_earth_visible` and `backdrop_earth_glint` both pass headless with all their expectations green (present, grounded, flush placement, rotation invariance).
+- The globe rig pose places the globe body close enough to the board that its horizon lies inside the normal gameplay camera's view frustum (not sunk below the plane nor pushed far behind the board).
 
 ## ⬜ Pending
-- (none)
+- From the normal gameplay camera in the windowed build, other continents, ocean, cloud banks, and the atmosphere rim remain visible; only the previously hidden mesh prefixes stay hidden, with no visual regressions to the backdrop look.
+- A windowed run of `backdrop_earth_visible` produces a surface screenshot from the default gameplay camera showing the map sitting on the chosen continent with surrounding continent terrain blending in scale and color into the map field.
 
 ## ❌ Impossible
-- (none)

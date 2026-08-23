@@ -1,89 +1,111 @@
 # Team-leader report
 
 - **Result:** failed
-- **Classification:** pass
-- **Feature:** health-bar-never-auto-hides
-- **Run:** issue112-healthbar-014516
+- **Classification:** unknown
+- **Feature:** earth-continent-map-integration
+- **Run:** issue137-earth-continent-map
 - **Lifecycle:** dashboard publish only; project commit/push/close not implied
 
 ## Status
 
 ## ✅ Done
-- Decision recorded in `scripts/ui/EnemyHealthBar.gd`: keep the fade — `setup()` and `_deferred_setup()` arm `hide_timer = FADE_OUT_DELAY` after `show_health_bar()` (issue #112 decision in code comments)
-- Spawned bar fades out after FADE_OUT_DELAY and reappears on first damage, verified on a windowed run (`tests/ui/verify_enemy_bar_spawn_fade.tscn`: VERIFY RESULT PASSED, real frames) and asserted in `tests/ui/test_enemy_armor_bar.gd` (`_test_spawned_bar_fades_and_reappears_on_first_damage`; suite 41 ok, 0 failed, exit 0)
-- `Enemy.gd` `is_menu_backdrop` skip re-examined and kept with recorded rationale (comment-only change); menu-backdrop regression `tests/menu/test_menu_backdrop_camera.tscn` passes (12 ok, 0 failed, exit 0)
+(none — build/test gate not green)
 
 ## ⬜ Pending
-- (none)
+- The grounded configuration targets exactly one named continent mesh from `stylized_earth_in_clouds.glb`, and the chosen mesh name is recorded in code or project documentation so it can be checked against the GLB's mesh list.
+- After `configure_for_map`, from the normal gameplay camera on a surface map, the playable field sits flush on the chosen continent with no visible gap or floating edge between the board and the globe surface (verified by windowed screenshot).
+- In the windowed screenshot from the normal gameplay camera, the continent terrain around the board reads as continuous with the map field (scale and color blend), with no hard seam between board and globe surface.
+- During play, the globe does not rotate: the earth body's world rotation measured at two times several seconds apart is identical in the grounded configuration.
+- Debug-build `[BACKDROP EARTH]` log line per grounding event naming the selected continent mesh and the final rig position/scale/rotation.
+- With the grounded configuration active, other continents, ocean, cloud banks, and the atmosphere rim remain visible from the normal gameplay camera; only the previously hidden meshes (`CloudDomain`, `SkyDome`, `Cloud_`, `EarthCloud` prefixed) stay hidden (windowed screenshot).
+- The existing focused harness scenario `backdrop_earth_visible` still passes: map loads, `backdrop_earth_present` is true, `backdrop_earth_center_y` equals 0, and the surface screenshot is produced. — fails: actual `backdrop_earth_center_y` = -83.2 (fresh run 2026-08-22T15:41:57, exit 1); grounded rig sinks globe by body_radius below y=0 while the scenario still expects 0
 
 ## ❌ Impossible
-- (none)
+(none)
 
 ## Check
 
-# Check report: health-bar-never-auto-hides (issue #112) — iteration 1
+# Check Report — earth-continent-map-integration (issue #137)
 
-classification: pass
+Iteration: 1 · Classification: **fixable**
 
-## Verdict
+## Verification commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-earth-continent-map-integration)
 
-All three "Done when" criteria verified with fresh runner evidence. The implementor chose the
-"keep the fade" option: `setup()` / `_deferred_setup()` in `scripts/ui/EnemyHealthBar.gd` now arm
-`hide_timer = FADE_OUT_DELAY` immediately AFTER `show_health_bar()` (which resets it to 0), so a
-spawned undamaged full-health bar auto-fades after 2s and reappears on first damage. Decision is
-recorded in code comments. `Enemy.gd`'s `is_menu_backdrop` skip was re-examined and kept with an
-updated comment rationale (removing it would flash a full-green bar on every menu creature for
-FADE_OUT_DELAY) — comment-only change.
+| Command | Exit | Result |
+|---|---|---|
+| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner reachable |
+| `godot --headless --path . --editor --quit-after 300` (import/build gate) | 0 | Import completed; stylized_earth_in_clouds.glb reimported |
+| Focused harness `backdrop_earth_visible.json` | 1 | status: fail — `backdrop_earth_center_y == -83.2`, expected 0 |
+| Harness `backdrop_earth_glint.json` | 1 | status: fail — same center_y failure |
+| Full suite loop (`bash -c for f in tests/scenarios/*.json ...`) | n/a | `bash` not on profile allowlist ("cmd executable is not allowed"); not run |
+| Windowed screenshots / manual visual pass | not run | manual-tester owns `.gen/manual-report.md`; none present |
 
-## Acceptance criteria evidence
+Fresh harness evidence: `.gen/harness/backdrop_earth_visible/result.json`
+(finished_at 2026-08-22T15:41:57), log `.gen/harness/_logs/backdrop_earth_visible.out.log`.
 
-1. Decision recorded in EnemyHealthBar.gd — DONE.
-   Evidence: diff shows `hide_timer = FADE_OUT_DELAY` after `show_health_bar()` in both `setup()`
-   (line ~129) and `_deferred_setup()` (line ~139), with a comment citing issue #112 and the
-   show_health_bar-resets-timer ordering trap.
+## Acceptance criteria
 
-2. Spawn fade verified on a windowed run; spawn case asserted in tests/ui/test_enemy_armor_bar.gd — DONE.
-   Evidence (fresh, this check, all via run_project_cmd):
-   - `godot --headless --path . --log-file .gen/check_test_armor_bar.log res://tests/ui/test_enemy_armor_bar.tscn`
-     exit 0 — `=== enemy_armor_bar: 41 ok, 0 failed ===`, including the new
-     `_test_spawned_bar_fades_and_reappears_on_first_damage` (8 test functions, EXPECTED_TESTS 7->8):
-     "setup arms the hide timer to FADE_OUT_DELAY", "after FADE_OUT_DELAY the spawned bar stops being
-     shown", "the fully faded spawned bar hides itself", "the first hit shows the bar again".
-   - `godot --path . --rendering-method gl_compatibility --audio-driver Dummy --log-file
-     .gen/check_spawn_fade.log res://tests/ui/verify_enemy_bar_spawn_fade.tscn` (windowed, real
-     frames) exit 0 — `[VERIFY] spawned: is_showing=true hide_timer=2.000000`, `[VERIFY] ok - bar
-     fully faded after 3.50s of real frames`, reappear on first hit, `[VERIFY RESULT] PASSED`.
-     Debug transitions `[ENEMYHEALTHBAR] show/auto_hide` present in the log.
-   - Regression: `godot --headless --path . --log-file .gen/check_menu_backdrop.log
-     res://tests/menu/test_menu_backdrop_camera.tscn` exit 0 — `=== menu_backdrop_camera: 12 ok,
-     0 failed ===`.
+### Cluster 1: grounded-continent-placement
 
-3. Enemy.gd is_menu_backdrop skip re-examined — DONE (kept, rationale recorded in comment).
-   The issue allows "remove only if verified safe"; keeping it with a recorded rationale satisfies
-   the criterion. The menu-backdrop regression test passes.
+- Continent mesh named and recorded — **verified in code**:
+  `GROUNDED_CONTINENT = "Continent_Africa"` in `scripts/game/visuals/BackdropEarth.gd`,
+  with the full GLB node list in a comment. Checker independently parsed
+  `models/stylized_earth_in_clouds.glb`: node/mesh `Continent_Africa` exists. PASS.
+- Flush placement from gameplay camera (windowed screenshot) — **NOT VERIFIED**.
+  No windowed run or screenshot exists in this workspace; headless screenshots are
+  skipped (`reason: "headless"`). Manual report absent. PENDING.
+- Terrain continuity / no hard seam (windowed screenshot) — NOT VERIFIED. Same reason. PENDING.
+- Globe does not rotate during play — **partially verified by code inspection only**:
+  grounded path never calls `_start_earth_spin()`. No automated test asserts
+  rotation equality at two times. PENDING (missing evidence).
+- Debug `[BACKDROP EARTH]` log per grounding event naming mesh + pos/scale/rot —
+  **verified**: fresh log line `[BACKDROP EARTH] grounded continent=Continent_Africa
+  pos=(-21.2, -83.2, -51.76) scale=0.9999… rot_deg=(15.39, 21.67, 83.15)`. PASS.
 
-## Commands (all through run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-health-bar-never-auto-hides)
+### Cluster 2: backdrop-regression-coverage
 
-- `["godot","--version"]` — exit 0 (4.4.1.stable.official.49a5bc7b6), runner healthy.
-- armor-bar suite — exit 0, 41 ok / 0 failed.
-- windowed spawn-fade verify scene — exit 0, VERIFY RESULT PASSED.
-- menu-backdrop camera regression — exit 0, 12 ok / 0 failed.
+- Other continents/ocean/clouds/atmosphere visible; hidden prefixes unchanged
+  (windowed screenshot) — NOT VERIFIED. No windowed run. PENDING.
+- Existing focused scenario `backdrop_earth_visible` still passes — **FAILS**.
+  `backdrop_earth_present` is true but `backdrop_earth_center_y` equals −83.2
+  instead of 0. The grounded rig sinks the globe by body_radius below y=0, so
+  center_y is now negative by design of the change — but the plan requires the
+  existing expectation to still hold and it was neither updated nor satisfied.
+  This is a real regression against the plan's own criterion. FAIL → Pending.
+
+## Build/test gate
+
+Import/editor gate passes. The full test suite was NOT run: the plan's full-suite
+command uses `bash`, which is rejected by the runner profile allowlist
+("cmd executable is not allowed by the project profile"). A python3-based loop
+was attempted as substitute and also failed to produce green results because the
+focused earth scenarios fail (see above). Since the build/test gate is not green,
+no item may remain Done; all criteria go to Pending.
 
 ## Changed-file quality findings
 
-- New test does not overlap existing coverage: `_test_boss_style_and_fading_survive_the_armor_row`
-  covers damage-driven fade in/out; the new test covers the spawn auto-hide path (`hide_timer`
-  armed at setup) which no prior test asserted.
-- New code follows project rules: typed vars, debug-only `[ENEMYHEALTHBAR]` transition logs per
-  CLAUDE.md logging rule, surgical diff (5 files, one comment-only).
-- Minor (advisory, not demoting): `_log_visibility_transition` reuses the
-  `last_boss_icon_debug_line` field as its dedupe cache — a misnamed shared field, harmless here.
+- `models/stylized_earth_in_clouds.glb`: replaced via Git LFS pointer update
+  (9.58 MB new object). Content itself unreviewable here; noted, no violation.
+- `scripts/game/visuals/BackdropEarth.gd`: typed variables used throughout, small
+  focused functions, guard clauses, debug-only `[TAG]` logging — complies with
+  CLAUDE.md and coding_rules.md. No quality violation found in changed code.
+- Scope creep: none beyond the two intended files.
 
 ## Blockers
 
-None.
+- None infrastructural. Runner healthy. Failures are implementation-level.
 
 ## Unverified items
 
-None. No full-project typecheck/build command exists for this Godot project beyond scene parse
-(both scenes parsed and ran cleanly headless and windowed).
+- Windowed screenshots (flush fit, seam blend, backdrop regression view).
+- Rotation-invariance measurement at two times.
+- Full test suite (allowlist blocks `bash`; needs a python3-loop variant command
+  in the plan or an updated profile allowlist).
+
+## Verdict
+
+fixable — the grounding code is present and partially evidenced, but the focused
+harness regressed (`backdrop_earth_center_y = -83.2 ≠ 0`), the full suite could not
+run under the profile allowlist, and all windowed/manual visual criteria have no
+evidence.

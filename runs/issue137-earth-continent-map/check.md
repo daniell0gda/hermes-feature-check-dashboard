@@ -1,66 +1,88 @@
-# Check report: revision-check-1 (earth-continent-map-integration)
+# Check report: revision-check-2 (iteration 4)
 
 classification: fixable
 
 ## Verdict
 
-All headless-verifiable criteria are Done with fresh evidence. The two
-windowed-screenshot criteria remain Pending on the manual-testing gate — no
-`.gen/manual-report.md` or screenshot exists in the workspace. That is a
-missing-evidence gap (fixable), not a code defect and not a runner failure.
+All headless verification passes through `run_project_cmd`. The code-level
+grounded-continent criteria are genuinely met and evidenced by the focused
+harnesses. The two windowed/manual visual criteria remain Pending: the only
+windowed screenshot on disk is stale (predates the current code) and shows the
+map floating on plain sky with no globe — i.e. it does not evidence the fixed
+behavior. No `.gen/manual-report.md` exists. This is missing manual evidence,
+not a code or infra failure → `fixable`.
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-earth-continent-map-integration)
+## Verification commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-earth-continent-map-integration)
 
-| Command | Exit | Result |
-|---|---|---|
-| `["godot","--version"]` | 0 | 4.4.1.stable.official runner probe |
-| `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | import/parse gate clean |
-| harness `backdrop_earth_visible.json` | 0 | `.gen/harness/backdrop_earth_visible/result.json`: status=pass; present=true, grounded=true, center_y=-1.28e-05 (==0), horizon_in_view=true, rotation_invariant=true |
-| harness `backdrop_earth_glint.json` | 0 | `.gen/harness/backdrop_earth_glint/result.json`: status=pass; same green set |
-| harness `menu_backdrop_map.json` | 0 | pass (spot-check) |
-| harness `smoke_placement.json` | 0 | pass (spot-check) |
-| harness `removed_tower_kinds_no_crash.json` | 0 | pass (spot-check) |
+1. Preflight `["git","status","--short"]` — exit 0.
+2. Build/import gate `["godot","--headless","--path",".","--editor","--quit-after","300"]`
+   — exit 0, import clean, no script errors.
+3. Focused harness `backdrop_earth_visible.json` — exit 0, status=pass; all 8
+   expectations green including present=true, grounded=true,
+   center_y=-0.0000128 (== 0 with harness tolerance), horizon_in_view=true,
+   centered_on_board=true, rotation_invariant=true. Log line:
+   `[BACKDROP EARTH] grounded continent=Continent_Africa pos=(-21.2, -83.7824, -49.904) scale=41.5999984741211 rot_deg=(15.38803, 21.66841, 83.15345)`.
+4. Focused harness `backdrop_earth_glint.json` — exit 0, status=pass;
+   present/grounded/center_y==0/horizon_in_view all green.
+5. Bounded spot-check set (`backdrop_earth_visible`, `backdrop_earth_glint`,
+   `menu_backdrop_map`, `smoke_placement`, `removed_tower_kinds_no_crash`)
+   via the plan's python3 loop — exit 0, all five PASS.
 
-Grounding log line observed fresh in every run:
-`[BACKDROP EARTH] grounded continent=Continent_Africa pos=(-21.2, -83.7824, -49.904) scale=41.5999984741211 rot_deg=(15.38803, 21.66841, 83.15345)`
-— scale 41.6 == 32.0/2.0 * 2.6 exactly matches the criterion formula.
+## Criterion-by-criterion evidence
 
-## Acceptance criteria evidence
+- Continent naming + debug warning — Done. `BackdropEarth.gd` line 20:
+  `GROUNDED_CONTINENT = "Continent_Africa"`; `_verify_continent_mesh()`
+  emits debug-build `push_warning("[BACKDROP EARTH] grounded continent mesh not found: ...")`
+  when absent from the instantiated GLB. Harness log confirms the mesh exists.
+- Applied scale formula — Done. `_place_earth_grounded()`:
+  `scale_factor = world_radius / NATIVE_EARTH_RADIUS * grounded_scale`,
+  baked into basis as `yaw_basis.scaled(Vector3.ONE * scale_factor)`;
+  grounding log shows scale=41.6 (not unit).
+- Flush placement (center_y == 0) — Done. Harness expectation green in both
+  scenarios; actual -0.0000128 is float noise around 0; sink depth derived
+  from measured GLB apex GROUNDED_CONTINENT_APEX = 2.014.
+- Horizon inside gameplay camera frustum — Done at harness level
+  (`horizon_in_view == true`, `centered_on_board == true` in
+  backdrop_earth_visible). Rig center (-21.2, -83.7824, -49.904), body radius
+  ~83.2, limb crosses y=0 just past the far field edge per code comments.
+  Windowed visual confirmation still pending (see Pending).
+- Spin never starts in grounded config — Done. Grounded path calls
+  `_place_earth_grounded()` which never calls `_start_earth_spin()`
+  (only `_place_earth_floating()` does). Harness asserts
+  `rotation_invariant == true` sampling the body transform twice ~3 s apart.
+- Debug `[BACKDROP EARTH]` grounding log line — Done. Observed live in every
+  run this iteration with continent name, pos, scale, rot_deg.
+- Both focused harnesses pass headless with expectations green — Done (commands
+  3–4 above).
 
-1. Single continent + debug warning — Done. `scripts/game/visuals/BackdropEarth.gd` const `GROUNDED_CONTINENT = "Continent_Africa"`; `_verify_continent_mesh()` push_warnings in `_place_earth_grounded`. Log confirms selection at runtime.
-2. Applied uniform scale formula — Done. Scale baked into basis (`earth_rig.basis = yaw_basis.scaled(...)`, fixing the iteration-2 unit-scale regression); log value 41.6 equals the formula.
-3. Apex flush at plane — Done. `center_y == 0` expectation passes (-1.28e-05 float noise); sink measured from measured GLB apex 2.014.
-4. Horizon inside gameplay camera frustum — Done headless via harness expectation `horizon_in_view == true` in both scenarios. Visual confirmation still pending windowed screenshot.
-5. Spin never starts grounded — Done. Grounded path never calls `_start_earth_spin()`; harness samples world transform ~3 s apart and asserts `rotation_invariant`.
-6. Debug `[BACKDROP EARTH]` grounding log — Done. Observed verbatim in every run.
-7. Both focused scenarios pass headless — Done (fresh runs above).
-8–9. Windowed backdrop look / screenshot evidence — Pending. Manual-testing gate (`manual_testing: required`); owned by the manual-tester profile.
+## Pending items (why)
+
+- Windowed backdrop look (other continents/ocean/clouds/atmosphere rim visible)
+  — Pending on evidence: only screenshot on disk is
+  `.gen/harness/backdrop_earth_visible/shots/surface_earth_backdrop.png`
+  dated 2026-08-22 19:43, BEFORE BackdropEarth.gd (08-23 01:21) and Game.gd
+  (01:52); image inspection shows map on plain sky, no globe — stale evidence
+  of the pre-fix state.
+- Windowed screenshot showing map sitting on the chosen continent blending into
+  the map field — same reason; requires a fresh windowed run of
+  `backdrop_earth_visible` from current code plus `.gen/manual-report.md`.
 
 ## Changed-file quality findings
 
-- No quality violation found in the new/changed feature code
-  (`scripts/game/visuals/BackdropEarth.gd`, scenario JSONs, HarnessValues.gd,
-  Game.gd). Typed GDScript, guard clauses, single-purpose functions, debug-tag
-  logging per CLAUDE.md conventions.
-- Test overlap: the two updated scenario contracts assert this feature's
-  behavior directly; no duplicate pre-existing coverage of the grounded
-  contract was found.
+No new rule violations found in the feature diff for this iteration's files
+(`scripts/game/visuals/BackdropEarth.gd`, scenario JSONs, `Game.gd`,
+`HarnessValues.gd`). Typed variables used throughout changed functions; debug
+logging follows the CLAUDE.md `[TAG]` convention; no leaked nodes observed.
+Carried-over advisory notes remain open in quality-notes.md (glb replacement,
+balance CSV regeneration — unrelated shared files, do not demote criteria).
 
 ## Blockers
 
-None. Runner healthy throughout.
+None. Runner worked normally throughout; no host-shell Godot was used.
 
-## Unverified items / known limitations
+## Unverified items
 
-- Full 135-scenario suite not run — bounded by request.md check-scope after a
-  proven runner 15-min timeout; recorded as open entry `full-suite-runner-timeout`
-  in quality-notes.md.
-- Open quality-notes entries re-checked: `glb-replaced-via-lfs` (iteration 1)
-  and `balance-csv-regenerated` (iteration 2) remain open — advisory only,
-  neither demotes a criterion. `suite-timeouts-unattributed` remains open.
-
-## Required next step
-
-Manual-tester must run `backdrop_earth_visible` windowed from the normal
-gameplay camera, save the screenshot under `.gen/`, and write
-`.gen/manual-report.md`; then criteria 8–9 can be marked Done.
+The two windowed/manual criteria above. Full-suite timeout remains a known
+limitation per request.md check-scope bound (recorded in quality-notes.md,
+iteration 3 entry).
