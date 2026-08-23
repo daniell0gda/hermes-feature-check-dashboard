@@ -1,4 +1,4 @@
-# Coder report: 1-delete-dead-options-modal\n\n# Coder report: 1-delete-dead-options-modal
+# Coder report: 1-delete-dead-options-modal
 
 ## Changed files
 - `scenes/ui/Options.tscn` — deleted (git rm)
@@ -29,4 +29,3 @@
 - New pause-menu scenario asserts through the public path: `show_pause_menu()` then `_on_pause_options()` — exactly the callable `PauseMenu.options_btn.pressed` connects to (`UI.gd:1770`, preload of `res://scenes/ui/OptionsScreen.tscn`).
 - Harness gotcha reused: editor import gate was run before any harness call on this fresh worktree; `--harness=` kept as a single token.
 - Exit-time RID/ObjectDB leak errors appear in every headless run including baseline — engine shutdown noise, not scenario failures.
-\n

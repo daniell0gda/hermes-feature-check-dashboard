@@ -1,34 +1,40 @@
-# Acceptance Plan: grass-grid-misses-far-edges
+# Acceptance Plan: issue-dead-options-modal-scene
 
-Manual testing: optional
+Deletion-only cleanup: remove the unreferenced dead Options surfaces
+(`scenes/ui/Options.tscn`, `scripts/ui/Options.gd` with `class_name OptionsModal`)
+without disturbing the live Options paths (pause-menu modal via
+`scenes/ui/OptionsScreen.tscn` in `scripts/ui/UI.gd`; main-menu screen via
+`scripts/MainMenu.gd`).
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://tests/visuals/test_nature_visibility_range.tscn"]`
-- Full test: `["godot", "--headless", "--import", "--path", "."]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--quit-after", "2", "--path", "."]`
-
-Note for workers: on a fresh workspace the import/build command must run before the
-focused test, otherwise textures are unimported and the focused run fails with
-"No loader found for resource" parse errors. The focused test exits 0 and prints
-"nature_visibility_range: N ok, 0 failed" on success.
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_placement.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_tower_roster.json"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
 ## Clusters
 
-1. grid-extent-helper — files: `scripts/game/NatureDecoration.gd` — depends on: none
-- Grass base-position sampling covers the full playable map extent on both axes for any map_width/map_height and grid_size combination, including sizes where grid_size does not evenly divide the extent (no strip along +X or +Z is left unsampled).
-- The duplicated grass grid-walk logic at both per-instance and MultiMesh placement paths is replaced by one shared helper called from both; changing the helper changes coverage on both paths.
-- On a 50x50 map with default settings, generated grass positions exist in every quadrant band adjacent to all four map edges (within one grid step of each edge), not only near -X/-Z.
-- Debug-build [NATURE] log line per grass-generation pass stating sampled base-position count and the min/max sampled X/Z coordinates, emitted once per path when generation completes.
-2. extent-regression-test — files: `tests/visuals/test_nature_visibility_range.gd`, `tests/visuals/test_nature_visibility_range.tscn` — depends on: 1
-- tests/visuals/test_nature_visibility_range.gd numerically asserts that on a 50x50 map the generated grass extent reaches within one grid step of all four edges on both the per-instance and MultiMesh paths, and the suite fails if any edge band has no grass.
-- Existing assertions in tests/visuals/test_nature_visibility_range.gd still pass: no nature instance carries a camera-distance cull and every test runs to completion.
+1. delete-dead-options-modal — files: `scenes/ui/Options.tscn`, `scripts/ui/Options.gd`, `scripts/ui/Options.gd.uid` — depends on: none
+- A project-wide search finds no reference to `Options.tscn`, `OptionsModal`, or `scripts/ui/Options.gd` in any scene, script, project setting, or documentation file after the deletion.
+- `scenes/ui/Options.tscn` and `scripts/ui/Options.gd` (plus their orphaned `.uid` sidecar files) no longer exist in the repository.
+- The Godot editor/import gate (`--headless --editor --quit-after`) completes with exit code 0 and no script parse errors or missing-resource errors in its output after the deletion.
+- The focused gameplay harness scenario (`smoke_placement`) completes with `status: pass`, exit code 0, and a fresh `.gen/harness/smoke_placement/result.json` written after the deletion.
+- The broad-shallow harness scenario (`smoke_tower_roster`) completes with `status: pass`, proving the autoload/class cache still loads the full game after the deletion.
+- The in-game pause menu still opens the live Options modal: with the harness active, opening the pause menu and triggering its Options button instantiates a visible Options modal (the `OptionsScreen.tscn` path in `scripts/ui/UI.gd`), not a missing-scene error.
+- The main menu still opens the live Options screen: loading the main menu scene and triggering its Options control loads `res://scenes/ui/OptionsScreen.tscn` successfully with no load errors in the run log.
 
 ## Criteria
 
-- Grass base-position sampling covers the full playable map extent on both axes for any map_width/map_height and grid_size combination, including sizes where grid_size does not evenly divide the extent (no strip along +X or +Z is left unsampled).
-- The duplicated grass grid-walk logic at both per-instance and MultiMesh placement paths is replaced by one shared helper called from both; changing the helper changes coverage on both paths.
-- On a 50x50 map with default settings, generated grass positions exist in every quadrant band adjacent to all four map edges (within one grid step of each edge), not only near -X/-Z.
-- Debug-build [NATURE] log line per grass-generation pass stating sampled base-position count and the min/max sampled X/Z coordinates, emitted once per path when generation completes.
-- tests/visuals/test_nature_visibility_range.gd numerically asserts that on a 50x50 map the generated grass extent reaches within one grid step of all four edges on both the per-instance and MultiMesh paths, and the suite fails if any edge band has no grass.
-- Existing assertions in tests/visuals/test_nature_visibility_range.gd still pass: no nature instance carries a camera-distance cull and every test runs to completion.
+- A project-wide search finds no reference to `Options.tscn`, `OptionsModal`, or `scripts/ui/Options.gd` in any scene, script, project setting, or documentation file after the deletion.
+- `scenes/ui/Options.tscn` and `scripts/ui/Options.gd` (plus their orphaned `.uid` sidecar files) no longer exist in the repository.
+- The Godot editor/import gate (`--headless --editor --quit-after`) completes with exit code 0 and no script parse errors or missing-resource errors in its output after the deletion.
+- The focused gameplay harness scenario (`smoke_placement`) completes with `status: pass`, exit code 0, and a fresh `.gen/harness/smoke_placement/result.json` written after the deletion.
+- The broad-shallow harness scenario (`smoke_tower_roster`) completes with `status: pass`, proving the autoload/class cache still loads the full game after the deletion.
+- The in-game pause menu still opens the live Options modal: with the harness active, opening the pause menu and triggering its Options button instantiates a visible Options modal (the `OptionsScreen.tscn` path in `scripts/ui/UI.gd`), not a missing-scene error.
+- The main menu still opens the live Options screen: loading the main menu scene and triggering its Options control loads `res://scenes/ui/OptionsScreen.tscn` successfully with no load errors in the run log.
+
+## Notes
+
+- manual_testing: optional — a quick windowed sanity check that both live Options paths (pause menu and main menu) open is sufficient; no new visual work is required (deletion only).
+- No debug logging criterion: no state transitions are added or changed; this is pure deletion.
+- No `ui_scenario.md`: no new player-visible story; a still cannot prove a deletion beyond what the harness criteria already cover.
