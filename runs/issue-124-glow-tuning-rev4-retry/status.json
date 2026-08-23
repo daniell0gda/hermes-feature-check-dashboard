@@ -1,12 +1,12 @@
 {
   "run_id": "issue-124-glow-tuning-rev4-retry",
   "feature": "issue-124-glow-tuning-rev4-retry",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-23T12:57:05.659Z",
-  "ended_at": null,
+  "ended_at": "2026-08-23T13:26:54.535Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-glow-tuning-rev4-retry/",
-  "heartbeat_at": "2026-08-23T13:26:49.874Z",
+  "heartbeat_at": "2026-08-23T13:26:54.535Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-23T13:26:49.874Z",
@@ -14,8 +14,8 @@
   "host": "f1a4230ec90b",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T13:26:49.874737+00:00",
-    "last_success_at": "2026-08-23T13:26:29.529850+00:00",
+    "last_attempt_at": "2026-08-23T13:26:54.535932+00:00",
+    "last_success_at": "2026-08-23T13:26:54.534325+00:00",
     "last_error": null
   },
   "metrics": {
@@ -63,6 +63,17 @@
         "cost_status": "unknown",
         "input_tokens": 0,
         "output_tokens": 0
+      },
+      {
+        "task_id": "manual-tester",
+        "cluster_id": null,
+        "role": "manual-tester",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
       }
     ]
   }
