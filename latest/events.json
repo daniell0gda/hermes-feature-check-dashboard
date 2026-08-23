@@ -7,5 +7,14 @@
     "duration_ms": 233121,
     "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-cave-carved-path-torches/.gen/plan.md\n\nSummary: plan.md and the four cluster files were verified consistent (criteria wording identical between `## Criteria` and clusters; Rev\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-23T10:56:58.594Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 278378,
+    "summary": "The dedicated `release_project_worker` tool isn't exposed in this session, so I'll leave worker release to the orchestrator and report completion.\n\nSummary (cluster: implementation, revision 1):\n\n- revisions.md asked to \"redo the failed cri\u2026",
+    "error": null
   }
 ]
