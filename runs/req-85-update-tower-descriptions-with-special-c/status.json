@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-update-tower-descriptions-with-special-c/",
-  "heartbeat_at": "2026-08-23T18:12:42.154Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-23T18:12:42.154Z",
+  "heartbeat_at": "2026-08-23T18:22:40.018Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-23T18:22:40.018Z",
   "process_id": 108056,
   "host": "f1a4230ec90b",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T18:12:46.196187+00:00",
-    "last_success_at": "2026-08-23T18:12:46.195517+00:00",
+    "last_attempt_at": "2026-08-23T18:22:40.018429+00:00",
+    "last_success_at": "2026-08-23T18:12:50.037560+00:00",
     "last_error": null
   },
   "metrics": {

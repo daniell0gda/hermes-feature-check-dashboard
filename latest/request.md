@@ -1,34 +1,29 @@
 # Request
 
-- request_id: req-124-cave-carved-path-torches-r2
-- issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
-- project runner key: `godot-td` (never folder name)
-- workspace: `poke-defense-godot/issue-cave-carved-path-torches`
-- branch: `issue/cave-carved-path-torches` reset to `origin/master` @ `5cbed19`
-- historical unverified tip (do not reuse as evidence): `996f282`
+- request_id: req-85-update-tower-descriptions-with-special-c
+- issue: https://github.com/daniell0gda/poke-defense-godot/issues/85
+- project runner key: `godot-td`
+- git workspace: `poke-defense-godot/issue-update-tower-descriptions-with-special-c`
+- branch: `issue/update-tower-descriptions-with-special-c`
+- worktree: `/workspace/git-workspaces/poke-defense-godot/issue-update-tower-descriptions-with-special-c`
 
-## Problem
+## Feature
 
-Not all carved cave path tiles get torches. Daniel confirmed the bug still exists (2026-08-23). Especially **curve / bent tunnels** stay dark.
+Update tower descriptions with special characteristics / unique behaviors. Players should understand each tower’s distinctive behavior when choosing and using towers.
 
-## Required verification path (Daniel)
+## Acceptance criteria
 
-- Go underground.
-- Carve a path **from side to side** (full crossing).
-- Inspect **curve tunnels** — not only straight corridors.
-- Missing torches on those curves is the failure.
+- Review all towers and identify their special characteristics or unique behaviors.
+- Add each relevant special characteristic to the corresponding tower description.
+- Porter description must explicitly explain that it teleports enemies.
+- Descriptions are clear, consistent, and visible in the tower UI.
 
-## Hard constraint
+## Verification notes
 
-- **Do not change torch light intensity.** Current intensity is correct. Fix placement/coverage only.
+- Runner: `godot-td` + workspace `poke-defense-godot/issue-update-tower-descriptions-with-special-c` only.
+- Visible UI work: `manual_testing: required` with windowed screenshots (never `--headless` for manual tester). Include overall `ui_feels_broken` check.
+- Do not close, merge, or push unless asked.
 
-## Done when
+## Redo notes
 
-- Every carved cave path tile that should be lit has a torch (or equivalent cave light)
-- New carve operations also get torches on the new path, including curves
-- No leftover dark carved corridors in the same cave as lit path (except intentional uncarved/dark rock)
-- Torch OmniLight / energy / range / intensity values stay unchanged
-
-## Manual testing
-
-required. Windowed screenshots, top-down underground, after a side-to-side carve that includes curves. Do not use `--headless` for manual tester. Camera must aim at `camera_target`.
+- Do not invent workspace names. Never `godot-td/issue-85`.
