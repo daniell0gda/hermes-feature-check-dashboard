@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-light-coverage-rev3/",
   "heartbeat_at": "2026-08-23T12:15:07.324Z",
   "last_node": "team-leader",
-  "active_node": null,
+  "active_node": "manual-tester",
   "last_event_at": "2026-08-23T12:15:07.324Z",
   "process_id": 31762,
   "host": "f1a4230ec90b",
-  "phase": "team-leader",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T12:15:07.325212+00:00",
-    "last_success_at": "2026-08-23T12:14:01.951930+00:00",
+    "last_attempt_at": "2026-08-23T12:15:11.575293+00:00",
+    "last_success_at": "2026-08-23T12:15:11.574282+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 453676,
         "output_tokens": 6240
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 49687,
+        "output_tokens": 508
       }
     ]
   }
