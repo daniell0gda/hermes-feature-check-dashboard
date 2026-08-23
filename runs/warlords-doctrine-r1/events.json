@@ -34,5 +34,14 @@
     "duration_ms": 429889,
     "summary": "Done. Summary of revision 1 (implementation cluster):\n\nWhat changed\n- Only `tests/scenarios/warlords_doctrine.json` was modified \u2014 the iteration-1 code was already correct; the two automated Pending items were evidence gaps, so I extended t\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-23T17:04:18.678Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 240947,
+    "summary": "Verification complete. Artifacts written:\n\n- /workspace/git-workspaces/poke-defense-godot/issue-warlords-doctrine/.gen/check.md\n- /workspace/git-workspaces/poke-defense-godot/issue-warlords-doctrine/.gen/status.md\n\nclassification: pass\n\nSum\u2026",
+    "error": null
   }
 ]
