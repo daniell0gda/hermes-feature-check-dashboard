@@ -16,5 +16,14 @@
     "duration_ms": 151868,
     "summary": "Summary (cluster: implementation, revision 2):\n\nThe worktree already carried the full revision-2 implementation; this pass re-verified everything through `run_project_cmd` and wrote the artifacts.\n\nVerification (all exit 0):\n- Editor import\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-23T19:49:10.833Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 346172,
+    "summary": "Check complete. Summary:\n\nVerified done: 6. Pending: 5 \u2014 0 due to build/test failures, 5 due to missing evidence (windowed screenshots / manual report), 0 due to quality violations. Impossible: 0. Quality notes: no changes (revision-1 dupli\u2026",
+    "error": null
   }
 ]
