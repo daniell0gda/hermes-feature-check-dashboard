@@ -1,27 +1,22 @@
-# Request: #131 pointer-cursor-on-clickable-surfaces
+# Request: req-136-padding-closable-panels-close-button
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/131
-- **Project:** poke-defense-godot (runner key `godot-td`)
-- **Workspace:** poke-defense-godot/issue-pointer-cursor-on-clickable-surfaces
-- **Runner workspace name:** `poke-defense-godot/issue-pointer-cursor-on-clickable-surfaces`
-- **Branch:** issue/pointer-cursor-on-clickable-surfaces (cut fresh from origin/master @ d241462)
-- **Request ID:** 131-pointer-cursor-r1
-
-## Feature
-
-Show a pointing-hand ("pointer") mouse cursor when hovering over clickable UI
-surfaces (buttons and other clickables); non-clickable surfaces keep the
-default arrow.
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/136
+- Project: poke-defense-godot (runner key: godot-td)
+- Workspace: /workspace/git-workspaces/poke-defense-godot/issue-padding-closable-panels-close-button (branch issue/padding-closable-panels-close-button, base origin/master 5042d9f)
 
 ## Acceptance criteria (from issue)
+- Closable panels reserve horizontal padding so the "x" button never overlaps content.
+- Tower details panel shows all its content clear of the "x" button.
+- Verified visually that no other closable panel (e.g. shop, settings) has the overlap either.
 
-1. All buttons (and other clickable UI surfaces) show a pointer cursor on hover, in windowed and fullscreen modes.
-2. Non-clickable surfaces keep the default arrow.
-3. Verified with a screenshot of hover state on a button.
+## Notes
+- Visible UI change: manual_testing expected required (windowed screenshots).
+- Workers must use runner key `godot-td` and workspace `poke-defense-godot/issue-padding-closable-panels-close-button`.
 
-## Notes for workers
-
-- Use runner key `godot-td`, workspace `poke-defense-godot/issue-pointer-cursor-on-clickable-surfaces`. Never invent other workspace names.
-- Godot 4: `Control.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND` (or `Input.set_default_cursor_shape` / theme-level). Prefer a project-wide approach so all buttons get it (e.g. a base Button script/theme default) over per-scene edits.
-- Visible player-facing UI change → `manual_testing: required` with windowed screenshots of hover state on at least one button; include the overall ui_feels_broken sanity check.
-- Revision budget: 2 (default).
+## Revision note (2026-08-22 20:45 UTC)
+- Fix changed at ~20:00 UTC: `_reserve_content_padding` now widens the frame PanelContainer's
+  panel stylebox `content_margin_right` (+90px) instead of shrinking `frame.offset_right`.
+- Existing `.gen/screenshots/*.png` and `.gen/harness/hud_other_panels/shots/*.png` are STALE
+  (19:52, pre-fix). The manual tester MUST capture fresh windowed screenshots after this change.
+- Acceptance addition: ✕ must sit flush INSIDE the frame's top-right corner (not floating outside
+  the panel art). Report `ui_feels_broken: yes|no` per final screenshot.
