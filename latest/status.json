@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs/",
   "heartbeat_at": "2026-08-23T19:57:06.174Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-23T19:57:06.174Z",
   "process_id": 168492,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T19:57:06.174601+00:00",
-    "last_success_at": "2026-08-23T19:32:16.983387+00:00",
+    "last_attempt_at": "2026-08-23T19:57:10.323051+00:00",
+    "last_success_at": "2026-08-23T19:57:10.322437+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 56666,
         "output_tokens": 1866
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 262653,
+        "output_tokens": 32940
       }
     ]
   }
