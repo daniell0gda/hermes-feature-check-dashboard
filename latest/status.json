@@ -1,21 +1,21 @@
 {
-  "run_id": "req-134-upgrade-click-money-animation-r4",
-  "feature": "upgrade-click-money-animation",
+  "run_id": "issue-124-light-coverage-rev3",
+  "feature": "issue-124-light-coverage-rev3",
   "status": "running",
-  "started_at": "2026-08-23T11:57:02.955Z",
+  "started_at": "2026-08-23T11:48:30.923Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-134-upgrade-click-money-animation-r4/",
-  "heartbeat_at": "2026-08-23T12:18:25.372Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-23T12:18:25.372Z",
-  "process_id": 33290,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-light-coverage-rev3/",
+  "heartbeat_at": "2026-08-23T12:22:54.878Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-23T12:22:54.878Z",
+  "process_id": 31762,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T12:18:29.569114+00:00",
-    "last_success_at": "2026-08-23T12:18:29.568241+00:00",
+    "last_attempt_at": "2026-08-23T12:22:54.879064+00:00",
+    "last_success_at": "2026-08-23T12:15:15.700050+00:00",
     "last_error": null
   },
   "metrics": {
@@ -24,12 +24,12 @@
         "task_id": "plan",
         "cluster_id": null,
         "role": "plan",
-        "model": null,
+        "model": "stealth/ox-alpha",
         "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 246480,
+        "output_tokens": 3524
       },
       {
         "task_id": "code",
@@ -39,8 +39,30 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 63103,
-        "output_tokens": 1783
+        "input_tokens": 523204,
+        "output_tokens": 11939
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 453676,
+        "output_tokens": 6240
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 49687,
+        "output_tokens": 508
       }
     ]
   }
