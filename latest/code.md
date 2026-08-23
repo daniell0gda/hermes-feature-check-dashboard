@@ -1,33 +1,32 @@
-# Coder report: implementation\n\n# Coder report: implementation (clusters 1 + 2: carve-camera-lifecycle, carve-camera-harness)
+# Coder report: implementation\n\n# Coder report: implementation
 
 ## Changed files
-- `scripts/game/Game.gd` — mod: `on_carve_camera_mode(armed)` lifecycle, `_carve_*` state vars, manual-rotation flag set in `_rotate_camera`
-- `scripts/ui/UI.gd` — mod: `_notify_carve_camera` on the `carving_active` setter
-- `scripts/config/CameraConfig.gd` — mod: new `carve_camera` const (`enabled`, `top_down_epsilon`)
-- `scripts/testing/HarnessActions.gd` — mod: `camera_probe` and `rotate_camera` timeline actions
-- `scripts/testing/HarnessValues.gd` — mod: `camera` harness value source (`basis`, `position`, `distance`, `top_down`, `yaw`, `pitch`) and `carve_camera_*` / `dig_hole_camera_top_down` checks
-- `scripts/testing/AgentHarness.gd` — mod: wire new action types
-- `tests/scenarios/carve_camera_topdown.json` — new: focused scenario
+- `scripts/progression/trap.json` — new `undermining` Common progression, 3 levels (8/15/25 armor damage)
+- `scripts/progression/managers/TrapProgressionManager.gd` — handles `undermining`, `_armor_damage_bonus` state + `get_undermining_armor_damage()`; reset clears it
+- `autoload/ProgressionManager.gd` — new accessor `get_trap_armor_damage()` (returns 0.0 when unowned)
+- `scripts/game/actors/Trap.gd` — `_undermining_armor_damage()`, new `perform_hit(enemy)` entry point used by both real hit paths; `[Undermining]` debug log; strip tint dispatch
+- `scripts/game/actors/effects/EffectsManager.gd` — preload + `play_undermining_strip()`, counter `undermining_strips`
+- `scripts/game/actors/effects/UnderminingStripVFX.gd` — NEW one-shot amber wash VFX node
+- `scripts/testing/HarnessActions.gd` — new `trap_hit` apply_effect effect (drives real `Trap.perform_hit`; prefers a placed trap near "pos", else a scripted in-tree trap) + `_nearest_trap`
+- `tests/scenarios/undermining_progression.json` — NEW definition/persistence scenario
+- `tests/scenarios/undermining_trap_armor.json` — NEW live trap behavior scenario
+- `tests/scenarios/undermining_scope_isolation.json` — NEW surface-tower scope isolation scenario
 
 ## Criteria
-- Top-down rotation on arm, underground only, position/zoom untouched — Done
-- Cancel restores pre-carve angles (all cancel routes end at `carving_active = false`) — Done
-- Manual rotation during carve → cancel keeps player angle — Done
-- Rotation input still works during carve — Done (`_rotate_camera` runs normally; only sets the flag)
-- dig-hole/place-exit/place-block/tower-selection do not rotate camera — Done (only `carving_active` notifies)
-- `[CARVE_CAMERA]` debug logs on apply / restore / skip — Done (debug builds only; log regex asserted in scenario)
-- Harness exposes camera basis/position/distance probes — Done
-- Focused scenario asserts all four transitions — Done
+All 10 plan criteria — Done.
 
 ## Commands and results
-- `godot --headless --path . res://scenes/Main.tscn -- "--harness=res://tests/scenarios/carve_camera_topdown.json"` — exit 0; status=pass; 16/16 actions ok; 7/7 expectations pass. Probes show real transitions: before basis `1,0,0|0,0.832,-0.555|0,0.5547,0.832` → during top-down with identical position `0,-15,15`; plain cancel restores exact basis string; after scripted rotate + cancel basis equals the rotated probe and differs from pre-carve.
-- Full suite loop over `tests/scenarios/*.json` — see final line of run output; no scenario regressed by this change.
-- `godot --headless --editor --path . --quit-after 3` — exit 0, no script errors.
+- Typecheck: `["godot","--headless","--editor","--path",".","--quit-after","300"]` — exit 0 (~9s); scripts parse clean.
+- Focused: `... --harness=res://tests/scenarios/undermining_progression.json` — exit 0, `[Harness] status=pass exit=0`.
+- `--harness=res://tests/scenarios/undermining_trap_armor.json` — exit 0 pass. Log shows the exact ladder: trap_01 unowned armor 60->60 (no strip), then trap_02 L1 60->52, trap_03 L2 52->37, trap_05 L3 37->12 and 12->0 clamped, with `[Undermining] strip ...` lines per stripping hit.
+- `--harness=res://tests/scenarios/undermining_scope_isolation.json` — exit 0 pass. With undermining at L3, balista/generic armor_hits strip only their explicit armor_damage (60->40->35); fire_hit leaves armor untouched.
+- Full test baseline: `--harness=res://tests/scenarios/enemy_armor_trap.json` — exit 0 pass (armor stays 60 through an unowned-perk trap-attributed hit).
+- Regression: `--harness=res://tests/scenarios/traps_serrated_edges_progression.json` — exit 0 pass.
+- Regression: `--harness=res://tests/scenarios/trap_stats_attribution.json` — exit 0 pass (full wave with live traps still kills via trap_01).
 
 ## Notes
-- Quality note `carve-camera-noop-notification`: resolved — Game.gd now implements `on_carve_camera_mode`, so `UI._notify_carve_camera` is live.
-- Quality note `carve-camera-vacuous-harness-passes`: resolved — scenario calls the real methods (`_on_dig_hole`, `_clear_dig_mode`, `_on_carve`, `clear_carve_mode`) and probes bracket genuine state changes (probe bases differ across arm/cancel as shown above).
-- Quality note `game-debug-look-down-scope-creep`: confirmed not present in current tree — no `debug_look_down_underground` exists in scripts/.
-- Restore path recomputes camera position from saved yaw/pitch/distance around the view target rather than storing a transform, so it stays correct if the player panned while carving.
-- Gotcha for tester: godot binary lives at `/opt/data/profiles/code/home/bin/godot` (not on default PATH).
+- Trap.gd hit paths were consolidated into `perform_hit(enemy)` (both Area body_entered and overlap poll call it). It returns a detail dict {damage, armor_damage, armor_before/after, stripped} which the harness seam surfaces in result.json for exact arithmetic assertions.
+- The tint is dispatched by EffectsManager.play_undermining_strip -> UnderminingStripVFX child (own-mesh material_override pattern, same as StaticBreachVFX shatter flash); counted in `undermining_strips` even headless so it is assertable without rendering.
+- Scope isolation is structural: the perk value lives only on TrapProgressionManager and is consumed exclusively by Trap.gd; no tower code path reads get_trap_armor_damage.
+- Gotchas for tester: see changes.md entries (progression-field type check must follow first apply; scripted trap must be inside tree).
 \n
