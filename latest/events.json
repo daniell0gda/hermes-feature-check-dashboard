@@ -43,5 +43,14 @@
     "duration_ms": 23137,
     "summary": "API call failed after 3 retries: HTTP 429: The requested model is temporarily at capacity upstream. This is not your API key's rate limit \u2014 please retry shortly.\n",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-23T04:47:03.032Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 37289,
+    "summary": "API call failed after 3 retries: HTTP 429: The requested model is temporarily at capacity upstream. This is not your API key's rate limit \u2014 please retry shortly.\n",
+    "error": null
   }
 ]
