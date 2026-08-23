@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/110-grass-grid-misses-far-edges/",
   "heartbeat_at": "2026-08-23T00:32:36.653Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
   "process_id": 830468,
   "host": "25e0b2c49eb5",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T00:32:36.653745+00:00"
+    "last_attempt_at": "2026-08-23T00:33:36.523738+00:00",
+    "last_success_at": "2026-08-23T00:32:41.170671+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
