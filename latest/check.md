@@ -1,66 +1,51 @@
-# Check report — req-85-update-tower-descriptions-with-special-c (iteration 2, revision-check-1)
+# check.md — gen-hud-textures-py-cannot-run-all-three (issue #117)
 
 classification: pass
 
 ## Verdict
 
-All four acceptance criteria are Done and freshly re-verified this iteration.
-Implementation is surgical: `data/towers.xml` gains a `description` attribute on all
-12 combat towers (fire, water, electric, porter, floodgate, balista, bazooka,
-cannon, generic, ice, scifi, venom); `systems/TowersConfig.gd` parses it into a typed
-`tower_descriptions` dict and exposes `get_description()`; `scripts/ui/UI.gd::_build_tower_tooltip`
-appends the description line directly under the tower name; new harness scenario
-`tests/scenarios/tower_descriptions_tooltip.json` asserts every combat tower's tooltip.
-Porter explicitly says "Teleports enemies to the underground tunnels via the nearest hole;
-needs a hole within reach and deals no damage itself."
+Implementation chose option 2 (delete dead script + dead outputs) after proving
+`git log --all -- '*woden_panel*'` is empty — the three crate JPGs were never
+committed, so option 1 (restore) is impossible. Both acceptance criteria hold.
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-update-tower-descriptions-with-special-c)
+## Verification performed (fresh, this run)
 
-| Command | Exit | Result |
+| Check | Command | Result |
 |---|---|---|
-| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner healthy |
-| focused harness `tower_descriptions_tooltip.json` | 0 | `.gen/harness/tower_descriptions_tooltip/result.json` status=pass, 15/15 actions ok, both expectations pass=true (Porter "Teleports enemies"; generic description). Fresh result.json written by this check run. |
-| regression harness `porter_wide_gate_tooltip.json` | 0 | `.gen/harness/porter_wide_gate_tooltip/result.json` status=pass — Porter range-progression tooltip lines unaffected by the inserted description line |
+| Runner preflight | `run_project_cmd` `["python3","--version"]`, project godot-td | exit 0, Python 3.10.12 |
+| No tools script references missing `_source` sources | `run_project_cmd` python scan of `tools/*.py` for `_source` refs vs filesystem | exit 0; only `prep_hud_assets.py` / `cut_towers_bar_assets.py` reference `_source`, and all their source files exist under `textures/_source/`. `gen_hud_textures.py` is deleted |
+| Editor/import gate (textures changed: deletions) | `run_project_cmd` `["godot","--headless","--path",".","--editor","--quit-after","300"]` | exit 0, 9.2s warm run; import scan of all assets completed, no errors related to hud/wood/slot/theme/deleted files |
+| Dead outputs unreferenced | host grep over scenes/themes/scripts/tests/systems for wood_slot, slot_empty, wood_panel_wide*, wood_chip | only remaining mention is the intentional historical note in `tools/gen_hud_icons.py` docstring |
+| Live assets referenced | file inspection | `icon_coin.png` → `scenes/ui/widgets/PricedButton.tscn`; `icon_heart.png` → `scenes/UI.tscn`; `towers_panel.png` → `themes/hud/HudTheme.tres`; plus wood_panel/wood_button*/btn_chip/slot_frame in HudTheme.tres |
+| Crate JPG recoverability | `git log --all -- '*woden_panel*'` | 0 commits — confirms option-1 impossibility |
 
-No separate typecheck/build command exists for this GDScript project; the headless
-Main.tscn harness runs are the parse/build gate (a script parse error aborts them).
-Pre-existing editor UID warnings, missing-GLB import warnings, and exit-time RID leak
-messages are legacy noise unrelated to this change.
+## Evidence notes
 
-## Acceptance criteria evidence
-
-1. Review all towers / identify special characteristics — Done. Descriptions match the
-   actual code paths per coder report (fire burn, water wet synergy, electric chain,
-   ice cone slow, porter teleport + zero damage, floodgate underground flood, ballista
-   armor strip, bazooka/cannon AoE splash, scifi beam DPS, venom DoT); towers.xml diff
-   spot-checked against the report.
-2. Add each special characteristic to descriptions — Done. Data-driven from towers.xml;
-   harness asserts all 12 combat-tower descriptions render in `_build_tower_tooltip`.
-3. Porter description explicitly explains teleporting — Done. Asserted by timeline
-   condition index 6 and expectation "Teleports enemies" (pass=true).
-4. Clear, consistent, visible in tower UI — Done. One consistent line in every placement
-   tooltip, read via ui_call source: the exact string assigned to Button.tooltip_text.
+- Coder-reported runs of `prep_hud_assets.py`, `gen_hud_icons.py`,
+  `cut_towers_bar_assets.py` (exit 0 each, with ephemeral Pillow bootstrap)
+  could not be byte-reproduced in this pass because the worker image has no
+  pip/Pillow; this is an environment limitation only. It does not affect the
+  acceptance criteria: the scripts' sources all exist, and committed player-
+  facing PNGs were intentionally left unchanged (`git checkout` restored them),
+  which the diff confirms (`tools/gen_hud_icons.py` docstring-only modification
+  plus staged deletions).
+- Manual testing: none required — no committed player-facing art changed;
+  request.md explicitly allows `manual_testing: none` for this case.
+- Pre-existing unrelated issues (not introduced by this change, recorded for
+  awareness): parse error in `res://debug_enemy_parsing.gd`
+  (`get_process_frame()`), glTF/FBX import failures on Venom/trap assets.
 
 ## Changed-file quality findings
 
-Diff is minimal (+42/−12 across three files plus one new scenario JSON): typed
-variables, no casts, enum-style attribute matching, matches surrounding style. No
-violations of /opt/data/coding_rules.md or CLAUDE.md found in changed code.
-
-## Test overlap check
-
-New scenario `tower_descriptions_tooltip.json` does not overlap existing coverage:
-existing tooltip scenarios (fire_burn_tooltip, water_deep_soak_tooltip,
-curse_overheat_tooltip, porter_wide_gate_tooltip) assert stat/progression lines only;
-none asserts the new description attribute text.
+- `tools/gen_hud_icons.py`: docstring-only correction removing a stale claim.
+  Clean, surgical, matches coding rules. No violations.
+- Deletions are minimal and trace directly to the issue. No scope creep.
 
 ## Blockers
 
-None. Runner healthy throughout; all commands returned via run_project_cmd.
+None.
 
 ## Unverified items
 
-- Windowed manual-tester screenshots (`manual_testing: required` per request notes):
-  owned by the manual-tester profile; no `.gen/manual-report.md` present at check time.
-  Headless harness verifies tooltip content but not on-screen layout/legibility.
+- Byte-level regeneration of the PIL-based tool scripts was not repeated here
+  (worker image lacks Pillow); covered by coder evidence + unchanged-diff proof.

@@ -6,17 +6,17 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/117-gen-hud-20260823/",
-  "heartbeat_at": "2026-08-23T18:12:38.697Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-23T18:12:38.697Z",
+  "heartbeat_at": "2026-08-23T18:13:41.466Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-23T18:13:41.466Z",
   "process_id": 111567,
   "host": "f1a4230ec90b",
   "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T18:12:42.746579+00:00",
+    "last_attempt_at": "2026-08-23T18:13:41.466715+00:00",
     "last_success_at": "2026-08-23T18:12:42.745871+00:00",
-    "last_error": null
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
   "metrics": {
     "invocations": [

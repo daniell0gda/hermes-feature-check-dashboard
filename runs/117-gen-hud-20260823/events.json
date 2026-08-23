@@ -25,5 +25,14 @@
     "duration_ms": 255776,
     "summary": "Verified done: 2. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 1 (crate JPG restore \u2014 never present in any git history, proven; option 2 implemented instead). Quality notes: \u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T18:13:41.466Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 58720,
+    "summary": "\u26a0\ufe0f No reply: the model returned empty content after retries and any fallback providers. Try `continue`, switch model/provider, or inspect the tool output above.\n",
+    "error": null
   }
 ]
