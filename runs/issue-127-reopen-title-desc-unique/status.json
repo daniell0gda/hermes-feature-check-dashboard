@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-127-reopen-title-desc-unique/",
   "heartbeat_at": "2026-08-23T19:22:48.137Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-23T19:22:48.137Z",
   "process_id": 152212,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T19:22:48.138025+00:00",
-    "last_success_at": "2026-08-23T19:17:47.979788+00:00",
+    "last_attempt_at": "2026-08-23T19:22:52.253509+00:00",
+    "last_success_at": "2026-08-23T19:22:52.252648+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 153234,
         "output_tokens": 16238
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 78759,
+        "output_tokens": 5967
       }
     ]
   }
