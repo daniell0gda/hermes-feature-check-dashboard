@@ -25,5 +25,14 @@
     "duration_ms": 446724,
     "summary": "Check complete. Artifacts written:\n\n- /workspace/git-workspaces/poke-defense-godot/issue-cave-carved-path-torches/.gen/check.md\n- /workspace/git-workspaces/poke-defense-godot/issue-cave-carved-path-torches/.gen/status.md\n\nclassification: pa\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-23T09:18:51.307Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 36360,
+    "summary": "Manual-testing gate complete.\n\n- Read skill + all four .gen files. Check classification: pass (iteration 4); only remaining player-visible criterion is the windowed screenshot item, explicitly owned by the manual tester.\n- Decision: `manual\u2026",
+    "error": null
   }
 ]
