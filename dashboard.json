@@ -385,6 +385,11 @@
     "url": "runs/issue-133-panels-closable-x-escape/"
   },
   {
+    "run_id": "issue-130-middle-pan-flip-r1",
+    "status": "running",
+    "url": "runs/issue-130-middle-pan-flip-r1/"
+  },
+  {
     "run_id": "issue-13-team-work-20260818-final",
     "status": "completed",
     "url": "runs/issue-13-team-work-20260818-final/"
