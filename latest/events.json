@@ -1,38 +1,29 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-23T16:38:18.502Z",
+    "timestamp": "2026-08-23T17:04:57.911Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 53627,
-    "summary": "\u26a0\ufe0f No reply: the model returned empty content after retries and any fallback providers. Try `continue`, switch model/provider, or inspect the tool output above.\n",
+    "duration_ms": 1265228,
+    "summary": "The host shell has no Godot binary (only the approved project runner does), so a stash-baseline comparison isn't executable from here. I'm stopping the loop and finalizing with an honest report.\n\nVerification summary (all via the approved r\u2026",
     "error": null
   },
   {
     "sequence": 2,
-    "timestamp": "2026-08-23T17:01:29.159Z",
+    "timestamp": "2026-08-23T17:12:15.891Z",
     "node": "code",
     "status": "completed",
-    "duration_ms": 1386786,
-    "summary": "Done. Summary:\n\n**Implemented `exposed_plating` (issue #89) in the worktree** \u2014 6 modified files, 3 new files, no unrelated changes.\n\n- Perk: Common, global.json, 3 levels (+15%/0.5s, +25%/1s, +35%/1.5s), wired through CurseProgressionManag\u2026",
+    "duration_ms": 433585,
+    "summary": "The plugin exposes only `run_project_cmd` in this session \u2014 there's no separate `release_project_worker` tool to call, and the worker is disposable (it tears down automatically), so cleanup is left as-is. Work is complete.\n\nSummary (cluster\u2026",
     "error": null
   },
   {
     "sequence": 3,
-    "timestamp": "2026-08-23T17:04:59.227Z",
+    "timestamp": "2026-08-23T17:17:22.051Z",
     "node": "check",
     "status": "completed",
-    "duration_ms": 206027,
-    "summary": "Check complete.\n\nVerified done: 4. Pending: 1 \u2014 0 due to build/test failures, 0 due to missing evidence, 1 due to required windowed/manual VFX evidence not yet produced (manual-tester scope). Impossible: 0. Quality notes: no changes (no ope\u2026",
-    "error": null
-  },
-  {
-    "sequence": 4,
-    "timestamp": "2026-08-23T17:15:25.437Z",
-    "node": "code",
-    "status": "completed",
-    "duration_ms": 622495,
-    "summary": "The `release_project_worker` tool isn't exposed in this session's toolset (only `run_project_cmd` from the app_containers_runner plugin, which spins up disposable workers per call), so there's no persistent worker to release \u2014 each command \u2026",
+    "duration_ms": 301801,
+    "summary": "Check complete. Artifacts written to .gen/check.md, .gen/status.md, .gen/quality-notes.md.\n\nVerified done: 0. Pending: 11 \u2014 all 11 due to the build/test gate (plan full-test command fails at `res://tests/tower/test_tower_armor_damage.tscn`,\u2026",
     "error": null
   }
 ]
