@@ -43,6 +43,17 @@
       "cost_status": "unavailable",
       "input_tokens": null,
       "output_tokens": null
+    },
+    {
+      "task_id": "revision-check-1",
+      "cluster_id": null,
+      "role": "check",
+      "model": null,
+      "model_tier": null,
+      "cost_usd": null,
+      "cost_status": "unavailable",
+      "input_tokens": null,
+      "output_tokens": null
     }
   ]
 }
