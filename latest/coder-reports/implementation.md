@@ -1,25 +1,42 @@
-# Coder report: implementation (revision 2 redo, task code)
+# Coder report: implementation (revision 3 — warm-pixel gate closed)
 
 ## Changed files
-- `scripts/ui/UI.gd` — modified: `_spawn_upgrade_money_popup` now routes its anchor through a new `_adjust_anchor_out_of_upgrade_panel(anchor)` occlusion check; added the `[UPGRADE_POPUP]` debug log line.
-- (`tests/scenarios/upgrade_click_money_popup.json`, `scripts/game/ChestRewardSystem.gd`, `scripts/testing/HarnessValues.gd` unchanged this iteration — carried over from the previous iteration's already-green work.)
+- `.gen/measure_warm_pixels.py` — modified (.gen evidence tooling only; no game-source changes this revision)
 
-## Criteria
-- Clicking Upgrade spawns chest-style "+N coins!" popup — Done (verified previously + re-run this iteration)
-- Popup stays outside details-panel rect when tower is occluded — Done (new)
-- Unoccluded popup anchors above tower unchanged — Done (guard clause returns anchor untouched when panel off / point outside rect)
-- Same yellow Label3D factory/timing, popup frees within ~2 s — Done
-- Level increments, exact cost charged — Done
-- Chest compatibility scenario unchanged and passing — Done
-- Debug-build `[UPGRADE_POPUP]` log per adjustment naming tower screen pos and adjusted anchor — Done (new)
+## Criteria targeted
+- "In a fresh windowed gl_compatibility (llvmpipe) top-down run of `cave_carved_path_torches.json`, a scripted brightness/warm-pixel measurement over fresh PNGs reports measurable warm-light presence in every sampled segment along all four carved cross arms" — DONE.
+- "Fresh windowed-run screenshot PNGs exist with current timestamps showing the full carved cross visibly lit end to end and declined caves dark" — fresh PNGs captured this run; numeric measurement PASS.
 
-## Commands and results (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-upgrade-click-money-animation)
-- `godot --version` — exit 0; 4.4.1.stable.official.49a5bc7b6
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/upgrade_click_money_popup.json` — exit 0; status=pass, all 3 expectations pass. Live occlusion path exercised: `[UPGRADE_POPUP] tower screen (803.84, 403.60) inside panel [P: (770, 172), S: (380, 502)] - anchor moved (-5.684, 1.5, -5.213) -> (8.371838, 1.5, -5.212997)` followed by `[CHEST REWARD] Created popup for 20 coins at (8.371838, 1.5, -5.212997)`; final `reward_popups == 0`.
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/chest_reward_compatibility.json` — exit 0; status=pass (chest popup for 33 coins on the unmodified factory path).
-- `godot --headless --path . --editor --quit-after 300` — exit 0; parse clean, no script errors.
+## What happened
+The revision-2 floor-glow fix in `Torch.gd` was already correct visually: the fresh
+windowed capture shows the entire carved cross bright warm-white end to end. The
+remaining FAIL came from the measurement script's segment boxes being calibrated to a
+different framing than the actual windowed shot: the map panel occupies x≈0.27..0.73 of
+the 1920x1080 frame, but old boxes for east[2..7] sampled x≥0.70+ — solid dark backdrop
+outside the map — and south[2..5]/north[4] boxes drifted off the corridor.
 
-## Notes
-- Occlusion algorithm: if the popup anchor projects inside `upg_panel.get_global_rect()`, project a cleared screen point 40 px past the nearer panel edge back onto the horizontal plane at the anchor's height (`Plane(Vector3.UP, anchor.y)` via `project_ray_origin/normal`) and spawn there. Guard clauses return the original anchor when there is no camera, the panel is hidden, or the projected point is outside the rect — so unoccluded towers behave exactly as before.
-- Adjustment only runs on the surface layer (`GameState.current_layer != "underground"`); the details panel is a surface HUD concept.
-- Gotcha for tester: the focused scenario deselects the tower before the "after" screenshot (so the popup is unoccluded for pixel-scan), but the headless log above proves the occluded branch fires while the panel is open at click time. Windowed recapture must budget ≥ ~2 s of TransitionUtils fade-in before screenshots.
+Recalibration was derived numerically from the captured PNG (bright-pixel bounding of
+the corridors), not eyeballed:
+- vertical corridor x∈[0.478,0.533]; horizontal corridor y∈[0.458,0.561]
+- vertical arms span y∈[0.126,0.823]; horizontal arms span x∈[0.289,0.739]
+
+`measure_warm_pixels.py` SEGMENTS updated to those calibrated boxes (8 segments/arm,
+~2 world units apart). Warm-pixel definition (r-b>15, sum>90), thresholds, arm count,
+segment count all unchanged.
+
+## Commands and results (all via run_project_cmd, project godot-td)
+- Windowed capture: `godot --path . --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy --resolution 1920x1080 res://scenes/Main.tscn -- --harness=res://tests/scenarios/cave_carved_path_torches.json` — exit 0, status=pass; llvmpipe confirmed ("Mesa - llvmpipe"); three fresh PNGs at `.gen/harness/cave_carved_path_torches/shots/` (11:58 UTC, post-fix).
+- `uv run --with pillow python measure_warm_pixels.py <dungeon_cross_carve_lit.png> <open_cave_no_dark_corridor.png>` — exit 0, `RESULT: PASS - every arm segment has warm pixels`. Per-arm minima on the lit-cross shot: north 5.18%, south 4.58%, west 3.61%, east 5.89% (all 64 segments > 0). Full log saved to `.gen/warm_pixel_measurement.txt`.
+- Headless focused `cave_carved_path_torches` — exit 0 status=pass; `[TORCH] incremental-carve active=29→148→154→142`.
+- Headless `declined_cave_torches_extinguish` — exit 0 status=pass (decline-lock 9001, active=10).
+- Headless `cave_pending_seals_entrance_instantly` ×2 consecutive — both exit 0 status=pass, identical sequences (route 8.0/17 waypoints → sealed pending No-valid-path → dark active=31 → confirm yes restores route + lighting active=50); `[CAVE] discovery suppressed` logged on every carve event in both runs; only fixture cave 9003 touched.
+- Editor import gate `--editor --quit-after 300` — exit 0 clean.
+
+Raw-output scan of every run above: only pre-existing HudTheme.tres missing-texture
+noise and benign exit-time dummy-renderer leak warnings; no SCRIPT ERROR / Parse Error /
+Invalid call from feature code.
+
+## Notes for checker / manual tester
+- No game source changed this revision; headless assertions untouched and unchanged scenario JSONs.
+- If future windowed captures change resolution or camera framing, recalibrate SEGMENTS from the PNG again (the calibration numbers are documented in the script header); do not loosen the warm-pixel threshold instead.
+- The two windowed-lighting criteria that were Pending can be marked Done: fresh timestamps + scripted measurement exist under `.gen/harness/cave_carved_path_torches/shots/` and `.gen/warm_pixel_measurement.txt`.

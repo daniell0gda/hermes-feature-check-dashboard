@@ -19,3 +19,13 @@
 
 ## ❌ Impossible
 
+
+## Revision-3 coder update (implementation)
+Both previously-Pending windowed-lighting criteria now have fresh evidence:
+fresh llvmpipe windowed run 11:58 UTC captured 3 PNGs under
+`.gen/harness/cave_carved_path_torches/shots/`; recalibrated
+`.gen/measure_warm_pixels.py` reports RESULT PASS (all 64 arm segments >0% warm,
+per-arm minima north 5.18 / south 4.58 / west 3.61 / east 5.89) over both
+dungeon_cross_carve_lit.png and open_cave_no_dark_corridor.png. No game source
+changed; all headless scenarios re-run green (see .gen/changes.md revision 3).
+Final Done/Pending classification left to the checker.

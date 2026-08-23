@@ -1,21 +1,21 @@
 {
-  "run_id": "req-134-upgrade-click-money-animation-r4",
-  "feature": "upgrade-click-money-animation",
+  "run_id": "issue-124-light-coverage-rev3",
+  "feature": "issue-124-light-coverage-rev3",
   "status": "running",
-  "started_at": "2026-08-23T11:57:02.955Z",
+  "started_at": "2026-08-23T11:48:30.923Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-134-upgrade-click-money-animation-r4/",
-  "heartbeat_at": "2026-08-23T12:02:30.814Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-23T12:02:30.814Z",
-  "process_id": 33290,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-124-light-coverage-rev3/",
+  "heartbeat_at": "2026-08-23T12:08:16.427Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-23T12:08:16.427Z",
+  "process_id": 31762,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T12:02:35.880405+00:00",
-    "last_success_at": "2026-08-23T12:02:35.879692+00:00",
+    "last_attempt_at": "2026-08-23T12:08:16.428107+00:00",
+    "last_success_at": "2026-08-23T11:54:37.108500+00:00",
     "last_error": null
   },
   "metrics": {
@@ -24,12 +24,12 @@
         "task_id": "plan",
         "cluster_id": null,
         "role": "plan",
-        "model": null,
+        "model": "stealth/ox-alpha",
         "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 246480,
+        "output_tokens": 3524
       }
     ]
   }

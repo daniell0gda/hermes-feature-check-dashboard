@@ -1,67 +1,76 @@
-# Manual Test Report – Upgrade click money popup (issue #134)
+# Manual Test Report – issue #124 cave-carved-path-torches (visible corridor lighting)
 
 ## Summary
 
-- Result: PASSED
-- Tested on: 2026-08-22, windowed Godot 4.4.1 (gl_compatibility, Dummy audio) via run_project_cmd, workspace poke-defense-godot/issue-upgrade-click-money-animation
-- Scenario: tests/scenarios/upgrade_click_money_popup.json
+- Result: **FAILED**
+- Tested on: 2026-08-23, windowed Godot 4.4.1 gl_compatibility (llvmpipe), 1920x1080
+- Scenario: `.gen/ui_scenario.md` via `tests/scenarios/cave_carved_path_torches.json` (windowed harness run)
 - Tester: Manual-tester profile
 
-Overall: I ran the upgrade-click money popup scenario in a real windowed game session.
-Clicking "Upgrade" in the tower details panel spawned the same floating yellow money popup a chest payout uses ("+20 coins!"), charged 20 coins (1500 -> 1460), leveled the tower to Lv. 2, and the popup cleaned itself up afterwards. Harness result: status=pass, headless=false, all actions and all expectations green.
+Overall: Ran the full `cave_carved_path_torches` scenario windowed with `--rendering-method gl_compatibility --audio-driver Dummy`. Harness status=pass exit 0 (56/56 actions, all expectations pass), and three fresh PNGs were captured and pixel-inspected. Beat 1 (open cave lit) and the "declined caves stay dark" claims are proven, but the central acceptance claim — every carved cross arm visibly lit end to end — is NOT visible in the render: only one warm-lit region (east room area) exists; north/south/west arm floors read flat unlit grey even under brightness boost. This reproduces the exact planning-gate regression `dungeon_cross_carve_lit.png` was supposed to close.
 
 ## Scenario Walkthrough
 
-### Step 1 – Starting state: tower placed and details panel open
+### Step 1 – Before carve: open cave lit, rock dark
 
-- Action: Loaded map_10, set money to 1500, placed a Generic tower at (-5.684, 0, -5.213), selected it so the tower details panel opened showing "Lv. 1", waited past the scene fade-in (~1.8 s), captured before shot.
-- Expected: Details panel visible with UPGRADE button, no popup on screen.
-- Observed: Exactly that — Tower Details panel shows Generic Tower "Lv. 1" with UPGRADE (20 coins) and SELL buttons; no floating text anywhere. Money reads 1480 on the top bar at capture time (map starting money was applied before the scenario's _set_money(1500); the upgrade charge of 20 lands later: 1500 - 20 = 1460 confirmed in the end snapshot).
+- Action: Windowed harness run loaded map_9, confirmed dangerous fixture 9101 ("yes"), switched to underground layer, top-down orthographic look-down, screenshot.
+- Expected: Confirmed-open cave room visibly lit by wall torches; solid rock elsewhere still dark.
+- Observed: Open cave room at top-center clearly lit by its wall torches (warm floor, distinct from surrounding near-black rock). PASS.
 - Status: PASS
 
+![before carve - open cave lit](screenshots/open_cave_before_cross_carve.png)
 
+### Step 2 – After cross carve: all four arms lit end to end
 
-### Step 2 – Click "Upgrade"
+- Action: Carved 2x18 + 18x2 plus-cross through the cave, waited for torch recompute ([TORCH] incremental-carve update active=148), look-down, screenshot `dungeon_cross_carve_lit.png`.
+- Expected: All four carved arms show lit floor pixels along their entire length; no fully dark arm.
+- Observed: FAIL. Pixel analysis of the map region: east/room area ~21% warm-orange pixels (clearly torch-lit); west arm 0.0%, north arm 0.6%, south arm 1.2% warm pixels — those floors read as flat unlit grey. Vision inspection of the full shot and per-arm crops agrees: only one warm light pool (east room). A brightness+contrast boosted re-inspection confirms no glow pools or sconce dots along N/S/W arms. Note: game-state torch data is correct (active=149 torches, count_near >= 1 at every sampled arm point, unlit_carved_in_cave == 0) — this is a rendering problem, not placement: with ~149 OmniLight3D nodes under gl_compatibility's per-mesh light limit over MultiMesh block geometry, most lights never reach the corridor floor meshes.
+- Status: FAIL
 
-- Action: Triggered UI._on_upgrade_pressed (the real handler behind clicking the UPGRADE button), waited 0.3 s while the 1.5 s popup animation runs.
-- Expected: A floating yellow "+20 coins!" popup rises above the tower; money is charged; tower levels up.
-- Observed: Harness asserted reward_popups == 1 and reward_popup_text contains "+20 coins!" — both green. Game log shows `[CHEST REWARD] Created popup for 20 coins at (-5.684, 1.5, -5.213)` — i.e. exactly above the tower.
+![cross carved](screenshots/dungeon_cross_carve_lit.png)
+
+### Step 3 – New connecting corridor lit along its length
+
+- Action: Carved short connector (4x1 at x≈3.5..5.5, z=-8), waited for incremental update (active=153), final screenshot.
+- Expected: New corridor fully lit along its length, blending into lit network.
+- Observed: Headless count_near assertions for the connector all pass (torch state correct), but the connector region shows 0.0% warm-light pixels in the final PNG — same rendering gap as step 2. Visually it blends into an otherwise mostly-unlit network, so the player-visible claim is not met.
+- Status: FAIL (state pass / pixels fail)
+
+![final state incl. connector](screenshots/open_cave_no_dark_corridor.png)
+
+### Step 4 – Declined cave sealed and completely dark
+
+- Action: Fixture 9102 placed overlapping carved path at (0,-3,6), answered "no" (decline-lock, blocks=49); fixture 9103 at (8,-3,8) also declined; final screenshot inspected.
+- Expected: Sealed cave interiors completely dark despite surrounding lit path.
+- Observed: PASS. Sealed regions render as solid black with zero interior light, including where 9102 overlaps the carved path. Harness confirms count_in_cave == 0 for both 9102 and 9103 after sealing.
 - Status: PASS
-
-### Step 3 – Popup visible on screen (screenshot proof)
-
-- Action: Deselected the tower so the details panel could not occlude the popup, then captured the after shot while the popup was still animating.
-- Expected: Floating yellow "+20 …" label visible above the tower.
-- Observed: The after shot shows a small yellow floating "+20 …" label above the path/tower area (screen ~(730–1060, 350–470)) which is completely absent from the before shot. Independent pixel analysis found ~1,900 new yellow pixels forming the text cluster in exactly that region between the two shots. Note: the label is small at 1920x1080 and sits over busy terrain, so it is easiest to see in the zoom crop below.
-- Status: PASS
-
-
 
 ## Criteria
 
-- Clicking "Upgrade" triggers the same floating money-increase popup used for chest payouts
-  - Before click — details panel open, no popup:
-    - ![before](screenshots/before_upgrade_click.png)
-  - After click — floating yellow "+20 …" popup above the tower:
-    - ![after](screenshots/after_upgrade_click_popup_visible.png)
-    - ![popup zoom](screenshots/popup_zoom_after_upgrade_click.png)
-
-- Animation visually matches the existing money-increase effect
-  - Verified: the game log identifies the popup as the shared chest-reward popup (`[CHEST REWARD] Created popup for 20 coins`), and the screenshot shows the same yellow floating-label style used for chest payouts.
-
-- Money actually charged / tower actually leveled (harness state assertions)
-  - money 1500 -> 1460 (-20), tower level 1 -> 2, popup freed after animation (reward_popups back to 0). All three result.json expectations passed; status=pass, headless=false.
+- Every carved cell within torch coverage / count_near along all four arms (~2-unit samples)
+  - State-level: PASS (headless + windowed harness, all wait_for_condition count_near ok)
+- In fresh windowed gl_compatibility top-down run, each of the four carved arms shows visibly lit floor pixels along entire length — no arm fully dark
+  - **UNVERIFIED / FAIL**: ![cross](screenshots/dungeon_cross_carve_lit.png) — only east/room region reads warm-lit; W/N/S arms read unlit (0.0–1.2% warm pixels vs 20.9% east)
+- New connecting corridor lit along its entire length
+  - State PASS; pixel evidence FAIL (0.0% warm pixels in connector region of ![final](screenshots/open_cave_no_dark_corridor.png))
+- Pending cave interior zero torches even when overlapping carved path
+  - PASS by harness (`count_in_cave == 0` while pending); consistent with dark render before confirm
+- After decline+seal, interior contains zero active torches incl. overlap cells
+  - PASS: harness fields and solid-black sealed regions in ![final](screenshots/open_cave_no_dark_corridor.png)
+- Fresh windowed PNGs exist with current timestamps showing full cross lit and declined caves dark, pixels inspected
+  - PNGs exist and are fresh (this run, 2026-08-23 10:29 UTC); declined caves dark confirmed; "full cross lit" part FAILS inspection
+- `[TORCH]` log line per recompute naming trigger and count
+  - PASS: `[TORCH] initial-placement`-style labeled lines observed: `incremental-carve update active=29 / 148 / 153 / 149`
 
 ## Issues and Observations
 
-- Low: At 1920x1080 the popup text is small and renders over textured grass/path, so it can be missed at a glance in full-frame screenshots; the zoomed crop proves it clearly. Cosmetic/readability nit only.
-- Low: Pre-existing benign log noise unrelated to this feature (missing optional GLB models like backdrop earth / portal arch, HudTheme UID warnings, GL resource cleanup messages at exit). No impact on gameplay or this criterion.
-- Harness quirk (already handled by revision 2): the details panel must be deselected before the after shot, otherwise it occludes the popup.
+- **High** — Visible corridor lighting regression persists (steps 2–3): torch *placement* data is complete (149 active, full coverage per state source) but under gl_compatibility the lights do not illuminate the corridor floors except around the east room. Likely cause: gl_compatibility per-mesh omni-light limit vs. large merged/MultiMesh underground geometry, so most of the 149 lights are dropped per mesh. Fix must make lighting reach the rendered floor (e.g. fewer/larger lights, baked glow decals/emissive floor tinting near torches, or splitting geometry) without weakening headless coverage assertions.
+- **Low** — Harness `status=pass` can mask this entirely: every expectation is state-based, none asserts rendered brightness. Consider a screenshot-pixel heuristic guard for windowed runs.
+- Pre-existing noise seen as documented: HudTheme.tres missing-texture spam; exit-time dummy/GLES leak warnings. No SCRIPT ERROR / Invalid call found in raw output.
 
 ## Recommendation
 
-Ready. The player-visible story holds: clicking Upgrade plays the chest-style floating "+20 coins!" popup, charges the cost, and levels the tower. No code changes needed.
+Not ready. The logic layer (placement, sealing, determinism) is solid and the dark-declined-cave behavior renders correctly, but the headline player-visible criterion — corridors visibly lit end to end — fails in actual pixels and needs a code fix targeting the compatibility-renderer light budget before re-check.
 
----
-
-Manual-test result: PASSED. Scenario: tests/scenarios/upgrade_click_money_popup.json. Report: .gen/manual-report.md. Escalation: no.
+Manual-test result: FAILED. Scenario: tests/scenarios/cave_carved_path_torches.json (windowed).
+Report: .gen/manual-report.md. Escalation: yes.

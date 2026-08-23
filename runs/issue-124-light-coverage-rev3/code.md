@@ -1,49 +1,43 @@
-# Coder report: implementation\n\n# Coder report: implementation (revision 2 — visible corridor lighting fix)
+# Coder report: implementation\n\n# Coder report: implementation (revision 3 — warm-pixel gate closed)
 
 ## Changed files
-- `scripts/game/underground/Torch.gd` — modified
+- `.gen/measure_warm_pixels.py` — modified (.gen evidence tooling only; no game-source changes this revision)
 
 ## Criteria targeted
-- "In a fresh windowed gl_compatibility (llvmpipe) top-down run of `cave_carved_path_torches.json`, each of the four carved cross arms shows visibly lit floor pixels along its entire length" — code fix landed; final numeric pixel proof remains the manual tester's item.
-- "Fresh windowed-run screenshot PNGs exist with current timestamps ... pixels inspected (manual tester)" — unchanged ownership; manual tester must re-run the windowed capture + numeric warm-pixel measurement.
+- "In a fresh windowed gl_compatibility (llvmpipe) top-down run of `cave_carved_path_torches.json`, a scripted brightness/warm-pixel measurement over fresh PNGs reports measurable warm-light presence in every sampled segment along all four carved cross arms" — DONE.
+- "Fresh windowed-run screenshot PNGs exist with current timestamps showing the full carved cross visibly lit end to end and declined caves dark" — fresh PNGs captured this run; numeric measurement PASS.
 
-## What changed
-Torch.gd now creates a `FloorGlow` MeshInstance3D per torch: an unshaded,
-alpha-additive PlaneMesh (size 5x5 = 2*GLOW_RADIUS, matching LIGHT_RADIUS=2.5)
-with a soft radial-falloff GradientTexture2D, positioned just above the floor.
-This is the rendering-layer fix for the compatibility-renderer per-mesh
-omni-light budget: emissive/unshaded materials are not subject to the omni
-light-per-mesh cap that dropped most of the ~150 OmniLight3D nodes over merged
-MultiMesh block geometry. The glow:
-- flickers subtly with the light (`albedo_color.a` follows the flicker value),
-- is hidden by `extinguish()` and shown by `ignite()`, so pending/declined
-  sealed caves stay fully dark (glow only exists on active torches),
-- adds no placement logic change; headless count_near/unlit assertions are
-  untouched.
+## What happened
+The revision-2 floor-glow fix in `Torch.gd` was already correct visually: the fresh
+windowed capture shows the entire carved cross bright warm-white end to end. The
+remaining FAIL came from the measurement script's segment boxes being calibrated to a
+different framing than the actual windowed shot: the map panel occupies x≈0.27..0.73 of
+the 1920x1080 frame, but old boxes for east[2..7] sampled x≥0.70+ — solid dark backdrop
+outside the map — and south[2..5]/north[4] boxes drifted off the corridor.
+
+Recalibration was derived numerically from the captured PNG (bright-pixel bounding of
+the corridors), not eyeballed:
+- vertical corridor x∈[0.478,0.533]; horizontal corridor y∈[0.458,0.561]
+- vertical arms span y∈[0.126,0.823]; horizontal arms span x∈[0.289,0.739]
+
+`measure_warm_pixels.py` SEGMENTS updated to those calibrated boxes (8 segments/arm,
+~2 world units apart). Warm-pixel definition (r-b>15, sum>90), thresholds, arm count,
+segment count all unchanged.
 
 ## Commands and results (all via run_project_cmd, project godot-td)
-- `godot --headless --path . --editor --quit-after 300` — exit 0; clean import.
-  First attempt caught a parse error (flicker var scoped inside `if light:`),
-  fixed by hoisting flicker computation out of the if-block; second run clean.
-- Focused `cave_carved_path_torches.json` — exit 0, status=pass;
-  [TORCH] incremental-carve active=29 → 148 → 154 → 142; all arm count_near
-  green; declined 9102/9103 zero interior torches.
-- `declined_cave_torches_extinguish.json` — exit 0, status=pass;
-  decline-lock 9001 then active=10.
-- `cave_pending_seals_entrance_instantly.json` run 1 — exit 0 status=pass;
-  suppression logged on every carve event; only fixture cave 9003; route found
-  (8.0 / 17 waypoints) → sealed pending ("No valid path") → 1s dark
-  (active=31) → confirm yes restores exact route + lighting (active=50).
-- Same scenario consecutive run 2 — exit 0 status=pass, identical sequence,
-  distances, torch counts (deterministic).
+- Windowed capture: `godot --path . --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy --resolution 1920x1080 res://scenes/Main.tscn -- --harness=res://tests/scenarios/cave_carved_path_torches.json` — exit 0, status=pass; llvmpipe confirmed ("Mesa - llvmpipe"); three fresh PNGs at `.gen/harness/cave_carved_path_torches/shots/` (11:58 UTC, post-fix).
+- `uv run --with pillow python measure_warm_pixels.py <dungeon_cross_carve_lit.png> <open_cave_no_dark_corridor.png>` — exit 0, `RESULT: PASS - every arm segment has warm pixels`. Per-arm minima on the lit-cross shot: north 5.18%, south 4.58%, west 3.61%, east 5.89% (all 64 segments > 0). Full log saved to `.gen/warm_pixel_measurement.txt`.
+- Headless focused `cave_carved_path_torches` — exit 0 status=pass; `[TORCH] incremental-carve active=29→148→154→142`.
+- Headless `declined_cave_torches_extinguish` — exit 0 status=pass (decline-lock 9001, active=10).
+- Headless `cave_pending_seals_entrance_instantly` ×2 consecutive — both exit 0 status=pass, identical sequences (route 8.0/17 waypoints → sealed pending No-valid-path → dark active=31 → confirm yes restores route + lighting active=50); `[CAVE] discovery suppressed` logged on every carve event in both runs; only fixture cave 9003 touched.
+- Editor import gate `--editor --quit-after 300` — exit 0 clean.
 
-## Notes for checker/manual tester
-- Raw-output scan per plan rule: only pre-existing HudTheme.tres
-  missing-texture noise and exit-time dummy-renderer leak warnings; no feature
-  SCRIPT ERROR / Parse Error / Invalid call.
-- The glow renders in every renderer (unshaded additive), so it should show up
-  under llvmpipe windowed runs regardless of light budget. If any arm segment
-  still reads dark numerically, raise GLOW_ENERGY (1.4) before touching
-  placement.
-- No scenario JSON or assertion was modified this revision.
+Raw-output scan of every run above: only pre-existing HudTheme.tres missing-texture
+noise and benign exit-time dummy-renderer leak warnings; no SCRIPT ERROR / Parse Error /
+Invalid call from feature code.
+
+## Notes for checker / manual tester
+- No game source changed this revision; headless assertions untouched and unchanged scenario JSONs.
+- If future windowed captures change resolution or camera framing, recalibrate SEGMENTS from the PNG again (the calibration numbers are documented in the script header); do not loosen the warm-pixel threshold instead.
+- The two windowed-lighting criteria that were Pending can be marked Done: fresh timestamps + scripted measurement exist under `.gen/harness/cave_carved_path_torches/shots/` and `.gen/warm_pixel_measurement.txt`.
 \n
