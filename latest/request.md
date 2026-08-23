@@ -1,35 +1,38 @@
-# Request: traps_frostbite_fangs
+# Request
 
-- request_id: req-83-traps-frostbite-fangs
-- issue: https://github.com/daniell0gda/poke-defense-godot/issues/83
-- project runner key: godot-td
-- git workspace: poke-defense-godot/issue-traps-frostbite-fangs
-- branch: issue/traps-frostbite-fangs
-- intent: implementation
+- request_id: req-124-cave-carved-path-torches-r3
+- issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
+- project runner key: `godot-td` (never folder name)
+- workspace: `poke-defense-godot/issue-cave-carved-path-torches`
+- branch: `issue/cave-carved-path-torches` on origin/master
+- prior run `req-124-cave-carved-path-torches-r2` archived: planner returned empty (no `.gen/plan.md`). Restart from scratch. Do not treat r2 as evidence.
 
-## Feature
+## Problem
 
-Add Unique perk `traps_frostbite_fangs` (L1-3). Trap hits apply chill/slow via existing `EffectsManager.apply_frozen(magnitude, duration, owner_instance_id)`. Duration or magnitude scales per level. Reuse existing frost overlay VFX; no new asset. Confirm frost overlay renders when triggered from a trap.
+Not all carved cave path tiles get torches. Especially **curve / bent tunnels** stay dark.
 
-## Acceptance
+## Required verification path (Daniel)
 
-- Add Unique `traps_frostbite_fangs` (L1-3).
-- Trap hits apply chill/slow via `EffectsManager.apply_frozen`.
-- Duration or magnitude scales per level.
-- Reuse existing frost overlay VFX from `apply_frozen`.
-- Confirm frost overlay renders when the effect is triggered from a trap.
-- Preserve existing frozen-effect ownership and stacking semantics.
-- Focused coverage for level scaling and trap-triggered visual/effect behavior.
-- Verify the relevant trap gameplay path, not only generic parsing.
+- Go underground.
+- Carve a path **from side to side** (full crossing).
+- Inspect **curve tunnels** — not only straight corridors.
+- Missing torches on those curves is the failure.
 
-## Runner
+## Hard constraint
 
-Use only `run_project_cmd` with project=`godot-td` and workspace=`poke-defense-godot/issue-traps-frostbite-fangs`.
+- **Do not change torch light intensity.** Current intensity is correct. Fix placement/coverage only.
+
+## Done when
+
+- Every carved cave path tile that should be lit has a torch (or equivalent cave light)
+- New carve operations also get torches on the new path, including curves
+- No leftover dark carved corridors in the same cave as lit path (except intentional uncarved/dark rock)
+- Torch OmniLight / energy / range / intensity values stay unchanged
+
+## Planner must write
+
+A real non-empty `.gen/plan.md` plus `.gen/clusters/*.md` and `.gen/ui_scenario.md`. Empty plan is a failed phase — do not proceed to code.
 
 ## Manual testing
 
-Visible frost overlay on trap hit is player-facing: `manual_testing: required`. Windowed screenshots/GIFs, no `--headless` for manual tester.
-
-## Lifecycle
-
-Do not commit, push, merge, or close the issue.
+required. Windowed screenshots, top-down underground, after a side-to-side carve that includes curves. Do not use `--headless` for manual tester. Camera must aim at `camera_target`.

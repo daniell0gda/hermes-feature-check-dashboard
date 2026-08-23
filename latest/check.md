@@ -1,75 +1,91 @@
-# Check report: req-83-traps-frostbite-fangs (iteration 1)
+# Check Report — req-124-cave-carved-path-torches-r3 (revision-check-1)
 
-classification: fixable
+classification: pass
 
 ## Verdict
 
-Implementation matches the request. Fresh verification through `run_project_cmd`
-(project=godot-td, workspace=poke-defense-godot/issue-traps-frostbite-fangs) is
-green: editor/parse gate exit 0, focused harness `traps_frostbite_fangs_progression`
-status=pass exit 0, and both trap regression harnesses pass.
+The revision fixed the previously red full-suite gate at its root cause (incidental
+cave discoveries from recently-merged discovery-reliability changes sealing the test
+corridors / capping carved tiles), via a new deterministic `cave_discovery_override`
+harness action — production code untouched by that fix. All nine acceptance criteria
+now have fresh passing evidence from this independent verification run. Torch.gd
+remains byte-for-byte unchanged (hard constraint honoured).
 
-One residual item keeps this from `pass`: the player-facing "frost overlay
-renders" criterion has only headless state-level proof (`ice_slow_fx >= 1` on a
-live trap hit); the windowed screenshot checkpoint (`frostbite_fangs_aftermath`)
-was skipped under `--headless` and awaits the manual tester
-(`manual_testing: required` per request.md). That is a fixable handoff item, not
-a code defect.
+## Commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-cave-carved-path-torches)
 
-## Verification commands (all fresh, this run)
+| Gate | Command | Exit | Result |
+|---|---|---|---|
+| Preflight probe | godot --version | 0 | 4.4.1.stable |
+| Typecheck/build | godot --headless --path . --editor --quit-after 300 | 0 | No parse errors; TorchManager/TorchPlacer/HarnessActions/HarnessValues registered |
+| Focused harness | godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/carve_curved_torches_coverage.json | 0 | status=pass; `[TORCH_PLACER] coverage pass: required_cells=105 torches=42 uncovered=0`; `[TorchManager] Updated torches: 42 active`; fresh result.json written |
+| Full suite | each of 9 scenarios run individually through the runner | 0 ×9 | All PASS (see below) |
 
-| Command | Exit | Result |
-|---|---|---|
-| `["godot","--version"]` | 0 | 4.4.1.stable.official.49a5bc7b6 |
-| `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | import/parse gate clean (only pre-existing invalid-UID warnings) |
-| `["godot","--headless","--path",\n".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_frostbite_fangs_progression.json"]` | 0 | `.gen/harness/traps_frostbite_fangs_progression/result.json`: `status=pass`, all 53 timeline steps ok |
-| same runner cmd, `traps_serrated_edges_progression.json` | 0 | status=pass (regression) |
-| same runner cmd, `undermining_trap_armor.json` | 0 | status=pass (regression; Undermining strip path unaffected by the new `perform_hit` hook) |
+Note: the plan's `bash -lc` full-suite one-liner is not allowlisted on the runner
+profile (`cmd executable is not allowed`); equivalent coverage achieved by running
+every scenario individually through allowlisted `godot` invocations.
 
-## Acceptance criteria evidence
+Per-scenario results (this check, fresh runs):
+1. carve_stops_at_discovered_cave PASS (0)
+2. carve_curved_torches_coverage PASS (0) — coverage log uncovered=0
+3. cave_decline_seals_reveal_unseals PASS (0) — was timeout pre-fix
+4. cave_pending_seals_entrance_instantly PASS (0) — was timeout pre-fix;
+   observed `[TORCH_PLACER] coverage pass: required_cells=36/54 ... uncovered=0`
+5. cave_discovery_long_carve PASS (0) — was FAIL 961<1000 pre-fix
+6. cave_discovery_chance PASS (0)
+7. cave_discovery_pending_placement PASS (0)
+8. cave_reveal_only_unseals_carved_blocks PASS (0)
+9. declined_cave_torches_extinguish PASS (0) — `coverage pass: required_cells=17 torches=8 uncovered=0`
 
-1. **Add Unique `traps_frostbite_fangs` (L1-3)** — Done.
-   `scripts/progression/trap.json` adds the Unique with maxLevels 3; harness asserts
-   `type == Unique`, eligibility true at L1/L2 and false at L3.
-2. **Trap hits apply chill/slow via `EffectsManager.apply_frozen`** — Done.
-   `Trap.gd::_apply_frostbite_fangs` calls `em.call("apply_frozen", magnitude,
-   duration, -1)` from `perform_hit`; live log shows `[FROSTBITE_FANGS] trap=trap_01
-   chill=0.6 dur=3.0 enemy=Cactoro` on real trap hits.
-3. **Duration or magnitude scales per level** — Done. Harness walks L1→L2→L3 asserting
-   0.4/2.0s → 0.5/2.5s → 0.6/3.0s (absolute values, idempotent on save/reload).
-4. **Reuse existing frost overlay VFX from `apply_frozen`** — Done. No new assets;
-   routes through the unchanged `EffectsManager.apply_frozen` → `apply_slow` +
-   `_ensure_ice_slow_fx` path.
-5. **Confirm frost overlay renders when triggered from a trap** — Done at headless
-   bar: live-arm asserts `enemies.frozen_count >= 1`, `slow_magnitude == 0.6`,
-   `ice_slow_fx >= 1`. Windowed pixel confirmation deferred to manual tester
-   (screenshot action skipped: reason=headless). Unowned control arm proves zero chill
-   without the perk (`!regex "[FROSTBITE_FANGS] trap=trap_03"`).
-6. **Preserve existing frozen-effect ownership and stacking semantics** — Done.
-   Chill goes through the untouched `apply_frozen` path (burn-exclusivity + slow
-   ownership preserved); unowned config returns before any effect call.
-   Regression harnesses pass.
-7. **Focused coverage for level scaling and trap-triggered visual/effect behavior** — Done.
-   New `tests/scenarios/traps_frostbite_fangs_progression.json`; no pre-existing
-   scenario covered frostbite (no overlap found).
-8. **Verify the relevant trap gameplay path** — Done. Live underground arm:
-   cave fixtures → force spawn → placed trap_01 → overlap-poll `perform_hit`.
+Fresh `.gen/harness/carve_curved_torches_coverage/result.json`: status "pass",
+all expectations passed (verified programmatically this run).
+
+## Acceptance criteria evidence (plan wording preserved)
+
+Cluster 1 — curved-path torch placement coverage
+1. L-shaped corridor fully lit — focused harness recomputes coverage independently
+   from live voxel_grid/cave_locked_grid in HarnessValues; uncovered_corridor_cells=0.
+2. Straight-corridor regression — declined_cave_torches_extinguish and other
+   straight-corridor scenarios pass with unchanged spacing behaviour.
+3. Interior exemption / bend cells lit — implemented in TorchPlacer `_required_wall_cells`
+   (`_is_corridor_cell`); harness mirrors independently; uncovered=0.
+4. No torches in cave_locked_grid cells — locked-cell exclusion exercised by
+   declined/pending/seals scenarios (all pass).
+5. MAX_TORCHES cap thinned not abandoned — 42 active ≤ cap on large carve with
+   uncovered=0 after `_thin_by_coverage`.
+6. Debug [TORCH_PLACER] log line — observed live: event name, carved-cell count,
+   torch count, uncovered count.
+
+Cluster 2 — curved-torch harness verification scenario
+7. Zero carved cells beyond one light radius asserted — expectation present and
+   passing in result.json.
+8. Torch count > 0 and update ran through [TorchManager] — count=42 > 0;
+   `[TorchManager] Updated torches: 42 active` logged.
+9. Exit 0 + fresh result.json status "pass" — verified this run.
+
+No criterion demoted. No new-test overlap found: no existing scenario asserted torch
+coverage on a bent path before `carve_curved_torches_coverage.json`.
 
 ## Changed-file quality findings
 
-- Diff reviewed against `/opt/data/coding_rules.md` + worktree `CLAUDE.md`:
-  typed variables, guard clauses (nesting ≤2), debug-only `[TAG]` logs, surgical
-  scope (4 modified files + 1 new scenario), no dead code or duplication. No violations.
-- No quality-notes.md entries open; no new cross-cutting issues found
-  (`git diff HEAD` / untracked = only feature files).
+- scripts/game/underground/TorchPlacer.gd — typed GDScript, guard clauses, small
+  functions, debug log per state transition per project CLAUDE.md rules. Advisory:
+  O(torches×cells) repeated scans (quality-notes.md, acceptable at grid size).
+- scripts/game/underground/TorchManager.gd — surgical cap plumbing; clean.
+- scripts/testing/HarnessActions.gd — new `cave_discovery_override` action is a
+  minimal test-only hook; no production behaviour changed. Clean.
+- scripts/testing/HarnessValues.gd — independent coverage recomputation (genuine
+  cross-check). Clean.
+- tests/scenarios/*.json changes — fixture determinism only. Clean.
+- scripts/game/underground/Torch.gd — git diff empty; light settings unchanged
+  byte-for-byte (hard constraint honoured).
 
 ## Blockers
 
-None. Runner healthy throughout; no host-shell Godot used.
+None. Runner reachable and healthy; every project command ran through run_project_cmd.
 
-## Unverified items / handoff
+## Unverified items
 
-- Windowed screenshot of visible frost overlay on trap hit → manual tester
-  (scenario checkpoints already wired: `frostbite_fangs_chilled_hit` capture point
-  and optional aftermath shot).
-- Lifecycle respected: nothing committed/pushed/merged/closed by check.
+- Manual testing (windowed screenshots, top-down underground view after a
+  curve-including side-to-side carve): `.gen/manual-report.md` absent — owned by the
+  manual-tester profile, outstanding for issue sign-off (not a plan criterion).
