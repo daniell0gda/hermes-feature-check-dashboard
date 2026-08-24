@@ -1,11 +1,1 @@
-[
-  {
-    "sequence": 1,
-    "timestamp": "2026-08-24T12:28:00.202Z",
-    "node": "code",
-    "status": "failed",
-    "duration_ms": 5411167,
-    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-traps-frostbite-fangs.\\\\nThe durable evidence\u2026",
-    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-traps-frostbite-fangs.\\\\nThe durable evidence\u2026"
-  }
-]
+[]
