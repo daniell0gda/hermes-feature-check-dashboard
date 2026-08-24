@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-24T10:51:28.371Z",
+    "node": "plan",
+    "status": "failed",
+    "duration_ms": 186138,
+    "summary": "\"plan worker returned no reply (empty model or exhausted API retries)\"",
+    "error": "\"plan worker returned no reply (empty model or exhausted API retries)\""
+  }
+]
