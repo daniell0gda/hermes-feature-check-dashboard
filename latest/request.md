@@ -1,93 +1,54 @@
-# Request: gen-hud-textures-py-cannot-run-all-three (r2)
+# Request: Continue issue #90 — Progression: Corrosive Soak perk (Floodgate)
 
-**Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/117
-**Project runner:** `godot-td`
-**Workspace:** `poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three`
-**Branch:** `issue/gen-hud-textures-py-cannot-run-all-three`
-**Request id:** `req-117-gen-hud-textures-r2`
-**Starting revision:** `9d54964` (`origin/master` after hard reset)
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/90
+Workspace: /workspace/git-workspaces/poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat
+Branch: issue/progression-corrosive-soak-perk-floodgat (reset to origin/master @ e7910d0; prior r1 source restored and 3-way merged)
+Runner: project `godot-td`, workspace `poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat`. Do NOT invent other runner/workspace names.
 
-## Why this is a fresh run
+Request id: corrosive-soak-90-r2
 
-Daniel: "Rerun from the beginning, plan wasn't produced."
+## Continuation (do not start from scratch)
 
-The previous run (`117-gen-hud-20260823`) coded and checked **without** writing `.gen/plan.md` or `.gen/clusters/*.md`. That attempt is archived at:
+r1 (`corrosive-soak-90-r1`) planned, then the code worker died (~2026-08-23T18:32Z) before check. Source was left uncommitted. Historical r1 artifacts (plan, clusters, harness timeout) are context only — re-verify on this tree.
 
-`.gen-blocked-117-gen-hud-20260823-attempt1/`
+Already on the worktree (keep and finish; do not rewrite from scratch):
+- Perk `floodgate_corrosive_soak` Unique 3 levels 25/45/70% in `scripts/progression/floodgate_tower.json`
+- `FloodgateTowerProgressionManager.gd` apply/reset/config + `ProgressionManager.get_floodgate_corrosive_soak_config()`
+- Corroded status on Enemy / EnemyStatusController; rust tint via `WaterSubmersionSystem.set_enemy_corroded`
+- Amplification in `EnemyHealthController._apply_corrosive_soak_if_needed` excluding `tower_type_id == floodgate`
+- Floodgate discharge marks via `_mark_corroded_if_needed`
+- Harness helpers + `tests/scenarios/floodgate_corrosive_soak.json`
 
-Historical commit `d06b5de` (`fix: drop broken gen_hud_textures.py and unused crate-derived HUD slices`) is **unverified reference only**. The worktree is reset to `origin/master`. Do **not** treat the archived check as done. Do **not** skip the planner.
+Master moved 14 commits; `ProgressionManager.gd`, `HarnessActions.gd`, `HarnessValues.gd` were 3-way merged with undermining + press_button + reward_popups. Preserve those master behaviors.
 
-## Hard planner gate
+## r1 harness failure (must fix)
 
-The planner **must** write:
+`.gen/harness/floodgate_corrosive_soak/result.json` status=timeout:
+- Perk apply and Corroded mark worked (`corroded_count==1`, `amplification==0.25`, `corroded_marked:true`)
+- Then `armor_hit` (balista, armor_damage 40) followed by `enemies.Alien.armor == 950.0` saw **actual 0.0**
+- Likely observation of an unarmored spawn instead of the staged Alien (index-0 vs max-armor-by-id). `HarnessValues._enemy_report` now takes max armor per id — assert via `enemies.Alien.armor` (report) not `enemy.armor` (index 0). Stage armor immediately before the hit and wait 2–3 poll ticks after.
+- Expected L1 math: staged 1000 − 40×1.25 = 950. Floodgate follow-up must match unowned control. HP unchanged.
 
-- `.gen/plan.md`
-- one or more `.gen/clusters/<id>.md` with exclusive file ownership, `parallel: true|false`, dependencies, acceptance criteria
+Treat r1 result as stale. Re-run the focused harness fresh after any harness/scenario fix.
 
-Do not implement until those artifacts exist. Do not invent nested plan state.
+## Feature
 
-## Plain language
+New Unique progression perk `corrosive_soak` for Floodgate Tower only, 3 levels:
+- Enemies hit by Floodgate's discharge gain a "Corroded" status.
+- While Corroded, armor-damage taken from **all other towers'** hits is increased by +25% / +45% / +70% by level.
+- Floodgate's own hits are unaffected by its own Corroded status (setup effect, not self-buff).
+- Implemented in `FloodgateTowerProgressionManager.gd` alongside `floodgate_saltwater_purge`.
+- Visual: extend wet/soak shader (`WaterSubmersionSystem`) with a distinct rust tint — no new VFX class.
 
-The HUD crate-texture generator cannot run because its three source JPGs are gone. Either restore those sources so the script works, or delete the dead script and keep the still-used HUD icons.
+## Acceptance criteria
+1. Perk defined with 3 levels and correct amplification values (25/45/70%), Floodgate-only, type Unique.
+2. Corroded status applied on Floodgate discharge hits; amplifies armor-dmg from all towers EXCEPT Floodgate itself.
+3. Editor gate passes (`godot --headless --path . --editor --quit-after 300`).
+4. Focused headless gameplay harness proves: enemy hit by Floodgate → subsequent armor-dmg hit from another tower is amplified per level; Floodgate-own follow-up is not amplified.
+5. Manual testing: required (rust tint is player-facing). Windowed screenshots/GIF via runner, never --headless for manual evidence. Include `ui_feels_broken: yes|no`.
 
-## Problem
-
-`tools/gen_hud_textures.py` (572 lines) cannot run. Its three sources are absent from the repo and from disk:
-
-- `textures/_source/woden_panel.jpg`
-- `textures/_source/woden_panel_wide.jpg`
-- `textures/_source/woden_panel_wide_darkonly.jpg`
-
-Current wood-panel redesign uses `panel-square.png` / `panel-wide.png` via `tools/prep_hud_assets.py`.
-
-Still-used outputs under `textures/ui/hud/` (keep these unless you re-derive them):
-
-- `icon_coin.png` — `scenes/ui/widgets/PricedButton.tscn`
-- `towers_panel.png` — `themes/hud/HudTheme.tres`
-- `icon_heart.png` — `scenes/UI.tscn`
-- `wood_slot.png`, `slot_empty.png` (script also writes these; confirm live references before deleting)
-
-The script already documents that the JPGs are missing (comment at lines 16–20). That comment is not a fix.
-
-## Acceptance
-
-One of:
-
-1. Restore the crate JPGs to `textures/_source/` and `gen_hud_textures.py` runs clean, or
-2. Re-derive still-used outputs from current sources via `prep_hud_assets.py` **or** keep the committed live PNGs unchanged, then delete `gen_hud_textures.py` plus **unreferenced** dead outputs.
-
-Either way `tools/` must contain no script whose sources are missing.
-
-Prefer option 2 if `git log --all -- '*woden_panel*'` is empty. Option 1 is valid only if the JPGs can actually be recovered.
-
-If option 2: do **not** delete `icon_coin.png`, `icon_heart.png`, or `towers_panel.png`. Only delete outputs that are unused by scenes/themes/scripts.
-
-`tools/gen_hud_icons.py` still claims `icon_coin` / `icon_heart` come from `gen_hud_textures.py` — update that docstring if the generator is deleted.
-
-## Verification (runner only)
-
-Project `godot-td`, workspace `poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three`.
-
-Tokenized `run_project_cmd` examples:
-
-```json
-{"project":"godot-td","workspace":"poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three","cmd":["python3","--version"]}
-{"project":"godot-td","workspace":"poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three","cmd":["godot","--headless","--path",".","--editor","--quit-after","300"]}
-```
-
-- Prove no remaining `tools/*.py` references missing `_source` files.
-- Prove live HUD assets still exist and are referenced.
-- Editor/import gate if textures change.
-- Git/worktree ops are Hermes-side, not runner: `git diff --check`, `git status --short`.
-
-## Manual testing
-
-`manual_testing: none` if committed player-facing PNGs are unchanged.
-If HUD art look changes, `manual_testing: required` with windowed shots (never `--headless`) plus `ui_feels_broken: yes|no`.
-
-## Redo notes
-
-- Do not invent runner workspace names (`godot-td/issue-117` is wrong).
-- Never use host `godot` / `npm` instead of `run_project_cmd`.
-- Worker image may lack Pillow; do not require regenerating committed PNGs if they stay byte-identical.
-- Dashboard publication is required on the leader path; include the public run URL in the terminal summary.
+## Notes
+- Use exact scene argument before user args in harness commands.
+- Inspect raw Godot stdout for Parse Error / Failed loading resource, not just harness status=pass.
+- Do not commit/push/close.
+- Do not revert unrelated master files. Ignore `.glb` LFS noise; do not commit models.
