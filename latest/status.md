@@ -1,14 +1,21 @@
 ## ✅ Done
-- TORCH_SPACING equals 4.
-- On a straight carved corridor, consecutive spacing-pass torch grid cells are separated by exactly TORCH_SPACING unique corridor cells (stride counted on unique cells, not on raw wall-face entries).
-- For every torch position returned by calculate_torch_positions, the horizontal offset from its grid cell center lies along exactly one cardinal axis with magnitude WALL_OFFSET, and the neighbouring cell in that direction is solid rock (a real wall from the voxel grid).
-- Torch positions produced by the coverage-repair pass satisfy the same real-wall rule: their offsets are single-axis cardinal WALL_OFFSET mounts onto adjacent solid cells, never diagonal or zero-offset mid-corridor sticks.
-- With no max_torches cap, torch count scales with live grid dimensions (no hardcoded maximum); at a large carved grid the placer still returns torches for the whole path.
-- Debug-build [TORCH_PLACER] log line per coverage-repair torch added, naming the uncovered target cell and the chosen wall direction (debug builds only).
-- After carving an L-shaped side-to-side path with a bend, every required corridor cell is lit: the harness reports uncovered_corridor_cells == 0 with active torch count > 0.
-- Torch lighting constants are unchanged from the pre-change baseline: Torch.LIGHT_RADIUS, light energy, omni range/attenuation, and colour are identical to the values on branch commit f161e1d before this fix.
+- The `corrosive_soak` perk is defined in Floodgate's progression file with maxLevels 3, type Unique, compatibility restricted to the `floodgate` tower only, so it never appears as a reward choice for other towers or in generic pools.
+- Each of the three levels carries its level's absolute armor-damage amplification of 25% / 45% / 70% respectively, so replaying levels 1..N on load lands on level N's value instead of compounding.
+- After `apply_progression` with the owned level, the Floodgate progression state exposes an enabled flag and the level's amplification fraction (0.25 / 0.45 / 0.70), and after `reset_for_new_game()` it reads enabled=false with amplification back to zero.
+- Debug-build `[FLOODGATE]` log line per corrosive-soak level application naming the perk, the applied level and the resulting amplification fraction.
+- An enemy hit by a Floodgate discharge while the perk is owned gains the Corroded state; without the perk owned, discharge hits leave no Corroded state.
+- While an enemy is Corroded, an armor-damage hit from a tower other than Floodgate strips 25% / 45% / 70% more armor at perk levels 1 / 2 / 3 than the same hit would without Corroded; HP damage from that hit is unchanged.
+- A Floodgate-sourced follow-up hit against a Corroded enemy is not amplified: its armor damage equals what it would deal to a non-Corroded enemy.
+- When the Corroded state expires, subsequent other-tower armor-damage hits are no longer amplified.
+- Debug-build `[CORROSIVE_SOAK]` log line per Corroded-state application naming the enemy and the active perk level, and one per amplified armor hit naming the enemy, the bonus percentage and whether the attacker was excluded.
+- Master behaviors three-way merged into `ProgressionManager.gd` (undermining, press_button, reward_popups) keep passing their existing progression checks after the corrosive-soak changes.
+- While an enemy is Corroded, its model carries a distinct rust-colored tint through the existing water-submersion tint mechanism that differs visibly from the normal wet/soak tint; when the Corroded state ends, the tint returns to the normal wet/soak appearance.
+- The headless gameplay harness stages a live armored enemy deterministically — the enemy is confirmed alive and at its staged armor value immediately before each hit action, using the max-armor-per-id report field rather than index-0 lookup — so no hit or observation ever targets an absent or unarmored spawn.
+- The headless gameplay harness proves end-to-end: with the perk applied at each level, a Floodgate discharge hit followed by another tower's armor-damage hit yields the level's amplified armor loss on the same enemy setup, and a matching unowned-perk control run yields no amplification.
+- The headless gameplay harness proves isolation on the same enemy setup: after the Floodgate discharge hit, a second Floodgate-sourced hit's armor effect matches the unowned-perk control run.
 
 ## ⬜ Pending
-- Manual windowed run (no --headless): underground screenshots of a curved side-to-side carve show every torch hugging a wall face, with no stick floating mid-corridor or hovering in front of a wall; ui_feels_broken: no — no windowed/display-capable run executed; manual script at .gen/ui_scenario.md awaits manual-tester run
+- criterion
 
 ## ❌ Impossible
+- criterion — reason

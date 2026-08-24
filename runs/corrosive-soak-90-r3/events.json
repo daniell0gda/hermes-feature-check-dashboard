@@ -43,5 +43,14 @@
     "duration_ms": 157668,
     "summary": "Manual testing gate complete.\n\n- Check status: pass (all 14 criteria verified; editor gate, focused harness, full suite all fresh-pass).\n- Decision: manual_testing: required \u2014 the Corroded rust tint is a new player-facing visual, persists ~\u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-24T10:30:57.812Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 3502299,
+    "summary": "All done. Summary:\n\n**Manual-test result: PASSED.** Scenario: `.gen/ui_scenario.md` (visual variant `tests/scenarios/floodgate_corrosive_soak_visual.json`).\n\nWhat I did:\n- Read plan/changes/manual_testing focus; the existing ui_scenario.md \u2026",
+    "error": null
   }
 ]

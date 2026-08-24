@@ -1,44 +1,68 @@
-# Check report: req-124-cave-carved-path-torches-r5 (revision-check-2)
+# Check report — corrosive-soak-90 revision-check-1 (iteration 4)
 
 classification: pass
 
-## Verification commands (all via run_project_cmd, project=godot-td workspace=poke-defense-godot/issue-cave-carved-path-torches)
+## Verdict
 
-- Preflight `["godot","--version"]` — exit 0, Godot 4.4.1.stable.official.49a5bc7b6.
-- Typecheck/build `["godot","--headless","--path",".","--editor","--quit-after","2"]` — exit 0, full project scan clean, no script parse errors.
-- Full test `["godot","--headless","--path",".","res://tests/caves/test_torch_budget_scaling.tscn"]` — exit 0; `=== torch_budget_scaling: 11 ok, 0 failed ===`. All assertions ok: TORCH_SPACING==4; stride cols=[0,4,...,36]; 35-torch cardinal real-wall assertion (voxel-grid neighbour == solid); 50-torch uncapped repair-mount assertion; budget derived from live grid (10000); 100x100 grid torches=190 uncovered=0.
-- Focused harness `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/carve_curved_torches_coverage.json"]` — exit 0; fresh `.gen/harness/carve_curved_torches_coverage/result.json` status=pass, all 4 expectations pass (`[TorchManager] Updated torches`, `[TORCH_PLACER] coverage pass ... uncovered=0`, torch.count=113 > 0, uncovered_corridor_cells==0). Live log shows every coverage-repair mount as a single cardinal wall_dir onto a real face; no diagonal/zero-offset mounts.
+All 14 acceptance criteria are verified Done this iteration. Every gate ran fresh
+through `run_project_cmd` (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat) and
+passed: editor/parse gate exit 0 with no Parse Error, focused harness exit 0
+`[Harness] status=pass exit=0` (58 actions, all ok, result at
+`.gen/harness/floodgate_corrosive_soak/result.json`, fresh run
+20260824000002), full armor-damage suite exit 0 `18 ok, 0 failed` (the previous
+r3 full-suite blocker was Git-LFS pointer resolution + stale imports — worktree
+setup fixed by the coder, no repo file changed for it). Criterion 10 (master
+merged ProgressionManager behaviors) was additionally proven this iteration via
+fresh runs of its own regression scenarios: `undermining_progression`
+(status=pass, trap armor damage 8/15/25 per level observed in raw stdout) and
+`upgrade_click_money_popup` (status=pass, reward popup fired).
 
-## Criteria evidence
+## Verification commands (all via run_project_cmd)
 
-Cluster 1 — wall-mount-and-spacing
-- TORCH_SPACING equals 4 — Done. Unit assertion ok; const in fresh diff of TorchPlacer.gd.
-- Straight-corridor stride exactly 4 unique cells — Done. Test asserts cols=[0,4,...,36] via `_spacing_torch_cells` on unique corridor cells.
-- Cardinal WALL_OFFSET onto solid rock for every torch — Done. `_offset_on_real_wall` over all 35 placed torches ok.
-- Coverage-repair torches obey real-wall rule — Done. Uncapped-run assertion over 50 repair torches ok; `_best_wall_torch_for` returns only single-axis cardinal offsets (real solid rock, cave-locked cell, or grid-edge boundary face) and `{}` when no wall exists — never a mid-corridor stick.
-- Budget scales with live grid, no hardcoded max — Done. 100x100: budget=10000, torches=190, uncovered=0.
-- Debug [TORCH_PLACER] log per repair torch naming cell + wall_dir — Done. Fresh run log lines confirm `cell ... wall_dir=... to light uncovered cell ...` behind OS.is_debug_build().
+| Command | Exit | Result |
+|---|---|---|
+| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 |
+| Editor gate: `godot --headless --path . --editor --quit-after 300` | 0 | Pass; global classes registered; no Parse Error (pre-existing UID warnings only) |
+| Focused: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/floodgate_corrosive_soak.json` | 0 | `[Harness] status=pass exit=0`; result `.gen/harness/floodgate_corrosive_soak/result.json`; raw stdout shows `[FLOODGATE] floodgate_corrosive_soak L1/L2/L3 applied -> amplification 0.25/0.45/0.7`, `[CORROSIVE_SOAK] corroded applied on enemy=Alien level=1`, amplified hits bonus=25%/45%/70% armor_dmg=50/58/68, `[CORROSIVE_SOAK] corroded expired on enemy=Alien dur=6.0`. Only non-gating pre-existing warnings after exit. |
+| Full suite: `godot --headless --path . res://tests/tower/test_tower_armor_damage.tscn` | 0 | `18 ok, 0 failed` incl. ballista bolt reached armored enemy / strips 20.0 armor / loses only reduced HP |
+| `undermining_progression` scenario | 0 | status=pass; undermining L1/L2/L3 -> trap armor damage 8.0/15.0/25.0 |
+| `upgrade_click_money_popup` scenario | 0 | status=pass; reward popup created |
 
-Cluster 2 — coverage-and-light-regression
-- L-shaped carve fully lit, uncovered==0, torches>0 — Done. Harness status=pass, 113 torches, uncovered_corridor_cells==0 (verified in fresh result.json).
-- Torch lighting constants unchanged vs f161e1d — Re-verified this iteration: md5 of scripts/game/underground/Torch.gd = `40bbbfde46fac932548aeb479ba4f7b6`, byte-identical to `git show f161e1d:`; file untouched by git diff.
+## Criteria evidence (plan order)
 
-Cluster 3 — windowed-manual-proof
-- Manual windowed screenshots showing wall-hugging torches — NOT VERIFIED (out of checker scope). No windowed/display-capable run executed; `.gen/manual-report.md` absent (owned by manual-tester profile). `.gen/ui_scenario.md` contains the script. Criterion wording preserved; stays Pending.
+1. Perk defined, maxLevels 3, Unique, floodgate-only — PASS (`scripts/progression/floodgate_tower.json`: `"type": "Unique"`, `"compatibility": {"towers": ["floodgate"]}`); harness actions 17–20 assert enabled/level/amplification.
+2. Absolute 25/45/70% per level, no compounding — PASS (sequential apply_progression asserts 0.25→0.45→0.70; armor math exact: 1000→950→852→784).
+3. apply_progression exposes enabled+fraction; reset_for_new_game clears — PASS (actions 16–20 and 53–54: enabled==false).
+4. `[FLOODGATE]` debug log per level application — PASS (observed in fresh runner stdout).
+5. Corroded gained on discharge with perk; none without — PASS (actions 21–22 corroded_count==1; unowned control actions 55–56 corroded_marked=false, corroded_count==0).
+6. Amplified other-tower strip per level, HP unchanged — PASS (balista hits: 40→50/58/68 armor loss at L1/L2/L3; hp field unchanged at 100000 across amplified hits, only discharge's own 1.0 damage applied).
+7. Floodgate follow-up not amplified — PASS (actions 29–30: floodgate-sourced 40 → armor 910 exactly = plain 40 strip).
+8. Expiry restores baseline — PASS (clear_corroded through the update_corroded expiry path, actions 47–51: post-expiry balista hit strips exactly 40, rust_tint_count==0).
+9. `[CORROSIVE_SOAK]` logs applied/amplified/excluded flag — PASS (raw stdout observed; amplified lines carry bonus % and attacker_excluded).
+10. Master merged ProgressionManager behaviors keep passing — PASS (fresh undermining_progression + upgrade_click_money_popup scenario runs both status=pass on this tree with the feature changes present).
+11. Rust tint distinct from wet tint, reverts on expiry — PASS (automated: `enemies.rust_tint_count == 1` while Corroded (action 23), `== 0` after expiry (action 49), exercised through the real GLB mesh path; distinct color/strength constants CORROSION_RUST_COLOR/CORROSION_TINT_STRENGTH vs contamination tint. Player-facing visual confirmation remains a manual-testing item per plan's `manual_testing: required`.)
+12. Deterministic staging via max-armor-per-id pin — PASS (set_armor then `enemy.staged.Alien.max_armor/armor == 1000` waits before every hit; HarnessValues pins by id requiring max_armor>0; `_enemy_report` takes max armor per id).
+13. End-to-end per-level amplification + unowned control — PASS (actions 21–27, 33–38, 41–46; control actions 53–57).
+14. Isolation on same setup — PASS (actions 28–31: second floodgate-sourced hit matches unowned baseline strip).
 
-## Revision-code-2 delta check
+## Changed-file quality findings
 
-Only change this revision: unit-suite result report moved from `res://tests/caves/test_torch_budget_scaling.result.txt` to `res://.gen/test_torch_budget_scaling.result.txt` (quality-notes advisory fix). Verified after the full-suite run: old file absent from tests/caves/, new file present under `.gen/`. Quality note resolved as
-`## test-result-file-outside-gen — RESOLVED (iteration revision-check-2)` in quality-notes.md.
-
-## Changed-file quality
-
-git diff HEAD (6 files, +199/-37): TorchPlacer.gd changes are typed, guard-clause style consistent with CLAUDE.md; repair loop has a bounded guard plus a permanent unmountable-cell drop (no guard spin); no violations found in changed code. New tests assert the actual criteria and replaced the old spacing==2 test rather than duplicating it; no overlap with existing suite coverage found. Advisory-only notes: stray prior-run snapshot dirs at repo root (`.gen-blocked-*` / `.gen-r3/r4-*`) are workflow artifacts, not feature scope creep.
+Diff reviewed against /opt/data/coding_rules.md + project CLAUDE.md:
+surgical, minimal (10 modified files + 1 new scenario, ~384 insertions), mirrors
+the existing FrozenFracture/Oil patterns, typed GDScript variables, debug-only
+`[TAG]` logging per CLAUDE.md, guard clauses instead of deep nesting, no casts
+as string enums, no speculative abstraction found. No per-criterion quality
+violation. Prior advisory items resolved: scratch `logs/full_suite.log` removed;
+`defeat_all` harness effect is referenced by the scenario's staging rationale
+comment (kept as deliberate cleanup primitive, not dead code).
 
 ## Blockers
 
-None infra. Remaining gap is only the manual windowed screenshot proof (cluster 3), which requires the manual-tester profile or a display-capable environment.
+None.
 
 ## Unverified items
 
-- Manual windowed underground screenshots (ui_feels_broken: no) — pending manual-tester run.
+None blocking. Manual windowed rust-tint screenshot evidence (with
+`ui_feels_broken`) is still owed under the plan's `manual_testing: required`
+note — that is a manual-tester deliverable, not an automated criterion gap.

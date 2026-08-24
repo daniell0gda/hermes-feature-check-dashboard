@@ -1,6 +1,17 @@
 {
   "invocations": [
     {
+      "task_id": "code",
+      "cluster_id": "implementation",
+      "role": "code",
+      "model": "stealth/ox-alpha",
+      "model_tier": null,
+      "cost_usd": 0.0,
+      "cost_status": "unknown",
+      "input_tokens": 84594,
+      "output_tokens": 5749
+    },
+    {
       "task_id": "check",
       "cluster_id": null,
       "role": "check",
@@ -8,8 +19,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 72964,
-      "output_tokens": 3146
+      "input_tokens": 115325,
+      "output_tokens": 5874
     },
     {
       "task_id": "revision-code-1",
@@ -19,8 +30,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 80751,
-      "output_tokens": 2938
+      "input_tokens": 158556,
+      "output_tokens": 19895
     },
     {
       "task_id": "revision-check-1",
@@ -30,30 +41,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 90091,
-      "output_tokens": 3924
-    },
-    {
-      "task_id": "revision-code-2",
-      "cluster_id": "implementation",
-      "role": "code",
-      "model": "stealth/ox-alpha",
-      "model_tier": null,
-      "cost_usd": 0.0,
-      "cost_status": "unknown",
-      "input_tokens": 88101,
-      "output_tokens": 2978
-    },
-    {
-      "task_id": "revision-check-2",
-      "cluster_id": null,
-      "role": "check",
-      "model": "stealth/ox-alpha",
-      "model_tier": null,
-      "cost_usd": 0.0,
-      "cost_status": "unknown",
-      "input_tokens": 87557,
-      "output_tokens": 3779
+      "input_tokens": 98104,
+      "output_tokens": 5765
     },
     {
       "task_id": "manual-testing-gate",
@@ -63,19 +52,8 @@
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 24931,
-      "output_tokens": 427
-    },
-    {
-      "task_id": "manual-tester",
-      "cluster_id": null,
-      "role": "manual-tester",
-      "model": "stealth/ox-alpha",
-      "model_tier": null,
-      "cost_usd": 0.0,
-      "cost_status": "unknown",
-      "input_tokens": 77420,
-      "output_tokens": 6993
+      "input_tokens": 27655,
+      "output_tokens": 476
     }
   ]
 }

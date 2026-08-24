@@ -1,65 +1,56 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-24T10:03:32.844Z",
-    "node": "check",
+    "timestamp": "2026-08-24T08:54:27.668Z",
+    "node": "code",
     "status": "completed",
-    "duration_ms": 217896,
-    "summary": "Check complete. All verification ran fresh through run_project_cmd (project=poke-defense-godot, workspace=poke-defense-godot/issue-cave-carved-path-torches): preflight godot 4.4.1 exit 0; editor/typecheck gate exit 0; focused harness carve_\u2026",
+    "duration_ms": 306940,
+    "summary": "Done. Summary:\n\n**Work (cluster: implementation, corrosive-soak Floodgate perk):**\n- The feature implementation was present in the working tree from prior revisions; I verified it end-to-end and closed the remaining gaps.\n- Fixed the one re\u2026",
     "error": null
   },
   {
     "sequence": 2,
-    "timestamp": "2026-08-24T10:10:02.302Z",
-    "node": "code",
+    "timestamp": "2026-08-24T08:58:58.658Z",
+    "node": "check",
     "status": "completed",
-    "duration_ms": 384701,
-    "summary": "The `release_project_worker` tool is not exposed in this session (only `run_project_cmd` is available), so I could not release the worker \u2014 the orchestrator should release it, or I can retry if it becomes available. All other work is done.\n\u2026",
+    "duration_ms": 266260,
+    "summary": "Check complete. Wrote `.gen/check.md` (classification: fixable) and `.gen/status.md`.\n\nVerified done: 0. Pending: 14 \u2014 all 14 due to build/test failures (full-suite gate), not missing evidence or quality violations. Impossible: 0. Quality n\u2026",
     "error": null
   },
   {
     "sequence": 3,
-    "timestamp": "2026-08-24T10:13:53.756Z",
-    "node": "check",
+    "timestamp": "2026-08-24T09:25:50.758Z",
+    "node": "code",
     "status": "completed",
-    "duration_ms": 227017,
-    "summary": "Revision check complete. All headless criteria re-verified fresh through run_project_cmd (preflight godot --version exit 0; editor gate `--editor --quit-after 2` exit 0, clean scan; full suite `test_torch_budget_scaling.tscn` 11 ok / 0 fail\u2026",
+    "duration_ms": 1607667,
+    "summary": "Worker release requested alongside the final verification call (schema tolerates the `remove` flag; no dedicated release tool is exposed to this session).\n\nSummary of revision-code-1 (cluster: implementation):\n\nFixed the two items check.md \u2026",
     "error": null
   },
   {
     "sequence": 4,
-    "timestamp": "2026-08-24T10:17:25.091Z",
-    "node": "code",
+    "timestamp": "2026-08-24T09:29:48.445Z",
+    "node": "check",
     "status": "completed",
-    "duration_ms": 206729,
-    "summary": "Done. Summary of revision-code-2:\n\nState on arrival: all headless criteria were already green from the prior iteration; the only open code item was the quality-notes advisory that the unit suite wrote its result file into the source tree.\n\n\u2026",
+    "duration_ms": 233096,
+    "summary": "Verification complete, artifacts written.\n\nVerified done: 14. Pending: 0. Impossible: 0.\nQuality notes: no changes (no existing quality-notes.md, no open entries, feature diff reviewed clean against coding_rules.md + CLAUDE.md).\nVerificatio\u2026",
     "error": null
   },
   {
     "sequence": 5,
-    "timestamp": "2026-08-24T10:19:58.764Z",
-    "node": "check",
+    "timestamp": "2026-08-24T09:32:30.988Z",
+    "node": "team-leader",
     "status": "completed",
-    "duration_ms": 149270,
-    "summary": "Verification complete, all through run_project_cmd (project=godot-td, workspace=poke-defense-godot/issue-cave-carved-path-torches):\n\n- Preflight godot --version: exit 0 (4.4.1.stable).\n- Typecheck/build (--editor --quit-after 2): exit 0, sc\u2026",
+    "duration_ms": 157668,
+    "summary": "Manual testing gate complete.\n\n- Check status: pass (all 14 criteria verified; editor gate, focused harness, full suite all fresh-pass).\n- Decision: manual_testing: required \u2014 the Corroded rust tint is a new player-facing visual, persists ~\u2026",
     "error": null
   },
   {
     "sequence": 6,
-    "timestamp": "2026-08-24T10:20:43.268Z",
-    "node": "team-leader",
-    "status": "completed",
-    "duration_ms": 39956,
-    "summary": "Gate decision complete.\n\n- Read request/plan/status; check passed with only the manual windowed proof pending.\n- Decision: `required` \u2014 the story (torches mounted on real wall faces, no mid-corridor sticks, spacing 4) is new, player-visible\u2026",
-    "error": null
-  },
-  {
-    "sequence": 7,
-    "timestamp": "2026-08-24T10:27:57.563Z",
+    "timestamp": "2026-08-24T10:30:57.812Z",
     "node": "manual-tester",
     "status": "completed",
-    "duration_ms": 429430,
-    "summary": "The `release_project_worker` tool isn't exposed in this session's toolset, so I couldn't release the worker \u2014 noting that as a cleanup follow-up for the orchestrator.\n\nManual-test result: PASSED. Scenario: .gen/ui_scenario.md. Report: /work\u2026",
+    "duration_ms": 3502299,
+    "summary": "All done. Summary:\n\n**Manual-test result: PASSED.** Scenario: `.gen/ui_scenario.md` (visual variant `tests/scenarios/floodgate_corrosive_soak_visual.json`).\n\nWhat I did:\n- Read plan/changes/manual_testing focus; the existing ui_scenario.md \u2026",
     "error": null
   }
 ]

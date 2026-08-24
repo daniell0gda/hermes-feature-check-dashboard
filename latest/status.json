@@ -1,25 +1,36 @@
 {
-  "run_id": "req-124-cave-carved-path-torches-r5",
-  "feature": "cave-carved-path-torches",
-  "status": "completed",
-  "started_at": "2026-08-24T09:59:49.875Z",
-  "ended_at": "2026-08-24T10:28:02.720Z",
+  "run_id": "corrosive-soak-90-r3",
+  "feature": "corrosive-soak-perk",
+  "status": "running",
+  "started_at": "2026-08-24T08:47:51.990Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-124-cave-carved-path-torches-r5/",
-  "heartbeat_at": "2026-08-24T10:28:02.720Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/corrosive-soak-90-r3/",
+  "heartbeat_at": "2026-08-24T10:30:57.812Z",
   "last_node": "manual-tester",
   "active_node": null,
-  "last_event_at": "2026-08-24T10:27:57.563Z",
-  "process_id": 384153,
+  "last_event_at": "2026-08-24T10:30:57.812Z",
+  "process_id": 338460,
   "host": "f1a4230ec90b",
-  "phase": "manual-tester",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T10:28:02.720165+00:00",
-    "last_success_at": "2026-08-24T10:28:02.718137+00:00",
+    "last_attempt_at": "2026-08-24T10:30:57.813224+00:00",
+    "last_success_at": "2026-08-24T09:32:40.057350+00:00",
     "last_error": null
   },
   "metrics": {
     "invocations": [
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 84594,
+        "output_tokens": 5749
+      },
       {
         "task_id": "check",
         "cluster_id": null,
@@ -28,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 72964,
-        "output_tokens": 3146
+        "input_tokens": 115325,
+        "output_tokens": 5874
       },
       {
         "task_id": "revision-code-1",
@@ -39,8 +50,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 80751,
-        "output_tokens": 2938
+        "input_tokens": 158556,
+        "output_tokens": 19895
       },
       {
         "task_id": "revision-check-1",
@@ -50,30 +61,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 90091,
-        "output_tokens": 3924
-      },
-      {
-        "task_id": "revision-code-2",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 88101,
-        "output_tokens": 2978
-      },
-      {
-        "task_id": "revision-check-2",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 87557,
-        "output_tokens": 3779
+        "input_tokens": 98104,
+        "output_tokens": 5765
       },
       {
         "task_id": "manual-testing-gate",
@@ -83,19 +72,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 24931,
-        "output_tokens": 427
-      },
-      {
-        "task_id": "manual-tester",
-        "cluster_id": null,
-        "role": "manual-tester",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 77420,
-        "output_tokens": 6993
+        "input_tokens": 27655,
+        "output_tokens": 476
       }
     ]
   }
