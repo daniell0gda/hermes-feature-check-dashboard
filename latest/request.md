@@ -1,42 +1,34 @@
-# Request
+# Request: traps_frostbite_fangs (r3 — camera/visual proof)
 
-- request_id: req-124-cave-carved-path-torches-r5
-- issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
-- project runner key: `godot-td`
-- workspace: `poke-defense-godot/issue-cave-carved-path-torches`
-- branch: `issue/cave-carved-path-torches` @ `f161e1d` (extend; do not reset)
+- request_id: req-83-traps-frostbite-fangs-r3
+project: godot-td
+workspace: poke-defense-godot/issue-traps-frostbite-fangs
+issue: https://github.com/daniell0gda/poke-defense-godot/issues/83
+- branch: issue/traps-frostbite-fangs
+- intent: continuation — keep perk code; fix unreadable frost shots
 
-## Problem (Daniel, 2026-08-24)
+## History (do not treat as evidence)
 
-Coverage/lighting works, but some torches (he thinks maybe every 2nd) sit **in the corridor, not on the wall**. Screenshots: mid-path sticks floating in front of the wall while neighbors are wall-mounted.
+- req-83 claimed pass. Human review FAILED: wide underground shot, enemy is a speck; zoom PNG is empty floor.
+- req-83-r2 plan/code workers returned empty. Stale `check.md` still said `classification: pass`, so the leader skipped revision and reused yesterday's shots. Archived to `.gen-r2-stale-pass/`. Those files are not current evidence.
 
-Also set **`TORCH_SPACING = 4`**.
+## Feature (already implemented — do not revert)
 
-## Likely cause
+Unique `traps_frostbite_fangs` L1-3. Trap hits call `EffectsManager.apply_frozen`. Magnitude/duration scale. Existing frost VFX.
 
-`TorchPlacer._best_wall_torch_for` (coverage repair) returns
-`wall_offset = Vector3(WALL_OFFSET * 0.5, 0, WALL_OFFSET * 0.5)` — diagonal into the walkway, not a real wall face.
-Spacing-pass torches use a single cardinal wall offset; repair-pass torches do not.
+## Required this run
 
-## Required
-
-- Every placed torch must mount on a **real adjacent solid wall** (cardinal wall offset from `_wall_cells`). No mid-corridor / in-front-of-wall sticks.
-- `TORCH_SPACING = 4` (unique corridor-cell stride, not raw wall-face list).
-- Keep live-grid torch budget (no hardcoded MAX_TORCHES). Keep curves lit via coverage repair, but repair must also pick a real wall mount.
-- **Do not change torch light intensity** (`Torch.gd` energy/radius/color/omni unchanged).
-
-## Done when
-
-- No torch stands in the walkway; all hug a wall
-- Spacing is 4
-- Curves/side-to-side carved path still covered
-- Windowed underground screenshots show wall-mounted torches (not floating mid-path)
-- `ui_feels_broken: no` on those shots
+1. Keep the perk implementation.
+2. Change `tests/scenarios/traps_frostbite_fangs_progression.json` so the windowed shot is close and top-down on the trap + live enemy. `_update_camera_for_layer` resets to the default far camera — after that call, set `Camera3D.position` close above the trap (small height, tiny z offset) and `look_at` the trap. Enemy body must fill enough of the frame to see frost vs green.
+3. Keep explicit `screenshot` + 30fps `record_frames` GIF. Copy fresh PNGs/GIF to `.gen/screenshots/`.
+4. Checker must write a NEW `.gen/check.md`. If shots are still a distant speck or a crop of empty floor: `classification: fixable`. Headless tags alone do not pass the visual criterion.
+5. `ui_feels_broken: yes` fails the manual test.
+6. Runner only: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-traps-frostbite-fangs`. Never `project=poke-defense-godot`.
 
 ## Manual testing
 
-required. Windowed, no `--headless`. Underground, side-to-side carve with a curve, camera at `camera_target`.
+`manual_testing: required`. Windowed only. No `--headless`.
 
-## Runner
+## Lifecycle
 
-`godot-td` / `poke-defense-godot/issue-cave-carved-path-torches`. Write a real non-empty `.gen/plan.md`.
+Do not commit, push, merge, or close.
