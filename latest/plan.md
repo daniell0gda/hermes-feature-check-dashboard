@@ -1,42 +1,43 @@
-# Acceptance Plan: Warlord's Doctrine progression perk
+# Acceptance Plan: pointer-cursor-on-clickable-surfaces
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/warlords_doctrine.json"]`
-- Full test: `["bash", "-lc", "for s in warlords_doctrine enemy_armor_ballista enemy_armor_trap enemy_armor_bar_visual; do godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/$s.json || exit 1; done"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/ui_pointer_cursor.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_placement.json"]`
 - Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
-manual_testing: required — player-visible perk (windowed screenshot checkpoints; no `--headless` for the manual pass). See `.gen/ui_scenario.md`.
+Windowed evidence run (manual/screenshot criterion): same command as Focused test without `--headless`.
 
 ## Clusters
 
-1. perk-definition-and-damage-chain — files: `scripts/progression/global.json`, `autoload/ProgressionManager.gd`, `scripts/progression/handlers/global/TowerDamage.gd`, `tests/scenarios/warlords_doctrine.json` — depends on: none
-- The perk catalog defines `warlords_doctrine` as a Common global progression with exactly 3 selectable levels whose values are L1 +5% damage / 8% armor, L2 +9% / 12%, L3 +14% / 15% of max HP.
-- Applying `warlords_doctrine` at level L raises the game's global tower-damage multiplier to exactly 1 plus that level's damage ratio (1.05 / 1.09 / 1.14), observable through the progression state the tower damage chain reads.
-- Owning both `tower_dmg` and `warlords_doctrine` produces a combined tower-damage multiplier equal to the sum of both perks' ratios (additive stacking), never one overriding the other.
-- Giving up the perk (`reset_for_new_game`) returns the tower-damage multiplier to exactly 1.0 and the doctrine armor bonus to zero, so enemies spawned afterwards are armored only by their innate config armor.
-2. spawn-bonus-armor-and-health-bar — files: `scripts/game/actors/Enemy.gd`, `scripts/ui/EnemyHealthBar.gd`, `tests/scenarios/warlords_doctrine.json` — depends on: 1
-- While `warlords_doctrine` is active, an enemy type whose config names no armor spawns with `armor > 0` and `max_armor > 0` equal to the active level's percentage of its max HP; without the perk the same enemy spawns with zero armor.
-- For an enemy with innate config armor, the perk's bonus armor is added on top of the innate value (spawned max_armor equals innate armor plus ratio × max HP), not a replacement.
-- A scripted armor hit against a doctrine-armored enemy strips the granted armor first through the existing armor-soak behavior, and the damage bonus lands in HP according to the normal armor-damage rules.
-- The existing armor bar row becomes visible on a previously-unarmored enemy once the perk grants it armor, showing and animating the granted armor like any innate armor (windowed visual check).
-- Debug-build `[WARLORDS-DOCTRINE]` log lines appear per doctrine-granted spawn bonus (level, granted armor, enemy id) and per doctrine application (level, bonus, resulting total multiplier), each filterable by that marker.
-3. harness-scenarios — files: `tests/scenarios/warlords_doctrine.json`, `tests/scenarios/enemy_armor_ballista.json` — depends on: 1, 2
-- A `game-test` scenario activates `warlords_doctrine`, spawns a normally-unarmored enemy, and asserts `enemy.armor > 0` (and matching `max_armor`) at spawn; headless result is `pass`.
-- The same scenario asserts the tower damage bonus end-to-end through the harness at one perk level (a scripted hit applies 1.05x/1.09x/1.14x the base damage).
-- The pre-existing `enemy_armor_ballista` scenario still passes unchanged after the feature lands (armor arithmetic regression).
+1. project-wide-pointer-cursor — files: `scripts/ui/PointerCursor.gd`, `project.godot`, `scripts/testing/HarnessValues.gd`, `scripts/testing/HarnessActions.gd`, `tests/scenarios/ui_pointer_cursor.json` — depends on: none
+- Hovering any Button in the running game shows the pointing-hand (pointer) cursor in both windowed and fullscreen modes.
+- Hovering any other clickable UI surface (e.g. clickable panels/cards/toggle controls used as buttons) shows the pointing-hand cursor.
+- Hovering non-clickable UI surfaces (labels, panels, background) keeps the default arrow cursor.
+- A windowed harness screenshot captures the hover state on at least one button showing the pointing-hand cursor, saved under `.gen/harness/ui_pointer_cursor/shots/`.
+- A focused AgentHarness scenario (`ui_pointer_cursor`) passes headless/windowed with all expectations met, proving the cursor-shape assignment programmatically (e.g. by asserting the effective `mouse_default_cursor_shape` of representative clickable and non-clickable controls through the harness).
+- Existing UI behaviour is unaffected: `smoke_placement` still passes after the change.
 
 ## Criteria
 
-- The perk catalog defines `warlords_doctrine` as a Common global progression with exactly 3 selectable levels whose values are L1 +5% damage / 8% armor, L2 +9% / 12%, L3 +14% / 15% of max HP.
-- Applying `warlords_doctrine` at level L raises the game's global tower-damage multiplier to exactly 1 plus that level's damage ratio (1.05 / 1.09 / 1.14), observable through the progression state the tower damage chain reads.
-- Owning both `tower_dmg` and `warlords_doctrine` produces a combined tower-damage multiplier equal to the sum of both perks' ratios (additive stacking), never one overriding the other.
-- Giving up the perk (`reset_for_new_game`) returns the tower-damage multiplier to exactly 1.0 and the doctrine armor bonus to zero, so enemies spawned afterwards are armored only by their innate config armor.
-- While `warlords_doctrine` is active, an enemy type whose config names no armor spawns with `armor > 0` and `max_armor > 0` equal to the active level's percentage of its max HP; without the perk the same enemy spawns with zero armor.
-- For an enemy with innate config armor, the perk's bonus armor is added on top of the innate value (spawned max_armor equals innate armor plus ratio × max HP), not a replacement.
-- A scripted armor hit against a doctrine-armored enemy strips the granted armor first through the existing armor-soak behavior, and the damage bonus lands in HP according to the normal armor-damage rules.
-- The existing armor bar row becomes visible on a previously-unarmored enemy once the perk grants it armor, showing and animating the granted armor like any innate armor (windowed visual check).
-- Debug-build `[WARLORDS-DOCTRINE]` log lines appear per doctrine-granted spawn bonus (level, granted armor, enemy id) and per doctrine application (level, bonus, resulting total multiplier), each filterable by that marker.
-- A `game-test` scenario activates `warlords_doctrine`, spawns a normally-unarmored enemy, and asserts `enemy.armor > 0` (and matching `max_armor`) at spawn; headless result is `pass`.
-- The same scenario asserts the tower damage bonus end-to-end through the harness at one perk level (a scripted hit applies 1.05x/1.09x/1.14x the base damage).
-- The pre-existing `enemy_armor_ballista` scenario still passes unchanged after the feature lands (armor arithmetic regression).
+- Hovering any Button in the running game shows the pointing-hand (pointer) cursor in both windowed and fullscreen modes.
+- Hovering any other clickable UI surface (e.g. clickable panels/cards/toggle controls used as buttons) shows the pointing-hand cursor.
+- Hovering non-clickable UI surfaces (labels, panels, background) keeps the default arrow cursor.
+- A windowed harness screenshot captures the hover state on at least one button showing the pointing-hand cursor, saved under `.gen/harness/ui_pointer_cursor/shots/`.
+- A focused AgentHarness scenario (`ui_pointer_cursor`) passes headless/windowed with all expectations met, proving the cursor-shape assignment programmatically (e.g. by asserting the effective `mouse_default_cursor_shape` of representative clickable and non-clickable controls through the harness).
+- Existing UI behaviour is unaffected: `smoke_placement` still passes after the change.
+
+## Manual testing
+
+manual_testing: required
+
+Manual pass: launch the game windowed, hover several buttons across menus/HUD/modals and confirm the pointing-hand appears; hover labels/panels and confirm the arrow stays; repeat once in fullscreen; confirm overall ui_feels_broken sanity check (no layout or interaction regressions).
+
+Note: Godot screenshots do not render the OS cursor; the evidence pair is the programmatic `cursor_shape == CURSOR_POINTING_HAND` assertion plus the hover screenshot.
+
+## Status of verification in this planning run (fresh after rebase onto 9d54964)
+
+- Editor import (`--editor --quit-after 300`): exit 0, PointerCursor.gd registered as global class.
+- Focused `ui_pointer_cursor` headless: `[Harness] status=pass exit=0`, all 8 expectations pass (4 clickables = 2, 2 non-clickables = 0).
+- Windowed `ui_pointer_cursor`: status=pass; screenshot captured at `.gen/harness/ui_pointer_cursor/shots/hover_pointer_on_speed_btn.png` (1920x1080).
+- Regression `smoke_placement` headless: `[Harness] status=pass exit=0`.

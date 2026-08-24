@@ -16,5 +16,14 @@
     "duration_ms": 374244,
     "summary": "Done. Summary:\n\nImplementation (cluster: implementation, all 6 criteria Done)\n- `scripts/ui/PointerCursor.gd` (new autoload, registered in `project.godot`): assigns CURSOR_POINTING_HAND to every BaseButton via both a `node_added` hook and a\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-24T08:22:19.600Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 229085,
+    "summary": "Check complete for issue-pointer-cursor-on-clickable-surfaces.\n\nVerified done: 6. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: created (one advisorial entry\u2026",
+    "error": null
   }
 ]

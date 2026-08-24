@@ -1,20 +1,47 @@
 {
-  "run_id": "warlords-doctrine-r2",
-  "feature": "Warlord's Doctrine perk",
+  "run_id": "131-pointer-cursor-r2",
+  "feature": "pointer-cursor-on-clickable-surfaces",
   "status": "running",
-  "started_at": "2026-08-24T08:21:41.244Z",
+  "started_at": "2026-08-24T08:06:42.453Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r2/",
-  "heartbeat_at": "2026-08-24T08:21:41.244Z",
-  "last_node": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/131-pointer-cursor-r2/",
+  "heartbeat_at": "2026-08-24T08:22:19.600Z",
+  "last_node": "check",
   "active_node": null,
-  "last_event_at": null,
-  "process_id": 327257,
+  "last_event_at": "2026-08-24T08:22:19.600Z",
+  "process_id": 320413,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T08:21:41.244607+00:00"
+    "last_attempt_at": "2026-08-24T08:22:19.600628+00:00",
+    "last_success_at": "2026-08-24T08:18:35.072354+00:00",
+    "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 72169,
+        "output_tokens": 3054
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 64175,
+        "output_tokens": 5456
+      }
+    ]
+  }
 }
