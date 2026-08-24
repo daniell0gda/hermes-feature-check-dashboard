@@ -1,21 +1,21 @@
 {
   "run_id": "req-85-tooltip-polish-r2",
   "feature": "tower-description-tooltip-polish",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-24T10:18:01.291Z",
-  "ended_at": null,
+  "ended_at": "2026-08-24T13:00:20.187Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-tooltip-polish-r2/",
-  "heartbeat_at": "2026-08-24T13:00:15.641Z",
+  "heartbeat_at": "2026-08-24T13:00:20.187Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-24T13:00:15.641Z",
   "process_id": 391652,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T13:00:15.641557+00:00",
-    "last_success_at": "2026-08-24T12:36:35.159225+00:00",
+    "last_attempt_at": "2026-08-24T13:00:20.187485+00:00",
+    "last_success_at": "2026-08-24T13:00:20.185337+00:00",
     "last_error": null
   },
   "metrics": {
@@ -85,6 +85,17 @@
         "cost_status": "unknown",
         "input_tokens": 41591,
         "output_tokens": 2541
+      },
+      {
+        "task_id": "revision-check-2",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 105731,
+        "output_tokens": 10920
       }
     ]
   }
