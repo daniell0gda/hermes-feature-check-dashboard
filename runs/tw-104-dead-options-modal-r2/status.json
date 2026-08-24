@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/tw-104-dead-options-modal-r2/",
-  "heartbeat_at": "2026-08-24T09:45:11.581Z",
-  "last_node": null,
-  "active_node": "code",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-24T09:48:56.998Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-24T09:48:56.998Z",
   "process_id": 377473,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T09:45:16.596430+00:00",
-    "last_success_at": "2026-08-24T09:45:16.070669+00:00",
+    "last_attempt_at": "2026-08-24T09:48:56.999341+00:00",
+    "last_success_at": "2026-08-24T09:45:20.989142+00:00",
     "last_error": null
   },
   "metrics": {}
