@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-tooltip-center-r3/",
-  "heartbeat_at": "2026-08-24T15:12:56.657Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-24T15:16:35.865Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-24T15:16:35.865Z",
   "process_id": 456616,
   "host": "f1a4230ec90b",
-  "phase": "plan",
+  "phase": "intake",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T15:14:29.874479+00:00",
-    "last_success_at": "2026-08-24T15:13:01.291680+00:00",
+    "last_attempt_at": "2026-08-24T15:16:35.866555+00:00",
+    "last_success_at": "2026-08-24T15:14:34.417067+00:00",
     "last_error": null
   },
   "metrics": {}
