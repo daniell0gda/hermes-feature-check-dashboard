@@ -1,21 +1,21 @@
 {
   "run_id": "req-83-traps-frostbite-fangs-r3",
   "feature": "traps-frostbite-fangs",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-24T07:16:57.944Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-24T10:24:16.955Z",
+  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'check', '-z', 'You are the check worker in a team-work run.\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-traps-frostbite-fangs.\\nThe durable evidence \u2026",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r3/",
-  "heartbeat_at": "2026-08-24T10:24:12.028Z",
+  "heartbeat_at": "2026-08-24T10:24:16.955Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-24T10:24:12.028Z",
   "process_id": 292510,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T10:24:12.030604+00:00",
-    "last_success_at": "2026-08-24T08:59:50.728361+00:00",
+    "last_attempt_at": "2026-08-24T10:24:16.955085+00:00",
+    "last_success_at": "2026-08-24T10:24:16.953154+00:00",
     "last_error": null
   },
   "metrics": {
