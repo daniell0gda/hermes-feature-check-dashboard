@@ -1,55 +1,46 @@
-# Request: Continue issue #90 — Progression: Corrosive Soak perk (Floodgate)
+# Request: issue-dead-options-modal-scene (issue #104) — r2
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/90
-Workspace: /workspace/git-workspaces/poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat
-Branch: issue/progression-corrosive-soak-perk-floodgat (rebased onto origin/master @ 9976db7; existing uncommitted perk source kept)
-Runner: project `godot-td`, workspace `poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat`. Do NOT invent other runner/workspace names.
-
-Request id: corrosive-soak-90-r3
-
-## Continuation (do not start from scratch)
-
-r1 (`corrosive-soak-90-r1`) planned, then the code worker died (~2026-08-23T18:32Z) before check.
-r2 (`corrosive-soak-90-r2`) re-planned (07:18Z) then the code worker failed (~07:38Z) with `missing coder-reports/ or changes.md` — no check. Historical r1/r2 artifacts are context only.
-
-Already on the worktree (keep and finish; do not rewrite from scratch):
-- Perk `floodgate_corrosive_soak` Unique 3 levels 25/45/70% in `scripts/progression/floodgate_tower.json`
-- `FloodgateTowerProgressionManager.gd` apply/reset/config + `ProgressionManager.get_floodgate_corrosive_soak_config()`
-- Corroded status on Enemy / EnemyStatusController; rust tint via `WaterSubmersionSystem.set_enemy_corroded`
-- Amplification in `EnemyHealthController._apply_corrosive_soak_if_needed` excluding `tower_type_id == floodgate`
-- Floodgate discharge marks via `_mark_corroded_if_needed`
-- Harness helpers + `tests/scenarios/floodgate_corrosive_soak.json`
-
-Preserve master behaviors already on this rebased tree (HUD textures merge and later). Do not revert unrelated files.
-
-## r1 harness failure (must fix)
-
-`.gen/harness/floodgate_corrosive_soak/result.json` status=timeout:
-- Perk apply and Corroded mark worked (`corroded_count==1`, `amplification==0.25`, `corroded_marked:true`)
-- Then `armor_hit` (balista, armor_damage 40) followed by `enemies.Alien.armor == 950.0` saw **actual 0.0**
-- Likely observation of an unarmored spawn instead of the staged Alien (index-0 vs max-armor-by-id). `HarnessValues._enemy_report` now takes max armor per id — assert via `enemies.Alien.armor` (report) not `enemy.armor` (index 0). Stage armor immediately before the hit and wait 2–3 poll ticks after.
-- Expected L1 math: staged 1000 − 40×1.25 = 950. Floodgate follow-up must match unowned control. HP unchanged.
-
-Treat old harness results as stale. Re-run the focused harness fresh after any harness/scenario fix. Write `coder-reports/<cluster-id>.md` and `.gen/changes.md` this run so the leader can proceed to check.
+project: godot-td
+workspace: poke-defense-godot/issue-dead-options-modal-scene
+issue: https://github.com/daniell0gda/poke-defense-godot/issues/104
 
 ## Feature
+Delete unused Options clones so only the live `OptionsScreen` remains.
 
-New Unique progression perk `corrosive_soak` for Floodgate Tower only, 3 levels:
-- Enemies hit by Floodgate's discharge gain a "Corroded" status.
-- While Corroded, armor-damage taken from **all other towers'** hits is increased by +25% / +45% / +70% by level.
-- Floodgate's own hits are unaffected by its own Corroded status (setup effect, not self-buff).
-- Implemented in `FloodgateTowerProgressionManager.gd` alongside `floodgate_saltwater_purge`.
-- Visual: extend wet/soak shader (`WaterSubmersionSystem`) with a distinct rust tint — no new VFX class.
+Dead files (delete all four + `.uid` sidecars):
+- `scenes/ui/Options.tscn` + `scripts/ui/Options.gd` (`class_name OptionsModal`)
+- `scenes/ui/OptionsMenu.tscn` + `scripts/ui/OptionsMenu.gd` (`class_name OptionsMenu`)
 
-## Acceptance criteria
-1. Perk defined with 3 levels and correct amplification values (25/45/70%), Floodgate-only, type Unique.
-2. Corroded status applied on Floodgate discharge hits; amplifies armor-dmg from all towers EXCEPT Floodgate itself.
-3. Editor gate passes (`godot --headless --path . --editor --quit-after 300`).
-4. Focused headless gameplay harness proves: enemy hit by Floodgate → subsequent armor-dmg hit from another tower is amplified per level; Floodgate-own follow-up is not amplified.
-5. Manual testing: required (rust tint is player-facing). Windowed screenshots/GIF via runner, never --headless for manual evidence. Include `ui_feels_broken: yes|no`.
+Live surface (keep): `scenes/ui/OptionsScreen.tscn` / `scripts/ui/OptionsScreen.gd`.
+- Pause menu: `scripts/ui/UI.gd` preloads `OptionsScreen.tscn`
+- Main menu: `scripts/MainMenu.gd` `OPTIONS_SCREEN` loads the same scene as a child modal
 
-## Notes
-- Use exact scene argument before user args in harness commands.
-- Inspect raw Godot stdout for Parse Error / Failed loading resource, not just harness status=pass.
-- Do not commit/push/close.
-- Do not revert unrelated master files. Ignore `.glb` LFS noise; do not commit models.
+## Acceptance criteria (issue body + Daniel comments 2026-08-20 / 2026-08-21)
+1. Repo-wide search finds no remaining reference to `Options.tscn`, `OptionsModal`, `OptionsMenu.tscn`, or class `OptionsMenu` (own deleted files do not count).
+2. Both dead pairs are gone from the tree, including orphaned `.uid` sidecars.
+3. Editor/import gate passes: `godot --headless --path . --editor --quit-after 300` exit 0, no parse/missing-resource errors.
+4. Pause-menu Options still opens live `OptionsScreen` (existing scenario `tests/scenarios/issue_dead_options_live_pause_menu.json`).
+5. Main-menu Options still opens live `OptionsScreen` (existing script `tests/ui/issue_dead_options_main_menu.gd`).
+6. Focused gameplay still loads: `smoke_placement` `status: pass`, exit 0.
+
+No new visual required — deletion only. Windowed sanity of both live Options paths is enough if the planner marks manual testing required.
+
+## Hard non-goals (r1 burned a full revision budget on these)
+- Do **not** treat `smoke_tower_roster` as a hard gate. It fails identically on pristine master (`map_10` egg dies before wave 3). Advisory only. See `.gen/quality-notes.md` and `.gen-blocked-tw-104-dead-options-modal-r1-attempt1/`.
+- Do **not** edit `tests/scenarios/smoke_tower_roster.json`.
+- Do **not** touch `models/**` (LFS). This host has no `git-lfs`; model dirty files are noise.
+- Do **not** change harness, `project.godot`, or unrelated gameplay to “make the full suite green”.
+- Ignore stale r1 `.gen/check.md` / `.gen/revisions.md` / `.gen/clusters/1-delete-dead-options-modal.md` — they wrongly required `smoke_tower_roster`.
+
+## Runner / workspace
+- Runner key must be the literal line `project: godot-td` (not the folder name poke-defense-godot).
+- Workspace: poke-defense-godot/issue-dead-options-modal-scene
+- Branch: `issue/dead-options-modal-scene`
+- Use `run_project_cmd` only; explicit scene arg before user args for gameplay harnesses.
+
+## Historical context (unverified as current evidence)
+r1 (`tw-104-dead-options-modal-r1`) deleted the `Options` pair and proved both live Options paths. Checker still classified `fixable` because the plan named `smoke_tower_roster` as the full test command. That run is archived at `.gen-blocked-tw-104-dead-options-modal-r1-attempt1/`. Treat those artifacts as history. r1 also missed Daniel’s extra scope: delete the `OptionsMenu` pair too.
+
+Working tree already has both dead pairs deleted and the two live-path tests. Keep that. Do not re-edit `smoke_tower_roster.json`. Fresh code verification + check required.
+
+request-id: tw-104-dead-options-modal-r2

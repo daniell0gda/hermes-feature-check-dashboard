@@ -1,80 +1,20 @@
 {
-  "run_id": "corrosive-soak-90-r3",
-  "feature": "corrosive-soak-perk",
+  "run_id": "tw-104-dead-options-modal-r2",
+  "feature": "dead-options-modal-scene",
   "status": "running",
-  "started_at": "2026-08-24T08:47:51.990Z",
+  "started_at": "2026-08-24T09:45:11.581Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/corrosive-soak-90-r3/",
-  "heartbeat_at": "2026-08-24T09:32:30.988Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-24T09:32:30.988Z",
-  "process_id": 338460,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/tw-104-dead-options-modal-r2/",
+  "heartbeat_at": "2026-08-24T09:45:11.581Z",
+  "last_node": null,
+  "active_node": null,
+  "last_event_at": null,
+  "process_id": 377473,
   "host": "f1a4230ec90b",
-  "phase": "manual-tester",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T09:32:35.513531+00:00",
-    "last_success_at": "2026-08-24T09:32:35.512298+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T09:45:11.581498+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 84594,
-        "output_tokens": 5749
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 115325,
-        "output_tokens": 5874
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 158556,
-        "output_tokens": 19895
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 98104,
-        "output_tokens": 5765
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 27655,
-        "output_tokens": 476
-      }
-    ]
-  }
+  "metrics": {}
 }

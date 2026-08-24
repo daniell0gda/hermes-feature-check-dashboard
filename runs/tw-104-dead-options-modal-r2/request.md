@@ -1,5 +1,9 @@
 # Request: issue-dead-options-modal-scene (issue #104) — r2
 
+project: godot-td
+workspace: poke-defense-godot/issue-dead-options-modal-scene
+issue: https://github.com/daniell0gda/poke-defense-godot/issues/104
+
 ## Feature
 Delete unused Options clones so only the live `OptionsScreen` remains.
 
@@ -26,16 +30,17 @@ No new visual required — deletion only. Windowed sanity of both live Options p
 - Do **not** edit `tests/scenarios/smoke_tower_roster.json`.
 - Do **not** touch `models/**` (LFS). This host has no `git-lfs`; model dirty files are noise.
 - Do **not** change harness, `project.godot`, or unrelated gameplay to “make the full suite green”.
+- Ignore stale r1 `.gen/check.md` / `.gen/revisions.md` / `.gen/clusters/1-delete-dead-options-modal.md` — they wrongly required `smoke_tower_roster`.
 
 ## Runner / workspace
-- Project folder: poke-defense-godot. Runner key: **godot-td**
-- Workspace: **poke-defense-godot/issue-dead-options-modal-scene**
-- Branch: `issue/dead-options-modal-scene`, rebased onto `origin/master` (`9d54964`) 2026-08-24
+- Runner key must be the literal line `project: godot-td` (not the folder name poke-defense-godot).
+- Workspace: poke-defense-godot/issue-dead-options-modal-scene
+- Branch: `issue/dead-options-modal-scene`
 - Use `run_project_cmd` only; explicit scene arg before user args for gameplay harnesses.
 
 ## Historical context (unverified as current evidence)
 r1 (`tw-104-dead-options-modal-r1`) deleted the `Options` pair and proved both live Options paths. Checker still classified `fixable` because the plan named `smoke_tower_roster` as the full test command. That run is archived at `.gen-blocked-tw-104-dead-options-modal-r1-attempt1/`. Treat those artifacts as history. r1 also missed Daniel’s extra scope: delete the `OptionsMenu` pair too.
 
-Working tree already has the `Options` pair deleted and the two live-path tests. Keep that. Add the `OptionsMenu` deletion. Fresh plan/code/check required.
+Working tree already has both dead pairs deleted and the two live-path tests. Keep that. Do not re-edit `smoke_tower_roster.json`. Fresh code verification + check required.
 
 request-id: tw-104-dead-options-modal-r2
