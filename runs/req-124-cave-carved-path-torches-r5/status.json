@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-124-cave-carved-path-torches-r5/",
-  "heartbeat_at": "2026-08-24T10:19:58.764Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-24T10:19:58.764Z",
+  "heartbeat_at": "2026-08-24T10:20:43.268Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-24T10:20:43.268Z",
   "process_id": 384153,
   "host": "f1a4230ec90b",
-  "phase": "team-leader",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T10:20:03.311788+00:00",
-    "last_success_at": "2026-08-24T10:20:03.310474+00:00",
+    "last_attempt_at": "2026-08-24T10:20:43.268325+00:00",
+    "last_success_at": "2026-08-24T10:20:07.890601+00:00",
     "last_error": null
   },
   "metrics": {
