@@ -1,20 +1,20 @@
 {
-  "run_id": "req-124-cave-carved-path-torches-r6",
-  "feature": "cave-carved-path-torches",
+  "run_id": "issue116-game-ready-blocks-map-load-r6",
+  "feature": "game-ready-blocks-map-load",
   "status": "running",
-  "started_at": "2026-08-24T21:13:04.319Z",
+  "started_at": "2026-08-24T21:13:07.053Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-124-cave-carved-path-torches-r6/",
-  "heartbeat_at": "2026-08-24T21:13:04.319Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r6/",
+  "heartbeat_at": "2026-08-24T21:13:07.053Z",
   "last_node": null,
   "active_node": null,
   "last_event_at": null,
-  "process_id": 494928,
+  "process_id": 495003,
   "host": "f1a4230ec90b",
   "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T21:13:04.319797+00:00"
+    "last_attempt_at": "2026-08-24T21:13:07.053911+00:00"
   },
   "metrics": {}
 }
