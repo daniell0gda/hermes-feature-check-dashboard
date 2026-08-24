@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation
+# Coder report: implementation
 
 ## Changed files
 - none this iteration (re-verification pass; the uncommitted feature diff from
@@ -27,4 +27,3 @@
 - No source changes were needed or made; fresh post-rebase verification is green.
 - Pre-existing unrelated warnings/errors observed on every run (invalid UID ext_resources in HudTheme/UI.tscn, missing GLBs incl. `Orc Enemy.glb`, exit-time RID leak noise under Dummy renderer) — present on master paths, not introduced by this feature.
 - Manual-tester still owns cluster 3: run `exposed_plating_vfx` windowed (`--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`) for shots + real 30fps record_frames GIF into `.gen/harness/exposed_plating_vfx/{shots,record}/`, then record `ui_feels_broken: yes|no`.
-\n

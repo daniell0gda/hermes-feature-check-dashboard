@@ -1,59 +1,53 @@
-# Request
+# Request: Exposed Plating perk (issue #89) — continuation r7
 
-- request_id: req-85-tooltip-polish-r2
-- issue: https://github.com/daniell0gda/poke-defense-godot/issues/85
-- project runner key: `godot-td`
-- git workspace: `poke-defense-godot/issue-update-tower-descriptions-with-special-c`
-- branch: `issue/update-tower-descriptions-with-special-c`
-- worktree: `/workspace/git-workspaces/poke-defense-godot/issue-update-tower-descriptions-with-special-c`
-- base: already rebased onto `origin/master` (42e05d6) before this run; do not reset the branch
-- prior pass: `.gen-r1-pass-20260823/` — description **text** is done; Daniel rejected the **look**
+- **Repo:** daniell0gda/poke-defense-godot
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/89
+project: godot-td
+workspace: poke-defense-godot/issue-exposed-plating
+- **Workspace:** poke-defense-godot/issue-exposed-plating
+- **Branch:** issue/exposed-plating (rebased onto origin/master @ 42e05d6 on 2026-08-24; implementation is uncommitted WIP — preserve it)
+- **Request ID:** req-89-exposed-plating-r7
+- **Runner key:** `godot-td` — workers MUST use `project=godot-td`, `workspace=poke-defense-godot/issue-exposed-plating`. Never invent workspace names. Never use `project=poke-defense-godot`.
 
 ## Feature
 
-The special-characteristic lines already exist and work. Daniel: **"it works but it looks ugly, make it look professional and integrated with the app."**
+New progression perk `exposed_plating` (Common, global, 3 levels). When an enemy's armor transitions from >0 to 0 (same site as `_consume_armor()`), it gains an "Exposed" status:
 
-Replace the Godot default `tooltip_text` popup (plain black box, default font, dumped newlines, covers the shop bar) with a custom shop preview card that matches the existing wood HUD — same family as the right-side tower details (`UpgPanel`: `TitledPanel` + `SidePanel` frame + `ModalWell` + `ModalTitle` + HUD theme fonts).
+- L1: +15% damage taken, 0.5s
+- L2: +25% damage taken, 1s
+- L3: +35% damage taken, 1.5s
 
-## What is already in the tree (keep)
+## Historical runs (context only, not evidence)
 
-- `data/towers.xml` `description=` on all 12 combat towers (Porter explicitly teleports / no damage).
-- `TowersConfig.get_description()`.
-- `UI._build_tower_tooltip` currently just appends that string into default tooltip text — that presentation is the bug.
-
-Historical r1 reports/screenshots painted a fake black overlay because default tooltips do not render without a real mouse. Those shots are **not** the target look. Do not reuse annotated overlays.
-
-## Required look
-
-Build a real Control (not `tooltip_text`, not a debug ColorRect):
-
-1. Wood HUD card, not a black slab. Reuse existing theme variations: `SidePanel` or `WidePanel` / `WoodPanel`, inner `ModalWell`, title `ModalTitle`. Same fonts/colors as tower details and the Towers bar. No new art style.
-2. Structure, not a text dump:
-   - Tower name as the title
-   - Special-characteristic description as a wrapping body line (readable contrast; not tiny default gold-on-black)
-   - Cost / Range / Damage (and other live stats) as HUD stat rows or cost badges — same language as `TowerStatRow` / `CostBadge`, not `"Cost: 20 | Range: 6.5"` jammed on one line
-3. Placement: sit **above the hovered shop slot** (or a compact card that does not swallow the Towers bar). Must not cover the whole shop strip. Must not collide with the right-side tower details when both could show.
-4. Deduplicate Porter/Floodgate: one teleport/flood explanation, not the XML line plus the old hardcoded extra lines.
-5. Hide Godot's default tooltip on shop slots (`tooltip_text = ""` once the card owns the copy). Other buttons may keep default tooltips.
-6. Trigger on shop-slot hover (`mouse_entered` / `mouse_exited`) **and** expose a public method the harness can call, e.g. `UI.show_tower_shop_preview(tower_id)` / `hide_tower_shop_preview()`, because the harness cannot drive OS hover. Windowed screenshots must show the **real** card with readable description text in the pixels.
+- r1–r3: perk implemented; headless harnesses pass. Old checkers treated missing windowed shots as code-check `fixable`.
+- r4: tester used the wrong runner key `poke-defense-godot` → no shots.
+- r5: windowed `exposed_plating_vfx` DID capture 1920x1080 PNGs at 07:50 UTC, but the leader had already failed at 07:49 (`missing screenshots`). Those frames are **not** acceptable evidence: default far camera, enemy is a tiny blob at the spawn, Debug Panel covers the left third, and the amber cracked-shield wash is not inspectable. Archived under `.gen/harness/exposed_plating_vfx/r5-too-far/`. Do not copy them to `.gen/screenshots/` and do not treat them as pass.
+- r6: planner wrote the close-up plan (`camera_focus` + hidden debug panel + 30fps GIF). Code worker died with empty model / exhausted API retries. Dashboard `req-89-exposed-plating-r6` is terminal `failed`. Do not reuse that run id.
+- After r6: worktree rebased onto origin/master `42e05d6`. Stash-pop conflict in `HarnessActions.gd` resolved by keeping master's `mouse_pan` **and** this issue's `camera_focus` / `set_debug_panel`.
 
 ## Acceptance criteria
 
-- All 12 combat-tower special descriptions remain (Porter still says it teleports enemies and deals no damage).
-- Hovering a shop slot shows the new wood card; leaving hides it.
-- Card looks like part of this game (wood frame, HUD type, wrapping body, stat rows). `ui_feels_broken: yes` fails the run even if strings match.
-- Windowed shots of Generic, Fire, Ice, and Porter with the **real** card visible and the special line readable. No painted overlays. No headless for manual tester.
-- Existing tooltip string consumers (`_build_tower_tooltip` used by perk scenarios) still expose the same facts (Porter teleport, cost/range/damage, perk lines). Prefer one content builder the card and any harness string-read share.
-- Editor/import gate clean on changed scenes. Focused shop-preview harness pass.
+1. Perk definition registered like other progression perks; purchasable at 3 levels.
+2. Trigger fires exactly once per shield instance: only on the >0 → 0 transition. Hits while armor is already 0 do NOT re-trigger; re-trigger requires the enemy regaining armor first.
+3. Damage-taken multiplier applies for the debuff duration, per level values above, then expires cleanly.
+4. New VFX: `ExposedStatus`/`ExposedVFX` following `BurnStatus`/`BurnVFX` — cracked-shield amber emissive overlay for the duration, lazily instantiated by `EffectsManager`.
+5. Debug logging: `[EXPOSED]` prefix on trigger and expiry, gated by `OS.is_debug_build()`.
+6. **Player-facing proof (this run's remaining work):** a human looking at the PNG must immediately see the overlay on the Orc King. Required:
+   - After the boss exists, aim `camera_target` at the enemy and zoom in (`Game._zoom_camera` / closer camera distance / existing `camera_focus` harness action) so the enemy fills a large part of the frame.
+   - Hide or ignore the Debug Panel; it must not cover the enemy.
+   - Three windowed stills: before breach (no wash) / during Exposed (obvious amber wash on the body) / after expiry (wash gone).
+   - Real 30fps GIF from harness `record_frames` of the zoomed enemy across the window (not a screenshot slideshow).
+   - Copy proving PNGs + GIF into `.gen/screenshots/` and embed them in `.gen/manual-report.md`.
+   - End with `ui_feels_broken: yes|no`. A yes fails.
+   - If the overlay is still invisible at a close camera, that is a **code** failure — strengthen `ExposedVFX` (alpha/energy/shell size) until the before/during frames differ by eye. Do not pass on metadata `exposed_vfx == true` alone.
 
-## Verification notes
+## Verification requirements
 
-- Runner: `godot-td` + workspace `poke-defense-godot/issue-update-tower-descriptions-with-special-c` only. Never invent `godot-td/issue-85`.
-- `manual_testing: required`. Windowed only. Vision-read the PNGs: if the card is missing, the shot fails.
-- Do not close, merge, push, or commit unless asked.
+- Fresh focused headless after the rebase: `tests/scenarios/exposed_plating_once_per_shield.json` and `tests/scenarios/exposed_plating_vfx.json` via `run_project_cmd` (`godot-td`).
+- If headless criteria 1–3 and 5 are green, checker writes `classification: pass` so the leader can dispatch manual-tester. Missing windowed PNGs/GIFs are a manual-tester job, not a code-check `fixable` — **unless** the close-up stills show no overlay, which is fixable code.
+- Manual testing: REQUIRED. Never `--headless`. Windowed args when Vulkan fails: `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`.
+- Native Godot through `run_project_cmd`; explicit scene argument before user args.
 
-## Out of scope
+## Preserve
 
-- Rewriting description copy except to drop duplicate Porter/Floodgate lines.
-- Changing tower combat behavior.
-- Restyling Options / Manage Towers / ProgressionModal.
+Keep the existing uncommitted source diff and new files (`ExposedVFX.gd`, `ExposedStatus.gd`, both scenarios, `camera_focus` / `set_debug_panel` in `HarnessActions.gd`). Re-plan only if the r6 close-up plan is stale; otherwise implement/verify the unmet close-up visual work. Do not wipe the perk implementation.
