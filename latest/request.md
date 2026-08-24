@@ -1,93 +1,33 @@
-# Request: gen-hud-textures-py-cannot-run-all-three (r2)
+# Request
 
-**Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/117
-**Project runner:** `godot-td`
-**Workspace:** `poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three`
-**Branch:** `issue/gen-hud-textures-py-cannot-run-all-three`
-**Request id:** `req-117-gen-hud-textures-r2`
-**Starting revision:** `9d54964` (`origin/master` after hard reset)
+- request_id: req-124-cave-carved-path-torches-r4
+- issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
+- project runner key: `godot-td`
+- workspace: `poke-defense-godot/issue-cave-carved-path-torches`
+- branch: `issue/cave-carved-path-torches` (already has r3 placement work at `b5092fc`; extend it, do not reset)
 
-## Why this is a fresh run
+## Problem (Daniel, 2026-08-24)
 
-Daniel: "Rerun from the beginning, plan wasn't produced."
+A hardcoded `MAX_TORCHES = 250` is not future-proof. **Map size is not fixed** — Daniel does not know future sizes; it might be 100×100 or anything else. Also the current spacing (`TORCH_SPACING = 1`, every corridor cell) is too dense — **make the distance between torches a little bit bigger**.
 
-The previous run (`117-gen-hud-20260823`) coded and checked **without** writing `.gen/plan.md` or `.gen/clusters/*.md`. That attempt is archived at:
+## Required solution
 
-`.gen-blocked-117-gen-hud-20260823-attempt1/`
+- **No map-size constant and no fixed torch cap.** Do not special-case 40, 60, or 100. Derive the pool/budget from the **live** `grid_width`/`grid_depth` (and/or carved corridor cell count) every update so any future map size keeps full corridor coverage. Do not leave dark carved segments because a constant cap was hit.
+- **Widen spacing a little** vs r3 (every cell). Keep walls/curves lit; do not go back to the old clump-every-3rd-wall-face bug. Unique-cell stride along the corridor, not raw wall-face list.
+- **Do not change torch light intensity** (`Torch.gd` energy / radius / color / OmniLight settings stay byte-for-byte unchanged).
 
-Historical commit `d06b5de` (`fix: drop broken gen_hud_textures.py and unused crate-derived HUD slices`) is **unverified reference only**. The worktree is reset to `origin/master`. Do **not** treat the archived check as done. Do **not** skip the planner.
+## Done when
 
-## Hard planner gate
-
-The planner **must** write:
-
-- `.gen/plan.md`
-- one or more `.gen/clusters/<id>.md` with exclusive file ownership, `parallel: true|false`, dependencies, acceptance criteria
-
-Do not implement until those artifacts exist. Do not invent nested plan state.
-
-## Plain language
-
-The HUD crate-texture generator cannot run because its three source JPGs are gone. Either restore those sources so the script works, or delete the dead script and keep the still-used HUD icons.
-
-## Problem
-
-`tools/gen_hud_textures.py` (572 lines) cannot run. Its three sources are absent from the repo and from disk:
-
-- `textures/_source/woden_panel.jpg`
-- `textures/_source/woden_panel_wide.jpg`
-- `textures/_source/woden_panel_wide_darkonly.jpg`
-
-Current wood-panel redesign uses `panel-square.png` / `panel-wide.png` via `tools/prep_hud_assets.py`.
-
-Still-used outputs under `textures/ui/hud/` (keep these unless you re-derive them):
-
-- `icon_coin.png` — `scenes/ui/widgets/PricedButton.tscn`
-- `towers_panel.png` — `themes/hud/HudTheme.tres`
-- `icon_heart.png` — `scenes/UI.tscn`
-- `wood_slot.png`, `slot_empty.png` (script also writes these; confirm live references before deleting)
-
-The script already documents that the JPGs are missing (comment at lines 16–20). That comment is not a fix.
-
-## Acceptance
-
-One of:
-
-1. Restore the crate JPGs to `textures/_source/` and `gen_hud_textures.py` runs clean, or
-2. Re-derive still-used outputs from current sources via `prep_hud_assets.py` **or** keep the committed live PNGs unchanged, then delete `gen_hud_textures.py` plus **unreferenced** dead outputs.
-
-Either way `tools/` must contain no script whose sources are missing.
-
-Prefer option 2 if `git log --all -- '*woden_panel*'` is empty. Option 1 is valid only if the JPGs can actually be recovered.
-
-If option 2: do **not** delete `icon_coin.png`, `icon_heart.png`, or `towers_panel.png`. Only delete outputs that are unused by scenes/themes/scripts.
-
-`tools/gen_hud_icons.py` still claims `icon_coin` / `icon_heart` come from `gen_hud_textures.py` — update that docstring if the generator is deleted.
-
-## Verification (runner only)
-
-Project `godot-td`, workspace `poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three`.
-
-Tokenized `run_project_cmd` examples:
-
-```json
-{"project":"godot-td","workspace":"poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three","cmd":["python3","--version"]}
-{"project":"godot-td","workspace":"poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three","cmd":["godot","--headless","--path",".","--editor","--quit-after","300"]}
-```
-
-- Prove no remaining `tools/*.py` references missing `_source` files.
-- Prove live HUD assets still exist and are referenced.
-- Editor/import gate if textures change.
-- Git/worktree ops are Hermes-side, not runner: `git diff --check`, `git status --short`.
+- Every carved cave path tile that should be lit still has torch coverage, including curve / bent / side-to-side tunnels
+- New carves still get torches
+- Any grid size (including 100×100 and unknown larger maps) does not hit a hardcoded cap that leaves uncovered corridor cells
+- Spacing is visibly a bit farther than r3 every-cell packing
+- `Torch.gd` intensity unchanged
 
 ## Manual testing
 
-`manual_testing: none` if committed player-facing PNGs are unchanged.
-If HUD art look changes, `manual_testing: required` with windowed shots (never `--headless`) plus `ui_feels_broken: yes|no`.
+required. Windowed, underground, side-to-side carve with curves, top-down aimed at `camera_target`. No `--headless` for manual tester.
 
-## Redo notes
+## Runner
 
-- Do not invent runner workspace names (`godot-td/issue-117` is wrong).
-- Never use host `godot` / `npm` instead of `run_project_cmd`.
-- Worker image may lack Pillow; do not require regenerating committed PNGs if they stay byte-identical.
-- Dashboard publication is required on the leader path; include the public run URL in the terminal summary.
+`godot-td` / `poke-defense-godot/issue-cave-carved-path-torches`. Write a real non-empty `.gen/plan.md`.

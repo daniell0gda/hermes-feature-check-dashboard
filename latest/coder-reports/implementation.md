@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation (req-124-cave-carved-path-torches-r4)
+# Coder report: implementation (req-124-cave-carved-path-torches-r4)
 
 ## Changed files
 - `scripts/game/underground/TorchManager.gd` — modified
@@ -24,4 +24,3 @@
 - `TorchCoverageProbe._lit_by_any` compares world positions converted with the SAME (grid_width, grid_depth) on both sides — converting one side with dummy 1x1 dims silently misplaces it by ~half the map and fails everything (cost one debug iteration).
 - First harness run after worktree creation needs `--import` first or model/GLB loads fail; runner preflight `godot --version` alone is not enough.
 - Headless teardown noise (RID leaks, PagedAllocator) is pre-existing dummy-renderer artifact, unrelated.
-\n
