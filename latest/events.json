@@ -43,5 +43,14 @@
     "duration_ms": 840802,
     "summary": "Check complete for revision-check-1.\n\nVerified done: 10. Pending: 1 \u2014 0 due to build/test failures, 0 due to missing evidence, 1 due to quality/evidence gaps (the placement criterion's manual windowed-screenshot half: no `.gen/manual-report\u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-24T12:36:26.329Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 161599,
+    "summary": "Done. Summary of revision-code-2:\n\nScope: The only remaining code-fixable item was the quality note from revision-check-1 \u2014 `python3 tests/run_all_shard.py 0 1` can't finish inside run_project_cmd's 420 s cap. No acceptance criteria require\u2026",
+    "error": null
   }
 ]
