@@ -1,36 +1,31 @@
-# Acceptance Plan: issue-ground-material-ignores-cache
-
-Issue #115 — `TextureAtlasUtils.create_ground_plane_material` must load both
-ground textures with `ResourceLoader.CACHE_MODE_REUSE` so the resource cache and
-the `AssetPreloader` startup preload of `res://textures/underground_floor.jpg`
-are honoured. The original "shader-only" map-switch appearance must be traced to
-its real cause (missing albedo sampler reassignment in
-`EnvironmentUtils._update_ground_plane_color`) and fixed so the ground keeps its
-blended grass/dirt textures across repeated map switches.
-
-manual_testing: required
+# Acceptance Plan: issue-109-nature-decoration-counts
 
 ## Verification
 
-- Focused test: `run_project_cmd ["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--quit-after", "6000", "--", "--harness=res://tests/scenarios/ground_material_map_switch.json"]`
-- Full test: `run_project_cmd ["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
-- Typecheck/build: `run_project_cmd ["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/nature_decoration_scaling.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/level_walkthrough_lean.json"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]`
+
+manual_testing: required
 
 ## Clusters
 
-1. ground-material-cache-and-map-switch — files: `scripts/utils/TextureAtlasUtils.gd`, `scripts/utils/EnvironmentUtils.gd`, `tests/scenarios/ground_material_map_switch.json` — depends on: none
-- Ground plane material textures (`map_grass.jpg`, `underground_floor.jpg`) are loaded with `ResourceLoader.CACHE_MODE_REUSE`, and no `CACHE_MODE_IGNORE` load remains in the ground plane material path.
-- After loading a map whose ground uses the grass/dirt blend shader material, switching maps twice leaves the ground plane's ShaderMaterial with non-empty `grass_albedo` and `dirt_albedo` Texture2D parameters (asserted via the AgentHarness scenario).
-- After the same double map switch, the `grass_tint` parameter reflects the newly loaded map's configured grass color rather than a stale color from the previous map.
-- The harness scenario passes headlessly with fresh `.gen/harness/ground_material_map_switch/result.json` status `pass`.
-- Debug-build `[GROUND]` log line per ground material creation event, naming which textures were assigned from cache versus freshly loaded.
-- No regression in the fallback paths: when either ground texture or the blend shader is absent, `create_ground_plane_material` still returns a usable material (existing Grass.png tile / StandardMaterial3D fallbacks unchanged).
+1. nature-count-scaling — files: `scripts/game/NatureDecoration.gd`, `tests/scenarios/nature_decoration_scaling.json` — depends on: none
+- On a 20x20 map (area 400) the placed counts equal today's values exactly: 4 trees, 6 bushes, 5 flower groups, 2 dead trees (scale factor is exactly 1.0 at 400 m²).
+- On a 50x50 map each of the four counts is proportionally larger by the area ratio (2500/400 = 6.25x the 20x20 baseline counts, rounded to a whole number, minimum 1).
+- An explicit count override under `environment.decorations` in the map config takes precedence over the computed area-scaled count for each of the four categories.
+- A headless harness scenario loads a 50x50 map and asserts the placed tree, bush, flower-group, and dead-tree counts match the area-scaled contract, and exits with status pass.
+- Debug-build `[NATURE]` log line per decoration-count computation, naming map width, height, scale factor, and the four resulting counts.
+- The existing nature-visibility regression scene (`res://tests/visuals/test_nature_visibility_range.tscn`) still exits 0 after the change.
+2. manual-visual-verification — files: `.gen/manual/` (evidence only, no production files) — depends on: 1
+- In a windowed (non-headless) run with PNG screenshots captured, `custom_map` (50x50) visibly shows trees and bushes spread across the whole board, not only near the paths or one corner; overall UI sanity verdict recorded as `ui_feels_broken: yes|no`.
 
 ## Criteria
 
-- Ground plane material textures (`map_grass.jpg`, `underground_floor.jpg`) are loaded with `ResourceLoader.CACHE_MODE_REUSE`, and no `CACHE_MODE_IGNORE` load remains in the ground plane material path.
-- After loading a map whose ground uses the grass/dirt blend shader material, switching maps twice leaves the ground plane's ShaderMaterial with non-empty `grass_albedo` and `dirt_albedo` Texture2D parameters (asserted via the AgentHarness scenario).
-- After the same double map switch, the `grass_tint` parameter reflects the newly loaded map's configured grass color rather than a stale color from the previous map.
-- The harness scenario passes headlessly with fresh `.gen/harness/ground_material_map_switch/result.json` status `pass`.
-- Debug-build `[GROUND]` log line per ground material creation event, naming which textures were assigned from cache versus freshly loaded.
-- No regression in the fallback paths: when either ground texture or the blend shader is absent, `create_ground_plane_material` still returns a usable material (existing Grass.png tile / StandardMaterial3D fallbacks unchanged).
+- On a 20x20 map (area 400) the placed counts equal today's values exactly: 4 trees, 6 bushes, 5 flower groups, 2 dead trees (scale factor is exactly 1.0 at 400 m²).
+- On a 50x50 map each of the four counts is proportionally larger by the area ratio (2500/400 = 6.25x the 20x20 baseline counts, rounded to a whole number, minimum 1).
+- An explicit count override under `environment.decorations` in the map config takes precedence over the computed area-scaled count for each of the four categories.
+- A headless harness scenario loads a 50x50 map and asserts the placed tree, bush, flower-group, and dead-tree counts match the area-scaled contract, and exits with status pass.
+- Debug-build `[NATURE]` log line per decoration-count computation, naming map width, height, scale factor, and the four resulting counts.
+- The existing nature-visibility regression scene (`res://tests/visuals/test_nature_visibility_range.tscn`) still exits 0 after the change.
+- In a windowed (non-headless) run with PNG screenshots captured, `custom_map` (50x50) visibly shows trees and bushes spread across the whole board, not only near the paths or one corner; overall UI sanity verdict recorded as `ui_feels_broken: yes|no`.
