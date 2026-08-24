@@ -16,5 +16,14 @@
     "duration_ms": 376039,
     "summary": "Done. Summary of the code-worker run (revision 2 redo, cluster: implementation):\n\nResult: all implementation criteria re-verified green with zero source changes needed. The standing worktree diff (HarnessScenario.gd, AgentHarness.gd, Harnes\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-24T08:08:21.934Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 690954,
+    "summary": "The runner plugin here exposes only `run_project_cmd` (no separate `release_project_worker` tool in this profile), so worker release is left to the leader. Artifacts are written; final report:\n\nVerified done: 11. Pending: 0 \u2014 0 due to build\u2026",
+    "error": null
   }
 ]

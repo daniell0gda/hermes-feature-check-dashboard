@@ -1,47 +1,59 @@
-# Request: #131 pointer-cursor-on-clickable-surfaces (r2)
+# Request: Issue #108 — Harness cannot boot a non-game scene, so the main menu is untestable
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/131
-- **Project:** poke-defense-godot (runner key `godot-td`)
-- **Workspace:** poke-defense-godot/issue-pointer-cursor-on-clickable-surfaces
-- **Runner workspace name:** `poke-defense-godot/issue-pointer-cursor-on-clickable-surfaces`
-- **Branch:** issue/pointer-cursor-on-clickable-surfaces (rebased onto origin/master @ 9d54964)
-- **Request ID:** 131-pointer-cursor-r2
+- Project: poke-defense-godot
+- Runner key: `godot-td` (never the folder name)
+- Runner workspace: `poke-defense-godot/issue-harness-cannot-boot-menu-scene`
+- Branch: `issue/harness-cannot-boot-menu-scene` (rebased onto origin/master 2026-08-24)
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/108
+- Type: harness / ui · priority:medium
+- Request id: `req-108-harness-cannot-boot-menu-scene-r2`
 
-## Feature
+## Problem
 
-Show a pointing-hand ("pointer") mouse cursor when hovering over clickable UI
-surfaces (buttons and other clickables); non-clickable surfaces keep the
-default arrow.
+Every scenario used to run against `res://scenes/Main.tscn`, hard-coded in
+`.claude/skills/game-test/scripts/Run-Scenario.ps1`, and `AgentHarness._await_game()`
+blocked until `current_scene` had a `Game` child whose `Placement.tower_placement`
+was non-null. Non-game scenes such as `scenes/MainMenu.tscn` were unreachable.
 
-## Acceptance criteria (from issue)
+## Implementation already present (keep it)
 
-1. All buttons (and other clickable UI surfaces) show a pointer cursor on hover, in windowed and fullscreen modes.
-2. Non-clickable surfaces keep the default arrow.
-3. Verified with a screenshot of hover state on a button.
+Uncommitted work already exists on this worktree after a clean rebase onto
+`origin/master` plus a resolved `HarnessValues.gd` merge (keep both master's
+`nature` / `last_action.*` sources AND this issue's `node` source plus
+`harness.menu_orbit_moving`). Do not rewrite from scratch.
 
-## Existing implementation (keep and verify)
+Touched files:
 
-Uncommitted work already in this worktree after rebase onto current master:
+- `scripts/testing/HarnessScenario.gd` — optional `scene`, `DEFAULT_SCENE`, `find_game_world()`
+- `scripts/testing/AgentHarness.gd` — declared-scene boot wait, debug `[HARNESS] booted declared scene=...`
+- `scripts/testing/HarnessValues.gd` — `source=node` plus `menu_orbit_moving`
+- `.claude/skills/game-test/scripts/Run-Scenario.ps1` — forwards scenario `scene`
+- `tests/scenarios/main_menu.json` — boots `res://scenes/MainMenu.tscn`
 
-- `scripts/ui/PointerCursor.gd` autoload: `node_added` + deferred whole-tree sweep sets
-  `BaseButton.mouse_default_cursor_shape = CURSOR_POINTING_HAND`. Both hooks are required
-  (node_added alone missed 39/52 scene-file buttons).
-- `project.godot` registers `PointerCursor="*res://scripts/ui/PointerCursor.gd"`.
-- Harness: `hover_ui` action + `ui_control` value source (`cursor_shape` / `exists`).
-- Focused scenario: `tests/scenarios/ui_pointer_cursor.json`.
-- After rebase, `HarnessValues.gd` must keep BOTH `nature` (master) and `ui_control` (this issue).
+## Historical reference only (not fresh evidence)
 
-Do not discard this approach unless a fresh run proves it wrong. Re-plan only unmet
-criteria. Historical r1 harness `status=pass` is stale after the rebase — require fresh
-editor import, headless + windowed focused harness, and `smoke_placement`.
+Prior team-work run `issue-108-harness-non-game-scene-211634` (2026-08-22) reported
+checker `classification: pass` and a windowed manual-tester pass. That evidence is
+stale after the 26-commit rebase. Re-verify everything from scratch.
 
-Prior team-work run `131-pointer-cursor-r1` failed because check.md was never written.
-This r2 run must complete check + required windowed manual testing.
+## Done when
 
-## Notes for workers
+1. `HarnessScenario` accepts an optional `scene` (default `res://scenes/Main.tscn`) and
+   `Run-Scenario.ps1` passes it through instead of hard-coding the path.
+2. `AgentHarness._await_game()` no longer requires a `Game` with a live `Placement` when
+   the scenario declares it does not need one — a screenshot-and-expectation-only
+   timeline must run against any scene.
+3. A value source can read a property at an arbitrary node path under the current scene.
+4. A `main_menu` scenario boots `scenes/MainMenu.tscn`, waits, asserts the camera moved
+   and enemies are on the field, and takes a `-Windowed` screenshot of the menu over the map.
 
-- Use runner key `godot-td`, workspace `poke-defense-godot/issue-pointer-cursor-on-clickable-surfaces`. Never invent other workspace names.
-- Godot 4: `Control.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND`. Prefer the existing project-wide autoload over per-scene edits.
-- Visible player-facing UI change → `manual_testing: required` with windowed screenshots of hover state on at least one button; include the overall ui_feels_broken sanity check.
-- Godot screenshots do not draw the OS cursor; programmatic `cursor_shape==2` plus a hover screenshot is the evidence pair. Do not fail only because the hand is not visible in the PNG.
-- Revision budget: 2 (default).
+## Redo notes
+
+- Use runner key `godot-td`, workspace `poke-defense-godot/issue-harness-cannot-boot-menu-scene`.
+- Godot on Linux via runner; windowed evidence with
+  `--rendering-method gl_compatibility --audio-driver Dummy` when Vulkan fails.
+- Manual testing is required: player-facing menu over live backdrop → windowed PNGs/GIF,
+  plus overall UI-sanity (`ui_feels_broken: yes|no`) on every final screenshot.
+- Widen `main_menu.json` enemy wait if windowed software-GL flakes (prior note: 30s was
+  tight at ~1–2 fps). Do not weaken other criteria.
+- Do not commit, push, merge, or close.
