@@ -1,35 +1,35 @@
-# Acceptance Plan: traps_frostbite_fangs (r3 — camera/visual proof)
+# Acceptance Plan: issue-116 game-ready-blocks-map-load
 
 ## Verification
 
-- Focused test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_frostbite_fangs_progression.json"]`
-- Full test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_serrated_edges_progression.json"]`
-- Typecheck/build: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
-
-All commands run through `run_project_cmd` with `project=godot-td`, `workspace=poke-defense-godot/issue-traps-frostbite-fangs`. Never `project=poke-defense-godot`. Note: the repository exposes per-scenario AgentHarness runs and the editor parse gate; there is no single aggregate-suite runner, so the full-test slot uses the nearest sibling trap-perk progression scenario (shared Trap/perk code) as the widest runnable regression command.
-
-manual_testing: required
+- Focused test: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/map_build_phases.json --log-file .gen/map_build_phases.log`
+- Full test: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/level_walkthrough.json --log-file .gen/level_walkthrough.log`
+- Typecheck/build: `godot --headless --path . --import`
 
 ## Clusters
 
-1. close-camera-scenario — files: `tests/scenarios/traps_frostbite_fangs_progression.json`, optionally `scripts/game/Game.gd` (a debug-only camera-focus helper following the existing `debug_look_at_backdrop_earth` pattern, only if the harness `call` schema cannot otherwise reach `Camera3D.position`) — depends on: none
-- After the final `_update_camera_for_layer("underground")` call in the live arm, the scenario repositions the active Camera3D to sit close above the trap position (small height, tiny z offset) and aim at the trap, so the framing is near top-down; this holds at the moment each subsequent screenshot and record_frames action runs.
-- A fresh `.gen/harness/traps_frostbite_fangs_progression/result.json` from a headless run of the updated scenario reports `status: pass` with all expectations green (frozen_count >= 1, slow_magnitude 0.40 at L1, ice_slow_fx >= 1, unowned control frozen_count == 0).
-- Debug-build [FROSTBITE_CAMERA] log line per close-camera application, naming the trap position and camera height so a failed shot can be diagnosed from `.gen/harness/_logs`.
-2. visual-evidence-verdict — files: `.gen/screenshots/`, `.gen/check.md` — depends on: 1
-- A fresh windowed (non-headless) capture of `frostbite_fangs_chilled_hit` shows the trap and at least one live underground enemy large enough in frame to judge body color; neither a distant speck nor a crop of empty floor qualifies.
-- In that fresh PNG the chilled enemy's frost/ice tint is clearly distinguishable from a normal green Cactoro body.
-- The explicit `record_frames` action produces consecutive engine frames suitable for a 30fps GIF of the chill applying, and fresh PNG/GIF copies are present under `.gen/screenshots/`.
-- A NEW `.gen/check.md` written this run records the verdict from the fresh shots only; if the shots are still a distant speck or empty-floor crop the classification is `fixable`, and headless pass tags alone never satisfy the visual criterion.
-- A manual windowed test answering `ui_feels_broken: yes` fails the manual test.
+1. game-phased-build — files: `scripts/game/Game.gd` — depends on: none
+- After a phased map load completes, the resulting scene matches the current synchronous build: the harness `load_map` action reaches `GameState.game_state == "playing"` with the requested `map_id`, a non-zero total wave count, and live enemies spawnable on wave 1 (asserted via harness expectations on a representative map).
+- No single frame during the world build exceeds ~100ms wall-clock, measurable from the scenario run log (per-phase elapsed timings or an equivalent frame-time record written during the load).
+- Booting `res://scenes/Main.tscn` directly without `MapLoadingScreen` driving it (the AgentHarness path) still completes the entire world build: when nothing consumes the phases externally, they all run to completion.
+- `setup_as_menu_backdrop` still produces a complete backdrop world: the existing `menu_backdrop_map` scenario passes unchanged after the build is split into phases.
+- Debug-build `[MAP_BUILD]` log line per world-build phase completion, naming the phase and its elapsed milliseconds.
+2. loading-screen-driving — files: `scripts/MapLoadingScreen.gd`, `scripts/ui/LoadingSequence.gd` — depends on: 1
+- During the world-build portion of a map load, `MapLoadingScreen`'s progress bar advances in multiple observable increments beyond its post-threaded-load value, rather than sitting at or near 100% while the world builds.
+- The status line updates at least once during the world build (a building-phase caption replaces the static "Building Map" line before the screen is replaced by the game scene).
+- A selected map id that is missing or unparseable still falls back to `map_1` before any world-building phase begins, and the run proceeds with `map_1`.
 
 ## Criteria
 
-- After the final `_update_camera_for_layer("underground")` call in the live arm, the scenario repositions the active Camera3D to sit close above the trap position (small height, tiny z offset) and aim at the trap, so the framing is near top-down; this holds at the moment each subsequent screenshot and record_frames action runs.
-- A fresh `.gen/harness/traps_frostbite_fangs_progression/result.json` from a headless run of the updated scenario reports `status: pass` with all expectations green (frozen_count >= 1, slow_magnitude 0.40 at L1, ice_slow_fx >= 1, unowned control frozen_count == 0).
-- Debug-build [FROSTBITE_CAMERA] log line per close-camera application, naming the trap position and camera height so a failed shot can be diagnosed from `.gen/harness/_logs`.
-- A fresh windowed (non-headless) capture of `frostbite_fangs_chilled_hit` shows the trap and at least one live underground enemy large enough in frame to judge body color; neither a distant speck nor a crop of empty floor qualifies.
-- In that fresh PNG the chilled enemy's frost/ice tint is clearly distinguishable from a normal green Cactoro body.
-- The explicit `record_frames` action produces consecutive engine frames suitable for a 30fps GIF of the chill applying, and fresh PNG/GIF copies are present under `.gen/screenshots/`.
-- A NEW `.gen/check.md` written this run records the verdict from the fresh shots only; if the shots are still a distant speck or empty-floor crop the classification is `fixable`, and headless pass tags alone never satisfy the visual criterion.
-- A manual windowed test answering `ui_feels_broken: yes` fails the manual test.
+- After a phased map load completes, the resulting scene matches the current synchronous build: the harness `load_map` action reaches `GameState.game_state == "playing"` with the requested `map_id`, a non-zero total wave count, and live enemies spawnable on wave 1 (asserted via harness expectations on a representative map).
+- No single frame during the world build exceeds ~100ms wall-clock, measurable from the scenario run log (per-phase elapsed timings or an equivalent frame-time record written during the load).
+- Booting `res://scenes/Main.tscn` directly without `MapLoadingScreen` driving it (the AgentHarness path) still completes the entire world build: when nothing consumes the phases externally, they all run to completion.
+- `setup_as_menu_backdrop` still produces a complete backdrop world: the existing `menu_backdrop_map` scenario passes unchanged after the build is split into phases.
+- Debug-build `[MAP_BUILD]` log line per world-build phase completion, naming the phase and its elapsed milliseconds.
+- During the world-build portion of a map load, `MapLoadingScreen`'s progress bar advances in multiple observable increments beyond its post-threaded-load value, rather than sitting at or near 100% while the world builds.
+- The status line updates at least once during the world build (a building-phase caption replaces the static "Building Map" line before the screen is replaced by the game scene).
+- A selected map id that is missing or unparseable still falls back to `map_1` before any world-building phase begins, and the run proceeds with `map_1`.
+
+manual_testing: required
+
+The loading-screen UI changes visibly mid-load (bar position and caption during world build), so windowed PNG evidence is required: capture the loading screen mid-world-build showing the bar advanced past the threaded-load portion, using `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
