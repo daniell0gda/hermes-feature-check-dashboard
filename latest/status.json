@@ -1,36 +1,20 @@
 {
-  "run_id": "req-124-cave-carved-path-torches-r6",
-  "feature": "cave-carved-path-torches",
+  "run_id": "issue116-game-ready-blocks-map-load-r6",
+  "feature": "game-ready-blocks-map-load",
   "status": "running",
-  "started_at": "2026-08-24T20:48:05.153Z",
+  "started_at": "2026-08-24T20:57:50.812Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-124-cave-carved-path-torches-r6/",
-  "heartbeat_at": "2026-08-24T20:57:16.179Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-24T20:57:16.179Z",
-  "process_id": 490848,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r6/",
+  "heartbeat_at": "2026-08-24T20:57:50.812Z",
+  "last_node": null,
+  "active_node": null,
+  "last_event_at": null,
+  "process_id": 492164,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T20:57:20.518475+00:00",
-    "last_success_at": "2026-08-24T20:57:20.516466+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T20:57:50.812516+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 85825,
-        "output_tokens": 4603
-      }
-    ]
-  }
+  "metrics": {}
 }
