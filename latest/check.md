@@ -1,77 +1,106 @@
-# Check report — req-124-cave-carved-path-torches r4 (iteration 4)
+# Check report — Exposed Plating perk (issue #89) — check (r3)
 
 classification: pass
 
 ## Verdict
-All 3 plan criteria verified Done. Fresh verification run through the approved
-project runner (`run_project_cmd`, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-cave-carved-path-torches) — every command exit 0.
 
-## Runner gate
-- Preflight `godot --version` → Godot 4.4.1.stable, exit 0.
+Fresh verification through the approved runner (`project=godot-td`,
+`workspace=poke-defense-godot/issue-exposed-plating`) confirms all five headless
+code criteria are green. The plan's `--check-only` typecheck command fails on
+this project for ANY status script (including pre-existing `BurnStatus.gd`)
+because `godot --check-only --script` does not resolve autoloads — it is a tool
+limitation, not a code defect; the authoritative parse/compile gate is the
+editor import + full harness run, both exit 0. The plan's "full test" is the
+`exposed_plating_vfx` harness, which passes 16/16 actions with zero failures.
+Per request.md, headless green ⇒ checker writes `classification: pass` so the
+leader can dispatch manual-tester; missing windowed PNGs/GIFs and the
+`ui_feels_broken` verdict are manual-tester deliverables and remain Pending,
+not code-check fixable.
 
-## Acceptance criteria evidence
+## Verification commands (all via run_project_cmd, runner-reported exit codes)
 
-### Criterion 1 — no map-size constant / fixed torch cap
-- Diff confirms `MAX_TORCHES = 250` removed from `scripts/game/underground/TorchManager.gd`;
-  `_derive_torch_budget(grid_width, grid_depth)` returns `grid_width * grid_depth`
-  and is recomputed on each `_update_torch_placement()` pass; passed to
-  `TorchPlacer.calculate_torch_positions`. Pool expands on demand
-  (`Expanded torch pool by 10` observed live in the harness log).
-- Test: `tests/caves/test_torch_budget_scaling.gd::_test_100x100_grid_no_cap_truncation`
-  — 100×100 grid, budget=10000 >= 10000, torches=190, uncovered=0.
-- Command: `godot --headless --path . res://tests/caves/test_torch_budget_scaling.tscn` → exit 0,
-  "8 ok, 0 failed".
+1. Probe: `["godot","--version"]` — exit 0, Godot 4.4.1.stable.
+2. Editor import/parse gate: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
+   — exit 0 (9.2s), no script errors.
+3. Focused semantics harness:
+   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]`
+   — exit 0, result `.gen/harness/exposed_plating_once_per_shield/result.json`:
+   `status=pass`, 38 actions, 0 failed. Log shows per-level legs L1 1625→1614→1603
+   (×1.15), L2 →1613→1601 (×1.25), L3 →1612→1599 (×1.35); exactly one
+   `[EXPOSED] triggered ... level=N bonus=…% dur=…` line per leg; one trigger per
+   shield instance (`exposed_count == 1`); post-expiry hit at hp 1589 = exact −10
+   unamplified after `[EXPOSED] expire`.
+4. VFX lifecycle harness ("full test" per plan):
+   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]`
+   — exit 0, result `.gen/harness/exposed_plating_vfx/result.json`: `status=pass`,
+   16 actions, 0 failed, including `enemies.Orc Enemy_boss.exposed_vfx == true`
+   during the Exposed window and screenshot/record_frames steps correctly skipped
+   as `reason: headless`.
+5. Plan's typecheck command: `["godot","--headless","--check-only","--script",
+   "res://scripts/game/status/ExposedStatus.gd"]` — exit 1, `Identifier not found:
+   SimulationClock`. Control run on the UNRELATED pre-existing
+   `scripts/game/status/BurnStatus.gd` produces the identical error: the
+   `--check-only --script` mode does not register autoload singletons in this
+   project, so this command cannot validate any status script here. Gate treated
+   as satisfied by the stronger editor-parse gate (step 2) plus harness compile
+   and execution (steps 3–4). Not a feature failure.
 
-### Criterion 2 — TORCH_SPACING widened to 2, coverage repair intact
-- Diff: `TorchPlacer.gd` `TORCH_SPACING` 1 → 2; placement still strides unique corridor
-  cells (`_spacing_torch_cells`), coverage repair (`_repair_coverage`) unchanged and active.
-- Tests:
-  - Unit test `_test_spacing_constant_is_two`, `_test_small_grid_full_coverage`,
-    `_test_curve_stays_lit_at_widened_spacing` all pass (L-curve 30×30: torches=35, uncovered=0).
-  - Harness `carve_curved_torches_coverage.json`: exit 0, status=pass,
-    `.gen/harness/carve_curved_torches_coverage/result.json` fresh this run;
-    log `[TORCH_PLACER] coverage pass: required_cells=105 torches=91 uncovered=0`;
-    expectations include `torch.uncovered_corridor_cells == 0` (pass) and
-    `torch.count > 0` (91). All 4 expectations pass.
-- Guard regression `declined_cave_torches_extinguish.json`: exit 0, status=pass;
-  locked-cave coverage pass `required_cells=17 torches=13 uncovered=0`.
+## Criterion-by-criterion evidence
 
-### Criterion 3 — Torch.gd untouched byte-for-byte
-- `git status --short` / `git diff HEAD --stat`: only TorchManager.gd, TorchPlacer.gd modified
-  plus new test files; `Torch.gd` not in any diff or untracked list. Verified directly.
+1. Perk registration / purchasable at 3 levels — Done. `scripts/progression/global.json`
+   defines `exposed_plating` Common, maxLevels 3 (0.15/0.5s, 0.25/1s, 0.35/1.5s);
+   harness exercised apply_progression across L1→L2→L3.
+2. Once-per-shield-instance trigger (>0→0 only) — Done. Guard
+   `if before > 0.0 and enemy.armor <= 0.0:` in `_consume_armor()`
+   (EnemyHealthController.gd ~line 369); second hits against zero armor asserted
+   baseline damage with `exposed_multiplier == 1.0`; re-trigger requires armor regain.
+3. Multiplier per level for duration, clean expiry — Done. Exact hp deltas above
+   match ×1.15/×1.25/×1.35; post-expiry hit unamplified; expiry logged once.
+4. ExposedStatus/ExposedVFX following BurnStatus/BurnVFX pattern — Done at code
+   level. `scripts/game/status/ExposedStatus.gd`, `scripts/game/actors/effects/
+   ExposedVFX.gd`, lazy `show_exposed()`/`hide_exposed()` via EffectsManager;
+   headless machine proof passes (`exposed_vfx == true` during window, clean state
+   before breach). Remaining player-facing evidence moved to Pending (manual-tester).
+5. `[EXPOSED]` debug logging gated by `OS.is_debug_build()` — Done. Trigger line
+   (EnemyHealthController.gd `_apply_exposed_plating`) and expiry line
+   (ExposedStatus.gd lines 34/54) behind `OS.is_debug_build()`; observed live in
+   fresh run output.
 
-## Commands (all through run_project_cmd)
-| Command | Exit | Result |
-|---|---|---|
-| `godot --version` | 0 | 4.4.1.stable |
-| `godot --headless --path . res://tests/caves/test_torch_budget_scaling.tscn` | 0 | 8 ok, 0 failed |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/carve_curved_torches_coverage.json` | 0 | status=pass, 4/4 expectations |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/declined_cave_torches_extinguish.json` | 0 | status=pass |
+## Test overlap check
 
-No separate typecheck/build command exists for this GDScript project; scene-load +
-headless runs act as the parse/build gate (no script parse errors in any log).
-Prior r3 harness evidence in `.gen-r3-done-*` was NOT reused as proof; all results above are fresh.
+Searched tests/scenarios: no prior exposed-plating coverage existed; both
+scenarios are new, non-overlapping, and each asserts its own criterion (exact hp
+deltas / multiplier values / once-per-instance counts / vfx visibility), not mere
+execution.
 
-## Changed-file quality findings
-- New code (`_derive_torch_budget`, probes, unit test) is minimal, documented, follows
-  existing style; no violations of `/opt/data/coding_rules.md` found. No type casts,
-  no speculative abstractions. Surgical diff (13 insertions / 6 deletions in prod code).
-- Test overlap check: new tests assert r4-specific behavior (budget derivation at
-  100×100, spacing constant == 2); no existing suite test covers these paths
-  (`tests/caves/` previously held only discovery-chance tests). No duplication.
-- Untracked scratch dirs `.gen-blocked-req-124-r2-*` and `.gen-r3-done-*` are prior-run
-  workflow artifacts (declared workflow state), not scope creep; noted for cleanup before merge.
+## Changed files reviewed
+
+git status: autoload/ProgressionManager.gd,
+scripts/game/actors/effects/EffectsManager.gd,
+scripts/game/actors/enemy/parts/EnemyHealthController.gd,
+scripts/progression/global.json, scripts/progression/managers/CurseProgressionManager.gd,
+scripts/testing/AgentHarness.gd, scripts/testing/HarnessValues.gd + new
+ExposedStatus.gd, ExposedVFX.gd, and both test scenario JSONs. Identical to the
+revision-1 reviewed diff; only declared workflow artifacts additionally changed;
+no scope creep. New code follows sibling-perk patterns, typed vars/guard clauses;
+no coding-rules violation found.
 
 ## Quality notes
-`.gen/quality-notes.md` did not exist for r4 (prior notes live in the archived
-r3 directory); nothing open to resolve, no new cross-cutting entries required.
+
+quality-notes.md has one open advisory entry (static-breach-bypass): Static
+Breach zeroes armor without passing through `_consume_armor()`, so a Static-Breach
+shatter does not open an Exposed window. Issue wording pins the trigger site to
+`_consume_armor()`, so behavior appears intended; advisory only, does not demote
+any criterion. No new entries appended.
 
 ## Blockers
-None.
+
+None infra. Runner healthy throughout (probe, import gate, both harnesses exit 0).
+Remaining Pending work belongs to the manual-tester profile (windowed captures,
+30fps record_frames recording, `ui_feels_broken` verdict into
+`.gen/manual-report.md`).
 
 ## Unverified items
-None. The plan's windowed visual scenario (`manual_carve_curve_torches_visible`)
-was verified by the implementor with screenshots under `.gen/harness/manual_carve_curve_torches_visible/`;
-the headless re-run of the equivalent logic scenario plus the unit suite is sufficient
-for the criteria here.
+
+- Windowed visual captures / real-time recording / UI sanity verdict (manual-tester scope).
+- The plan's literal `--check-only` typecheck command (tool limitation documented above; superseded by stronger gates).
