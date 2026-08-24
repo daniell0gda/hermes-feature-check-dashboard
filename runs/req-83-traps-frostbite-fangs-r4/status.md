@@ -7,7 +7,7 @@
 - A NEW `.gen/check.md` written this run records the verdict from the fresh shots only; if the shots are still a distant speck or empty-floor crop the classification is `fixable`, and headless pass tags alone never satisfy the visual criterion.
 
 ## ⬜ Pending
-- A fresh `.gen/harness/traps_frostbite_fangs_progression/result.json` from a headless run of the updated scenario reports `status: pass` with all expectations green (frozen_count >= 1, slow_magnitude 0.40 at L1, ice_slow_fx >= 1, unowned control frozen_count == 0) — fresh headless run times out at 420s (2 attempts this run, 5 total); scenario hangs in `record_frames` time_scale 0.1 under the headless dummy renderer; only passing result.json is windowed (headless: false)
+- A fresh `.gen/harness/traps_frostbite_fangs_progression/result.json` from a headless run of the updated scenario reports `status: pass` with all expectations green (frozen_count >= 1, slow_magnitude 0.40 at L1, ice_slow_fx >= 1, unowned control frozen_count == 0) — fresh headless run times out at 420s (1 attempt this iteration, 6 total); scenario hangs in `record_frames` under the headless dummy renderer; only passing result.json is windowed (headless: false)
 - A manual windowed test answering `ui_feels_broken: yes` fails the manual test — no `.gen/manual-report.md` exists; manual tester has not reported
 
 ## ❌ Impossible
