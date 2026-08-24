@@ -1,58 +1,51 @@
-# Request: Warlord's Doctrine — readable windowed armor-bar evidence
+# Request: Exposed Plating perk (issue #89) — continuation r6
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/87
-- **Project:** poke-defense-godot
-- **Runner key:** `godot-td`
-- **Git workspace:** `/workspace/git-workspaces/poke-defense-godot/issue-warlords-doctrine`
-- **Workspace id:** `poke-defense-godot/issue-warlords-doctrine`
-- **Branch:** `issue/warlords-doctrine` (uncommitted perk implementation on current `origin/master`)
-- **Request ID:** `warlords-doctrine-r2`
+- **Repo:** daniell0gda/poke-defense-godot
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/89
+project: godot-td
+workspace: poke-defense-godot/issue-exposed-plating
+- **Workspace:** poke-defense-godot/issue-exposed-plating
+- **Branch:** issue/exposed-plating (rebased onto origin/master @ 9976db7 on 2026-08-24; implementation is uncommitted WIP — preserve it)
+- **Request ID:** req-89-exposed-plating-r6
+- **Runner key:** `godot-td` — workers MUST use `project=godot-td`, `workspace=poke-defense-godot/issue-exposed-plating`. Never invent workspace names. Never use `project=poke-defense-godot`.
 
-## Feature (plain English)
+## Feature
 
-Towers deal more damage, but every enemy spawns with extra armor. The perk itself is already implemented. This run only has to make the granted armor bar *visibly readable* in windowed shots.
+New progression perk `exposed_plating` (Common, global, 3 levels). When an enemy's armor transitions from >0 to 0 (same site as `_consume_armor()`), it gains an "Exposed" status:
 
-## Historical (do not re-implement unless broken)
+- L1: +15% damage taken, 0.5s
+- L2: +25% damage taken, 1s
+- L3: +35% damage taken, 1.5s
 
-`warlords-doctrine-r1` already implemented and auto-verified:
+## Historical runs (context only, not evidence)
 
-- Perk `warlords_doctrine` Common global, 3 levels: L1 +5% dmg / 8% HP armor, L2 +9% / 12%, L3 +14% / 15%.
-- Bonus armor additive on innate `enemies.xml` armor at `Enemy.setup()` after max_hp is final.
-- Damage stacks additively with `tower_dmg` via `_warlords_damage_ratio` in `get_global_damage_multiplier()`.
-- Headless `tests/scenarios/warlords_doctrine.json` pass (L1/L2/L3 multipliers, Mushnub granted 1.76, Orc boss 303.75, reset to 0).
-- `enemy_armor_ballista` / `enemy_armor_trap` still pass.
-- Files already changed (keep them): `autoload/ProgressionManager.gd`, `scripts/game/actors/Enemy.gd`, `scripts/progression/global.json`, `tests/scenarios/warlords_doctrine.json`, `tests/scenarios/enemy_armor_bar_visual.json`.
+- r1–r3: perk implemented; headless harnesses pass. Old checkers treated missing windowed shots as code-check `fixable`.
+- r4: tester used the wrong runner key `poke-defense-godot` → no shots.
+- r5: windowed `exposed_plating_vfx` DID capture 1920x1080 PNGs at 07:50 UTC, but the leader had already failed at 07:49 (`missing screenshots`). Those frames are **not** acceptable evidence: default far camera, enemy is a tiny blob at the spawn, Debug Panel covers the left third, and the amber cracked-shield wash is not inspectable. Archived under `.gen/harness/exposed_plating_vfx/r5-too-far/`. Do not copy them to `.gen/screenshots/` and do not treat them as pass.
 
-r1 manual-tester wrote `.gen/manual-report.md` PASSED, but the pixels do **not** prove the armor bar:
+## Acceptance criteria
 
-- Debug Panel covers the left third of the frame.
-- Camera is a distant top-down of map_3; Mushnub is a tiny purple placeholder (GLB missing in this worktree).
-- Named “close-ups” (`doctrine_armor_*.png`) are just wide crops of that same distant shot. Two bars are not readable. `ui_feels_broken: yes` for evidence purposes.
+1. Perk definition registered like other progression perks; purchasable at 3 levels.
+2. Trigger fires exactly once per shield instance: only on the >0 → 0 transition. Hits while armor is already 0 do NOT re-trigger; re-trigger requires the enemy regaining armor first.
+3. Damage-taken multiplier applies for the debuff duration, per level values above, then expires cleanly.
+4. New VFX: `ExposedStatus`/`ExposedVFX` following `BurnStatus`/`BurnVFX` — cracked-shield amber emissive overlay for the duration, lazily instantiated by `EffectsManager`.
+5. Debug logging: `[EXPOSED]` prefix on trigger and expiry, gated by `OS.is_debug_build()`.
+6. **Player-facing proof (this run's remaining work):** a human looking at the PNG must immediately see the overlay on the Orc King. Required:
+   - After the boss exists, aim `camera_target` at the enemy and zoom in (`Game._zoom_camera` / closer camera distance) so the enemy fills a large part of the frame.
+   - Hide or ignore the Debug Panel; it must not cover the enemy.
+   - Three windowed stills: before breach (no wash) / during Exposed (obvious amber wash on the body) / after expiry (wash gone).
+   - Real 30fps GIF from harness `record_frames` of the zoomed enemy across the window (not a screenshot slideshow).
+   - Copy proving PNGs + GIF into `.gen/screenshots/` and embed them in `.gen/manual-report.md`.
+   - End with `ui_feels_broken: yes|no`. A yes fails.
+   - If the overlay is still invisible at a close camera, that is a **code** failure — strengthen `ExposedVFX` (alpha/energy/shell size) until the before/during frames differ by eye. Do not pass on metadata `exposed_vfx == true` alone.
 
-Archive of r1 dashboard: https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/
+## Verification requirements
 
-## Remaining acceptance (this run)
+- Fresh focused headless after the rebase: `tests/scenarios/exposed_plating_once_per_shield.json` and `tests/scenarios/exposed_plating_vfx.json` via `run_project_cmd` (`godot-td`).
+- If headless criteria 1–3 and 5 are green, checker writes `classification: pass` so the leader can dispatch manual-tester. Missing windowed PNGs/GIFs are a manual-tester job, not a code-check `fixable` — **unless** the close-up stills show no overlay, which is fixable code.
+- Manual testing: REQUIRED. Never `--headless`. Windowed args when Vulkan fails: `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`.
+- Native Godot through `run_project_cmd`; explicit scene argument before user args.
 
-1. Windowed (no `--headless`) `enemy_armor_bar_visual` (or a dedicated follow-up scenario) produces PNGs where a human can clearly see:
-   - a previously-unarmored enemy (Mushnub / map_3 wave 1) with Warlord's Doctrine L1 active
-   - **two** bars: HP row + granted armor row, filled at spawn
-   - armor fill shrinks after a scripted armor hit
-   - armor row hidden once armor is 0
-2. Hide the Debug Panel before screenshots (`UI.debug_panel.visible = false` or equivalent harness call). Do not leave the gray debug overlay in evidence shots.
-3. Camera must aim at the **live enemy position** (`camera_target` = enemy world pos, then `_update_camera_for_layer("surface")`). Hardcoded `[-8,0,-8]` is wrong if the spawn is elsewhere. Zoom close enough that the bars are more than a couple of pixels (raise camera / shorten `surface_distance` only for the shot if a public setter exists; do not permanently change default camera for the game).
-4. If Mushnub GLB is missing, still make the bars readable (zoom, bigger bar scale for the shot, or a larger unarmored enemy type that still has config armor 0). Do not fake armor with a naturally armored enemy for the doctrine leg.
-5. `ui_feels_broken: no` on each final screenshot. Misplaced/clipped HUD or a covering debug panel fails.
-6. Fresh windowed PNGs copied to `.gen/screenshots/` (overwrite the unreadable r1 crops).
-7. Re-run focused `warlords_doctrine.json` headless so perk behavior is still green after any scenario/camera change.
-8. Do **not** reformat unrelated `global.json` entries (existing advisory: whitespace noise).
+## Preserve
 
-## Runner notes
-
-- `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-warlords-doctrine`.
-- Native Godot; harness scene before user args: `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json`
-- Windowed evidence: no `--headless`; add `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
-- `manual_testing: required`. Windowed PNGs required. A pass with unreadable bars is a fail.
-
-## Lifecycle
-
-Do not commit, push, merge, or close the issue.
+Keep the existing uncommitted source diff and new files (`ExposedVFX.gd`, `ExposedStatus.gd`, both scenarios). Re-plan the unmet close-up visual work; add camera-target + zoom to the vfx scenario (and strengthen the shell if needed). Do not wipe the perk implementation.
