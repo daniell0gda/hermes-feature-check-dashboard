@@ -1,22 +1,20 @@
 {
-  "run_id": "leader-resume",
+  "run_id": "leader-loop",
   "feature": "Smoke",
   "status": "running",
-  "started_at": "2026-08-24T07:02:35.511Z",
+  "started_at": "2026-08-24T07:05:37.103Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-resume/",
-  "heartbeat_at": "2026-08-24T07:02:35.511Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-loop/",
+  "heartbeat_at": "2026-08-24T07:05:37.103Z",
   "last_node": null,
-  "active_node": "check",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 283488,
+  "process_id": 286455,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:04:11.426631+00:00",
-    "last_success_at": "2026-08-24T07:02:40.191730+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T07:05:37.103695+00:00"
   },
   "metrics": {}
 }
