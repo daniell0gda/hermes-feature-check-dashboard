@@ -6,17 +6,32 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-loop/",
-  "heartbeat_at": "2026-08-24T07:02:08.605Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-24T07:02:17.806Z",
+  "last_node": "plan",
+  "active_node": "code",
+  "last_event_at": "2026-08-24T07:02:17.806Z",
   "process_id": 283488,
   "host": "f1a4230ec90b",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:02:13.730889+00:00",
-    "last_success_at": "2026-08-24T07:02:12.996353+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T07:02:17.813316+00:00",
+    "last_success_at": "2026-08-24T07:02:17.806018+00:00",
+    "last_error": null,
+    "last_skipped_remote_at": "2026-08-24T07:02:17.812643+00:00"
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
+      }
+    ]
+  }
 }
