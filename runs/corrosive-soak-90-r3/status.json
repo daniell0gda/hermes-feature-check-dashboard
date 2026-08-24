@@ -1,21 +1,21 @@
 {
   "run_id": "corrosive-soak-90-r3",
   "feature": "corrosive-soak-perk",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-24T08:47:51.990Z",
-  "ended_at": null,
+  "ended_at": "2026-08-24T10:31:03.720Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/corrosive-soak-90-r3/",
-  "heartbeat_at": "2026-08-24T10:30:57.812Z",
+  "heartbeat_at": "2026-08-24T10:31:03.720Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-24T10:30:57.812Z",
   "process_id": 338460,
   "host": "f1a4230ec90b",
-  "phase": "team-leader",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T10:30:57.813224+00:00",
-    "last_success_at": "2026-08-24T09:32:40.057350+00:00",
+    "last_attempt_at": "2026-08-24T10:31:03.720808+00:00",
+    "last_success_at": "2026-08-24T10:31:03.718188+00:00",
     "last_error": null
   },
   "metrics": {
@@ -74,6 +74,17 @@
         "cost_status": "unknown",
         "input_tokens": 27655,
         "output_tokens": 476
+      },
+      {
+        "task_id": "manual-tester",
+        "cluster_id": null,
+        "role": "manual-tester",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 81448,
+        "output_tokens": 19766
       }
     ]
   }
