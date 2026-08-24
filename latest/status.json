@@ -1,47 +1,22 @@
 {
-  "run_id": "req-89-exposed-plating-r2",
-  "feature": "Exposed Plating perk",
+  "run_id": "req-117-gen-hud-textures-r2",
+  "feature": "gen-hud-textures-py-cannot-run-all-three",
   "status": "running",
-  "started_at": "2026-08-24T07:06:43.523Z",
+  "started_at": "2026-08-24T07:16:11.189Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r2/",
-  "heartbeat_at": "2026-08-24T07:17:28.993Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-24T07:17:28.993Z",
-  "process_id": 287796,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-117-gen-hud-textures-r2/",
+  "heartbeat_at": "2026-08-24T07:16:11.189Z",
+  "last_node": null,
+  "active_node": "plan",
+  "last_event_at": null,
+  "process_id": 292058,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:17:33.357410+00:00",
-    "last_success_at": "2026-08-24T07:17:33.356187+00:00",
+    "last_attempt_at": "2026-08-24T07:17:45.877050+00:00",
+    "last_success_at": "2026-08-24T07:16:15.763338+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 67668,
-        "output_tokens": 4352
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 161422,
-        "output_tokens": 3878
-      }
-    ]
-  }
+  "metrics": {}
 }
