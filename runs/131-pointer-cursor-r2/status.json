@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/131-pointer-cursor-r2/",
-  "heartbeat_at": "2026-08-24T08:12:07.166Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-24T08:12:07.166Z",
+  "heartbeat_at": "2026-08-24T08:18:26.046Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-24T08:18:26.046Z",
   "process_id": 320413,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T08:12:11.802633+00:00",
-    "last_success_at": "2026-08-24T08:12:11.801407+00:00",
+    "last_attempt_at": "2026-08-24T08:18:26.047128+00:00",
+    "last_success_at": "2026-08-24T08:12:16.012803+00:00",
     "last_error": null
   },
   "metrics": {
