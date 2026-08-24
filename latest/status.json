@@ -1,21 +1,21 @@
 {
-  "run_id": "issue115-ground-material-ignores-cache-r2",
-  "feature": "ground-material-ignores-cache",
+  "run_id": "issue-130-middle-pan-flip-r3",
+  "feature": "issue-130-middle-pan-flip",
   "status": "running",
-  "started_at": "2026-08-24T04:57:05.842Z",
+  "started_at": "2026-08-24T03:46:16.878Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue115-ground-material-ignores-cache-r2/",
-  "heartbeat_at": "2026-08-24T05:06:28.980Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-24T05:06:28.980Z",
-  "process_id": 260956,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-130-middle-pan-flip-r3/",
+  "heartbeat_at": "2026-08-24T05:07:01.102Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-24T05:07:01.102Z",
+  "process_id": 246257,
   "host": "f1a4230ec90b",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T05:06:33.552843+00:00",
-    "last_success_at": "2026-08-24T05:06:33.552006+00:00",
+    "last_attempt_at": "2026-08-24T05:07:01.102627+00:00",
+    "last_success_at": "2026-08-24T04:39:12.551992+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 60304,
-        "output_tokens": 4373
+        "input_tokens": 0,
+        "output_tokens": 0
       },
       {
         "task_id": "code",
@@ -39,8 +39,52 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 64806,
-        "output_tokens": 4113
+        "input_tokens": 45382,
+        "output_tokens": 1452
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 152947,
+        "output_tokens": 12639
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 47435,
+        "output_tokens": 1358
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 97833,
+        "output_tokens": 6161
+      },
+      {
+        "task_id": "revision-code-2",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 45957,
+        "output_tokens": 1219
       }
     ]
   }

@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation (revision-code-2)
+# Coder report: implementation (revision-code-2)
 
 ## Changed files
 - none this iteration — pan-stability implementation verified intact from prior cycles:
@@ -19,4 +19,3 @@ All Pending criteria in status.md (pan stability, degenerate look_at guards, rig
 ## Notes
 - godot binary requires `export PATH=/opt/data/profiles/code/home/bin:$PATH`.
 - No dashboard events published. Waiting for check.
-\n

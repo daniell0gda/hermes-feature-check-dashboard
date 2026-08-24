@@ -1,37 +1,40 @@
-# Request: issue #115 — create_ground_plane_material bypasses the resource cache
+# Request: #130 — middle-mouse pan still flips carve bird view (r3)
 
-- **Project:** poke-defense-godot
-- **Git workspace:** poke-defense-godot/issue-ground-material-ignores-cache
-  (`/workspace/git-workspaces/poke-defense-godot/issue-ground-material-ignores-cache`)
-- **Branch:** `issue/ground-material-ignores-cache` (rebased onto origin/master d7551d9)
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/115
-- **Labels at claim:** status:in-progress (already claimed)
-- **Request ID:** issue115-ground-material-ignores-cache-r2
-- **Retry note:** Daniel asked Retry 2026-08-23. Preserve existing source/harness; treat r1 `.gen` as historical; re-verify after rebase.
+## Project
+- Workspace: `/workspace/poke-defense-godot`
+- Branch: `issue/underground-carve-topdown-camera-rotation`
+- Runner key: `godot-td`
+- Runner workspace name: `poke-defense-godot/issue-130` only. Never `godot-td/issue-*` or `poke-defense-godot/check` (those 422 chdir).
+- If runner 422/no docker: host Godot is allowed: `PATH=/opt/data/profiles/code/home/bin`. Do **not** classify host-ok as `blocked`.
 
-## Feature summary
+Do not commit/stash/push `logs/balance/`. Keep existing uncommitted camera/harness files.
 
-`TextureAtlasUtils.create_ground_plane_material` (scripts/utils/TextureAtlasUtils.gd ~lines 145-158)
-loads both ground textures with `ResourceLoader.CACHE_MODE_IGNORE`, defeating the resource cache and
-the `AssetPreloader` startup preload of `underground_floor.jpg`. Switch to `CACHE_MODE_REUSE` — but
-first find the real cause of the "shader only" map-switch bug the comment blames on caching.
-Likely suspect: `EnvironmentUtils._update_ground_plane_color` reassigns `grass_tint` but never the
-albedo samplers.
+## Daniel repro (still the bug)
+Underground → Carve (top-down good) → **hold middle mouse** → move a bit → view yaw flips ~90/180°. Path preview L rotates.
 
-## Acceptance criteria
+This is **map pan**, not right-click rotate.
 
-1. Ground plane material uses cached textures (`CACHE_MODE_REUSE`) for
-   `res://textures/nature/map_grass.jpg` and `res://textures/underground_floor.jpg`.
-2. Root cause of the original map-switch shader issue identified; if it was a missing sampler
-   reassignment, that is fixed so the ground keeps its grass/dirt textures across a map switch.
-3. Verified by switching maps twice through the game-test harness and confirming the ground still
-   shows blended grass/dirt, not flat shader output. Manual test with windowed screenshots is
-   required (visible player-facing surface).
+## Review of current uncommitted work
+Already in the tree (keep, do not revert):
+- Pan skips `look_at(..., UP)` when `_carve_camera_armed` or view nearly vertical.
+- `_zoom_camera` same guard.
+- `carve_pan_no_flip.json` + `mouse_pan` + `basis_x_yaw`.
 
-## Runner notes (redo reminders)
+**Not enough / still wrong:**
+1. `_rotate_camera` still ends with `cam.look_at(target, Vector3.UP)` at pitch ~90° — first rotate tick can still flip.
+2. `_update_camera_position_for_target` **always** `look_at(..., UP)` — any later follow/WASD/velocity will flip bird view even if pan skipped look_at.
+3. Layer helpers at Game.gd ~956/964 still `look_at(..., UP)`.
+4. Position-offset `atan2(x,z)` is **0/0** when camera is straight above the target — cannot detect a basis flip. Only `basis.x` / `basis.y` heading counts.
+5. Prior team runs ended `failed` with **stale** `.gen/check.md` / report from Aug 22 (wrong runner names, “on_carve_camera_mode missing”). Ignore those files as evidence. Write **fresh** check.md/status.md this run.
+6. No windowed GIF reached Daniel. `manual_testing: required`.
 
-- Runner key `godot-td`, workspace `poke-defense-godot/issue-ground-material-ignores-cache`.
-- Native Godot commands via run_project_cmd; explicit scene argument before user args in harnesses;
-  editor gate `godot --headless --path . --editor --quit-after 300`.
-- Windowed evidence needs `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` when Vulkan fails.
-- manual_testing: required (ground texture visible in-game).
+## Required this run
+- One non-degenerate look-at helper: if look axis is nearly ±Y, use `Vector3.FORWARD` (or current flattened `-basis.y`) as up; else `Vector3.UP`. Use it everywhere the camera looks at the target while carve-armed or nearly vertical.
+- Middle-pan: translate only; **basis.x heading unchanged** (delta < 0.05 rad) for small and large pans.
+- Right-drag rotate + click-cancel still work; pitch clamp stays.
+- Harness must compare **basis**, not orbit atan2. Drive real `_input` middle-button press+move+release.
+- Windowed 30fps GIF: carve arm → small middle-drag → L-preview does not rotate. Screenshot key `name`. Xvfb :77 directly. Top-down of the path.
+- UI-sanity: `ui_feels_broken: yes` fails manual test.
+
+## Out of scope
+No merge/close/push unless asked.
