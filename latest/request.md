@@ -1,46 +1,58 @@
-# Request: #130 — middle-mouse pan still flips carve bird view (r3)
+# Request: Warlord's Doctrine — readable windowed armor-bar evidence
 
-## Project
-- Workspace: `/workspace/poke-defense-godot`
-- Branch: `issue/underground-carve-topdown-camera-rotation`
-- Runner key: `godot-td`
-- Runner workspace name: `poke-defense-godot/issue-130` only. Never `godot-td/issue-*` or `poke-defense-godot/check` (those 422 chdir).
-- If runner 422/no docker: host Godot is allowed: `PATH=/opt/data/profiles/code/home/bin`. Do **not** classify host-ok as `blocked`.
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/87
+- **Project:** poke-defense-godot
+- **Runner key:** `godot-td`
+- **Git workspace:** `/workspace/git-workspaces/poke-defense-godot/issue-warlords-doctrine`
+- **Workspace id:** `poke-defense-godot/issue-warlords-doctrine`
+- **Branch:** `issue/warlords-doctrine` (uncommitted perk implementation on current `origin/master`)
+- **Request ID:** `warlords-doctrine-r2`
 
-Do not commit/stash/push `logs/balance/`. Keep existing uncommitted camera/harness files.
+## Feature (plain English)
 
-## Daniel repro (still the bug)
-Underground → Carve (top-down good) → **hold middle mouse** → move a bit → view yaw flips ~90/180°. Path preview L rotates.
+Towers deal more damage, but every enemy spawns with extra armor. The perk itself is already implemented. This run only has to make the granted armor bar *visibly readable* in windowed shots.
 
-This is **map pan**, not right-click rotate.
+## Historical (do not re-implement unless broken)
 
-## Review of current uncommitted work
-Already in the tree (keep, do not revert):
-- Pan skips `look_at(..., UP)` when `_carve_camera_armed` or view nearly vertical.
-- `_zoom_camera` same guard.
-- `carve_pan_no_flip.json` + `mouse_pan` + `basis_x_yaw`.
+`warlords-doctrine-r1` already implemented and auto-verified:
 
-**Not enough / still wrong:**
-1. `_rotate_camera` still ends with `cam.look_at(target, Vector3.UP)` at pitch ~90° — first rotate tick can still flip.
-2. `_update_camera_position_for_target` **always** `look_at(..., UP)` — any later follow/WASD/velocity will flip bird view even if pan skipped look_at.
-3. Layer helpers at Game.gd ~956/964 still `look_at(..., UP)`.
-4. Position-offset `atan2(x,z)` is **0/0** when camera is straight above the target — cannot detect a basis flip. Only `basis.x` / `basis.y` heading counts.
-5. Prior team runs ended `failed` with **stale** `.gen/check.md` / report from Aug 22 (wrong runner names, “on_carve_camera_mode missing”). Ignore those files as evidence. Write **fresh** check.md/status.md this run.
-6. No windowed GIF reached Daniel. `manual_testing: required`.
+- Perk `warlords_doctrine` Common global, 3 levels: L1 +5% dmg / 8% HP armor, L2 +9% / 12%, L3 +14% / 15%.
+- Bonus armor additive on innate `enemies.xml` armor at `Enemy.setup()` after max_hp is final.
+- Damage stacks additively with `tower_dmg` via `_warlords_damage_ratio` in `get_global_damage_multiplier()`.
+- Headless `tests/scenarios/warlords_doctrine.json` pass (L1/L2/L3 multipliers, Mushnub granted 1.76, Orc boss 303.75, reset to 0).
+- `enemy_armor_ballista` / `enemy_armor_trap` still pass.
+- Files already changed (keep them): `autoload/ProgressionManager.gd`, `scripts/game/actors/Enemy.gd`, `scripts/progression/global.json`, `tests/scenarios/warlords_doctrine.json`, `tests/scenarios/enemy_armor_bar_visual.json`.
 
-## Required this run
-- One non-degenerate look-at helper: if look axis is nearly ±Y, use `Vector3.FORWARD` (or current flattened `-basis.y`) as up; else `Vector3.UP`. Use it everywhere the camera looks at the target while carve-armed or nearly vertical.
-- Middle-pan: translate only; **basis.x heading unchanged** (delta < 0.05 rad) for small and large pans.
-- Right-drag rotate + click-cancel still work; pitch clamp stays.
-- Harness must compare **basis**, not orbit atan2. Drive real `_input` middle-button press+move+release.
-- Windowed 30fps GIF: carve arm → small middle-drag → L-preview does not rotate. Screenshot key `name`. Xvfb :77 directly. Top-down of the path.
-- UI-sanity: `ui_feels_broken: yes` fails manual test.
+r1 manual-tester wrote `.gen/manual-report.md` PASSED, but the pixels do **not** prove the armor bar:
 
-## Out of scope
-No merge/close/push unless asked.
+- Debug Panel covers the left third of the frame.
+- Camera is a distant top-down of map_3; Mushnub is a tiny purple placeholder (GLB missing in this worktree).
+- Named “close-ups” (`doctrine_armor_*.png`) are just wide crops of that same distant shot. Two bars are not readable. `ui_feels_broken: yes` for evidence purposes.
 
-## Redo note (r4)
-Last check (`revision-check-2`) wrote `classification: fixable` after a real runner pass. Focused pan/topdown scenarios pass. Do **not** rewrite the look_at guards. Remaining work only:
-1. Manual tester: windowed 30fps GIF (Xvfb :77, not xvfb-run) of carve arm → small middle-drag, path L does not flip. Screenshot key is `name`.
-2. Do not block the issue on the pre-existing red full suite (legacy domains). Record those as known pre-existing in quality-notes.
-3. If drag_spin rotate-call is vacuous, fix the scenario so it actually rotates, then re-run it.
+Archive of r1 dashboard: https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/
+
+## Remaining acceptance (this run)
+
+1. Windowed (no `--headless`) `enemy_armor_bar_visual` (or a dedicated follow-up scenario) produces PNGs where a human can clearly see:
+   - a previously-unarmored enemy (Mushnub / map_3 wave 1) with Warlord's Doctrine L1 active
+   - **two** bars: HP row + granted armor row, filled at spawn
+   - armor fill shrinks after a scripted armor hit
+   - armor row hidden once armor is 0
+2. Hide the Debug Panel before screenshots (`UI.debug_panel.visible = false` or equivalent harness call). Do not leave the gray debug overlay in evidence shots.
+3. Camera must aim at the **live enemy position** (`camera_target` = enemy world pos, then `_update_camera_for_layer("surface")`). Hardcoded `[-8,0,-8]` is wrong if the spawn is elsewhere. Zoom close enough that the bars are more than a couple of pixels (raise camera / shorten `surface_distance` only for the shot if a public setter exists; do not permanently change default camera for the game).
+4. If Mushnub GLB is missing, still make the bars readable (zoom, bigger bar scale for the shot, or a larger unarmored enemy type that still has config armor 0). Do not fake armor with a naturally armored enemy for the doctrine leg.
+5. `ui_feels_broken: no` on each final screenshot. Misplaced/clipped HUD or a covering debug panel fails.
+6. Fresh windowed PNGs copied to `.gen/screenshots/` (overwrite the unreadable r1 crops).
+7. Re-run focused `warlords_doctrine.json` headless so perk behavior is still green after any scenario/camera change.
+8. Do **not** reformat unrelated `global.json` entries (existing advisory: whitespace noise).
+
+## Runner notes
+
+- `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-warlords-doctrine`.
+- Native Godot; harness scene before user args: `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json`
+- Windowed evidence: no `--headless`; add `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
+- `manual_testing: required`. Windowed PNGs required. A pass with unreadable bars is a fail.
+
+## Lifecycle
+
+Do not commit, push, merge, or close the issue.
