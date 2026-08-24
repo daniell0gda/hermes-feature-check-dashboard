@@ -1,93 +1,42 @@
-# Request: gen-hud-textures-py-cannot-run-all-three (r2)
+# Request: Exposed Plating perk (issue #89) — continuation r2
 
-**Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/117
-**Project runner:** `godot-td`
-**Workspace:** `poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three`
-**Branch:** `issue/gen-hud-textures-py-cannot-run-all-three`
-**Request id:** `req-117-gen-hud-textures-r2`
-**Starting revision:** `9d54964` (`origin/master` after hard reset)
+- **Repo:** daniell0gda/poke-defense-godot
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/89
+project: godot-td
+workspace: poke-defense-godot/issue-exposed-plating
+- **Workspace:** poke-defense-godot/issue-exposed-plating
+- **Branch:** issue/exposed-plating (rebased onto origin/master @ e7910d0 on 2026-08-24; implementation is uncommitted WIP, preserve it)
+- **Request ID:** req-89-exposed-plating-r5 (r4 tester got the wrong runner key `poke-defense-godot` and produced no shots. request.md now has literal `project: godot-td` / `workspace: poke-defense-godot/issue-exposed-plating` so the dispatcher prompt is correct. Resume at manual-tester only.)
+- **Runner key:** `godot-td` — workers MUST use `project=godot-td`, `workspace=poke-defense-godot/issue-exposed-plating`. Never invent workspace names. Never use `project=poke-defense-godot`.
 
-## Why this is a fresh run
+## Feature
 
-Daniel: "Rerun from the beginning, plan wasn't produced."
+New progression perk `exposed_plating` (Common, global, 3 levels). When an enemy's armor transitions from >0 to 0 (same site as `_consume_armor()`), it gains an "Exposed" status:
 
-The previous run (`117-gen-hud-20260823`) coded and checked **without** writing `.gen/plan.md` or `.gen/clusters/*.md`. That attempt is archived at:
+- L1: +15% damage taken, 0.5s
+- L2: +25% damage taken, 1s
+- L3: +35% damage taken, 1.5s
 
-`.gen-blocked-117-gen-hud-20260823-attempt1/`
+## Historical run (context only, not evidence)
 
-Historical commit `d06b5de` (`fix: drop broken gen_hud_textures.py and unused crate-derived HUD slices`) is **unverified reference only**. The worktree is reset to `origin/master`. Do **not** treat the archived check as done. Do **not** skip the planner.
+Run `issue-89-exposed-plating` (2026-08-23) implemented the perk and passed headless harnesses, then ended `classification: fixable` / dashboard `failed` because the checker treated missing windowed VFX screenshots as a code-check failure. That skipped the manual-tester gate. Re-verify everything after the rebase. Do not assume old `.gen/harness` results are still valid.
 
-## Hard planner gate
+## Acceptance criteria
 
-The planner **must** write:
+1. Perk definition registered like other progression perks; purchasable at 3 levels.
+2. Trigger fires exactly once per shield instance: only on the >0 → 0 transition. Hits while armor is already 0 do NOT re-trigger; re-trigger requires the enemy regaining armor first.
+3. Damage-taken multiplier applies for the debuff duration, per level values above, then expires cleanly.
+4. New VFX: `ExposedStatus`/`ExposedVFX` following the existing `BurnStatus`/`BurnVFX` pattern — cracked-shield emissive overlay for the duration, lazily instantiated by `EffectsManager` like `BurnVFX`/`OilVFX`.
+5. Debug logging: `[EXPOSED]` prefix lines on trigger and expiry, gated by `OS.is_debug_build()`.
 
-- `.gen/plan.md`
-- one or more `.gen/clusters/<id>.md` with exclusive file ownership, `parallel: true|false`, dependencies, acceptance criteria
+## Verification requirements
 
-Do not implement until those artifacts exist. Do not invent nested plan state.
+- Fresh focused headless harness after the rebase: `tests/scenarios/exposed_plating_once_per_shield.json` and `tests/scenarios/exposed_plating_vfx.json` via `run_project_cmd` (`godot-td`).
+- If headless criteria 1–3 and 5 are green, checker must write `classification: pass` so the leader can dispatch manual-tester. Missing windowed PNGs/GIFs are a manual-tester job, not a code-check `fixable`.
+- Manual testing: REQUIRED (player-facing VFX). Windowed screenshots plus a real 30fps GIF from harness `record_frames` of the Exposed VFX on a real enemy. No headless-only closeout. End with `ui_feels_broken: yes|no`.
+- Windowed Godot args when Vulkan fails: `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`.
+- Native Godot through `run_project_cmd`; explicit scene argument before user args.
 
-## Plain language
+## Preserve
 
-The HUD crate-texture generator cannot run because its three source JPGs are gone. Either restore those sources so the script works, or delete the dead script and keep the still-used HUD icons.
-
-## Problem
-
-`tools/gen_hud_textures.py` (572 lines) cannot run. Its three sources are absent from the repo and from disk:
-
-- `textures/_source/woden_panel.jpg`
-- `textures/_source/woden_panel_wide.jpg`
-- `textures/_source/woden_panel_wide_darkonly.jpg`
-
-Current wood-panel redesign uses `panel-square.png` / `panel-wide.png` via `tools/prep_hud_assets.py`.
-
-Still-used outputs under `textures/ui/hud/` (keep these unless you re-derive them):
-
-- `icon_coin.png` — `scenes/ui/widgets/PricedButton.tscn`
-- `towers_panel.png` — `themes/hud/HudTheme.tres`
-- `icon_heart.png` — `scenes/UI.tscn`
-- `wood_slot.png`, `slot_empty.png` (script also writes these; confirm live references before deleting)
-
-The script already documents that the JPGs are missing (comment at lines 16–20). That comment is not a fix.
-
-## Acceptance
-
-One of:
-
-1. Restore the crate JPGs to `textures/_source/` and `gen_hud_textures.py` runs clean, or
-2. Re-derive still-used outputs from current sources via `prep_hud_assets.py` **or** keep the committed live PNGs unchanged, then delete `gen_hud_textures.py` plus **unreferenced** dead outputs.
-
-Either way `tools/` must contain no script whose sources are missing.
-
-Prefer option 2 if `git log --all -- '*woden_panel*'` is empty. Option 1 is valid only if the JPGs can actually be recovered.
-
-If option 2: do **not** delete `icon_coin.png`, `icon_heart.png`, or `towers_panel.png`. Only delete outputs that are unused by scenes/themes/scripts.
-
-`tools/gen_hud_icons.py` still claims `icon_coin` / `icon_heart` come from `gen_hud_textures.py` — update that docstring if the generator is deleted.
-
-## Verification (runner only)
-
-Project `godot-td`, workspace `poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three`.
-
-Tokenized `run_project_cmd` examples:
-
-```json
-{"project":"godot-td","workspace":"poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three","cmd":["python3","--version"]}
-{"project":"godot-td","workspace":"poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three","cmd":["godot","--headless","--path",".","--editor","--quit-after","300"]}
-```
-
-- Prove no remaining `tools/*.py` references missing `_source` files.
-- Prove live HUD assets still exist and are referenced.
-- Editor/import gate if textures change.
-- Git/worktree ops are Hermes-side, not runner: `git diff --check`, `git status --short`.
-
-## Manual testing
-
-`manual_testing: none` if committed player-facing PNGs are unchanged.
-If HUD art look changes, `manual_testing: required` with windowed shots (never `--headless`) plus `ui_feels_broken: yes|no`.
-
-## Redo notes
-
-- Do not invent runner workspace names (`godot-td/issue-117` is wrong).
-- Never use host `godot` / `npm` instead of `run_project_cmd`.
-- Worker image may lack Pillow; do not require regenerating committed PNGs if they stay byte-identical.
-- Dashboard publication is required on the leader path; include the public run URL in the terminal summary.
+Keep the existing uncommitted source diff and new files (`ExposedVFX.gd`, `ExposedStatus.gd`, both scenarios). Re-plan only unmet work (windowed evidence + any rebase breakage). Do not wipe the implementation.
