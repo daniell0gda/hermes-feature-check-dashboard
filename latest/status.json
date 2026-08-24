@@ -1,36 +1,22 @@
 {
-  "run_id": "issue45-water-flood-r1",
-  "feature": "water-conductive-flood-wet-splash",
+  "run_id": "req-124-cave-carved-path-torches-r6",
+  "feature": "cave-carved-path-torches",
   "status": "running",
-  "started_at": "2026-08-24T21:21:18.668Z",
+  "started_at": "2026-08-24T21:13:04.319Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
-  "heartbeat_at": "2026-08-24T21:24:57.788Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-24T21:24:57.788Z",
-  "process_id": 496490,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-124-cave-carved-path-torches-r6/",
+  "heartbeat_at": "2026-08-24T21:26:51.729Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-24T21:26:51.729Z",
+  "process_id": 494928,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T21:25:02.592044+00:00",
-    "last_success_at": "2026-08-24T21:25:02.590619+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T21:26:51.729364+00:00",
+    "last_success_at": "2026-08-24T21:13:08.801756+00:00",
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 40889,
-        "output_tokens": 3182
-      }
-    ]
-  }
+  "metrics": {}
 }
