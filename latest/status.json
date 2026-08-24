@@ -1,20 +1,69 @@
 {
-  "run_id": "req-89-exposed-plating-r6",
-  "feature": "Exposed Plating perk",
+  "run_id": "warlords-doctrine-r2",
+  "feature": "Warlord's Doctrine perk",
   "status": "running",
-  "started_at": "2026-08-24T09:06:06.187Z",
+  "started_at": "2026-08-24T08:21:41.244Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r6/",
-  "heartbeat_at": "2026-08-24T09:06:06.187Z",
-  "last_node": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r2/",
+  "heartbeat_at": "2026-08-24T09:06:20.646Z",
+  "last_node": "manual-tester",
   "active_node": null,
-  "last_event_at": null,
-  "process_id": 351886,
+  "last_event_at": "2026-08-24T09:06:20.646Z",
+  "process_id": 327257,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T09:06:06.187095+00:00"
+    "last_attempt_at": "2026-08-24T09:06:20.647342+00:00",
+    "last_success_at": "2026-08-24T09:02:03.552008+00:00",
+    "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 76120,
+        "output_tokens": 5244
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 246911,
+        "output_tokens": 5635
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 227859,
+        "output_tokens": 4222
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 43191,
+        "output_tokens": 527
+      }
+    ]
+  }
 }
