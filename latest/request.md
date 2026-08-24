@@ -1,47 +1,34 @@
-# Request: #131 pointer-cursor-on-clickable-surfaces (r2)
+# Request: traps_frostbite_fangs (r3 — camera/visual proof)
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/131
-- **Project:** poke-defense-godot (runner key `godot-td`)
-- **Workspace:** poke-defense-godot/issue-pointer-cursor-on-clickable-surfaces
-- **Runner workspace name:** `poke-defense-godot/issue-pointer-cursor-on-clickable-surfaces`
-- **Branch:** issue/pointer-cursor-on-clickable-surfaces (rebased onto origin/master @ 9d54964)
-- **Request ID:** 131-pointer-cursor-r2
+- request_id: req-83-traps-frostbite-fangs-r3
+project: godot-td
+workspace: poke-defense-godot/issue-traps-frostbite-fangs
+issue: https://github.com/daniell0gda/poke-defense-godot/issues/83
+- branch: issue/traps-frostbite-fangs
+- intent: continuation — keep perk code; fix unreadable frost shots
 
-## Feature
+## History (do not treat as evidence)
 
-Show a pointing-hand ("pointer") mouse cursor when hovering over clickable UI
-surfaces (buttons and other clickables); non-clickable surfaces keep the
-default arrow.
+- req-83 claimed pass. Human review FAILED: wide underground shot, enemy is a speck; zoom PNG is empty floor.
+- req-83-r2 plan/code workers returned empty. Stale `check.md` still said `classification: pass`, so the leader skipped revision and reused yesterday's shots. Archived to `.gen-r2-stale-pass/`. Those files are not current evidence.
 
-## Acceptance criteria (from issue)
+## Feature (already implemented — do not revert)
 
-1. All buttons (and other clickable UI surfaces) show a pointer cursor on hover, in windowed and fullscreen modes.
-2. Non-clickable surfaces keep the default arrow.
-3. Verified with a screenshot of hover state on a button.
+Unique `traps_frostbite_fangs` L1-3. Trap hits call `EffectsManager.apply_frozen`. Magnitude/duration scale. Existing frost VFX.
 
-## Existing implementation (keep and verify)
+## Required this run
 
-Uncommitted work already in this worktree after rebase onto current master:
+1. Keep the perk implementation.
+2. Change `tests/scenarios/traps_frostbite_fangs_progression.json` so the windowed shot is close and top-down on the trap + live enemy. `_update_camera_for_layer` resets to the default far camera — after that call, set `Camera3D.position` close above the trap (small height, tiny z offset) and `look_at` the trap. Enemy body must fill enough of the frame to see frost vs green.
+3. Keep explicit `screenshot` + 30fps `record_frames` GIF. Copy fresh PNGs/GIF to `.gen/screenshots/`.
+4. Checker must write a NEW `.gen/check.md`. If shots are still a distant speck or a crop of empty floor: `classification: fixable`. Headless tags alone do not pass the visual criterion.
+5. `ui_feels_broken: yes` fails the manual test.
+6. Runner only: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-traps-frostbite-fangs`. Never `project=poke-defense-godot`.
 
-- `scripts/ui/PointerCursor.gd` autoload: `node_added` + deferred whole-tree sweep sets
-  `BaseButton.mouse_default_cursor_shape = CURSOR_POINTING_HAND`. Both hooks are required
-  (node_added alone missed 39/52 scene-file buttons).
-- `project.godot` registers `PointerCursor="*res://scripts/ui/PointerCursor.gd"`.
-- Harness: `hover_ui` action + `ui_control` value source (`cursor_shape` / `exists`).
-- Focused scenario: `tests/scenarios/ui_pointer_cursor.json`.
-- After rebase, `HarnessValues.gd` must keep BOTH `nature` (master) and `ui_control` (this issue).
+## Manual testing
 
-Do not discard this approach unless a fresh run proves it wrong. Re-plan only unmet
-criteria. Historical r1 harness `status=pass` is stale after the rebase — require fresh
-editor import, headless + windowed focused harness, and `smoke_placement`.
+`manual_testing: required`. Windowed only. No `--headless`.
 
-Prior team-work run `131-pointer-cursor-r1` failed because check.md was never written.
-This r2 run must complete check + required windowed manual testing.
+## Lifecycle
 
-## Notes for workers
-
-- Use runner key `godot-td`, workspace `poke-defense-godot/issue-pointer-cursor-on-clickable-surfaces`. Never invent other workspace names.
-- Godot 4: `Control.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND`. Prefer the existing project-wide autoload over per-scene edits.
-- Visible player-facing UI change → `manual_testing: required` with windowed screenshots of hover state on at least one button; include the overall ui_feels_broken sanity check.
-- Godot screenshots do not draw the OS cursor; programmatic `cursor_shape==2` plus a hover screenshot is the evidence pair. Do not fail only because the hand is not visible in the PNG.
-- Revision budget: 2 (default).
+Do not commit, push, merge, or close.

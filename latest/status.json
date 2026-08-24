@@ -1,47 +1,22 @@
 {
-  "run_id": "131-pointer-cursor-r2",
-  "feature": "pointer-cursor-on-clickable-surfaces",
+  "run_id": "req-83-traps-frostbite-fangs-r3",
+  "feature": "traps-frostbite-fangs",
   "status": "running",
-  "started_at": "2026-08-24T08:06:42.453Z",
+  "started_at": "2026-08-24T07:16:57.944Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/131-pointer-cursor-r2/",
-  "heartbeat_at": "2026-08-24T08:18:26.046Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-24T08:18:26.046Z",
-  "process_id": 320413,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r3/",
+  "heartbeat_at": "2026-08-24T08:18:34.787Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-24T08:18:34.787Z",
+  "process_id": 292510,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T08:18:30.515061+00:00",
-    "last_success_at": "2026-08-24T08:18:30.513793+00:00",
+    "last_attempt_at": "2026-08-24T08:18:34.787876+00:00",
+    "last_success_at": "2026-08-24T07:18:37.452412+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 72169,
-        "output_tokens": 3054
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 64175,
-        "output_tokens": 5456
-      }
-    ]
-  }
+  "metrics": {}
 }
