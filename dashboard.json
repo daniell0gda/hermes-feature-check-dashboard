@@ -150,6 +150,11 @@
     "url": "runs/leader-smoke/"
   },
   {
+    "run_id": "leader-resume",
+    "status": "running",
+    "url": "runs/leader-resume/"
+  },
+  {
     "run_id": "leader-loop",
     "status": "completed",
     "url": "runs/leader-loop/"
