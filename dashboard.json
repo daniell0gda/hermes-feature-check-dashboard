@@ -45,8 +45,13 @@
     "url": "runs/req-91-perk-undermining/"
   },
   {
-    "run_id": "req-89-exposed-plating-r2",
+    "run_id": "req-89-exposed-plating-r3",
     "status": "running",
+    "url": "runs/req-89-exposed-plating-r3/"
+  },
+  {
+    "run_id": "req-89-exposed-plating-r2",
+    "status": "failed",
     "url": "runs/req-89-exposed-plating-r2/"
   },
   {
