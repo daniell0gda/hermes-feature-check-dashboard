@@ -1,12 +1,12 @@
 {
   "run_id": "req-124-cave-carved-path-torches-r6",
   "feature": "cave-carved-path-torches",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-24T21:13:04.319Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-24T21:26:56.400Z",
+  "error": "code worker returned no reply (empty model or exhausted API retries)",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-124-cave-carved-path-torches-r6/",
-  "heartbeat_at": "2026-08-24T21:26:51.729Z",
+  "heartbeat_at": "2026-08-24T21:26:56.400Z",
   "last_node": "code",
   "active_node": null,
   "last_event_at": "2026-08-24T21:26:51.729Z",
@@ -14,9 +14,9 @@
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T21:26:51.729364+00:00",
-    "last_success_at": "2026-08-24T21:13:08.801756+00:00",
-    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
+    "last_attempt_at": "2026-08-24T21:26:56.400330+00:00",
+    "last_success_at": "2026-08-24T21:26:56.399006+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
