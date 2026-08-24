@@ -1,68 +1,46 @@
 {
-  "run_id": "req-89-exposed-plating-r8",
-  "feature": "exposed-plating",
-  "status": "running",
-  "started_at": "2026-08-24T14:06:03.525Z",
-  "ended_at": null,
+  "run_id": "req-83-traps-frostbite-fangs-r4",
+  "feature": "traps-frostbite-fangs",
+  "status": "completed",
+  "started_at": "2026-08-24T14:32:49.252Z",
+  "ended_at": "2026-08-24T14:44:47.097Z",
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r8/",
-  "heartbeat_at": "2026-08-24T14:44:38.469Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-24T14:44:38.469Z",
-  "process_id": 433222,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r4/",
+  "heartbeat_at": "2026-08-24T14:44:47.097Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-24T14:44:41.879Z",
+  "process_id": 443591,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T14:44:44.626193+00:00",
-    "last_success_at": "2026-08-24T14:44:44.625354+00:00",
+    "last_attempt_at": "2026-08-24T14:44:47.097908+00:00",
+    "last_success_at": "2026-08-24T14:44:47.096481+00:00",
     "last_error": null
   },
   "metrics": {
     "invocations": [
       {
-        "task_id": "plan",
+        "task_id": "manual-testing-gate",
         "cluster_id": null,
-        "role": "plan",
+        "role": "team-leader",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 96733,
-        "output_tokens": 5601
+        "input_tokens": 37418,
+        "output_tokens": 522
       },
       {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "check",
+        "task_id": "manual-tester",
         "cluster_id": null,
-        "role": "check",
+        "role": "manual-tester",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 78859,
-        "output_tokens": 3385
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 219103,
-        "output_tokens": 13115
+        "input_tokens": 82527,
+        "output_tokens": 6732
       }
     ]
   }
