@@ -1,22 +1,47 @@
 {
-  "run_id": "corrosive-soak-90-r3",
-  "feature": "corrosive-soak-perk",
+  "run_id": "issue-130-middle-pan-flip-r4",
+  "feature": "issue-130-middle-pan-flip",
   "status": "running",
-  "started_at": "2026-08-24T08:47:51.990Z",
+  "started_at": "2026-08-24T08:17:12.918Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/corrosive-soak-90-r3/",
-  "heartbeat_at": "2026-08-24T08:47:51.990Z",
-  "last_node": null,
-  "active_node": "code",
-  "last_event_at": null,
-  "process_id": 338460,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-130-middle-pan-flip-r4/",
+  "heartbeat_at": "2026-08-24T08:51:01.375Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-24T08:51:01.375Z",
+  "process_id": 324686,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T08:49:20.728304+00:00",
-    "last_success_at": "2026-08-24T08:47:56.430535+00:00",
+    "last_attempt_at": "2026-08-24T08:51:01.376432+00:00",
+    "last_success_at": "2026-08-24T08:28:57.434957+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 65350,
+        "output_tokens": 3553
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 76865,
+        "output_tokens": 6985
+      }
+    ]
+  }
 }

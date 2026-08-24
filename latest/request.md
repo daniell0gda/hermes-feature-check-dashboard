@@ -1,55 +1,46 @@
-# Request: Continue issue #90 — Progression: Corrosive Soak perk (Floodgate)
+# Request: #130 — middle-mouse pan still flips carve bird view (r3)
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/90
-Workspace: /workspace/git-workspaces/poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat
-Branch: issue/progression-corrosive-soak-perk-floodgat (rebased onto origin/master @ 9976db7; existing uncommitted perk source kept)
-Runner: project `godot-td`, workspace `poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat`. Do NOT invent other runner/workspace names.
+## Project
+- Workspace: `/workspace/poke-defense-godot`
+- Branch: `issue/underground-carve-topdown-camera-rotation`
+- Runner key: `godot-td`
+- Runner workspace name: `poke-defense-godot/issue-130` only. Never `godot-td/issue-*` or `poke-defense-godot/check` (those 422 chdir).
+- If runner 422/no docker: host Godot is allowed: `PATH=/opt/data/profiles/code/home/bin`. Do **not** classify host-ok as `blocked`.
 
-Request id: corrosive-soak-90-r3
+Do not commit/stash/push `logs/balance/`. Keep existing uncommitted camera/harness files.
 
-## Continuation (do not start from scratch)
+## Daniel repro (still the bug)
+Underground → Carve (top-down good) → **hold middle mouse** → move a bit → view yaw flips ~90/180°. Path preview L rotates.
 
-r1 (`corrosive-soak-90-r1`) planned, then the code worker died (~2026-08-23T18:32Z) before check.
-r2 (`corrosive-soak-90-r2`) re-planned (07:18Z) then the code worker failed (~07:38Z) with `missing coder-reports/ or changes.md` — no check. Historical r1/r2 artifacts are context only.
+This is **map pan**, not right-click rotate.
 
-Already on the worktree (keep and finish; do not rewrite from scratch):
-- Perk `floodgate_corrosive_soak` Unique 3 levels 25/45/70% in `scripts/progression/floodgate_tower.json`
-- `FloodgateTowerProgressionManager.gd` apply/reset/config + `ProgressionManager.get_floodgate_corrosive_soak_config()`
-- Corroded status on Enemy / EnemyStatusController; rust tint via `WaterSubmersionSystem.set_enemy_corroded`
-- Amplification in `EnemyHealthController._apply_corrosive_soak_if_needed` excluding `tower_type_id == floodgate`
-- Floodgate discharge marks via `_mark_corroded_if_needed`
-- Harness helpers + `tests/scenarios/floodgate_corrosive_soak.json`
+## Review of current uncommitted work
+Already in the tree (keep, do not revert):
+- Pan skips `look_at(..., UP)` when `_carve_camera_armed` or view nearly vertical.
+- `_zoom_camera` same guard.
+- `carve_pan_no_flip.json` + `mouse_pan` + `basis_x_yaw`.
 
-Preserve master behaviors already on this rebased tree (HUD textures merge and later). Do not revert unrelated files.
+**Not enough / still wrong:**
+1. `_rotate_camera` still ends with `cam.look_at(target, Vector3.UP)` at pitch ~90° — first rotate tick can still flip.
+2. `_update_camera_position_for_target` **always** `look_at(..., UP)` — any later follow/WASD/velocity will flip bird view even if pan skipped look_at.
+3. Layer helpers at Game.gd ~956/964 still `look_at(..., UP)`.
+4. Position-offset `atan2(x,z)` is **0/0** when camera is straight above the target — cannot detect a basis flip. Only `basis.x` / `basis.y` heading counts.
+5. Prior team runs ended `failed` with **stale** `.gen/check.md` / report from Aug 22 (wrong runner names, “on_carve_camera_mode missing”). Ignore those files as evidence. Write **fresh** check.md/status.md this run.
+6. No windowed GIF reached Daniel. `manual_testing: required`.
 
-## r1 harness failure (must fix)
+## Required this run
+- One non-degenerate look-at helper: if look axis is nearly ±Y, use `Vector3.FORWARD` (or current flattened `-basis.y`) as up; else `Vector3.UP`. Use it everywhere the camera looks at the target while carve-armed or nearly vertical.
+- Middle-pan: translate only; **basis.x heading unchanged** (delta < 0.05 rad) for small and large pans.
+- Right-drag rotate + click-cancel still work; pitch clamp stays.
+- Harness must compare **basis**, not orbit atan2. Drive real `_input` middle-button press+move+release.
+- Windowed 30fps GIF: carve arm → small middle-drag → L-preview does not rotate. Screenshot key `name`. Xvfb :77 directly. Top-down of the path.
+- UI-sanity: `ui_feels_broken: yes` fails manual test.
 
-`.gen/harness/floodgate_corrosive_soak/result.json` status=timeout:
-- Perk apply and Corroded mark worked (`corroded_count==1`, `amplification==0.25`, `corroded_marked:true`)
-- Then `armor_hit` (balista, armor_damage 40) followed by `enemies.Alien.armor == 950.0` saw **actual 0.0**
-- Likely observation of an unarmored spawn instead of the staged Alien (index-0 vs max-armor-by-id). `HarnessValues._enemy_report` now takes max armor per id — assert via `enemies.Alien.armor` (report) not `enemy.armor` (index 0). Stage armor immediately before the hit and wait 2–3 poll ticks after.
-- Expected L1 math: staged 1000 − 40×1.25 = 950. Floodgate follow-up must match unowned control. HP unchanged.
+## Out of scope
+No merge/close/push unless asked.
 
-Treat old harness results as stale. Re-run the focused harness fresh after any harness/scenario fix. Write `coder-reports/<cluster-id>.md` and `.gen/changes.md` this run so the leader can proceed to check.
-
-## Feature
-
-New Unique progression perk `corrosive_soak` for Floodgate Tower only, 3 levels:
-- Enemies hit by Floodgate's discharge gain a "Corroded" status.
-- While Corroded, armor-damage taken from **all other towers'** hits is increased by +25% / +45% / +70% by level.
-- Floodgate's own hits are unaffected by its own Corroded status (setup effect, not self-buff).
-- Implemented in `FloodgateTowerProgressionManager.gd` alongside `floodgate_saltwater_purge`.
-- Visual: extend wet/soak shader (`WaterSubmersionSystem`) with a distinct rust tint — no new VFX class.
-
-## Acceptance criteria
-1. Perk defined with 3 levels and correct amplification values (25/45/70%), Floodgate-only, type Unique.
-2. Corroded status applied on Floodgate discharge hits; amplifies armor-dmg from all towers EXCEPT Floodgate itself.
-3. Editor gate passes (`godot --headless --path . --editor --quit-after 300`).
-4. Focused headless gameplay harness proves: enemy hit by Floodgate → subsequent armor-dmg hit from another tower is amplified per level; Floodgate-own follow-up is not amplified.
-5. Manual testing: required (rust tint is player-facing). Windowed screenshots/GIF via runner, never --headless for manual evidence. Include `ui_feels_broken: yes|no`.
-
-## Notes
-- Use exact scene argument before user args in harness commands.
-- Inspect raw Godot stdout for Parse Error / Failed loading resource, not just harness status=pass.
-- Do not commit/push/close.
-- Do not revert unrelated master files. Ignore `.glb` LFS noise; do not commit models.
+## Redo note (r4)
+Last check (`revision-check-2`) wrote `classification: fixable` after a real runner pass. Focused pan/topdown scenarios pass. Do **not** rewrite the look_at guards. Remaining work only:
+1. Manual tester: windowed 30fps GIF (Xvfb :77, not xvfb-run) of carve arm → small middle-drag, path L does not flip. Screenshot key is `name`.
+2. Do not block the issue on the pre-existing red full suite (legacy domains). Record those as known pre-existing in quality-notes.
+3. If drag_spin rotate-call is vacuous, fix the scenario so it actually rotates, then re-run it.
