@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-117-gen-hud-textures-r2/",
   "heartbeat_at": "2026-08-24T07:35:01.871Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-24T07:35:01.871Z",
   "process_id": 292058,
   "host": "f1a4230ec90b",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:35:01.871178+00:00",
-    "last_success_at": "2026-08-24T07:33:25.696901+00:00",
+    "last_attempt_at": "2026-08-24T07:35:06.297158+00:00",
+    "last_success_at": "2026-08-24T07:35:06.295878+00:00",
     "last_error": null
   },
   "metrics": {
@@ -68,6 +68,17 @@
         "task_id": "revision-check-1",
         "cluster_id": null,
         "role": "check",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "task_id": "revision-code-2",
+        "cluster_id": "implementation",
+        "role": "code",
         "model": null,
         "model_tier": null,
         "cost_usd": null,
