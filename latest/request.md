@@ -1,47 +1,41 @@
-# Request: #131 pointer-cursor-on-clickable-surfaces (r2)
-
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/131
-- **Project:** poke-defense-godot (runner key `godot-td`)
-- **Workspace:** poke-defense-godot/issue-pointer-cursor-on-clickable-surfaces
-- **Runner workspace name:** `poke-defense-godot/issue-pointer-cursor-on-clickable-surfaces`
-- **Branch:** issue/pointer-cursor-on-clickable-surfaces (rebased onto origin/master @ 9d54964)
-- **Request ID:** 131-pointer-cursor-r2
+# Request: issue-dead-options-modal-scene (issue #104) — r2
 
 ## Feature
+Delete unused Options clones so only the live `OptionsScreen` remains.
 
-Show a pointing-hand ("pointer") mouse cursor when hovering over clickable UI
-surfaces (buttons and other clickables); non-clickable surfaces keep the
-default arrow.
+Dead files (delete all four + `.uid` sidecars):
+- `scenes/ui/Options.tscn` + `scripts/ui/Options.gd` (`class_name OptionsModal`)
+- `scenes/ui/OptionsMenu.tscn` + `scripts/ui/OptionsMenu.gd` (`class_name OptionsMenu`)
 
-## Acceptance criteria (from issue)
+Live surface (keep): `scenes/ui/OptionsScreen.tscn` / `scripts/ui/OptionsScreen.gd`.
+- Pause menu: `scripts/ui/UI.gd` preloads `OptionsScreen.tscn`
+- Main menu: `scripts/MainMenu.gd` `OPTIONS_SCREEN` loads the same scene as a child modal
 
-1. All buttons (and other clickable UI surfaces) show a pointer cursor on hover, in windowed and fullscreen modes.
-2. Non-clickable surfaces keep the default arrow.
-3. Verified with a screenshot of hover state on a button.
+## Acceptance criteria (issue body + Daniel comments 2026-08-20 / 2026-08-21)
+1. Repo-wide search finds no remaining reference to `Options.tscn`, `OptionsModal`, `OptionsMenu.tscn`, or class `OptionsMenu` (own deleted files do not count).
+2. Both dead pairs are gone from the tree, including orphaned `.uid` sidecars.
+3. Editor/import gate passes: `godot --headless --path . --editor --quit-after 300` exit 0, no parse/missing-resource errors.
+4. Pause-menu Options still opens live `OptionsScreen` (existing scenario `tests/scenarios/issue_dead_options_live_pause_menu.json`).
+5. Main-menu Options still opens live `OptionsScreen` (existing script `tests/ui/issue_dead_options_main_menu.gd`).
+6. Focused gameplay still loads: `smoke_placement` `status: pass`, exit 0.
 
-## Existing implementation (keep and verify)
+No new visual required — deletion only. Windowed sanity of both live Options paths is enough if the planner marks manual testing required.
 
-Uncommitted work already in this worktree after rebase onto current master:
+## Hard non-goals (r1 burned a full revision budget on these)
+- Do **not** treat `smoke_tower_roster` as a hard gate. It fails identically on pristine master (`map_10` egg dies before wave 3). Advisory only. See `.gen/quality-notes.md` and `.gen-blocked-tw-104-dead-options-modal-r1-attempt1/`.
+- Do **not** edit `tests/scenarios/smoke_tower_roster.json`.
+- Do **not** touch `models/**` (LFS). This host has no `git-lfs`; model dirty files are noise.
+- Do **not** change harness, `project.godot`, or unrelated gameplay to “make the full suite green”.
 
-- `scripts/ui/PointerCursor.gd` autoload: `node_added` + deferred whole-tree sweep sets
-  `BaseButton.mouse_default_cursor_shape = CURSOR_POINTING_HAND`. Both hooks are required
-  (node_added alone missed 39/52 scene-file buttons).
-- `project.godot` registers `PointerCursor="*res://scripts/ui/PointerCursor.gd"`.
-- Harness: `hover_ui` action + `ui_control` value source (`cursor_shape` / `exists`).
-- Focused scenario: `tests/scenarios/ui_pointer_cursor.json`.
-- After rebase, `HarnessValues.gd` must keep BOTH `nature` (master) and `ui_control` (this issue).
+## Runner / workspace
+- Project folder: poke-defense-godot. Runner key: **godot-td**
+- Workspace: **poke-defense-godot/issue-dead-options-modal-scene**
+- Branch: `issue/dead-options-modal-scene`, rebased onto `origin/master` (`9d54964`) 2026-08-24
+- Use `run_project_cmd` only; explicit scene arg before user args for gameplay harnesses.
 
-Do not discard this approach unless a fresh run proves it wrong. Re-plan only unmet
-criteria. Historical r1 harness `status=pass` is stale after the rebase — require fresh
-editor import, headless + windowed focused harness, and `smoke_placement`.
+## Historical context (unverified as current evidence)
+r1 (`tw-104-dead-options-modal-r1`) deleted the `Options` pair and proved both live Options paths. Checker still classified `fixable` because the plan named `smoke_tower_roster` as the full test command. That run is archived at `.gen-blocked-tw-104-dead-options-modal-r1-attempt1/`. Treat those artifacts as history. r1 also missed Daniel’s extra scope: delete the `OptionsMenu` pair too.
 
-Prior team-work run `131-pointer-cursor-r1` failed because check.md was never written.
-This r2 run must complete check + required windowed manual testing.
+Working tree already has the `Options` pair deleted and the two live-path tests. Keep that. Add the `OptionsMenu` deletion. Fresh plan/code/check required.
 
-## Notes for workers
-
-- Use runner key `godot-td`, workspace `poke-defense-godot/issue-pointer-cursor-on-clickable-surfaces`. Never invent other workspace names.
-- Godot 4: `Control.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND`. Prefer the existing project-wide autoload over per-scene edits.
-- Visible player-facing UI change → `manual_testing: required` with windowed screenshots of hover state on at least one button; include the overall ui_feels_broken sanity check.
-- Godot screenshots do not draw the OS cursor; programmatic `cursor_shape==2` plus a hover screenshot is the evidence pair. Do not fail only because the hand is not visible in the PNG.
-- Revision budget: 2 (default).
+request-id: tw-104-dead-options-modal-r2

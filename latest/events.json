@@ -1,11 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-24T08:12:07.166Z",
+    "timestamp": "2026-08-24T08:16:03.626Z",
     "node": "plan",
     "status": "completed",
-    "duration_ms": 234657,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-pointer-cursor-on-clickable-surfaces/.gen/plan.md\n",
+    "duration_ms": 1709658,
+    "summary": "The plan worker's deliverables are written; verification runs against the live worker keep timing out at the runner level. Summary:\n\nPlan written: /workspace/git-workspaces/poke-defense-godot/issue-dead-options-modal-scene/.gen/plan.md\n\nArt\u2026",
     "error": null
   }
 ]

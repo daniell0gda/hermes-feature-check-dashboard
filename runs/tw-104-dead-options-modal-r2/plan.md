@@ -1,40 +1,41 @@
-# Acceptance Plan: issue-dead-options-modal-scene
-
-Deletion-only cleanup: remove the unreferenced dead Options surfaces
-(`scenes/ui/Options.tscn`, `scripts/ui/Options.gd` with `class_name OptionsModal`)
-without disturbing the live Options paths (pause-menu modal via
-`scenes/ui/OptionsScreen.tscn` in `scripts/ui/UI.gd`; main-menu screen via
-`scripts/MainMenu.gd`).
+# Acceptance Plan: issue-dead-options-modal-scene (r2)
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_placement.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_tower_roster.json"]`
+- Focused test: `["godot", "--headless", "--path", ".", "--harness=res://tests/scenarios/issue_dead_options_live_pause_menu.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "--harness=res://tests/scenarios/smoke_placement.json"]`
 - Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+
+All commands run via `run_project_cmd` (project key `godot-td`, workspace `poke-defense-godot/issue-dead-options-modal-scene`). Explicit scene arg before user args for gameplay harnesses.
 
 ## Clusters
 
-1. delete-dead-options-modal — files: `scenes/ui/Options.tscn`, `scripts/ui/Options.gd`, `scripts/ui/Options.gd.uid` — depends on: none
-- A project-wide search finds no reference to `Options.tscn`, `OptionsModal`, or `scripts/ui/Options.gd` in any scene, script, project setting, or documentation file after the deletion.
-- `scenes/ui/Options.tscn` and `scripts/ui/Options.gd` (plus their orphaned `.uid` sidecar files) no longer exist in the repository.
-- The Godot editor/import gate (`--headless --editor --quit-after`) completes with exit code 0 and no script parse errors or missing-resource errors in its output after the deletion.
-- The focused gameplay harness scenario (`smoke_placement`) completes with `status: pass`, exit code 0, and a fresh `.gen/harness/smoke_placement/result.json` written after the deletion.
-- The broad-shallow harness scenario (`smoke_tower_roster`) completes with `status: pass`, proving the autoload/class cache still loads the full game after the deletion.
-- The in-game pause menu still opens the live Options modal: with the harness active, opening the pause menu and triggering its Options button instantiates a visible Options modal (the `OptionsScreen.tscn` path in `scripts/ui/UI.gd`), not a missing-scene error.
-- The main menu still opens the live Options screen: loading the main menu scene and triggering its Options control loads `res://scenes/ui/OptionsScreen.tscn` successfully with no load errors in the run log.
+1. dead-options-optionsmenu-cleanup — files: `scenes/ui/OptionsMenu.tscn`, `scenes/ui/OptionsMenu.tscn.uid`, `scripts/ui/OptionsMenu.gd`, `scripts/ui/OptionsMenu.gd.uid` — depends on: none
+- A repo-wide search over project files (*.gd, *.tscn, *.godot, *.json) excluding `.gen`/`.git` finds zero references to `Options.tscn`, `OptionsModal`, `OptionsMenu.tscn`, or class `OptionsMenu` outside the deleted files themselves.
+- All four dead files (`Options.tscn`, `Options.gd` + `.uid`, `OptionsMenu.tscn`, `OptionsMenu.gd` + `.uid`) are absent from the working tree and the diff contains no additions re-adding them.
+- The headless editor/import gate (`godot --headless --path . --editor --quit-after 300`) exits 0 with no parse errors and no missing-resource errors in its output.
+- Running the existing scenario `tests/scenarios/issue_dead_options_live_pause_menu.json` exits 0 with all expectations green, proving the pause-menu Options button instantiates the live `OptionsScreen`.
+- Running the existing script `tests/ui/issue_dead_options_main_menu.gd` exits 0, proving the main-menu Options control instantiates the live `OptionsScreen` visibly.
+- `tests/scenarios/smoke_placement.json` reports `status: pass` and exits 0.
+- The diff touches only the four deleted files: no changes under `models/**`, no changes to `project.godot`, the test harness, or `tests/scenarios/smoke_tower_roster.json`.
 
 ## Criteria
 
-- A project-wide search finds no reference to `Options.tscn`, `OptionsModal`, or `scripts/ui/Options.gd` in any scene, script, project setting, or documentation file after the deletion.
-- `scenes/ui/Options.tscn` and `scripts/ui/Options.gd` (plus their orphaned `.uid` sidecar files) no longer exist in the repository.
-- The Godot editor/import gate (`--headless --editor --quit-after`) completes with exit code 0 and no script parse errors or missing-resource errors in its output after the deletion.
-- The focused gameplay harness scenario (`smoke_placement`) completes with `status: pass`, exit code 0, and a fresh `.gen/harness/smoke_placement/result.json` written after the deletion.
-- The broad-shallow harness scenario (`smoke_tower_roster`) completes with `status: pass`, proving the autoload/class cache still loads the full game after the deletion.
-- The in-game pause menu still opens the live Options modal: with the harness active, opening the pause menu and triggering its Options button instantiates a visible Options modal (the `OptionsScreen.tscn` path in `scripts/ui/UI.gd`), not a missing-scene error.
-- The main menu still opens the live Options screen: loading the main menu scene and triggering its Options control loads `res://scenes/ui/OptionsScreen.tscn` successfully with no load errors in the run log.
+- A repo-wide search over project files (*.gd, *.tscn, *.godot, *.json) excluding `.gen`/`.git` finds zero references to `Options.tscn`, `OptionsModal`, `OptionsMenu.tscn`, or class `OptionsMenu` outside the deleted files themselves.
+- All four dead files (`Options.tscn`, `Options.gd` + `.uid`, `OptionsMenu.tscn`, `OptionsMenu.gd` + `.uid`) are absent from the working tree and the diff contains no additions re-adding them.
+- The headless editor/import gate (`godot --headless --path . --editor --quit-after 300`) exits 0 with no parse errors and no missing-resource errors in its output.
+- Running the existing scenario `tests/scenarios/issue_dead_options_live_pause_menu.json` exits 0 with all expectations green, proving the pause-menu Options button instantiates the live `OptionsScreen`.
+- Running the existing script `tests/ui/issue_dead_options_main_menu.gd` exits 0, proving the main-menu Options control instantiates the live `OptionsScreen` visibly.
+- `tests/scenarios/smoke_placement.json` reports `status: pass` and exits 0.
+- The diff touches only the four deleted files: no changes under `models/**`, no changes to `project.godot`, the test harness, or `tests/scenarios/smoke_tower_roster.json`.
 
-## Notes
+## Manual testing
 
-- manual_testing: optional — a quick windowed sanity check that both live Options paths (pause menu and main menu) open is sufficient; no new visual work is required (deletion only).
-- No debug logging criterion: no state transitions are added or changed; this is pure deletion.
-- No `ui_scenario.md`: no new player-visible story; a still cannot prove a deletion beyond what the harness criteria already cover.
+manual_testing: optional
+Windowed sanity of both live Options paths (pause menu → Options, main menu → Options) is sufficient; deletion introduces no new visual. `smoke_tower_roster` is advisory only (pre-existing map_10 failure on pristine master) and must not gate acceptance.
+
+## Non-goals
+
+- Do not edit `tests/scenarios/smoke_tower_roster.json`, the harness, or `project.godot`.
+- Do not touch `models/**` (no LFS on host; dirty model files are noise).
+- No new visuals, features, or refactors beyond deleting the two dead pairs.

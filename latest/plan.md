@@ -1,43 +1,41 @@
-# Acceptance Plan: pointer-cursor-on-clickable-surfaces
+# Acceptance Plan: issue-dead-options-modal-scene (r2)
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/ui_pointer_cursor.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/smoke_placement.json"]`
+- Focused test: `["godot", "--headless", "--path", ".", "--harness=res://tests/scenarios/issue_dead_options_live_pause_menu.json"]`
+- Full test: `["godot", "--headless", "--path", ".", "--harness=res://tests/scenarios/smoke_placement.json"]`
 - Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
-Windowed evidence run (manual/screenshot criterion): same command as Focused test without `--headless`.
+All commands run via `run_project_cmd` (project key `godot-td`, workspace `poke-defense-godot/issue-dead-options-modal-scene`). Explicit scene arg before user args for gameplay harnesses.
 
 ## Clusters
 
-1. project-wide-pointer-cursor — files: `scripts/ui/PointerCursor.gd`, `project.godot`, `scripts/testing/HarnessValues.gd`, `scripts/testing/HarnessActions.gd`, `tests/scenarios/ui_pointer_cursor.json` — depends on: none
-- Hovering any Button in the running game shows the pointing-hand (pointer) cursor in both windowed and fullscreen modes.
-- Hovering any other clickable UI surface (e.g. clickable panels/cards/toggle controls used as buttons) shows the pointing-hand cursor.
-- Hovering non-clickable UI surfaces (labels, panels, background) keeps the default arrow cursor.
-- A windowed harness screenshot captures the hover state on at least one button showing the pointing-hand cursor, saved under `.gen/harness/ui_pointer_cursor/shots/`.
-- A focused AgentHarness scenario (`ui_pointer_cursor`) passes headless/windowed with all expectations met, proving the cursor-shape assignment programmatically (e.g. by asserting the effective `mouse_default_cursor_shape` of representative clickable and non-clickable controls through the harness).
-- Existing UI behaviour is unaffected: `smoke_placement` still passes after the change.
+1. dead-options-optionsmenu-cleanup — files: `scenes/ui/OptionsMenu.tscn`, `scenes/ui/OptionsMenu.tscn.uid`, `scripts/ui/OptionsMenu.gd`, `scripts/ui/OptionsMenu.gd.uid` — depends on: none
+- A repo-wide search over project files (*.gd, *.tscn, *.godot, *.json) excluding `.gen`/`.git` finds zero references to `Options.tscn`, `OptionsModal`, `OptionsMenu.tscn`, or class `OptionsMenu` outside the deleted files themselves.
+- All four dead files (`Options.tscn`, `Options.gd` + `.uid`, `OptionsMenu.tscn`, `OptionsMenu.gd` + `.uid`) are absent from the working tree and the diff contains no additions re-adding them.
+- The headless editor/import gate (`godot --headless --path . --editor --quit-after 300`) exits 0 with no parse errors and no missing-resource errors in its output.
+- Running the existing scenario `tests/scenarios/issue_dead_options_live_pause_menu.json` exits 0 with all expectations green, proving the pause-menu Options button instantiates the live `OptionsScreen`.
+- Running the existing script `tests/ui/issue_dead_options_main_menu.gd` exits 0, proving the main-menu Options control instantiates the live `OptionsScreen` visibly.
+- `tests/scenarios/smoke_placement.json` reports `status: pass` and exits 0.
+- The diff touches only the four deleted files: no changes under `models/**`, no changes to `project.godot`, the test harness, or `tests/scenarios/smoke_tower_roster.json`.
 
 ## Criteria
 
-- Hovering any Button in the running game shows the pointing-hand (pointer) cursor in both windowed and fullscreen modes.
-- Hovering any other clickable UI surface (e.g. clickable panels/cards/toggle controls used as buttons) shows the pointing-hand cursor.
-- Hovering non-clickable UI surfaces (labels, panels, background) keeps the default arrow cursor.
-- A windowed harness screenshot captures the hover state on at least one button showing the pointing-hand cursor, saved under `.gen/harness/ui_pointer_cursor/shots/`.
-- A focused AgentHarness scenario (`ui_pointer_cursor`) passes headless/windowed with all expectations met, proving the cursor-shape assignment programmatically (e.g. by asserting the effective `mouse_default_cursor_shape` of representative clickable and non-clickable controls through the harness).
-- Existing UI behaviour is unaffected: `smoke_placement` still passes after the change.
+- A repo-wide search over project files (*.gd, *.tscn, *.godot, *.json) excluding `.gen`/`.git` finds zero references to `Options.tscn`, `OptionsModal`, `OptionsMenu.tscn`, or class `OptionsMenu` outside the deleted files themselves.
+- All four dead files (`Options.tscn`, `Options.gd` + `.uid`, `OptionsMenu.tscn`, `OptionsMenu.gd` + `.uid`) are absent from the working tree and the diff contains no additions re-adding them.
+- The headless editor/import gate (`godot --headless --path . --editor --quit-after 300`) exits 0 with no parse errors and no missing-resource errors in its output.
+- Running the existing scenario `tests/scenarios/issue_dead_options_live_pause_menu.json` exits 0 with all expectations green, proving the pause-menu Options button instantiates the live `OptionsScreen`.
+- Running the existing script `tests/ui/issue_dead_options_main_menu.gd` exits 0, proving the main-menu Options control instantiates the live `OptionsScreen` visibly.
+- `tests/scenarios/smoke_placement.json` reports `status: pass` and exits 0.
+- The diff touches only the four deleted files: no changes under `models/**`, no changes to `project.godot`, the test harness, or `tests/scenarios/smoke_tower_roster.json`.
 
 ## Manual testing
 
-manual_testing: required
+manual_testing: optional
+Windowed sanity of both live Options paths (pause menu → Options, main menu → Options) is sufficient; deletion introduces no new visual. `smoke_tower_roster` is advisory only (pre-existing map_10 failure on pristine master) and must not gate acceptance.
 
-Manual pass: launch the game windowed, hover several buttons across menus/HUD/modals and confirm the pointing-hand appears; hover labels/panels and confirm the arrow stays; repeat once in fullscreen; confirm overall ui_feels_broken sanity check (no layout or interaction regressions).
+## Non-goals
 
-Note: Godot screenshots do not render the OS cursor; the evidence pair is the programmatic `cursor_shape == CURSOR_POINTING_HAND` assertion plus the hover screenshot.
-
-## Status of verification in this planning run (fresh after rebase onto 9d54964)
-
-- Editor import (`--editor --quit-after 300`): exit 0, PointerCursor.gd registered as global class.
-- Focused `ui_pointer_cursor` headless: `[Harness] status=pass exit=0`, all 8 expectations pass (4 clickables = 2, 2 non-clickables = 0).
-- Windowed `ui_pointer_cursor`: status=pass; screenshot captured at `.gen/harness/ui_pointer_cursor/shots/hover_pointer_on_speed_btn.png` (1920x1080).
-- Regression `smoke_placement` headless: `[Harness] status=pass exit=0`.
+- Do not edit `tests/scenarios/smoke_tower_roster.json`, the harness, or `project.godot`.
+- Do not touch `models/**` (no LFS on host; dirty model files are noise).
+- No new visuals, features, or refactors beyond deleting the two dead pairs.
