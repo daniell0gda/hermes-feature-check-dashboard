@@ -1,36 +1,20 @@
 {
   "run_id": "req-85-tooltip-center-r3",
   "feature": "shop-preview-card-center-on-tower",
-  "status": "failed",
-  "started_at": "2026-08-24T15:12:56.657Z",
-  "ended_at": "2026-08-24T15:52:00.845Z",
-  "error": "code worker returned no reply (empty model or exhausted API retries)",
+  "status": "running",
+  "started_at": "2026-08-24T15:53:05.683Z",
+  "ended_at": null,
+  "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-tooltip-center-r3/",
-  "heartbeat_at": "2026-08-24T15:52:00.845Z",
-  "last_node": "code",
+  "heartbeat_at": "2026-08-24T15:53:05.683Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-24T15:51:55.863Z",
-  "process_id": 456616,
+  "last_event_at": null,
+  "process_id": 460838,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T15:52:00.845468+00:00",
-    "last_success_at": "2026-08-24T15:52:00.844109+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T15:53:05.683896+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 33056,
-        "output_tokens": 2957
-      }
-    ]
-  }
+  "metrics": {}
 }
