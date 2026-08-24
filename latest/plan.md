@@ -1,35 +1,34 @@
-# Acceptance Plan: fix-cave-harness-scenario-determinism
+# Acceptance Plan: Water Tower: Riptide — light Slow alongside Wet (water_riptide)
+
+manual_testing: required
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/cave_decline_seals_reveal_unseals.json"]`
-- Full test: `["bash", ".gen/run_full_suite.sh"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "3"]`
+- Focused test: `["python3", "tests/run_all_shard.py", "0", "1", "water_riptide"]`
+- Full test: `["python3", "tests/run_all_shard.py", "0", "1"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "120"]`
 
 ## Clusters
 
-1. cave-scenario-determinism — files: `scripts/game/CaveSystem.gd`, `tests/scenarios/cave_decline_seals_reveal_unseals.json`, `tests/scenarios/cave_pending_seals_entrance_instantly.json` — depends on: none
-- A fresh run of the `cave_decline_seals_reveal_unseals` harness scenario completes every timeline step and reports status pass with exit code 0.
-- A fresh run of the `cave_pending_seals_entrance_instantly` harness scenario completes every timeline step and reports status pass with exit code 0.
-- After loading map_9, adding one hole and one exit inside the underground grid bounds, and carving a straight corridor between them, the scenario's wait for `underground.has_route_from <hole> == true` succeeds — random cave discovery during the carve no longer seals the corridor (random discovery disabled via harness before carving).
-- Both updated scenarios still exercise the fixture cave's decline/pending seal and reveal/unseal behaviour exactly as before (the fix does not weaken what the scenarios were written to prove); each scenario's notes[] documents why random discovery is disabled.
-- The diagnostic leftover `tests/scenarios/zz_probe_plain_corridor.json` is removed from the repository.
-- The root-cause change that made a straight carved corridor unroutable on map_9 (instant sealing of a randomly discovered cave during the scenario's own carve) is documented in `.gen/changes.md`, stating whether it is intended gameplay behaviour or a bug fixed in game code.
-- Debug-build [CAVE] log line per harness-driven disable of random cave discovery, naming the event and the resulting effective discovery chance so determinism of a run is confirmable from the log.
-2. cave-regression-suite — files: none — depends on: 1
-- The ten companion scenarios (`cave_spawn_within_grid`, `cave_discovery_chance`, `cave_discovery_long_carve`, `cave_discovery_pending_placement`, `cave_reveal_only_unseals_carved_blocks`, `carve_stops_at_discovered_cave`, `declined_cave_torches_extinguish`, `underground_grid_from_map`, `underground_map_cost_override`, `smoke_placement`) all report status pass with exit code 0 on a fresh run after the fix.
-- A fresh focused-run runner stdout/stderr contains no new Godot parse/script errors compared to the pre-existing baseline noise (known pre-existing HudTheme texture-load noise excluded).
-
-manual_testing: none
+1. riptide-progression-definition — files: `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd` — depends on: none
+- The new Unique perk `water_riptide` is defined in the Water tower progression file as a single-level Unique compatible with the water tower, and is grantable through the normal progression flow (`apply_progression` raises its level from 0 to 1, and further grants are refused once owned).
+- After `reset_for_new_game`, `water_riptide` is unowned again and has no gameplay effect until re-granted.
+2. riptide-water-hit-slow — files: `scripts/game/actors/Projectile.gd`, `scripts/game/actors/effects/EffectsManager.gd`, `scripts/game/actors/enemy/parts/EnemyStatusController.gd` — depends on: 1
+- With `water_riptide` owned, a Water tower projectile hit on an enemy applies a Slow of 20% magnitude lasting 1.5 seconds, observable as reduced enemy movement speed for that window while the Wet status continues as before.
+- Without `water_riptide` owned, Water hits apply no slow; enemy movement speed and existing Wet behaviour are unchanged from before this feature.
+- While an enemy's slow is owned by another tower instance (e.g. Ice), a Water hit does not overwrite or steal the active slow; when Water itself owns the active slow, subsequent Water hits refresh it to 20% / 1.5s rather than stacking.
+- Debug-build `[RIPTIDE]` log line per water-triggered slow application, naming the enemy id, slow magnitude, duration, and owning tower instance id.
+3. riptide-cue-and-regressions — files: `scripts/game/actors/effects/EffectsManager.gd`, `scripts/game/actors/enemy/parts/EnemyStatusController.gd` — depends on: 2
+- When a Water hit triggers the Riptide slow, the enemy shows the existing Chilled visual cue (IceSlowFX snowflake particles plus ice-tint overlay) driven by the existing status-controller visuals, with no new VFX asset added; the cue clears when the slow expires.
+- The existing shared hit-path scenario (`water_electric_hit_path`) still passes: Water and Electric hits continue to land damage and apply their existing effects alongside the new optional slow.
 
 ## Criteria
 
-- A fresh run of the `cave_decline_seals_reveal_unseals` harness scenario completes every timeline step and reports status pass with exit code 0.
-- A fresh run of the `cave_pending_seals_entrance_instantly` harness scenario completes every timeline step and reports status pass with exit code 0.
-- After loading map_9, adding one hole and one exit inside the underground grid bounds, and carving a straight corridor between them, the scenario's wait for `underground.has_route_from <hole> == true` succeeds — random cave discovery during the carve no longer seals the corridor (random discovery disabled via harness before carving).
-- Both updated scenarios still exercise the fixture cave's decline/pending seal and reveal/unseal behaviour exactly as before (the fix does not weaken what the scenarios were written to prove); each scenario's notes[] documents why random discovery is disabled.
-- The diagnostic leftover `tests/scenarios/zz_probe_plain_corridor.json` is removed from the repository.
-- The root-cause change that made a straight carved corridor unroutable on map_9 (instant sealing of a randomly discovered cave during the scenario's own carve) is documented in `.gen/changes.md`, stating whether it is intended gameplay behaviour or a bug fixed in game code.
-- Debug-build [CAVE] log line per harness-driven disable of random cave discovery, naming the event and the resulting effective discovery chance so determinism of a run is confirmable from the log.
-- The ten companion scenarios (`cave_spawn_within_grid`, `cave_discovery_chance`, `cave_discovery_long_carve`, `cave_discovery_pending_placement`, `cave_reveal_only_unseals_carved_blocks`, `carve_stops_at_discovered_cave`, `declined_cave_torches_extinguish`, `underground_grid_from_map`, `underground_map_cost_override`, `smoke_placement`) all report status pass with exit code 0 on a fresh run after the fix.
-- A fresh focused-run runner stdout/stderr contains no new Godot parse/script errors compared to the pre-existing baseline noise (known pre-existing HudTheme texture-load noise excluded).
+- The new Unique perk `water_riptide` is defined in the Water tower progression file as a single-level Unique compatible with the water tower, and is grantable through the normal progression flow (`apply_progression` raises its level from 0 to 1, and further grants are refused once owned).
+- After `reset_for_new_game`, `water_riptide` is unowned again and has no gameplay effect until re-granted.
+- With `water_riptide` owned, a Water tower projectile hit on an enemy applies a Slow of 20% magnitude lasting 1.5 seconds, observable as reduced enemy movement speed for that window while the Wet status continues as before.
+- Without `water_riptide` owned, Water hits apply no slow; enemy movement speed and existing Wet behaviour are unchanged from before this feature.
+- While an enemy's slow is owned by another tower instance (e.g. Ice), a Water hit does not overwrite or steal the active slow; when Water itself owns the active slow, subsequent Water hits refresh it to 20% / 1.5s rather than stacking.
+- Debug-build `[RIPTIDE]` log line per water-triggered slow application, naming the enemy id, slow magnitude, duration, and owning tower instance id.
+- When a Water hit triggers the Riptide slow, the enemy shows the existing Chilled visual cue (IceSlowFX snowflake particles plus ice-tint overlay) driven by the existing status-controller visuals, with no new VFX asset added; the cue clears when the slow expires.
+- The existing shared hit-path scenario (`water_electric_hit_path`) still passes: Water and Electric hits continue to land damage and apply their existing effects alongside the new optional slow.

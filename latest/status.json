@@ -1,22 +1,36 @@
 {
-  "run_id": "issue-cave-seal-regression-r2",
-  "feature": "fix cave seal route regression",
+  "run_id": "r47-1",
+  "feature": "Water Tower Riptide - light Slow alongside Wet",
   "status": "running",
-  "started_at": "2026-08-24T22:52:07.874Z",
+  "started_at": "2026-08-24T22:35:02.258Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-cave-seal-regression-r2/",
-  "heartbeat_at": "2026-08-24T22:52:07.874Z",
-  "last_node": null,
-  "active_node": "code",
-  "last_event_at": null,
-  "process_id": 511803,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-1/",
+  "heartbeat_at": "2026-08-24T22:55:48.856Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-24T22:55:48.856Z",
+  "process_id": 509177,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T22:52:13.826187+00:00",
-    "last_success_at": "2026-08-24T22:52:12.964451+00:00",
+    "last_attempt_at": "2026-08-24T22:55:48.856247+00:00",
+    "last_success_at": "2026-08-24T22:42:15.914250+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 53094,
+        "output_tokens": 5659
+      }
+    ]
+  }
 }
