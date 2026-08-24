@@ -25,5 +25,14 @@
     "duration_ms": 690954,
     "summary": "The runner plugin here exposes only `run_project_cmd` (no separate `release_project_worker` tool in this profile), so worker release is left to the leader. Artifacts are written; final report:\n\nVerified done: 11. Pending: 0 \u2014 0 due to build\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-24T08:09:19.978Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 53551,
+    "summary": "Manual-testing gate complete.\n\n- Read skill, request.md, check.md, status.md (plan.md not present; status.md carries the criteria).\n- Decision: the issue's only player-visible story \u2014 main menu UI rendered over the live 3D map backdrop with\u2026",
+    "error": null
   }
 ]

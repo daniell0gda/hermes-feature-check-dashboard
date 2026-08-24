@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation
+# Coder report: implementation
 
 ## Changed files
 - none this iteration — no source changes required; all criteria re-verified green as-is.
@@ -22,4 +22,3 @@
 ## Notes
 - Runner flake: the first ~8 Godot invocations this session were SIGKILLed at exactly ~1.0s wall (exit 137) even for trivial commands like `godot --headless --path . --quit`; short non-Godot commands succeeded. After one successful invocation (a python3-wrapped godot probe that completed rc=0), direct invocations worked again for the rest of the session. Looks like a transient runner/container issue, not a project issue; retrying after a warm-up command is a workable mitigation.
 - Only remaining Pending item is the manual `-Windowed` screenshot + ui_feels_broken pass; headless worker cannot render windowed (needs manual-tester profile).
-\n
