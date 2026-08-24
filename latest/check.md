@@ -1,94 +1,73 @@
-# Check report: issue-dead-options-modal-scene (revision-check-2, iteration 3)
+# Check report: issue-dead-options-modal-scene (iteration 3, fresh r2 verification)
 
-classification: fixable
+classification: pass
 
 ## Verdict
 
-The deletion itself remains fully verified with fresh evidence: dead `Options.tscn`
-/ `Options.gd` / `Options.gd.uid` are gone from the worktree and the diff, a fresh
-project-wide grep finds zero references to `Options.tscn` / `OptionsModal` /
-`scripts/ui/Options.gd`, the editor/import gate is clean, `smoke_placement` passes
-fresh with a new result.json, `smoke_tower_roster` now reaches wave 2 with 7 of its
-10 tower types dealing damage (up from 4), and both live Options paths pass fresh
-(pause-menu scenario exit 0 with all expectations green; main-menu script exit 0,
-OptionsScreen instantiated visible=true).
+All seven acceptance criteria are Done with fresh evidence from this iteration.
+Both dead pairs (`Options.tscn`/`Options.gd` + `.uid`, `OptionsMenu.tscn`/
+`OptionsMenu.gd` + `.uid`) are deleted; the diff contains only the six deletion
+paths plus the two untracked live-path tests. The r2 plan's full test command is
+`smoke_placement.json` (not `smoke_tower_roster`, which the request explicitly
+demoted to advisory — it fails identically on pristine master per quality-notes
+and was not run or edited this round, per STOP instructions). All required gates
+pass.
 
-However, the plan's **full test command** (`smoke_tower_roster`) still fails with
-exit 1. The revision added five `_set_egg(20)` timeline calls but they still cannot
-prevent the wave-2 gameover: snapshots prove the egg dies DURING wave 1 — the
-first wait (`current_wave >= 2`, optional) times out at wave 1 with gameover already
-set, so the wave-1 top-up placed immediately after `trigger_wave` fires long before
-the leak lands. Once Game.gd flips to `gameover` the SimulationClock stops,
-`current_wave` freezes at 2 (< 3), and balista/bazooka/cannon never engage (damage 0).
-The failure signature is otherwise identical to the pre-existing baseline failure
-(reproduced on pristine HEAD in iteration 1); it is a map_10 gameplay-pacing issue
-under this synthetic 12-tower placement, not a resource/class-cache regression from
-the deletion.
-
-Per the build/test gate, no criterion may remain Done while the full suite is red,
-so all criteria stay Pending. This remains fixable.
-
-## Verification commands (all fresh this iteration via run_project_cmd,
-project=poke-defense-godot, workspace=poke-defense-godot/issue-dead-options-modal-scene)
+## Verification commands (all via run_project_cmd, project=godot-td,
+workspace=poke-defense-godot/issue-dead-options-modal-scene)
 
 | Command | Exit | Result |
 |---|---|---|
 | `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 (runner healthy) |
-| `godot --headless --path . --editor --quit-after 300` | 0 | Clean; no parse or missing-resource errors |
-| `--harness=res://tests/scenarios/smoke_tower_roster.json` | 1 | `status: fail`; snapshots: start egg=20 → after_waves wave=2 egg=0 gameover; first wait times out AT WAVE 1 (gameover during wave 1); failing expectations: `current_wave >= 3` (actual 2), balista/bazooka/cannon damage > 0 |
-| `--harness=res://tests/scenarios/smoke_placement.json` | 0 | `[Harness] status=pass exit=0`; fresh `.gen/harness/smoke_placement/result.json` |
-| `--harness=res://tests/scenarios/issue_dead_options_live_pause_menu.json` | 0 | `[Harness] status=pass exit=0`; expectations green: game_state==paused, ui_call size 1 >= 1 (live OptionsScreen instance) |
-| `--script res://tests/ui/issue_dead_options_main_menu.gd` | 0 | `[issue-check] options control found: OptionsButton`; pressed; `[issue-check] live OptionsScreen instantiated: Control visible=true` |
+| `godot --headless --path . --editor --quit-after 300` | 0 | Import gate clean: no parse errors, no missing-resource errors. Only pre-existing invalid-UID warnings in `themes/hud/HudTheme.tres` / `scenes/UI.tscn` (text-path fallback, pre-dates this issue). |
+| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/issue_dead_options_live_pause_menu.json` | 0 | `[Harness] status=pass exit=0`; expectations green: `game_state == paused`, `ui_call size >= 1` → actual 1 (live OptionsScreen instance). Fresh result at `.gen/harness/issue_dead_options_live_pause_menu/result.json`. |
+| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/smoke_placement.json` | 0 | `[Harness] status=pass exit=0`; fresh `.gen/harness/smoke_placement/result.json` with `status: pass`. |
+| `godot --headless --path . --script res://tests/ui/issue_dead_options_main_menu.gd` | 0 | `[issue-check] options control found: OptionsButton`; pressed; `[issue-check] live OptionsScreen instantiated: Control visible=true`. |
 
-Reference search (checker-run grep over *.gd/*.tscn/*.godot/*.md, excluding .gen/.git):
-zero hits for `Options.tscn`, `OptionsModal`, `scripts/ui/Options.gd`. File checks:
-all three dead files absent from disk.
+Exit-time RID/ObjectDB leak noise appears in every headless run including
+baseline — engine shutdown noise, not scenario failures. GLB
+"resources have been imported" errors are LFS-model environment noise (no git-lfs
+on host) and do not implicate any criterion.
 
-## Why the second revision also did not fix the red suite
+## Criterion evidence
 
-- The egg dies during **wave 1**, not between waves: the first
-  `wait_for_condition(current_wave >= 2)` (optional) returned NOT OK with actual=1,
-  and the `after_waves` snapshot shows `wave=2 egg_hp=0 game_state=gameover`. The
-  top-up placed right after the first `trigger_wave` executes before wave-1 damage
-  accumulates, so it cannot protect the egg through the whole wave.
-- `_set_egg(20)` clamps `egg_hp` and emits `egg_changed` only; once
-  `game_state = "gameover"` is set (Game.gd ~line 526) the simulation clock stops
-  and no later call resumes waves.
-- Fix direction for the next revision: repeated small egg top-ups INSIDE each wave
-  (e.g. interleave short `wait_for_duration` steps with `_set_egg(20)` calls until
-  `current_wave >= 3`), or rebaseline/rebalance the scenario expectations and file
-  the map_10 pacing issue separately. The criterion as written requires
-  `smoke_tower_roster` to pass.
+1. Repo-wide reference search (checker grep over *.gd/*.tscn/*.godot/*.json,
+   excluding `.gen`/`.git`/`.gen-blocked-*`): single benign hit — a prose
+   description string "Options.tscn / Options.gd removed" in the new test
+   scenario's own description field
+   (`tests/scenarios/issue_dead_options_live_pause_menu.json:7`). No load path,
+   class reference, preload, or scene ext_resource remains for any dead file or
+   `OptionsModal`/`OptionsMenu`.
+2. File existence check: all six dead-file paths absent from disk;
+   `git diff HEAD --stat` shows exactly the six deletions (642 lines removed),
+   nothing re-added.
+3. Editor/import gate exit 0 (see table).
+4. Pause-menu scenario exit 0, all expectations pass (see table).
+5. Main-menu script exit 0, live OptionsScreen visible=true (see table).
+6. smoke_placement exit 0, `status: pass` in fresh result.json (see table).
+7. Diff scope confirmed by `git diff HEAD --stat`: only the six deleted files.
+   No changes to `models/**`, `project.godot`, harness, or
+   `tests/scenarios/smoke_tower_roster.json`. Untracked additions are the two
+   live-path test files required by criteria 4–5.
 
-## Per-criterion status
+## Quality findings
 
-1. No references to dead Options surfaces — verified fresh (grep above).
-2. Dead files removed incl. `.uid` sidecar — verified fresh (git status + ls).
-3. Editor/import gate exit 0, no errors — verified fresh.
-4. smoke_placement pass + fresh result.json — verified fresh.
-5. smoke_tower_roster pass — FAILED (exit 1). Partial progress vs iteration 2:
-   generic/fire/ice/water/electric/venom/scifi damage > 0 now (was 4 of 10);
-   current_wave reached 2 (was frozen lower). Remains Pending.
-6. Pause menu opens live Options modal — verified fresh via new scenario (pass).
-7. Main menu loads OptionsScreen.tscn — verified fresh via SceneTree script (exit 0).
-
-## Test overlap check
-
-No new tests were added in this revision (only timeline entries inside the existing
-scenario). No overlap violations.
-
-## Changed-file quality
-
-Feature diff is deletion-only plus scenario timeline edits; new GDScript test script
-follows project style. No quality violations in changed code. Advisory (already in
-quality-notes.md): ~109 model `.glb` files show binary diffs against HEAD outside
-cluster scope — LFS-pointer smudging from workspace bootstrap, not coder edits;
-also the two open quality-notes entries about the smoke_tower_roster pre-existing
-failure remain open (no RESOLVED marker yet) since the scenario is still red.
+- New test files (`tests/scenarios/issue_dead_options_live_pause_menu.json`,
+  `tests/ui/issue_dead_options_main_menu.gd`) assert through public paths
+  (pause-menu Options button press → OptionsScreen instance count ≥ 1; main-menu
+  OptionsButton press → visible OptionsScreen instance). No overlap with
+  existing suite coverage of these paths found; both would fail if a dead or
+  missing Options resource were wired back in.
+- Cross-cutting: none new. Pre-existing advisory entries in quality-notes.md
+  (smoke_tower_roster map_10 pacing failure on pristine master) remain open and
+  are out of scope per plan non-goals; no resolution appended because the
+  violation itself is unchanged and explicitly non-gating here.
 
 ## Blockers
 
-None infra-related. Single blocker: `smoke_tower_roster` still red because the egg
-cannot survive wave 1 under the current single-shot top-up pattern. Next revision:
-interleave periodic egg top-ups with short waits throughout waves 1–2 so gameover
-never occurs, then rerun the full command.
+None.
+
+## Unverified items
+
+None. Manual testing marked optional in the plan; windowed sanity not performed
+(headless evidence covers both live Options paths programmatically).
