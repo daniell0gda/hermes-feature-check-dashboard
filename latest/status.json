@@ -1,35 +1,35 @@
 {
-  "run_id": "corrosive-soak-90-r3",
-  "feature": "corrosive-soak-perk",
+  "run_id": "warlords-doctrine-r2",
+  "feature": "Warlord's Doctrine perk",
   "status": "running",
-  "started_at": "2026-08-24T08:47:51.990Z",
+  "started_at": "2026-08-24T08:21:41.244Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/corrosive-soak-90-r3/",
-  "heartbeat_at": "2026-08-24T08:54:27.668Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r2/",
+  "heartbeat_at": "2026-08-24T08:54:57.538Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-24T08:54:27.668Z",
-  "process_id": 338460,
+  "active_node": null,
+  "last_event_at": "2026-08-24T08:54:57.538Z",
+  "process_id": 327257,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T08:54:32.398764+00:00",
-    "last_success_at": "2026-08-24T08:54:32.397523+00:00",
+    "last_attempt_at": "2026-08-24T08:54:57.538619+00:00",
+    "last_success_at": "2026-08-24T08:28:36.764189+00:00",
     "last_error": null
   },
   "metrics": {
     "invocations": [
       {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 84594,
-        "output_tokens": 5749
+        "input_tokens": 76120,
+        "output_tokens": 5244
       }
     ]
   }

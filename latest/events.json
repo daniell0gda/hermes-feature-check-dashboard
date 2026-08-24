@@ -1,11 +1,20 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-24T08:54:27.668Z",
+    "timestamp": "2026-08-24T08:28:22.601Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 305872,
+    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-warlords-doctrine/.gen/plan.md\n\nSummary:\n- Replaced the stale r1 plan (which covered the already-implemented perk) with an r2 acceptance plan scoped to readable windowed armor\u2026",
+    "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-24T08:54:57.538Z",
     "node": "code",
     "status": "completed",
-    "duration_ms": 306940,
-    "summary": "Done. Summary:\n\n**Work (cluster: implementation, corrosive-soak Floodgate perk):**\n- The feature implementation was present in the working tree from prior revisions; I verified it end-to-end and closed the remaining gaps.\n- Fixed the one re\u2026",
+    "duration_ms": 1585591,
+    "summary": "The `release_project_worker` tool isn't exposed in this session (only `run_project_cmd`), so I can't explicitly release the worker; the disposable worker will be cleaned up by the harness. All work is complete.\n\n## Summary \u2014 code worker, im\u2026",
     "error": null
   }
 ]

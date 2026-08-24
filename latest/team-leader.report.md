@@ -2,8 +2,8 @@
 
 - **Result:** failed
 - **Classification:** unknown
-- **Feature:** corrosive-soak-perk
-- **Run:** corrosive-soak-90-r1
+- **Feature:** Warlord's Doctrine perk
+- **Run:** warlords-doctrine-r1
 - **Lifecycle:** dashboard publish only; project commit/push/close not implied
 
 ## Status

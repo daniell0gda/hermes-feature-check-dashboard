@@ -1,55 +1,58 @@
-# Request: Continue issue #90 — Progression: Corrosive Soak perk (Floodgate)
+# Request: Warlord's Doctrine — readable windowed armor-bar evidence
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/90
-Workspace: /workspace/git-workspaces/poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat
-Branch: issue/progression-corrosive-soak-perk-floodgat (rebased onto origin/master @ 9976db7; existing uncommitted perk source kept)
-Runner: project `godot-td`, workspace `poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat`. Do NOT invent other runner/workspace names.
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/87
+- **Project:** poke-defense-godot
+- **Runner key:** `godot-td`
+- **Git workspace:** `/workspace/git-workspaces/poke-defense-godot/issue-warlords-doctrine`
+- **Workspace id:** `poke-defense-godot/issue-warlords-doctrine`
+- **Branch:** `issue/warlords-doctrine` (uncommitted perk implementation on current `origin/master`)
+- **Request ID:** `warlords-doctrine-r2`
 
-Request id: corrosive-soak-90-r3
+## Feature (plain English)
 
-## Continuation (do not start from scratch)
+Towers deal more damage, but every enemy spawns with extra armor. The perk itself is already implemented. This run only has to make the granted armor bar *visibly readable* in windowed shots.
 
-r1 (`corrosive-soak-90-r1`) planned, then the code worker died (~2026-08-23T18:32Z) before check.
-r2 (`corrosive-soak-90-r2`) re-planned (07:18Z) then the code worker failed (~07:38Z) with `missing coder-reports/ or changes.md` — no check. Historical r1/r2 artifacts are context only.
+## Historical (do not re-implement unless broken)
 
-Already on the worktree (keep and finish; do not rewrite from scratch):
-- Perk `floodgate_corrosive_soak` Unique 3 levels 25/45/70% in `scripts/progression/floodgate_tower.json`
-- `FloodgateTowerProgressionManager.gd` apply/reset/config + `ProgressionManager.get_floodgate_corrosive_soak_config()`
-- Corroded status on Enemy / EnemyStatusController; rust tint via `WaterSubmersionSystem.set_enemy_corroded`
-- Amplification in `EnemyHealthController._apply_corrosive_soak_if_needed` excluding `tower_type_id == floodgate`
-- Floodgate discharge marks via `_mark_corroded_if_needed`
-- Harness helpers + `tests/scenarios/floodgate_corrosive_soak.json`
+`warlords-doctrine-r1` already implemented and auto-verified:
 
-Preserve master behaviors already on this rebased tree (HUD textures merge and later). Do not revert unrelated files.
+- Perk `warlords_doctrine` Common global, 3 levels: L1 +5% dmg / 8% HP armor, L2 +9% / 12%, L3 +14% / 15%.
+- Bonus armor additive on innate `enemies.xml` armor at `Enemy.setup()` after max_hp is final.
+- Damage stacks additively with `tower_dmg` via `_warlords_damage_ratio` in `get_global_damage_multiplier()`.
+- Headless `tests/scenarios/warlords_doctrine.json` pass (L1/L2/L3 multipliers, Mushnub granted 1.76, Orc boss 303.75, reset to 0).
+- `enemy_armor_ballista` / `enemy_armor_trap` still pass.
+- Files already changed (keep them): `autoload/ProgressionManager.gd`, `scripts/game/actors/Enemy.gd`, `scripts/progression/global.json`, `tests/scenarios/warlords_doctrine.json`, `tests/scenarios/enemy_armor_bar_visual.json`.
 
-## r1 harness failure (must fix)
+r1 manual-tester wrote `.gen/manual-report.md` PASSED, but the pixels do **not** prove the armor bar:
 
-`.gen/harness/floodgate_corrosive_soak/result.json` status=timeout:
-- Perk apply and Corroded mark worked (`corroded_count==1`, `amplification==0.25`, `corroded_marked:true`)
-- Then `armor_hit` (balista, armor_damage 40) followed by `enemies.Alien.armor == 950.0` saw **actual 0.0**
-- Likely observation of an unarmored spawn instead of the staged Alien (index-0 vs max-armor-by-id). `HarnessValues._enemy_report` now takes max armor per id — assert via `enemies.Alien.armor` (report) not `enemy.armor` (index 0). Stage armor immediately before the hit and wait 2–3 poll ticks after.
-- Expected L1 math: staged 1000 − 40×1.25 = 950. Floodgate follow-up must match unowned control. HP unchanged.
+- Debug Panel covers the left third of the frame.
+- Camera is a distant top-down of map_3; Mushnub is a tiny purple placeholder (GLB missing in this worktree).
+- Named “close-ups” (`doctrine_armor_*.png`) are just wide crops of that same distant shot. Two bars are not readable. `ui_feels_broken: yes` for evidence purposes.
 
-Treat old harness results as stale. Re-run the focused harness fresh after any harness/scenario fix. Write `coder-reports/<cluster-id>.md` and `.gen/changes.md` this run so the leader can proceed to check.
+Archive of r1 dashboard: https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/
 
-## Feature
+## Remaining acceptance (this run)
 
-New Unique progression perk `corrosive_soak` for Floodgate Tower only, 3 levels:
-- Enemies hit by Floodgate's discharge gain a "Corroded" status.
-- While Corroded, armor-damage taken from **all other towers'** hits is increased by +25% / +45% / +70% by level.
-- Floodgate's own hits are unaffected by its own Corroded status (setup effect, not self-buff).
-- Implemented in `FloodgateTowerProgressionManager.gd` alongside `floodgate_saltwater_purge`.
-- Visual: extend wet/soak shader (`WaterSubmersionSystem`) with a distinct rust tint — no new VFX class.
+1. Windowed (no `--headless`) `enemy_armor_bar_visual` (or a dedicated follow-up scenario) produces PNGs where a human can clearly see:
+   - a previously-unarmored enemy (Mushnub / map_3 wave 1) with Warlord's Doctrine L1 active
+   - **two** bars: HP row + granted armor row, filled at spawn
+   - armor fill shrinks after a scripted armor hit
+   - armor row hidden once armor is 0
+2. Hide the Debug Panel before screenshots (`UI.debug_panel.visible = false` or equivalent harness call). Do not leave the gray debug overlay in evidence shots.
+3. Camera must aim at the **live enemy position** (`camera_target` = enemy world pos, then `_update_camera_for_layer("surface")`). Hardcoded `[-8,0,-8]` is wrong if the spawn is elsewhere. Zoom close enough that the bars are more than a couple of pixels (raise camera / shorten `surface_distance` only for the shot if a public setter exists; do not permanently change default camera for the game).
+4. If Mushnub GLB is missing, still make the bars readable (zoom, bigger bar scale for the shot, or a larger unarmored enemy type that still has config armor 0). Do not fake armor with a naturally armored enemy for the doctrine leg.
+5. `ui_feels_broken: no` on each final screenshot. Misplaced/clipped HUD or a covering debug panel fails.
+6. Fresh windowed PNGs copied to `.gen/screenshots/` (overwrite the unreadable r1 crops).
+7. Re-run focused `warlords_doctrine.json` headless so perk behavior is still green after any scenario/camera change.
+8. Do **not** reformat unrelated `global.json` entries (existing advisory: whitespace noise).
 
-## Acceptance criteria
-1. Perk defined with 3 levels and correct amplification values (25/45/70%), Floodgate-only, type Unique.
-2. Corroded status applied on Floodgate discharge hits; amplifies armor-dmg from all towers EXCEPT Floodgate itself.
-3. Editor gate passes (`godot --headless --path . --editor --quit-after 300`).
-4. Focused headless gameplay harness proves: enemy hit by Floodgate → subsequent armor-dmg hit from another tower is amplified per level; Floodgate-own follow-up is not amplified.
-5. Manual testing: required (rust tint is player-facing). Windowed screenshots/GIF via runner, never --headless for manual evidence. Include `ui_feels_broken: yes|no`.
+## Runner notes
 
-## Notes
-- Use exact scene argument before user args in harness commands.
-- Inspect raw Godot stdout for Parse Error / Failed loading resource, not just harness status=pass.
-- Do not commit/push/close.
-- Do not revert unrelated master files. Ignore `.glb` LFS noise; do not commit models.
+- `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-warlords-doctrine`.
+- Native Godot; harness scene before user args: `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json`
+- Windowed evidence: no `--headless`; add `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
+- `manual_testing: required`. Windowed PNGs required. A pass with unreadable bars is a fail.
+
+## Lifecycle
+
+Do not commit, push, merge, or close the issue.

@@ -1,26 +1,27 @@
 # Coder report: implementation
 
 ## Changed files
-- `scripts/progression/floodgate_tower.json` — adds `floodgate_corrosive_soak` perk (maxLevels 3, Unique, towers ["floodgate"]; levels carry absolute amplification 0.25 / 0.45 / 0.70, duration 6s)
-- `scripts/progression/managers/FloodgateTowerProgressionManager.gd` — corrosive-soak state (`get_corrosive_soak_config()`: enabled/level/amplification/duration), absolute per-level application (no compounding), `reset_for_new_game()` clears it, `[FLOODGATE]` debug log per level application
-- `autoload/ProgressionManager.gd` — `get_floodgate_corrosive_soak_config()` delegating to the Floodgate manager
-- `scripts/game/actors/towers/FloodgateTower.gd` — `_mark_corroded_if_needed()` called on each discharge hit when the perk is owned
-- `scripts/game/actors/enemy/parts/EnemyStatusController.gd` — `apply_corroded(dur, level, amplification)` + `update_corroded` expiry; `[CORROSIVE_SOAK]` applied/expired log lines
-- `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — `_apply_corrosive_soak_if_needed()`: amplifies armor damage only for non-Floodgate attackers (exclusion), HP damage unchanged; `[CORROSIVE_SOAK]` amplified-hit log with bonus % and attacker_excluded flag
-- `scripts/game/actors/enemy/parts/Enemy.gd`, `scripts/game/underground/WaterSubmersionSystem.gd` — corroded fields; rust tint via water-submersion tint mechanism (`set_enemy_corroded`), reverts to normal wet/soak tint on expiry
-- `scripts/testing/HarnessActions.gd` — harness effects `floodgate_hit` (with `mark_corroded`), `armor_hit` (tower_type_id/instance_id), `set_armor`, `clear_corroded`; all target by enemy_id, not index
-- `scripts/testing/HarnessValues.gd` — enemy-report pins: `staged.<id>.<field>` selecting live instance by max armor > 0; report fields `corroded_count`, `corroded_level`, `corroded_amplification`, `rust_tint_count`
-- `tests/scenarios/floodgate_corrosive_soak.json` — new focused scenario
+- `.gen/screenshots/` — refreshed with 6 fresh windowed 1920x1080 evidence PNGs from the r2 windowed run (armor_full, armor_partial, armor_depleted, innate_armor_full, innate_armor_partial, innate_armor_depleted), replacing the r1 crops. No repo source changed this iteration: the r2 readability criteria were already covered by `hide_debug_panel`/`frame_enemy` (scripts/testing/HarnessActions.gd) and the two-leg `tests/scenarios/enemy_armor_bar_visual.json`.
 
 ## Criteria
-All 13 plan criteria — Done (verified via focused harness + editor gate; see below). Master three-way-merged ProgressionManager behaviors untouched beyond the added getter.
+- Debug Panel hidden before any screenshot, absent from all evidence PNGs — Done
+- Doctrine-leg shots frame the live Mushnub at its actual spawn position (frame_enemy aims at health-bar anchor, then surface-layer camera update) — Done
+- HP row and granted armor row individually readable in every doctrine-leg shot (zoom 4.0; GLB missing -> placeholder shape, bars still readable, no faked armor) — Done
+- After one scripted armor hit, armor fill visibly smaller than full — Done (armor_partial.png)
+- After depletion, armor row hidden while HP row visible — Done (armor_depleted.png)
+- Fresh windowed run passes with PNGs copied into .gen/screenshots/ — Done
+- No misplaced/clipped HUD covering bars in any evidence shot — Done (pixel-checked all 6)
+- warlords_doctrine headless still passes (1.05/1.09/1.14, Mushnub 1.76, Orc boss 303.75, reset 0) — Done
+- enemy_armor_ballista and enemy_armor_trap still pass unchanged — Done
 
 ## Commands and results
-- Focused: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/floodgate_corrosive_soak.json` — exit 0; `[Harness] status=pass exit=0`. Raw stdout contains `[FLOODGATE] floodgate_corrosive_soak L1/L2/L3 applied -> amplification 0.25/0.45/0.7`, `[CORROSIVE_SOAK] corroded applied on enemy=Alien level=1`, amplified-hit lines bonus=25%/45%/70% armor_dmg=50/58/68, `corroded expired`, no Parse Error after editor-gate rebuild.
-- Typecheck/build: `godot --headless --path . --editor --quit-after 300` — exit 0.
-- Full test: `res://tests/tower/test_tower_armor_damage.tscn` — exit 1, `15 ok, 3 failed`. **Pre-existing**: stashing all working-tree changes reproduces the identical 15 ok / 3 failed (FAIL lines: ballista bolt not reaching armored enemy) on the clean baseline, so the failures are environmental to this fresh worktree, not introduced by this feature. r2 plan notes recorded 18 ok / 0 failed on the previous tree state.
+- `godot --headless --path . --editor --quit-after 300` — exit 0; clean import, no script errors
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/warlords_doctrine.json` — exit 0; `[Harness] status=pass exit=0`
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_ballista.json` — exit 0; status=pass
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_trap.json` — exit 0; status=pass
+- `godot --path . --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_bar_visual.json` — exit 0; status=pass, 6/6 screenshots captured (1920x1080)
 
 ## Notes
-- First focused run on the fresh worktree printed Parse Errors ("Identifier PerkPresentation not declared" in PerkCard.gd cascading into HarnessValues/HarnessActions/AgentHarness). Running the editor gate once rebuilt Godot's global class cache and the errors disappeared; subsequent harness runs are clean. Checker should run the editor gate before judging parse-error noise on a fresh checkout.
-- `.glb` Failed-loading-resource errors (Alien.glb, stylized_earth.glb, portal arch) are pre-existing LFS import noise, explicitly non-gating per plan.
-- Rust tint is player-facing: manual windowed screenshot evidence still required per `.gen/ui_scenario.md` (not assertable headless).
+- Key log lines this run: `[WARLORDS-DOCTRINE] spawn_bonus level=1 granted_armor=1.76 on Mushnub`, `[Armor] Mushnub depleted: 0.76 armor removed by 1.0 armor damage`, `[WARLORDS-DOCTRINE] spawn_bonus level=3 granted_armor=243.75 on Orc Enemy_boss` (map_7 leg runs after reset, innate 60 + L3 bonus).
+- Visual pixel check of fresh PNGs: armor_full shows orange armor row above green HP row (~10px each at zoom 4.0); armor_partial armor fill ~43% of full; armor_depleted shows only the HP row; innate_armor_full shows both rows wide on the boss. No debug panel in any shot; HUD (top bar, tower dock) does not overlap the bars.
+- Pre-existing advisory unchanged: whitespace-only reformatting of unrelated entries in scripts/progression/global.json (see quality-notes).

@@ -1,52 +1,38 @@
-# Acceptance Plan: Progression Corrosive Soak perk (Floodgate)
+# Acceptance Plan: Warlord's Doctrine — readable windowed armor-bar evidence (r2)
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/floodgate_corrosive_soak.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://tests/tower/test_tower_armor_damage.tscn"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+- Focused test: `["run_project_cmd", "project=godot-td", "workspace=poke-defense-godot/issue-warlords-doctrine", "godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/warlords_doctrine.json"]`
+- Full test: `["run_project_cmd", "project=godot-td", "workspace=poke-defense-godot/issue-warlords-doctrine", "godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/warlords_doctrine.json && godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_ballista.json && godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_trap.json"]`
+- Typecheck/build: `["run_project_cmd", "project=godot-td", "workspace=poke-defense-godot/issue-warlords-doctrine", "godot --headless --path . --editor --quit-after 300"]`
 
-Note: raw Godot stdout must be inspected for Parse Error / Failed loading resource even when a harness result reports status=pass. `.glb` LFS import errors are pre-existing noise and not gating. Current tree state (r2 baseline): full armor-damage suite passes (18 ok / 0 failed); editor gate passes; the focused harness fails with status=timeout — its staged enemy is gone by the time `set_armor` runs ("no live enemy at index 0"), so cluster 4 must make enemy staging deterministic before any hit or observation.
+Windowed evidence command (manual_testing leg, not part of the three above):
+`["run_project_cmd", "project=godot-td", "workspace=poke-defense-godot/issue-warlords-doctrine", "godot --path . --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_bar_visual.json"]`
 
-manual_testing: required
+manual_testing: required — the deliverable of this run is human-readable windowed PNGs; headless passes alone do not satisfy it. A pass with unreadable bars is a fail.
 
 ## Clusters
 
-1. perk-definition-and-manager — files: `scripts/progression/floodgate_tower.json`, `scripts/progression/managers/FloodgateTowerProgressionManager.gd` — depends on: none
-- The `corrosive_soak` perk is defined in Floodgate's progression file with maxLevels 3, type Unique, compatibility restricted to the `floodgate` tower only, so it never appears as a reward choice for other towers or in generic pools.
-- Each of the three levels carries its level's absolute armor-damage amplification of 25% / 45% / 70% respectively, so replaying levels 1..N on load lands on level N's value instead of compounding.
-- After `apply_progression` with the owned level, the Floodgate progression state exposes an enabled flag and the level's amplification fraction (0.25 / 0.45 / 0.70), and after `reset_for_new_game()` it reads enabled=false with amplification back to zero.
-- Debug-build `[FLOODGATE]` log line per corrosive-soak level application naming the perk, the applied level and the resulting amplification fraction.
-
-2. corroded-status-and-amplification — files: `scripts/game/actors/enemy/parts/EnemyHealthController.gd`, `scripts/game/actors/towers/FloodgateTower.gd` — depends on: 1
-- An enemy hit by a Floodgate discharge while the perk is owned gains the Corroded state; without the perk owned, discharge hits leave no Corroded state.
-- While an enemy is Corroded, an armor-damage hit from a tower other than Floodgate strips 25% / 45% / 70% more armor at perk levels 1 / 2 / 3 than the same hit would without Corroded; HP damage from that hit is unchanged.
-- A Floodgate-sourced follow-up hit against a Corroded enemy is not amplified: its armor damage equals what it would deal to a non-Corroded enemy.
-- When the Corroded state expires, subsequent other-tower armor-damage hits are no longer amplified.
-- Debug-build `[CORROSIVE_SOAK]` log line per Corroded-state application naming the enemy and the active perk level, and one per amplified armor hit naming the enemy, the bonus percentage and whether the attacker was excluded.
-- Master behaviors three-way merged into `ProgressionManager.gd` (undermining, press_button, reward_popups) keep passing their existing progression checks after the corrosive-soak changes.
-
-3. corroded-rust-tint — files: `scripts/game/underground/WaterSubmersionSystem.gd` — depends on: 2
-- While an enemy is Corroded, its model carries a distinct rust-colored tint through the existing water-submersion tint mechanism that differs visibly from the normal wet/soak tint; when the Corroded state ends, the tint returns to the normal wet/soak appearance.
-
-4. gameplay-harness-scenario — files: `tests/scenarios/floodgate_corrosive_soak.json`, `scripts/testing/HarnessValues.gd` — depends on: 2
-- The headless gameplay harness stages a live armored enemy deterministically — the enemy is confirmed alive and at its staged armor value immediately before each hit action, using the max-armor-per-id report field rather than index-0 lookup — so no hit or observation ever targets an absent or unarmored spawn.
-- The headless gameplay harness proves end-to-end: with the perk applied at each level, a Floodgate discharge hit followed by another tower's armor-damage hit yields the level's amplified armor loss on the same enemy setup, and a matching unowned-perk control run yields no amplification.
-- The headless gameplay harness proves isolation on the same enemy setup: after the Floodgate discharge hit, a second Floodgate-sourced hit's armor effect matches the unowned-perk control run.
+1. readable-evidence-scenario — files: `tests/scenarios/enemy_armor_bar_visual.json`, `scripts/testing/HarnessActions.gd` (only if hiding the Debug Panel or live-enemy camera targeting needs a small harness capability addition) — depends on: none
+- Before any screenshot in the evidence scenario, the Debug Panel (gray overlay covering the left third of the frame) is hidden, and no final evidence PNG shows it.
+- The doctrine-leg screenshots frame the live Mushnub from map_3 wave 1 at its actual spawn position (camera aimed at the enemy's current world position, then updated for the surface layer), not a hardcoded map coordinate.
+- In every doctrine-leg screenshot the HP row and the granted armor row are both individually readable at more than a couple of pixels (close zoom or enlarged bar scale for the shot only); if Mushnub's GLB model is missing in this worktree, the bars remain readable without faking armor on a naturally armored enemy.
+- After one scripted armor hit against the doctrine-armored enemy, the screenshot visibly shows the armor row's fill smaller than at full armor.
+- After enough scripted armor hits to deplete granted armor to 0, the final screenshot shows the armor row hidden while the HP row remains visible.
+2. evidence-capture-and-regression — files: `.gen/screenshots/` (fresh windowed PNGs overwriting the unreadable r1 crops), `tests/scenarios/enemy_armor_bar_visual.json` — depends on: 1
+- A fresh windowed (non-headless) run of the evidence scenario completes with all its checkpoints passing, and its PNGs are copied into `.gen/screenshots/` replacing the r1 crops.
+- Each final evidence screenshot has no misplaced or clipped HUD elements and nothing covering the bars (`ui_feels_broken` equivalent reads clean).
+- The headless `warlords_doctrine` scenario still passes after the scenario/camera changes (perk multipliers L1/L2/L3, Mushnub granted 1.76, Orc boss 303.75, reset to 0).
+- The pre-existing `enemy_armor_ballista` and `enemy_armor_trap` scenarios still pass unchanged after the changes.
 
 ## Criteria
 
-- The `corrosive_soak` perk is defined in Floodgate's progression file with maxLevels 3, type Unique, compatibility restricted to the `floodgate` tower only, so it never appears as a reward choice for other towers or in generic pools.
-- Each of the three levels carries its level's absolute armor-damage amplification of 25% / 45% / 70% respectively, so replaying levels 1..N on load lands on level N's value instead of compounding.
-- After `apply_progression` with the owned level, the Floodgate progression state exposes an enabled flag and the level's amplification fraction (0.25 / 0.45 / 0.70), and after `reset_for_new_game()` it reads enabled=false with amplification back to zero.
-- Debug-build `[FLOODGATE]` log line per corrosive-soak level application naming the perk, the applied level and the resulting amplification fraction.
-- An enemy hit by a Floodgate discharge while the perk is owned gains the Corroded state; without the perk owned, discharge hits leave no Corroded state.
-- While an enemy is Corroded, an armor-damage hit from a tower other than Floodgate strips 25% / 45% / 70% more armor at perk levels 1 / 2 / 3 than the same hit would without Corroded; HP damage from that hit is unchanged.
-- A Floodgate-sourced follow-up hit against a Corroded enemy is not amplified: its armor damage equals what it would deal to a non-Corroded enemy.
-- When the Corroded state expires, subsequent other-tower armor-damage hits are no longer amplified.
-- Debug-build `[CORROSIVE_SOAK]` log line per Corroded-state application naming the enemy and the active perk level, and one per amplified armor hit naming the enemy, the bonus percentage and whether the attacker was excluded.
-- Master behaviors three-way merged into `ProgressionManager.gd` (undermining, press_button, reward_popups) keep passing their existing progression checks after the corrosive-soak changes.
-- While an enemy is Corroded, its model carries a distinct rust-colored tint through the existing water-submersion tint mechanism that differs visibly from the normal wet/soak tint; when the Corroded state ends, the tint returns to the normal wet/soak appearance.
-- The headless gameplay harness stages a live armored enemy deterministically — the enemy is confirmed alive and at its staged armor value immediately before each hit action, using the max-armor-per-id report field rather than index-0 lookup — so no hit or observation ever targets an absent or unarmored spawn.
-- The headless gameplay harness proves end-to-end: with the perk applied at each level, a Floodgate discharge hit followed by another tower's armor-damage hit yields the level's amplified armor loss on the same enemy setup, and a matching unowned-perk control run yields no amplification.
-- The headless gameplay harness proves isolation on the same enemy setup: after the Floodgate discharge hit, a second Floodgate-sourced hit's armor effect matches the unowned-perk control run.
+- Before any screenshot in the evidence scenario, the Debug Panel (gray overlay covering the left third of the frame) is hidden, and no final evidence PNG shows it.
+- The doctrine-leg screenshots frame the live Mushnub from map_3 wave 1 at its actual spawn position (camera aimed at the enemy's current world position, then updated for the surface layer), not a hardcoded map coordinate.
+- In every doctrine-leg screenshot the HP row and the granted armor row are both individually readable at more than a couple of pixels (close zoom or enlarged bar scale for the shot only); if Mushnub's GLB model is missing in this worktree, the bars remain readable without faking armor on a naturally armored enemy.
+- After one scripted armor hit against the doctrine-armored enemy, the screenshot visibly shows the armor row's fill smaller than at full armor.
+- After enough scripted armor hits to deplete granted armor to 0, the final screenshot shows the armor row hidden while the HP row remains visible.
+- A fresh windowed (non-headless) run of the evidence scenario completes with all its checkpoints passing, and its PNGs are copied into `.gen/screenshots/` replacing the r1 crops.
+- Each final evidence screenshot has no misplaced or clipped HUD elements and nothing covering the bars (`ui_feels_broken` equivalent reads clean).
+- The headless `warlords_doctrine` scenario still passes after the scenario/camera changes (perk multipliers L1/L2/L3, Mushnub granted 1.76, Orc boss 303.75, reset to 0).
+- The pre-existing `enemy_armor_ballista` and `enemy_armor_trap` scenarios still pass unchanged after the changes.
