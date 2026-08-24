@@ -1,34 +1,37 @@
-# Request: nature-decoration-counts (#109)
+# Request: issue #115 — create_ground_plane_material bypasses the resource cache
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/109
-- **Project runner key:** `godot-td`
-- **Workspace:** `poke-defense-godot/issue-nature-decoration-counts`
-- **Hermes worktree:** `/workspace/git-workspaces/poke-defense-godot/issue-nature-decoration-counts`
-- **Branch:** `issue/nature-decoration-counts` (reset to `origin/master` `d7551d9` — prior uncommitted leftover discarded; no nature-decoration commits existed)
-- **Request id:** `req-109-nature-decoration-counts`
-- **Historical SHA (unverified old tip):** `d241462` (no feature commits)
+- **Project:** poke-defense-godot
+- **Git workspace:** poke-defense-godot/issue-ground-material-ignores-cache
+  (`/workspace/git-workspaces/poke-defense-godot/issue-ground-material-ignores-cache`)
+- **Branch:** `issue/ground-material-ignores-cache` (rebased onto origin/master d7551d9)
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/115
+- **Labels at claim:** status:in-progress (already claimed)
+- **Request ID:** issue115-ground-material-ignores-cache-r2
+- **Retry note:** Daniel asked Retry 2026-08-23. Preserve existing source/harness; treat r1 `.gen` as historical; re-verify after rebase.
 
-## Feature (plain language)
+## Feature summary
 
-Big 50x50 maps look empty because tree/bush/flower/dead-tree counts are hard-coded for 20x20. Scale those four counts with map area (factor exactly 1.0 at 400 m²). Maps may still override via `environment.decorations`. custom_map and main_menu_map must show trees/bushes across the whole board.
+`TextureAtlasUtils.create_ground_plane_material` (scripts/utils/TextureAtlasUtils.gd ~lines 145-158)
+loads both ground textures with `ResourceLoader.CACHE_MODE_IGNORE`, defeating the resource cache and
+the `AssetPreloader` startup preload of `underground_floor.jpg`. Switch to `CACHE_MODE_REUSE` — but
+first find the real cause of the "shader only" map-switch bug the comment blames on caching.
+Likely suspect: `EnvironmentUtils._update_ground_plane_color` reassigns `grass_tint` but never the
+albedo samplers.
 
-## Acceptance
+## Acceptance criteria
 
-1. In `scripts/game/NatureDecoration.gd`, the four non-grass counts (`tree_count`, `bush_count`, `flower_group_count`, `dead_tree_count`) scale with map area. At 20x20 / 400 m² the factor is exactly 1.0 (do not rebalance shipped 20x20 maps). A 50x50 / 2500 m² map gets 6.25× those counts (rounded as specified in implementation — keep integers, document rounding).
-2. Map JSON can override the resulting counts under `environment.decorations`.
-3. `custom_map` and `main_menu_map` visibly carry trees and bushes across the whole board — verified with a **windowed** screenshot on Xvfb (`-Windowed`), not by arithmetic alone.
-4. No new visual models — placement-count change only.
+1. Ground plane material uses cached textures (`CACHE_MODE_REUSE`) for
+   `res://textures/nature/map_grass.jpg` and `res://textures/underground_floor.jpg`.
+2. Root cause of the original map-switch shader issue identified; if it was a missing sampler
+   reassignment, that is fixed so the ground keeps its grass/dirt textures across a map switch.
+3. Verified by switching maps twice through the game-test harness and confirming the ground still
+   shows blended grass/dirt, not flat shader output. Manual test with windowed screenshots is
+   required (visible player-facing surface).
 
-## Runner
+## Runner notes (redo reminders)
 
-- Always `run_project_cmd` with `project=godot-td`, `workspace=poke-defense-godot/issue-nature-decoration-counts`.
-- Never invent workspace names.
-- Editor gate then focused harness + windowed screenshot.
-
-## Manual testing
-
-`manual_testing: required` — player-facing map look. Windowed only, no `--headless` for the visual proof. Include `ui_feels_broken` sanity on each final PNG.
-
-## Lifecycle
-
-Do not commit, push, merge, or close unless asked. Dashboard URL required in the terminal summary.
+- Runner key `godot-td`, workspace `poke-defense-godot/issue-ground-material-ignores-cache`.
+- Native Godot commands via run_project_cmd; explicit scene argument before user args in harnesses;
+  editor gate `godot --headless --path . --editor --quit-after 300`.
+- Windowed evidence needs `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` when Vulkan fails.
+- manual_testing: required (ground texture visible in-game).

@@ -1,4 +1,4 @@
-# Coder report: 1-ground-material-cache-and-map-switch\n\n# Coder report: 1-ground-material-cache-and-map-switch (revision redo, rev 2)
+# Coder report: 1-ground-material-cache-and-map-switch (revision redo, rev 2)
 
 ## Changed files
 - none — revision pass only; the iteration-1 implementation remains as the uncommitted
@@ -28,4 +28,3 @@ All six criteria remain Done (verified by fresh runs, no code change needed).
   grassColor 5209935); out of scope for this revision.
 - Manual windowed screenshot evidence remains owned by the manual-tester profile.
 - Worker released after final command.
-\n
