@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-tooltip-polish-r2/",
   "heartbeat_at": "2026-08-24T12:33:40.308Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-24T12:33:40.308Z",
   "process_id": 391652,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T12:33:40.308679+00:00",
-    "last_success_at": "2026-08-24T12:19:43.989765+00:00",
+    "last_attempt_at": "2026-08-24T12:33:44.731119+00:00",
+    "last_success_at": "2026-08-24T12:33:44.729527+00:00",
     "last_error": null
   },
   "metrics": {
@@ -63,6 +63,17 @@
         "cost_status": "unknown",
         "input_tokens": 167185,
         "output_tokens": 29474
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 54741,
+        "output_tokens": 6367
       }
     ]
   }
