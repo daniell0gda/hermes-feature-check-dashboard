@@ -1,45 +1,45 @@
-# Request: #116 game-ready-blocks-map-load (r6) — Continue-from-menu regression
+# Request: Fix two failing cave harness scenarios (route never restored after carve)
 
-## Project
-- Workspace: `/workspace/git-workspaces/poke-defense-godot/issue-game-ready-blocks-map-load`
-- Branch: `issue/game-ready-blocks-map-load` (pushed at 66ab8e7)
-- Runner key: `godot-td`; runner workspace `poke-defense-godot/issue-game-ready-blocks-map-load`.
-- If runner 422/no docker: host Godot allowed (`PATH=/opt/data/profiles/code/home/bin`); never classify host-ok as `blocked`.
+## Symptom
+Two AgentHarness scenarios fail deterministically (re-run fresh, same failure):
 
-## Issue
-https://github.com/daniell0gda/poke-defense-godot/issues/116
+- `cave_decline_seals_reveal_unseals` — fails at action index 4
+- `cave_pending_seals_entrance_instantly` — fails at action index 4
 
-## Reported by Daniel (real gameplay, windowed)
-**"Game starts when in New Game but FAILS on Continue (from menu)."**
+Both fail the same way: after `load_map map_9`, `add_hole(-4,-3,-8)`, `add_exit(4,-3,-8)`,
+`carve_rectangle([0,-3,-8], 8.0, 1.0)`, the wait for
+`underground.has_route_from [-4,-3,-8] == true` times out. The route log shows
+"No valid path found to exit" on every attempt, so a straight carved corridor from hole to
+exit is NOT passable.
 
-The phased world build works on New Game but breaks the Continue (load-save) path. Fix this
-regression; it is part of this issue.
+## Context / suspects
+- Both scenarios date from commit 4662568 (Aug 18, #77 decline sealing).
+- Suspect commits since then: 5c768ad "fix: seal declined caves inward and stop carve-through"
+  (branch issue/77), 487452d "fix: clamp cave positions to underground grid bounds (#121)",
+  e595cf4 "feat: size underground voxel grid from map dimensions".
+  Hypothesis: sealing/lock logic (seal_cave_entrances / set_cave_lock in UndergroundSystem.gd,
+  _lock_and_seal_cave in scripts/game/CaveSystem.gd) blocks or seals even a plain fixture
+  carve with no cave present — or map_9's grid sizing changed so the corridor at z=-8 falls
+  outside/blocked cells.
+- All other 139 scenarios pass; carve/camera/underground suites green.
+- Note: main checkout is dirty with unrelated WIP (map_difficulty.csv, HarnessValues.gd,
+  carve_camera_drag_spin.json). Do not revert that dirt; fix forward.
 
-## Lead hypothesis (verify first, then fix)
-`Game.setup()` (scripts/game/Game.gd ~line 329) checks `GameState.get_meta("pending_save_data")`
-FIRST and, when present, runs `GameSaveLoader.setup_from_save_data(...)` and **returns early —
-before `_begin_world_build()` ever runs**. Meanwhile `MapLoadingScreen._build_world_phased()`
-registers a driver and pumps `step_world_build()` until done. On the Continue path there are no
-phases and no finish signal, so the loading screen waits forever / hands over broken.
-Check also: `loading_from_save` meta handling inside setup(), and whether
-`world_build_finished` is ever emitted on the save-restore path.
-
-## What to do
-1. Reproduce headless AND windowed: boot MainMenu → Continue with a real save file (create one
-   via a harness seed run if no fixture exists). Capture the exact failure (hang / error / black
-   screen) from raw stdout/stderr.
-2. Fix so BOTH paths work through the phased/driver contract:
-   - New Game: unchanged (bar advances during world build).
-   - Continue: save restore completes and hand-over happens — either emit/complete the world
-     build for restored saves or have MapLoadingScreen detect the early-return path and finish.
-3. Add a focused test covering Continue (save → reload → playing state), not just New Game.
-4. Re-run the full existing set fresh: import gate, driving test 7/0,
-   `map_build_phases`, `menu_backdrop_map`, plus the new Continue scenario.
-5. Fresh windowed PNG evidence of BOTH paths reaching playable state (manual testing required).
+## Acceptance criteria
+1. Root cause identified and documented (which commit/change made the corridor unroutable).
+2. Both scenarios pass fresh: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json` → status pass, exit 0.
+3. If the root cause is a real gameplay bug (declined-cave sealing walls off corridors it shouldn't),
+   fix the game code; if it is stale test setup vs intended new behavior, update the two scenario
+   JSONs with notes explaining why, without weakening what they were written to prove.
+4. Re-run the full cave/carve/underground scenario set plus smoke_placement to confirm no regressions:
+   cave_spawn_within_grid, cave_discovery_chance, cave_discovery_long_carve,
+   cave_discovery_pending_placement, cave_reveal_only_unseals_carved_blocks,
+   carve_stops_at_discovered_cave, declined_cave_torches_extinguish, underground_grid_from_map,
+   underground_map_cost_override, smoke_placement.
+5. No new engine parse errors in fresh runner stdout/stderr.
 
 ## Runner notes
-- Only `run_project_cmd`; Godot `--log-file .gen/<name>.log`.
-- Windowed: `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
-- LFS models are real content in this workspace now (git lfs pull already done). Do not treat
-  model-load failures as environmental anymore — they are real failures now.
-- Stale `.gen/status.md`/`check.md` are historical. Write fresh ones.
+- Host-side Godot: `PATH=/opt/data/profiles/code/home/bin:$PATH godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json`
+- Results land in `.gen/harness/<scenario>/result.json`; logs in `.gen/harness/_logs/`.
+
+manual_testing: none (headless harness regression only)

@@ -1,132 +1,113 @@
 <!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Feature-check report</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:16px/1.6 system-ui}article{max-width:860px;margin:36px auto;padding:28px;background:#fff;border:1px solid #e4e7ec;border-radius:16px;box-shadow:0 12px 32px rgba(16,24,40,.08)}h1,h2{letter-spacing:-.03em}a{color:#2563eb}pre{background:#f8fafc;padding:14px;border-radius:10px}img{display:block;max-width:100%;height:auto;margin:16px 0;border:1px solid #e4e7ec;border-radius:10px}</style><article><h1>Team-leader report</h1>
 <ul>
 <li>**Result:** failed</li>
-<li>**Classification:** fixable</li>
-<li>**Feature:** game-ready-blocks-map-load</li>
-<li>**Run:** issue116-game-ready-blocks-map-load-r1</li>
+<li>**Classification:** blocked</li>
+<li>**Feature:** underground-carve-topdown-camera-rotation</li>
+<li>**Run:** issue130-underground-carve-topdown-camera-rotation</li>
 <li>**Lifecycle:** dashboard publish only; project commit/push/close not implied</li>
 </ul>
 <h2>Status</h2>
 <h2>✅ Done</h2>
 <ul>
-<li>After a phased map load completes, the resulting scene matches the current synchronous build: the harness `load_map` action reaches `GameState.game_state == &quot;playing&quot;` with the requested `map_id`, a non-zero total wave count, and live enemies spawnable on wave 1 (asserted via harness expectations on a representative map).</li>
-<li>Booting `res://scenes/Main.tscn` directly without `MapLoadingScreen` driving it (the AgentHarness path) still completes the entire world build: when nothing consumes the phases externally, they all run to completion.</li>
-<li>`setup_as_menu_backdrop` still produces a complete backdrop world: the existing `menu_backdrop_map` scenario passes unchanged after the build is split into phases.</li>
-<li>Debug-build `[MAP_BUILD]` log line per world-build phase completion, naming the phase and its elapsed milliseconds.</li>
+<li>(none — all criteria moved to Pending)</li>
 </ul>
 <h2>⬜ Pending</h2>
 <ul>
-<li>No single frame during the world build exceeds ~100ms wall-clock, measurable from the scenario run log (per-phase elapsed timings or an equivalent frame-time record written during the load). — fresh cold-cache run still shows 124/121/121/184/192 ms phases (map_1) and 204/194/127 ms in level_walkthrough; focused scenario status=fail on this expectation; new &quot;Warm Models&quot; phase does not remove parse cost from first tree/dead-tree slices — quality: scripts/game/NatureDecoration.gd: newly added lines introduce forbidden type casts (`as Node3D` ~246, `as PackedScene` ~657-659)</li>
-<li>During the world-build portion of a map load, `MapLoadingScreen`&#x27;s progress bar advances in multiple observable increments beyond its post-threaded-load value, rather than sitting at or near 100% while the world builds. — test no longer crashes on typing but add_child fails inside _ready (root busy setting up children), watchdog aborts at 3600 frames with zero assertions run and no result.json; windowed PNG manual evidence still missing</li>
-<li>The status line updates at least once during the world build (a building-phase caption replaces the static &quot;Building Map&quot; line before the screen is replaced by the game scene). — same broken deferred-add path in the only test; no evidence</li>
-<li>A selected map id that is missing or unparseable still falls back to `map_1` before any world-building phase begins, and the run proceeds with `map_1`. — fallback logic present and ordered before phases in code, but its only test never executes its checks (same add_child failure)</li>
+<li>When carve mode is activated while on the underground layer, the active camera&#x27;s rotation becomes a top-down bird&#x27;s-eye view (camera forward pointing straight down at the underground board) without changing the camera&#x27;s position or zoom.</li>
+<li>Activating carve mode changes only the camera&#x27;s rotation: the camera&#x27;s position and its distance/zoom relative to the view target are exactly what they were immediately before activation.</li>
+<li>Canceling carve mode (ESC, right-click cancel path, or any existing cancel route that ends carve mode) restores the camera rotation that was active immediately before carve mode was entered, when the player did not rotate the camera manually during carving.</li>
+<li>If the player manually rotated the camera while carve mode was active, canceling carve mode leaves the camera at the player&#x27;s current angle instead of restoring the pre-carve angle.</li>
+<li>While carve mode is active on the underground layer, the player&#x27;s normal camera rotation input (right-mouse drag or shift+left drag) still rotates the camera.</li>
+<li>Entering dig-hole, place-exit, place-block, or tower-selection modes does not rotate the camera to the top-down angle; only carve mode triggers the rotation.</li>
+<li>Debug-build `[CARVE_CAMERA]` log line per rotation event: one when the top-down angle is applied (with the pre-carve angles captured) and one when a cancel restores or deliberately skips restoring them (with which of the two happened).</li>
+<li>A harness value source exposes the active camera&#x27;s rotation basis (and position/zoom-equivalent) so scenarios can compare camera orientation before, during, and after carve mode.</li>
+<li>The focused scenario asserts, under the harness: top-down orientation after entering carve mode on the underground layer, unchanged position/zoom across the transition, exact restoration after plain cancel, and retained player angle after a scripted manual rotation followed by cancel.</li>
 </ul>
 <h2>❌ Impossible</h2>
+<ul>
+<li>(none)</li>
+</ul>
 <h2>Check</h2>
-<h1>Check report — issue-116 game-ready-blocks-map-load (revision-check 2, iteration 3)</h1>
-<p>classification: fixable</p>
+<h1>Check report — underground-carve-topdown-camera-rotation (iteration 1)</h1>
+<p>classification: blocked</p>
 <h2>Verdict</h2>
-<p>Cluster 1 improved but the frame-budget criterion STILL FAILS on a fresh</p>
-<p>cold-cache run. The cast-rule violation from iteration 2 is fixed. Cluster 2&#x27;s</p>
-<p>new test no longer crashes on typed pairs and now has a 3600-frame watchdog,</p>
-<p>but it never reaches a single assertion: the loading screen&#x27;s `add_child` of</p>
-<p>the game scene fails inside `_ready` (&quot;Parent node is busy setting up children,</p>
-<p>add_child() failed&quot;), the screen never frees itself, the test spins to its</p>
-<p>watchdog, quits 1, and writes NO result.json — zero checks executed.</p>
-<p>The required windowed PNG manual evidence still does not exist.</p>
-<h2>Verification commands (all via run_project_cmd, project=poke-defense-godot,</h2>
-<p>workspace=poke-defense-godot/issue-game-ready-blocks-map-load)</p>
+<p>Blocked by runner infrastructure, not by the project alone. `run_project_cmd` was</p>
+<p>used (never the host shell) for every attempted verification command, and every</p>
+<p>invocation failed at container start:</p>
 <ul>
-<li>Preflight probe: `[&quot;godot&quot;,&quot;--version&quot;]` → exit 0, Godot 4.4.1.stable.</li>
-<li>Editor/import gate: `godot --headless --path . --editor --quit-after 300`</li>
-<p>  → exit 0 (clean parse of Game.gd / NatureDecoration.gd /</p>
-<p>  test_map_loading_screen_driving.gd).</p>
-<li>Focused scenario: `godot --headless --path . res://scenes/Main.tscn --</li>
-<p>  --harness=res://tests/scenarios/map_build_phases.json` → **exit 1,</p>
-<p>  status=fail**; `.gen/harness/map_build_phases/result.json`: 7/8 expectations</p>
-<p>  pass; the failing one is still the `!regex` frame-budget check. Fresh</p>
-<p>  cold-cache timings in `.gen/harness/_logs/map_build_phases.out.log`:</p>
-<p>  &#x27;Loading Egg Castle Model&#x27; 124 ms, &#x27;Warming Egg Castle Model&#x27; 121 ms,</p>
-<p>  &#x27;Placing the Egg&#x27; 121 ms, &#x27;Growing Vegetation - Trees 1/4&#x27; 184 ms,</p>
-<p>  &#x27;Dead Trees 1/2&#x27; 192 ms — five phases over ~100 ms. A &quot;Warm Models&quot; phase</p>
-<p>  was added before the tree slices, yet the first tree/dead-tree slice still</p>
-<p>  pays the full model-parse cost, so the warm phase is not effective for them.</p>
-<li>Full suite: level_walkthrough → exit 0, status=pass, but its own log again</li>
-<p>  shows cold phases at 204 / 194 / 127 ms (same budget violation on other</p>
-<p>  maps).</p>
-<li>Backdrop: menu_backdrop_map → status=pass (exit 0).</li>
-<li>New cluster-2 test:</li>
-<p>  `godot --headless --path . res://tests/loading/test_map_loading_screen_driving.tscn`</p>
-<p>  → **exit 1 after ~26 s**, watchdog fired:</p>
-<p>  `[SETUP FAIL] test exceeded its 3600-frame watchdog`. Log shows exactly one</p>
-<p>  engine error first: `ERROR: Parent node is busy setting up children,</p>
-<p>  add_child() failed. Consider using add_child.call_deferred(child) instead.`</p>
-<p>  No `.gen/loading_harness/result.json`, no assertion summary line, zero</p>
-<p>  checks ran. Root cause: the harness adds the screen via `add_child` from its</p>
-<p>  own `_ready`; the screen&#x27;s `_ready → _run_steps → _finish →</p>
-<p>  _build_world_phased` then does `tree.root.add_child(instance)` while the</p>
-<p>  root is still setting up children, so the game instance never enters the</p>
-<p>  tree; the screen waits forever on a world build that can never finish.</p>
-<p>  (Same error also appears when the scene is launched directly.) The test</p>
-<p>  needs `add_child.call_deferred` (or deferred start) in BOTH the harness&#x27;s</p>
-<p>  screen add and MapLoadingScreen._build_world_phased&#x27;s game-scene add.</p>
+<li>`{&quot;project&quot;:&quot;godot-td&quot;,&quot;workspace&quot;:&quot;godot-td/issue-underground-carve-topdown-camera-rotation&quot;,&quot;cmd&quot;:[&quot;git&quot;,&quot;status&quot;,&quot;--short&quot;]}` → HTTP 422, exit 126:</li>
+<p>  `OCI runtime exec failed: exec failed: unable to start container process: chdir to cwd (&quot;/workspaces/godot-td/issue-underground-carve-topdown-camera-rotation&quot;) set in config.json failed: no such file or directory`</p>
+<li>`godot --version` @ `godot-td/issue-130` → same 422 chdir failure.</li>
+<li>`git status --short` @ `poke-defense-godot/check` → same 422 chdir failure.</li>
+<li>Host: `/workspaces` does not exist; `docker ps` → `Cannot connect to the Docker daemon at unix:///var/run/docker.sock`.</li>
 </ul>
-<h2>Acceptance criteria status</h2>
-<p>Cluster 1 — game-phased-build:</p>
+<p>The runner&#x27;s pre-provisioned workspace directory is missing and Hermes has no</p>
+<p>Docker socket access to create it; the project-runner skill prohibits</p>
+<p>bootstrapping the workspace through the host shell. Therefore the typecheck/build</p>
+<p>gate and the full test gate could not be executed and are treated as failed.</p>
+<h2>Gate results</h2>
+<p>| Gate | Command | Result |</p>
+<p>|---|---|---|</p>
+<p>| Typecheck/build | `[&quot;godot&quot;,&quot;--headless&quot;,&quot;--editor&quot;,&quot;--path&quot;,&quot;.&quot;,&quot;--quit-after&quot;,&quot;3&quot;]` | NOT RUN — runner 422 chdir failure (infra) |</p>
+<p>| Focused test | `[&quot;godot&quot;,&quot;--headless&quot;,&quot;--path&quot;,&quot;.&quot;,&quot;res://scenes/Main.tscn&quot;,&quot;--&quot;,&quot;--harness=res://tests/scenarios/carve_camera_topdown.json&quot;]` | NOT RUN this session — runner 422 chdir failure (infra) |</p>
+<p>| Full test loop | plan.md full-test command | NOT RUN — runner 422 chdir failure (infra) |</p>
+<h2>Evidence from the implementor&#x27;s own stored run</h2>
+<p>`.gen/harness/carve_camera_topdown/result.json` (written 2026-08-22T12:18:12,</p>
+<p>before the runner broke) records `&quot;status&quot;: &quot;fail&quot;`:</p>
 <ul>
-<li>PASS — phased parity (playing state, map_id=map_1, total_waves=4&gt;0, wave-1</li>
-<p>  enemies ≥1): all four gameplay expectations pass in</p>
-<p>  .gen/harness/map_build_phases/result.json.</p>
-<li>FAIL — no single frame &gt;~100 ms during world build: unchanged from iteration</li>
-<p>  2 — cold-cache 124/121/121/184/192 ms on map_1; level_walkthrough log shows</p>
-<p>  204/194/127 ms. The added warm-model phase does not remove the parse cost</p>
-<p>  from the first vegetation slice, and egg-castle load/warm/place remain just</p>
-<p>  over budget.</p>
-<li>PASS — direct Main.tscn boot completes the whole build without a driver</li>
-<p>  (harness path reaches playing with all phases run synchronously).</p>
-<li>PASS — menu_backdrop_map scenario passes unchanged.</li>
-<li>PASS — `[MAP_BUILD] phase &#x27;&lt;name&gt;&#x27; done in &lt;n&gt; ms` lines present for every</li>
-<p>  phase in every scenario log.</p>
+<li>6 timeline actions failed with `ui has no method &#x27;_on_dig_hole&#x27;`,</li>
+<p>  `_clear_dig_mode`, `_on_carve` (×2), `clear_carve_mode` (×2).</p>
+<li>Expectation `dig_hole_camera_top_down` FAILED (actual true, expected false —</li>
+<p>  the dig-hole probe was taken without dig mode ever being entered, so the check</p>
+<p>  is both failing and vacuous).</p>
+<li>The three `carve_camera_*` expectations &quot;passed&quot; only vacuously: every probe</li>
+<p>  captured the identical untouched camera basis because carve mode was never</p>
+<p>  actually entered. They assert nothing about the feature.</p>
+<li>All three `[CARVE_CAMERA]` log regex expectations failed (`actual: &quot;&quot;`).</li>
 </ul>
-<p>Cluster 2 — loading-screen-driving:</p>
+<h2>Source inspection of the diff (`git diff HEAD`, 6 files, +184)</h2>
 <ul>
-<li>UNVERIFIED — bar advances during world build: implementation exists</li>
-<p>  (MapLoadingScreen._build_world_phased + _on_world_build_phase), but the only</p>
-<p>  automated coverage never executes an assertion (watchdog abort above) and no</p>
-<p>  windowed PNG manual evidence exists.</p>
-<li>UNVERIFIED — building-phase caption replaces &quot;Building Map&quot;: same gap.</li>
-<li>UNVERIFIED — bad map id falls back to map_1 before world build: logic present</li>
-<p>  and ordered before phases in code (`_load_map_config` runs as step 1, before</p>
-<p>  `_finish`/phases), but the only test never executes its checks.</p>
+<li>`scripts/ui/UI.gd`: `carving_active` setter now calls</li>
+<p>  `game.on_carve_camera_mode(armed)` — **no such method exists anywhere**</p>
+<p>  (`grep -rn on_carve_camera_mode scripts/` matches only the call site). At</p>
+<p>  runtime this is guarded by `has_method`, so it silently does nothing.</p>
+<li>`scripts/game/Game.gd`: contains NO carve-camera logic and NO `[CARVE_CAMERA]`</li>
+<p>  logging. The only addition is `debug_look_down_underground()` (orthogonal</p>
+<p>  camera teleport for screenshots) which implements none of the acceptance</p>
+<p>  criteria and looks like manual-test scaffolding, possibly scope creep.</p>
+<li>No code anywhere rotates the camera to top-down on carve arm, restores it on</li>
+<p>  cancel, or tracks manual rotation during carve.</p>
+<li>`scripts/testing/HarnessValues.gd` / `HarnessActions.gd` / `AgentHarness.gd`:</li>
+<p>  camera_probe / rotate_camera / camera value source are implemented and look</p>
+<p>  reasonable, but they test a feature that does not exist.</p>
+<li>`tests/scenarios/carve_camera_topdown.json` references four UI methods that do</li>
+<p>  not exist (`_on_dig_hole`, `_clear_dig_mode`, `_on_carve`, `clear_carve_mode`);</p>
+<p>  grep finds none of them in `scripts/ui/UI.gd`.</p>
 </ul>
-<p>Manual testing per plan.md (windowed PNG of the loading screen mid-world-build)</p>
-<p>is REQUIRED and missing (.gen contains no manual-report.md and no screenshots).</p>
-<h2>Changed-file quality findings</h2>
-<ul>
-<li>RESOLVED — scripts/game/Game.gd `as PackedScene` casts removed; new lines no</li>
-<p>  longer introduce type casts (remaining `as X` occurrences are pre-existing).</p>
-<li>NEW QUALITY ISSUE — scripts/game/NatureDecoration.gd: newly added lines</li>
-<p>  introduce two type casts forbidden by coding rules:</p>
-<p>  `get_node_or_null(container_name) as Node3D` (get_container, ~line 246) and</p>
-<p>  `_model_cache.get(model_path) as PackedScene` plus `load(model_path) as</p>
-<p>  PackedScene` (_load_nature_model_path, ~lines 657–659). Advisory quality note</p>
-<p>  appended; does not demote criteria beyond what is already recorded.</p>
-<li>tests/loading/test_map_loading_screen_driving.gd: typed-pair crash fixed and</li>
-<p>  watchdog added (good), but the deferred-add_child defect above means the test</p>
-<p>  still proves nothing; must be fixed and rerun to a written result.json.</p>
-</ul>
+<h2>Acceptance criteria status (all unmet)</h2>
+<p>Every criterion below is Pending: the implementing logic is absent from the diff</p>
+<p>and/or its scenario actions fail against real UI methods.</p>
+<p>1. Carve on underground rotates camera top-down, position/zoom unchanged — Pending (no implementation; during_carve probe identical to before).</p>
+<p>2. Only rotation changes across arm — Pending (vacuous pass only).</p>
+<p>3. Plain cancel restores pre-carve rotation — Pending (no implementation).</p>
+<p>4. Manual rotation during carve survives cancel — Pending (no implementation).</p>
+<p>5. Camera rotation input still works while carving — Pending (untested; rotate_camera action ran outside carve mode).</p>
+<p>6. Dig-hole/place-exit/place-block/tower-selection do not trigger rotation — Pending (scenario calls nonexistent UI methods; expectation fails).</p>
+<p>7. `[CARVE_CAMERA]` debug log lines — Pending (absent from source; log assertions fail).</p>
+<p>8. Harness value source exposes camera orientation/placement — implemented (camera source + probes present in HarnessValues/HarnessActions) but unverifiable this session; kept Pending pending a runnable gate.</p>
+<p>9. Focused scenario asserts top-down / position-unchanged / restore / kept-player-angle — Pending (scenario currently fails: 4 bad action targets, 3 failed log checks, 1 failed expectation).</p>
+<h2>Manual testing</h2>
+<p>Required by plan (`manual_testing: required`) and request notes. No windowed</p>
+<p>screenshot evidence found under `.gen/harness/carve_camera_topdown`</p>
+<p>(`&quot;screenshots&quot;: []`). Not performed.</p>
 <h2>Blockers</h2>
-<p>None infra-related; runner healthy throughout (probe, import gate, and all</p>
-<p>scenario runs returned promptly).</p>
-<h2>Required fixes before re-check</h2>
-<p>1. Fix the add_child-inside-_ready failure: use `add_child.call_deferred(...)`</p>
-<p>   in tests/loading/test_map_loading_screen_driving.gd (screen add) AND in</p>
-<p>   scripts/MapLoadingScreen.gd `_build_world_phased` (game-scene add); rerun to</p>
-<p>   a written `.gen/loading_harness/result.json` with all checks passing.</p>
-<p>2. Bring cold-cache world-build phases under ~100 ms: make the vegetation</p>
-<p>   warm-model phase actually pre-parse the tree/dead-tree GLTFs before the</p>
-<p>   first slice (currently Trees 1/4 and Dead Trees 1/2 pay the whole parse),</p>
-<p>   and further amortize egg-castle load/warm/place (each 121–147 ms cold).</p>
-<p>3. Rerun map_build_phases to status=pass.</p>
-<p>4. Provide the required windowed PNG manual evidence of the loading screen</p>
-<p>   mid-world-build (bar advanced past the threaded-load portion).</p></article>
+<p>1. Runner infrastructure unavailable: `run_project_cmd` 422 chdir failures for</p>
+<p>   every workspace slug; `/workspaces` missing; Docker socket unreachable from</p>
+<p>   Hermes. Re-provision the runner workspace (host/root side) and re-run check.</p>
+<p>2. Implementation incomplete: `Game.on_carve_camera_mode` and all</p>
+<p>   `[CARVE_CAMERA]` logging missing; scenario targets four nonexistent UI</p>
+<p>   methods. Coder must implement cluster 1 and fix the scenario action names.</p>
+<h2>Quality notes</h2>
+<p>See `.gen/quality-notes.md` (appended: silent no-op notification pattern;</p>
+<p>vacuous harness passes masking a missing feature; suspected scope creep in</p>
+<p>`debug_look_down_underground`). Advisory only.</p></article>
