@@ -1,25 +1,36 @@
-# Request: Water Tower: Riptide — light Slow alongside Wet (issue #47)
+# Request: water-conductive-flood-wet-splash (issue #45)
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/47
-Project: poke-defense-godot
-Workspace: poke-defense-godot/issue-water-tower-riptide-light-slow-alongside
-Branch: issue/water-tower-riptide-light-slow-alongside (cut fresh from origin/master @ b5d75ae)
-Request ID: r47-1
+Project: godot-td
+Git workspace: godot-td/issue-water-conductive-flood-wet-splash (/workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash)
+Branch: issue/water-conductive-flood-wet-splash (cut from origin/master @ b5d75ae)
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/45
+Runner: project key `godot-td`, workspace `godot-td/issue-water-conductive-flood-wet-splash` (do NOT invent workspace names).
 
-## Summary
-Add new Unique perk `water_riptide`: Water tower hits also apply a 20% Slow for 1.5s,
-via the existing EffectsManager / apply_slow-style API.
+## Feature
 
-## Done when
-- New Unique `water_riptide` exists and is grantable through the normal progression flow.
-- Water hits apply a 20% Slow for 1.5s on enemies.
-- Must respect the existing slow-owner-refresh convention in
-  `EnemyStatusController.apply_slow` so it does not fight Ice's own slow application.
-- Visual: reuse the existing IceSlowFX snowflake particles + ice-tint overlay driven from
-  `scripts/game/actors/enemy/parts/EnemyStatusController.gd` — no new VFX asset; confirm the
-  cue fires when Water is the trigger instead of Ice.
+New Unique progression perk `water_conductive_flood` (Water tower): Water splash hits apply
+Wet status in a small radius around the hit target, not only to the direct target. Reuse the
+small-radius AoE-application pattern proven in `IceTower._apply_cone_effects`. The hit's existing
+splash effect should visibly cover that radius (same small-radius visual approach IceTower uses),
+not just silently flag enemies. Wet renders per-enemy via `scripts/ui/EnemyHealthBar.gd` status
+icons — no new asset needed.
 
-## Runner notes (redo pins)
-- Runner key + workspace MUST be exactly `godot-td` / `poke-defense-godot/issue-water-tower-riptide-light-slow-alongside`.
-- Use explicit scene argument before user args in gameplay harness commands.
-- Visible player-facing work → manual_testing: required; windowed screenshots/GIF only (no --headless for the manual test).
+## Acceptance criteria
+
+1. A perk definition `water_conductive_flood` exists and is obtainable like other Water Uniques.
+2. With the perk, a Water projectile hit applies Wet to enemies within a small radius of the hit
+   target (multiple enemies verified Wet, not just the direct target).
+3. Without the perk, behavior is unchanged (single-target Wet only) — no regression.
+4. The splash effect visually covers the radius on hit.
+5. Editor import gate passes; focused headless harness proves multi-enemy Wet application;
+   windowed screenshot evidence shows the splash radius covering nearby enemies.
+
+## Manual testing
+
+manual_testing: required — visible player-facing perk with an AoE splash moment. Include overall
+UI-sanity pass (`ui_feels_broken: yes|no`) on every final screenshot.
+
+## Notes
+
+- Fresh worktree; `.gen/` starts clean this run.
+- Follow `/opt/data/coding_rules.md` and project context files.
