@@ -25,5 +25,14 @@
     "duration_ms": 364612,
     "summary": "Worker release is handled by the leader (release_project_worker isn't exposed here), so artifacts and verification are complete.\n\nCheck complete for warlords-doctrine r2.\n\nVerified done: 17. Pending: 0. Impossible: 0. Quality notes: no chan\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-24T09:01:54.003Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 38188,
+    "summary": "Gate decision complete.\n\n- Read request.md, plan.md, check.md, status.md. Check is `pass`; all acceptance criteria verified with fresh windowed evidence (6 PNGs, debug panel hidden, live-enemy camera framing).\n- Wrote /workspace/git-workspa\u2026",
+    "error": null
   }
 ]
