@@ -1,22 +1,58 @@
 {
-  "run_id": "warlords-doctrine-r2",
-  "feature": "Warlord's Doctrine perk",
+  "run_id": "131-pointer-cursor-r2",
+  "feature": "pointer-cursor-on-clickable-surfaces",
   "status": "running",
-  "started_at": "2026-08-24T08:21:41.244Z",
+  "started_at": "2026-08-24T08:06:42.453Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r2/",
-  "heartbeat_at": "2026-08-24T08:21:41.244Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
-  "process_id": 327257,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/131-pointer-cursor-r2/",
+  "heartbeat_at": "2026-08-24T08:25:19.717Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-24T08:25:19.717Z",
+  "process_id": 320413,
   "host": "f1a4230ec90b",
-  "phase": "plan",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T08:23:16.729750+00:00",
-    "last_success_at": "2026-08-24T08:21:46.352027+00:00",
+    "last_attempt_at": "2026-08-24T08:25:19.718340+00:00",
+    "last_success_at": "2026-08-24T08:22:28.918568+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 72169,
+        "output_tokens": 3054
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 64175,
+        "output_tokens": 5456
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 77268,
+        "output_tokens": 3520
+      }
+    ]
+  }
 }
