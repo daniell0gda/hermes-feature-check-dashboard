@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation (r3 revision, task revision-code-1)
+# Coder report: implementation (r3 revision, task revision-code-1)
 
 ## Context
 revisions.md (revision 1, classification: fixable) directed a code revision pass.
@@ -67,4 +67,3 @@ visually inspected: partially filled bar past the threaded-load portion
 - The capture-test-no-exit advisory in quality-notes.md is now resolved.
 - No production code changed this revision; the uncommitted phased build is
   untouched per request.md ("do not rewrite the pan/loading implementation").
-\n
