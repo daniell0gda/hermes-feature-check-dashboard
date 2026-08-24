@@ -5,6 +5,11 @@
     "url": "runs/water-pressure-46/"
   },
   {
+    "run_id": "warlords-doctrine-r2",
+    "status": "running",
+    "url": "runs/warlords-doctrine-r2/"
+  },
+  {
     "run_id": "warlords-doctrine-r1",
     "status": "completed",
     "url": "runs/warlords-doctrine-r1/"
