@@ -1,36 +1,43 @@
-# Request: water-conductive-flood-wet-splash (issue #45)
+# Request
 
-Project: godot-td
-Git workspace: godot-td/issue-water-conductive-flood-wet-splash (/workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash)
-Branch: issue/water-conductive-flood-wet-splash (cut from origin/master @ b5d75ae)
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/45
-Runner: project key `godot-td`, workspace `godot-td/issue-water-conductive-flood-wet-splash` (do NOT invent workspace names).
+- request_id: req-124-cave-carved-path-torches-r6
+- issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
+- project runner key: `godot-td`
+- workspace: `poke-defense-godot/issue-cave-carved-path-torches`
+- branch: `issue/cave-carved-path-torches` @ `ecef2a1` (extend; do not reset)
 
-## Feature
+## Problem (Daniel, 2026-08-24)
 
-New Unique progression perk `water_conductive_flood` (Water tower): Water splash hits apply
-Wet status in a small radius around the hit target, not only to the direct target. Reuse the
-small-radius AoE-application pattern proven in `IceTower._apply_cone_effects`. The hit's existing
-splash effect should visibly cover that radius (same small-radius visual approach IceTower uses),
-not just silently flag enemies. Wet renders per-enemy via `scripts/ui/EnemyHealthBar.gd` status
-icons — no new asset needed.
+Torch position is now good (wall-mounted), but **`TORCH_SPACING` has no visible effect** — changing the number does not change how dense the torches are.
 
-## Acceptance criteria
+## Root cause (verified by parent)
 
-1. A perk definition `water_conductive_flood` exists and is obtainable like other Water Uniques.
-2. With the perk, a Water projectile hit applies Wet to enemies within a small radius of the hit
-   target (multiple enemies verified Wet, not just the direct target).
-3. Without the perk, behavior is unchanged (single-target Wet only) — no regression.
-4. The splash effect visually covers the radius on hit.
-5. Editor import gate passes; focused headless harness proves multi-enemy Wet application;
-   windowed screenshot evidence shows the splash radius covering nearby enemies.
+`TorchPlacer.calculate_torch_positions`:
+1. `_spacing_torch_cells` strides unique corridor cells by `TORCH_SPACING` (now 4) — this part obeys the constant.
+2. But `_repair_coverage` then adds torches until every "required" cell is within `Torch.LIGHT_RADIUS * 0.5` (≈ 1 cell) of a torch. With a half-radius coverage, repair re-densifies the corridor to roughly every 2 cells **regardless of TORCH_SPACING**, so the constant is effectively overridden and the density never changes visually.
+
+The coverage radius is also wrong in kind: `Torch.LIGHT_RADIUS` is 1.0 world unit, but the repair only lights cells within 0.5 (half) of a torch, which is why it packs so tight.
+
+## Required
+
+- Make `TORCH_SPACING` **actually drive torch density** end to end. Changing it (e.g. 4 → 6 → 8) must produce visibly sparser torches.
+- The coverage-repair pass must not silently undo spacing. It should only fill genuine gaps (bends/corners) left by spacing, using a coverage radius consistent with the real light reach (`Torch.LIGHT_RADIUS`), not a halved radius that forces near-full packing.
+- Keep wall-mounting correct (every torch on a real cardinal wall face, no mid-corridor sticks).
+- Keep live-grid torch budget (no hardcoded MAX_TORCHES).
+- **Do not change torch light intensity** (`Torch.gd` energy/radius/color/omni unchanged). If the coverage radius needs to reflect light reach, derive it from `Torch.LIGHT_RADIUS` — do not edit Torch.gd.
+
+## Done when
+
+- Changing `TORCH_SPACING` to a larger value visibly reduces the number of torches along a straight corridor
+- Curves/bends still stay lit (repair fills only real gaps)
+- Torches remain wall-mounted
+- Windowed underground screenshots: sparse vs dense difference is visible
+- `ui_feels_broken: no`
 
 ## Manual testing
 
-manual_testing: required — visible player-facing perk with an AoE splash moment. Include overall
-UI-sanity pass (`ui_feels_broken: yes|no`) on every final screenshot.
+required. Windowed, no `--headless`. Underground side-to-side carve with a curve, camera at `camera_target`. Show that spacing visibly changes density.
 
-## Notes
+## Runner
 
-- Fresh worktree; `.gen/` starts clean this run.
-- Follow `/opt/data/coding_rules.md` and project context files.
+`godot-td` / `poke-defense-godot/issue-cave-carved-path-torches`. Write a real non-empty `.gen/plan.md`.

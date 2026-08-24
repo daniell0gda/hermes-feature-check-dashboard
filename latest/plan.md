@@ -1,38 +1,37 @@
-# Acceptance Plan: water-conductive-flood-wet-splash
+# Acceptance Plan: req-124-r6 cave carved-path torches — TORCH_SPACING drives density end to end
 
 ## Verification
 
-- Focused test: `["python3", "tests/run_all_shard.py", "0", "1", "water_conductive_flood"]`
-- Full test: `["python3", "tests/run_all_shard.py", "0", "1"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--import", "--quit-after", "5"]`
-
-## Clusters
-
-1. water-flood-perk-definition — files: `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd` — depends on: none
-- The perk definition `water_conductive_flood` exists in the Water tower progression data as a Unique and is reported eligible by progression lookup like other Water Uniques.
-- Applying the perk through progression raises its level to 1 and exposes its small-radius configuration (radius value greater than zero) via the Water progression manager's accessor surface.
-2. water-flood-splash-aoe — files: `scripts/game/actors/Projectile.gd`, `scripts/game/actors/effects/EffectsManager.gd` — depends on: 1
-- With `water_conductive_flood` applied, a Water projectile hit applies Wet to every alive enemy within the perk's configured radius of the hit target; a scenario proves at least two enemies Wet from one hit, not only the direct target.
-- Without the perk, a Water projectile hit applies Wet only to the direct target; nearby enemies within the would-be radius stay non-Wet (regression guard on existing behavior).
-- Enemies outside the configured radius are not made Wet by the hit even when the perk is applied.
-- On a Water hit with the perk applied, the spawned splash effect visually extends at least to the perk's configured radius so the covered area matches the Wet area (same small-radius visual approach the Ice cone uses).
-- Wet applied by the flood perk renders per-enemy through the existing EnemyHealthBar status icon for each affected enemy, with no new asset required.
-- Debug-build [WATER-FLOOD] log line per multi-enemy Wet application event, naming the hit target and the count of enemies Wetted in the radius.
-
-## Criteria
-
-- The perk definition `water_conductive_flood` exists in the Water tower progression data as a Unique and is reported eligible by progression lookup like other Water Uniques.
-- Applying the perk through progression raises its level to 1 and exposes its small-radius configuration (radius value greater than zero) via the Water progression manager's accessor surface.
-- With `water_conductive_flood` applied, a Water projectile hit applies Wet to every alive enemy within the perk's configured radius of the hit target; a scenario proves at least two enemies Wet from one hit, not only the direct target.
-- Without the perk, a Water projectile hit applies Wet only to the direct target; nearby enemies within the would-be radius stay non-Wet (regression guard on existing behavior).
-- Enemies outside the configured radius are not made Wet by the hit even when the perk is applied.
-- On a Water hit with the perk applied, the spawned splash effect visually extends at least to the perk's configured radius so the covered area matches the Wet area (same small-radius visual approach the Ice cone uses).
-- Wet applied by the flood perk renders per-enemy through the existing EnemyHealthBar status icon for each affected enemy, with no new asset required.
-- Debug-build [WATER-FLOOD] log line per multi-enemy Wet application event, naming the hit target and the count of enemies Wetted in the radius.
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/carve_curved_torches_coverage.json"]`
+- Full test: `["bash", "-lc", "godot --headless --path . res://tests/caves/test_torch_budget_scaling.tscn && godot --headless --path . res://tests/caves/test_cave_discovery_chance.tscn && godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/carve_curved_torches_coverage.json"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "3"]`
 
 manual_testing: required
 
-## Notes
+## Clusters
 
-- Focused command assumes new scenario files named with substring `water_conductive_flood` under `tests/scenarios/` (e.g. an AoE-application scenario and a no-perk regression scenario); if the implementor names them differently, adjust the filter substring accordingly.
-- Windowed screenshot evidence of the splash radius covering nearby enemies is captured by manual testing per `.gen/ui_scenario.md`; headless cannot capture pixels.
+1. spacing-driven placement and honest coverage repair — files: `scripts/game/underground/TorchPlacer.gd` — depends on: none
+- On a straight carved corridor, the final placed torch positions (after the coverage-repair pass) step by exactly `TORCH_SPACING` unique corridor cells, so raising `TORCH_SPACING` (e.g. 4 → 6 → 8) strictly decreases the torch count along that corridor.
+- The coverage-repair pass adds no torch to a straight corridor whose every cell is already reachable by the spacing-stride torches under the coverage radius, i.e. changing `TORCH_SPACING` alone changes final density (repair does not re-densify to a fixed pitch).
+- The coverage accounting treats a required corridor cell as lit when it lies within a distance derived from `Torch.LIGHT_RADIUS`, not a halved radius (`LIGHT_RADIUS * 0.5`); `Torch.LIGHT_RADIUS` itself is not modified.
+- For an L-shaped (bent) corridor at `TORCH_SPACING` values 4, 6 and 8, every required corridor cell is covered (uncovered required-cell count is 0) after placement.
+- Every placed torch — spacing pass and coverage-repair pass alike — sits exactly one cardinal `WALL_OFFSET` from its grid-cell centre toward a genuinely solid (or grid-edge/cave-locked rock) neighbour face, with no diagonal or mid-corridor mounts.
+- When a `max_torches` budget caps the result, thinning keeps maximal coverage (greedy set-cover behaviour) and never reintroduces a fixed uniform density independent of `TORCH_SPACING`.
+- With an empty voxel grid, placement returns zero torch positions without errors.
+- Debug-build `[TORCH_PLACER]` log line per placement computation reporting the spacing-pass torch count, the repair-added torch count, and the effective `TORCH_SPACING` value, so density changes are traceable in logs.
+2. behaviour regression coverage — files: `tests/caves/test_torch_budget_scaling.gd`, `tests/caves/torch_coverage_probe.gd`, `tests/scenarios/carve_curved_torches_coverage.json` — depends on: 1
+- The torch behaviour test scene fails if the final torch count on a straight corridor stops responding to `TORCH_SPACING` (asserts monotonic decrease for two different spacing values) and passes once spacing drives density end to end.
+- The focused harness scenario completes with exit code 0: `[TorchManager] Updated torches` logged, active torch count > 0, `[TORCH_PLACER] coverage pass ... uncovered=0`, and `uncovered_corridor_cells == 0` after the L-shaped carve.
+
+## Criteria
+
+- On a straight carved corridor, the final placed torch positions (after the coverage-repair pass) step by exactly `TORCH_SPACING` unique corridor cells, so raising `TORCH_SPACING` (e.g. 4 → 6 → 8) strictly decreases the torch count along that corridor.
+- The coverage-repair pass adds no torch to a straight corridor whose every cell is already reachable by the spacing-stride torches under the coverage radius, i.e. changing `TORCH_SPACING` alone changes final density (repair does not re-densify to a fixed pitch).
+- The coverage accounting treats a required corridor cell as lit when it lies within a distance derived from `Torch.LIGHT_RADIUS`, not a halved radius (`LIGHT_RADIUS * 0.5`); `Torch.LIGHT_RADIUS` itself is not modified.
+- For an L-shaped (bent) corridor at `TORCH_SPACING` values 4, 6 and 8, every required corridor cell is covered (uncovered required-cell count is 0) after placement.
+- Every placed torch — spacing pass and coverage-repair pass alike — sits exactly one cardinal `WALL_OFFSET` from its grid-cell centre toward a genuinely solid (or grid-edge/cave-locked rock) neighbour face, with no diagonal or mid-corridor mounts.
+- When a `max_torches` budget caps the result, thinning keeps maximal coverage (greedy set-cover behaviour) and never reintroduces a fixed uniform density independent of `TORCH_SPACING`.
+- With an empty voxel grid, placement returns zero torch positions without errors.
+- Debug-build `[TORCH_PLACER]` log line per placement computation reporting the spacing-pass torch count, the repair-added torch count, and the effective `TORCH_SPACING` value, so density changes are traceable in logs.
+- The torch behaviour test scene fails if the final torch count on a straight corridor stops responding to `TORCH_SPACING` (asserts monotonic decrease for two different spacing values) and passes once spacing drives density end to end.
+- The focused harness scenario completes with exit code 0: `[TorchManager] Updated torches` logged, active torch count > 0, `[TORCH_PLACER] coverage pass ... uncovered=0`, and `uncovered_corridor_cells == 0` after the L-shaped carve.
