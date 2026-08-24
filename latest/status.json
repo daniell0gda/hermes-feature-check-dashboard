@@ -1,21 +1,21 @@
 {
-  "run_id": "req-83-traps-frostbite-fangs-r3",
-  "feature": "traps-frostbite-fangs",
+  "run_id": "warlords-doctrine-r2",
+  "feature": "Warlord's Doctrine perk",
   "status": "running",
-  "started_at": "2026-08-24T07:16:57.944Z",
+  "started_at": "2026-08-24T08:21:41.244Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r3/",
-  "heartbeat_at": "2026-08-24T08:59:41.525Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-24T08:59:41.525Z",
-  "process_id": 292510,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r2/",
+  "heartbeat_at": "2026-08-24T09:01:10.808Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-24T09:01:10.808Z",
+  "process_id": 327257,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T08:59:46.274778+00:00",
-    "last_success_at": "2026-08-24T08:59:46.273900+00:00",
+    "last_attempt_at": "2026-08-24T09:01:10.808873+00:00",
+    "last_success_at": "2026-08-24T08:55:11.376762+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 93192,
-        "output_tokens": 3113
+        "input_tokens": 76120,
+        "output_tokens": 5244
       },
       {
         "task_id": "code",
@@ -39,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 133969,
-        "output_tokens": 3342
+        "input_tokens": 246911,
+        "output_tokens": 5635
       }
     ]
   }

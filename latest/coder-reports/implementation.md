@@ -1,45 +1,27 @@
-# Coder report: implementation (revision 1)
-
-Task: revision-code-1 / cluster implementation. Re-verify the previously green
-criteria after the checker's fixable classification; no code defects were
-identified by check.md — the only residual item is the windowed screenshot
-handoff to the manual tester.
+# Coder report: implementation
 
 ## Changed files
-
-No source changes this iteration (worktree diff identical to iteration 1):
-- `scripts/progression/trap.json` — mod (from iteration 1)
-- `scripts/progression/managers/TrapProgressionManager.gd` — mod (iteration 1)
-- `autoload/ProgressionManager.gd` — mod (iteration 1)
-- `scripts/game/actors/Trap.gd` — mod (iteration 1)
-- `tests/scenarios/traps_frostbite_fangs_progression.json` — new (iteration 1)
+- `.gen/screenshots/` — refreshed with 6 fresh windowed 1920x1080 evidence PNGs from the r2 windowed run (armor_full, armor_partial, armor_depleted, innate_armor_full, innate_armor_partial, innate_armor_depleted), replacing the r1 crops. No repo source changed this iteration: the r2 readability criteria were already covered by `hide_debug_panel`/`frame_enemy` (scripts/testing/HarnessActions.gd) and the two-leg `tests/scenarios/enemy_armor_bar_visual.json`.
 
 ## Criteria
-
-All eight acceptance criteria remain Done; nothing moved back to Pending.
-The windowed frost-overlay confirmation stays with the manual tester per
-`manual_testing: required` (scenario checkpoints already wired:
-`frostbite_fangs_chilled_hit`, optional `frostbite_fangs_aftermath`).
+- Debug Panel hidden before any screenshot, absent from all evidence PNGs — Done
+- Doctrine-leg shots frame the live Mushnub at its actual spawn position (frame_enemy aims at health-bar anchor, then surface-layer camera update) — Done
+- HP row and granted armor row individually readable in every doctrine-leg shot (zoom 4.0; GLB missing -> placeholder shape, bars still readable, no faked armor) — Done
+- After one scripted armor hit, armor fill visibly smaller than full — Done (armor_partial.png)
+- After depletion, armor row hidden while HP row visible — Done (armor_depleted.png)
+- Fresh windowed run passes with PNGs copied into .gen/screenshots/ — Done
+- No misplaced/clipped HUD covering bars in any evidence shot — Done (pixel-checked all 6)
+- warlords_doctrine headless still passes (1.05/1.09/1.14, Mushnub 1.76, Orc boss 303.75, reset 0) — Done
+- enemy_armor_ballista and enemy_armor_trap still pass unchanged — Done
 
 ## Commands and results
-
-All via run_project_cmd (project=poke-defense-godot,
-workspace=poke-defense-godot/issue-traps-frostbite-fangs):
-
-| Command | Exit | Result |
-|---|---|---|
-| `["git","status","--short"]` | 0 | same 4 modified + 1 new feature files as iteration 1 |
-| `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | import/parse gate clean (only pre-existing invalid-UID warnings) |
-| `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_frostbite_fangs_progression.json"]` | 0 | status=pass; live trap hits logged `[FROSTBITE_FANGS] trap=trap_01 chill=0.6 dur=3.0 enemy=Cactoro`; L1→L3 replay logged 0.4/2.0s → 0.5/2.5s → 0.6/3.0s |
-| same runner cmd, `traps_serrated_edges_progression.json` | 0 | status=pass |
-| same runner cmd, `undermining_trap_armor.json` | 0 | status=pass (Underming strip path unaffected by the `perform_hit` hook) |
-
-Evidence refreshed under `.gen/harness/`:
-- `.gen/harness/traps_frostbite_fangs_progression/result.json` — status=pass
-- `.gen/harness/traps_serrated_edges_progression/result.json` — status=pass
-- `.gen/harness/undermining_trap_armor/result.json` — status=pass
+- `godot --headless --path . --editor --quit-after 300` — exit 0; clean import, no script errors
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/warlords_doctrine.json` — exit 0; `[Harness] status=pass exit=0`
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_ballista.json` — exit 0; status=pass
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_trap.json` — exit 0; status=pass
+- `godot --path . --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_bar_visual.json` — exit 0; status=pass, 6/6 screenshots captured (1920x1080)
 
 ## Notes
-
-- Nothing committed/pushed/merged/closed (lifecycle respected).
-- The stale-out.log gotcha from iteration 1 did not recur; logs were fresh.
+- Key log lines this run: `[WARLORDS-DOCTRINE] spawn_bonus level=1 granted_armor=1.76 on Mushnub`, `[Armor] Mushnub depleted: 0.76 armor removed by 1.0 armor damage`, `[WARLORDS-DOCTRINE] spawn_bonus level=3 granted_armor=243.75 on Orc Enemy_boss` (map_7 leg runs after reset, innate 60 + L3 bonus).
+- Visual pixel check of fresh PNGs: armor_full shows orange armor row above green HP row (~10px each at zoom 4.0); armor_partial armor fill ~43% of full; armor_depleted shows only the HP row; innate_armor_full shows both rows wide on the boss. No debug panel in any shot; HUD (top bar, tower dock) does not overlap the bars.
+- Pre-existing advisory unchanged: whitespace-only reformatting of unrelated entries in scripts/progression/global.json (see quality-notes).

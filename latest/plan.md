@@ -1,35 +1,38 @@
-# Acceptance Plan: traps_frostbite_fangs (r3 — camera/visual proof)
+# Acceptance Plan: Warlord's Doctrine — readable windowed armor-bar evidence (r2)
 
 ## Verification
 
-- Focused test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_frostbite_fangs_progression.json"]`
-- Full test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_serrated_edges_progression.json"]`
-- Typecheck/build: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
+- Focused test: `["run_project_cmd", "project=godot-td", "workspace=poke-defense-godot/issue-warlords-doctrine", "godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/warlords_doctrine.json"]`
+- Full test: `["run_project_cmd", "project=godot-td", "workspace=poke-defense-godot/issue-warlords-doctrine", "godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/warlords_doctrine.json && godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_ballista.json && godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_trap.json"]`
+- Typecheck/build: `["run_project_cmd", "project=godot-td", "workspace=poke-defense-godot/issue-warlords-doctrine", "godot --headless --path . --editor --quit-after 300"]`
 
-All commands run through `run_project_cmd` with `project=godot-td`, `workspace=poke-defense-godot/issue-traps-frostbite-fangs`. Never `project=poke-defense-godot`. Note: the repository exposes per-scenario AgentHarness runs and the editor parse gate; there is no single aggregate-suite runner, so the full-test slot uses the nearest sibling trap-perk progression scenario (shared Trap/perk code) as the widest runnable regression command.
+Windowed evidence command (manual_testing leg, not part of the three above):
+`["run_project_cmd", "project=godot-td", "workspace=poke-defense-godot/issue-warlords-doctrine", "godot --path . --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy res://scenes/Main.tscn -- --harness=res://tests/scenarios/enemy_armor_bar_visual.json"]`
 
-manual_testing: required
+manual_testing: required — the deliverable of this run is human-readable windowed PNGs; headless passes alone do not satisfy it. A pass with unreadable bars is a fail.
 
 ## Clusters
 
-1. close-camera-scenario — files: `tests/scenarios/traps_frostbite_fangs_progression.json`, optionally `scripts/game/Game.gd` (a debug-only camera-focus helper following the existing `debug_look_at_backdrop_earth` pattern, only if the harness `call` schema cannot otherwise reach `Camera3D.position`) — depends on: none
-- After the final `_update_camera_for_layer("underground")` call in the live arm, the scenario repositions the active Camera3D to sit close above the trap position (small height, tiny z offset) and aim at the trap, so the framing is near top-down; this holds at the moment each subsequent screenshot and record_frames action runs.
-- A fresh `.gen/harness/traps_frostbite_fangs_progression/result.json` from a headless run of the updated scenario reports `status: pass` with all expectations green (frozen_count >= 1, slow_magnitude 0.40 at L1, ice_slow_fx >= 1, unowned control frozen_count == 0).
-- Debug-build [FROSTBITE_CAMERA] log line per close-camera application, naming the trap position and camera height so a failed shot can be diagnosed from `.gen/harness/_logs`.
-2. visual-evidence-verdict — files: `.gen/screenshots/`, `.gen/check.md` — depends on: 1
-- A fresh windowed (non-headless) capture of `frostbite_fangs_chilled_hit` shows the trap and at least one live underground enemy large enough in frame to judge body color; neither a distant speck nor a crop of empty floor qualifies.
-- In that fresh PNG the chilled enemy's frost/ice tint is clearly distinguishable from a normal green Cactoro body.
-- The explicit `record_frames` action produces consecutive engine frames suitable for a 30fps GIF of the chill applying, and fresh PNG/GIF copies are present under `.gen/screenshots/`.
-- A NEW `.gen/check.md` written this run records the verdict from the fresh shots only; if the shots are still a distant speck or empty-floor crop the classification is `fixable`, and headless pass tags alone never satisfy the visual criterion.
-- A manual windowed test answering `ui_feels_broken: yes` fails the manual test.
+1. readable-evidence-scenario — files: `tests/scenarios/enemy_armor_bar_visual.json`, `scripts/testing/HarnessActions.gd` (only if hiding the Debug Panel or live-enemy camera targeting needs a small harness capability addition) — depends on: none
+- Before any screenshot in the evidence scenario, the Debug Panel (gray overlay covering the left third of the frame) is hidden, and no final evidence PNG shows it.
+- The doctrine-leg screenshots frame the live Mushnub from map_3 wave 1 at its actual spawn position (camera aimed at the enemy's current world position, then updated for the surface layer), not a hardcoded map coordinate.
+- In every doctrine-leg screenshot the HP row and the granted armor row are both individually readable at more than a couple of pixels (close zoom or enlarged bar scale for the shot only); if Mushnub's GLB model is missing in this worktree, the bars remain readable without faking armor on a naturally armored enemy.
+- After one scripted armor hit against the doctrine-armored enemy, the screenshot visibly shows the armor row's fill smaller than at full armor.
+- After enough scripted armor hits to deplete granted armor to 0, the final screenshot shows the armor row hidden while the HP row remains visible.
+2. evidence-capture-and-regression — files: `.gen/screenshots/` (fresh windowed PNGs overwriting the unreadable r1 crops), `tests/scenarios/enemy_armor_bar_visual.json` — depends on: 1
+- A fresh windowed (non-headless) run of the evidence scenario completes with all its checkpoints passing, and its PNGs are copied into `.gen/screenshots/` replacing the r1 crops.
+- Each final evidence screenshot has no misplaced or clipped HUD elements and nothing covering the bars (`ui_feels_broken` equivalent reads clean).
+- The headless `warlords_doctrine` scenario still passes after the scenario/camera changes (perk multipliers L1/L2/L3, Mushnub granted 1.76, Orc boss 303.75, reset to 0).
+- The pre-existing `enemy_armor_ballista` and `enemy_armor_trap` scenarios still pass unchanged after the changes.
 
 ## Criteria
 
-- After the final `_update_camera_for_layer("underground")` call in the live arm, the scenario repositions the active Camera3D to sit close above the trap position (small height, tiny z offset) and aim at the trap, so the framing is near top-down; this holds at the moment each subsequent screenshot and record_frames action runs.
-- A fresh `.gen/harness/traps_frostbite_fangs_progression/result.json` from a headless run of the updated scenario reports `status: pass` with all expectations green (frozen_count >= 1, slow_magnitude 0.40 at L1, ice_slow_fx >= 1, unowned control frozen_count == 0).
-- Debug-build [FROSTBITE_CAMERA] log line per close-camera application, naming the trap position and camera height so a failed shot can be diagnosed from `.gen/harness/_logs`.
-- A fresh windowed (non-headless) capture of `frostbite_fangs_chilled_hit` shows the trap and at least one live underground enemy large enough in frame to judge body color; neither a distant speck nor a crop of empty floor qualifies.
-- In that fresh PNG the chilled enemy's frost/ice tint is clearly distinguishable from a normal green Cactoro body.
-- The explicit `record_frames` action produces consecutive engine frames suitable for a 30fps GIF of the chill applying, and fresh PNG/GIF copies are present under `.gen/screenshots/`.
-- A NEW `.gen/check.md` written this run records the verdict from the fresh shots only; if the shots are still a distant speck or empty-floor crop the classification is `fixable`, and headless pass tags alone never satisfy the visual criterion.
-- A manual windowed test answering `ui_feels_broken: yes` fails the manual test.
+- Before any screenshot in the evidence scenario, the Debug Panel (gray overlay covering the left third of the frame) is hidden, and no final evidence PNG shows it.
+- The doctrine-leg screenshots frame the live Mushnub from map_3 wave 1 at its actual spawn position (camera aimed at the enemy's current world position, then updated for the surface layer), not a hardcoded map coordinate.
+- In every doctrine-leg screenshot the HP row and the granted armor row are both individually readable at more than a couple of pixels (close zoom or enlarged bar scale for the shot only); if Mushnub's GLB model is missing in this worktree, the bars remain readable without faking armor on a naturally armored enemy.
+- After one scripted armor hit against the doctrine-armored enemy, the screenshot visibly shows the armor row's fill smaller than at full armor.
+- After enough scripted armor hits to deplete granted armor to 0, the final screenshot shows the armor row hidden while the HP row remains visible.
+- A fresh windowed (non-headless) run of the evidence scenario completes with all its checkpoints passing, and its PNGs are copied into `.gen/screenshots/` replacing the r1 crops.
+- Each final evidence screenshot has no misplaced or clipped HUD elements and nothing covering the bars (`ui_feels_broken` equivalent reads clean).
+- The headless `warlords_doctrine` scenario still passes after the scenario/camera changes (perk multipliers L1/L2/L3, Mushnub granted 1.76, Orc boss 303.75, reset to 0).
+- The pre-existing `enemy_armor_ballista` and `enemy_armor_trap` scenarios still pass unchanged after the changes.

@@ -1,34 +1,58 @@
-# Request: traps_frostbite_fangs (r3 — camera/visual proof)
+# Request: Warlord's Doctrine — readable windowed armor-bar evidence
 
-- request_id: req-83-traps-frostbite-fangs-r3
-project: godot-td
-workspace: poke-defense-godot/issue-traps-frostbite-fangs
-issue: https://github.com/daniell0gda/poke-defense-godot/issues/83
-- branch: issue/traps-frostbite-fangs
-- intent: continuation — keep perk code; fix unreadable frost shots
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/87
+- **Project:** poke-defense-godot
+- **Runner key:** `godot-td`
+- **Git workspace:** `/workspace/git-workspaces/poke-defense-godot/issue-warlords-doctrine`
+- **Workspace id:** `poke-defense-godot/issue-warlords-doctrine`
+- **Branch:** `issue/warlords-doctrine` (uncommitted perk implementation on current `origin/master`)
+- **Request ID:** `warlords-doctrine-r2`
 
-## History (do not treat as evidence)
+## Feature (plain English)
 
-- req-83 claimed pass. Human review FAILED: wide underground shot, enemy is a speck; zoom PNG is empty floor.
-- req-83-r2 plan/code workers returned empty. Stale `check.md` still said `classification: pass`, so the leader skipped revision and reused yesterday's shots. Archived to `.gen-r2-stale-pass/`. Those files are not current evidence.
+Towers deal more damage, but every enemy spawns with extra armor. The perk itself is already implemented. This run only has to make the granted armor bar *visibly readable* in windowed shots.
 
-## Feature (already implemented — do not revert)
+## Historical (do not re-implement unless broken)
 
-Unique `traps_frostbite_fangs` L1-3. Trap hits call `EffectsManager.apply_frozen`. Magnitude/duration scale. Existing frost VFX.
+`warlords-doctrine-r1` already implemented and auto-verified:
 
-## Required this run
+- Perk `warlords_doctrine` Common global, 3 levels: L1 +5% dmg / 8% HP armor, L2 +9% / 12%, L3 +14% / 15%.
+- Bonus armor additive on innate `enemies.xml` armor at `Enemy.setup()` after max_hp is final.
+- Damage stacks additively with `tower_dmg` via `_warlords_damage_ratio` in `get_global_damage_multiplier()`.
+- Headless `tests/scenarios/warlords_doctrine.json` pass (L1/L2/L3 multipliers, Mushnub granted 1.76, Orc boss 303.75, reset to 0).
+- `enemy_armor_ballista` / `enemy_armor_trap` still pass.
+- Files already changed (keep them): `autoload/ProgressionManager.gd`, `scripts/game/actors/Enemy.gd`, `scripts/progression/global.json`, `tests/scenarios/warlords_doctrine.json`, `tests/scenarios/enemy_armor_bar_visual.json`.
 
-1. Keep the perk implementation.
-2. Change `tests/scenarios/traps_frostbite_fangs_progression.json` so the windowed shot is close and top-down on the trap + live enemy. `_update_camera_for_layer` resets to the default far camera — after that call, set `Camera3D.position` close above the trap (small height, tiny z offset) and `look_at` the trap. Enemy body must fill enough of the frame to see frost vs green.
-3. Keep explicit `screenshot` + 30fps `record_frames` GIF. Copy fresh PNGs/GIF to `.gen/screenshots/`.
-4. Checker must write a NEW `.gen/check.md`. If shots are still a distant speck or a crop of empty floor: `classification: fixable`. Headless tags alone do not pass the visual criterion.
-5. `ui_feels_broken: yes` fails the manual test.
-6. Runner only: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-traps-frostbite-fangs`. Never `project=poke-defense-godot`.
+r1 manual-tester wrote `.gen/manual-report.md` PASSED, but the pixels do **not** prove the armor bar:
 
-## Manual testing
+- Debug Panel covers the left third of the frame.
+- Camera is a distant top-down of map_3; Mushnub is a tiny purple placeholder (GLB missing in this worktree).
+- Named “close-ups” (`doctrine_armor_*.png`) are just wide crops of that same distant shot. Two bars are not readable. `ui_feels_broken: yes` for evidence purposes.
 
-`manual_testing: required`. Windowed only. No `--headless`.
+Archive of r1 dashboard: https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/
+
+## Remaining acceptance (this run)
+
+1. Windowed (no `--headless`) `enemy_armor_bar_visual` (or a dedicated follow-up scenario) produces PNGs where a human can clearly see:
+   - a previously-unarmored enemy (Mushnub / map_3 wave 1) with Warlord's Doctrine L1 active
+   - **two** bars: HP row + granted armor row, filled at spawn
+   - armor fill shrinks after a scripted armor hit
+   - armor row hidden once armor is 0
+2. Hide the Debug Panel before screenshots (`UI.debug_panel.visible = false` or equivalent harness call). Do not leave the gray debug overlay in evidence shots.
+3. Camera must aim at the **live enemy position** (`camera_target` = enemy world pos, then `_update_camera_for_layer("surface")`). Hardcoded `[-8,0,-8]` is wrong if the spawn is elsewhere. Zoom close enough that the bars are more than a couple of pixels (raise camera / shorten `surface_distance` only for the shot if a public setter exists; do not permanently change default camera for the game).
+4. If Mushnub GLB is missing, still make the bars readable (zoom, bigger bar scale for the shot, or a larger unarmored enemy type that still has config armor 0). Do not fake armor with a naturally armored enemy for the doctrine leg.
+5. `ui_feels_broken: no` on each final screenshot. Misplaced/clipped HUD or a covering debug panel fails.
+6. Fresh windowed PNGs copied to `.gen/screenshots/` (overwrite the unreadable r1 crops).
+7. Re-run focused `warlords_doctrine.json` headless so perk behavior is still green after any scenario/camera change.
+8. Do **not** reformat unrelated `global.json` entries (existing advisory: whitespace noise).
+
+## Runner notes
+
+- `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-warlords-doctrine`.
+- Native Godot; harness scene before user args: `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json`
+- Windowed evidence: no `--headless`; add `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
+- `manual_testing: required`. Windowed PNGs required. A pass with unreadable bars is a fail.
 
 ## Lifecycle
 
-Do not commit, push, merge, or close.
+Do not commit, push, merge, or close the issue.
