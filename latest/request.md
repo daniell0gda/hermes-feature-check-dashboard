@@ -1,33 +1,40 @@
-# Request
+# Request: Exposed Plating perk (issue #89) — continuation r2
 
-- request_id: req-124-cave-carved-path-torches-r4
-- issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
-- project runner key: `godot-td`
-- workspace: `poke-defense-godot/issue-cave-carved-path-torches`
-- branch: `issue/cave-carved-path-torches` (already has r3 placement work at `b5092fc`; extend it, do not reset)
+- **Repo:** daniell0gda/poke-defense-godot
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/89
+- **Workspace:** poke-defense-godot/issue-exposed-plating
+- **Branch:** issue/exposed-plating (rebased onto origin/master @ e7910d0 on 2026-08-24; implementation is uncommitted WIP, preserve it)
+- **Request ID:** req-89-exposed-plating-r2
+- **Runner key:** `godot-td` — workers MUST use `project=godot-td`, `workspace=poke-defense-godot/issue-exposed-plating`. Never invent workspace names. Never use `project=poke-defense-godot`.
 
-## Problem (Daniel, 2026-08-24)
+## Feature
 
-A hardcoded `MAX_TORCHES = 250` is not future-proof. **Map size is not fixed** — Daniel does not know future sizes; it might be 100×100 or anything else. Also the current spacing (`TORCH_SPACING = 1`, every corridor cell) is too dense — **make the distance between torches a little bit bigger**.
+New progression perk `exposed_plating` (Common, global, 3 levels). When an enemy's armor transitions from >0 to 0 (same site as `_consume_armor()`), it gains an "Exposed" status:
 
-## Required solution
+- L1: +15% damage taken, 0.5s
+- L2: +25% damage taken, 1s
+- L3: +35% damage taken, 1.5s
 
-- **No map-size constant and no fixed torch cap.** Do not special-case 40, 60, or 100. Derive the pool/budget from the **live** `grid_width`/`grid_depth` (and/or carved corridor cell count) every update so any future map size keeps full corridor coverage. Do not leave dark carved segments because a constant cap was hit.
-- **Widen spacing a little** vs r3 (every cell). Keep walls/curves lit; do not go back to the old clump-every-3rd-wall-face bug. Unique-cell stride along the corridor, not raw wall-face list.
-- **Do not change torch light intensity** (`Torch.gd` energy / radius / color / OmniLight settings stay byte-for-byte unchanged).
+## Historical run (context only, not evidence)
 
-## Done when
+Run `issue-89-exposed-plating` (2026-08-23) implemented the perk and passed headless harnesses, then ended `classification: fixable` / dashboard `failed` because the checker treated missing windowed VFX screenshots as a code-check failure. That skipped the manual-tester gate. Re-verify everything after the rebase. Do not assume old `.gen/harness` results are still valid.
 
-- Every carved cave path tile that should be lit still has torch coverage, including curve / bent / side-to-side tunnels
-- New carves still get torches
-- Any grid size (including 100×100 and unknown larger maps) does not hit a hardcoded cap that leaves uncovered corridor cells
-- Spacing is visibly a bit farther than r3 every-cell packing
-- `Torch.gd` intensity unchanged
+## Acceptance criteria
 
-## Manual testing
+1. Perk definition registered like other progression perks; purchasable at 3 levels.
+2. Trigger fires exactly once per shield instance: only on the >0 → 0 transition. Hits while armor is already 0 do NOT re-trigger; re-trigger requires the enemy regaining armor first.
+3. Damage-taken multiplier applies for the debuff duration, per level values above, then expires cleanly.
+4. New VFX: `ExposedStatus`/`ExposedVFX` following the existing `BurnStatus`/`BurnVFX` pattern — cracked-shield emissive overlay for the duration, lazily instantiated by `EffectsManager` like `BurnVFX`/`OilVFX`.
+5. Debug logging: `[EXPOSED]` prefix lines on trigger and expiry, gated by `OS.is_debug_build()`.
 
-required. Windowed, underground, side-to-side carve with curves, top-down aimed at `camera_target`. No `--headless` for manual tester.
+## Verification requirements
 
-## Runner
+- Fresh focused headless harness after the rebase: `tests/scenarios/exposed_plating_once_per_shield.json` and `tests/scenarios/exposed_plating_vfx.json` via `run_project_cmd` (`godot-td`).
+- If headless criteria 1–3 and 5 are green, checker must write `classification: pass` so the leader can dispatch manual-tester. Missing windowed PNGs/GIFs are a manual-tester job, not a code-check `fixable`.
+- Manual testing: REQUIRED (player-facing VFX). Windowed screenshots plus a real 30fps GIF from harness `record_frames` of the Exposed VFX on a real enemy. No headless-only closeout. End with `ui_feels_broken: yes|no`.
+- Windowed Godot args when Vulkan fails: `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`.
+- Native Godot through `run_project_cmd`; explicit scene argument before user args.
 
-`godot-td` / `poke-defense-godot/issue-cave-carved-path-torches`. Write a real non-empty `.gen/plan.md`.
+## Preserve
+
+Keep the existing uncommitted source diff and new files (`ExposedVFX.gd`, `ExposedStatus.gd`, both scenarios). Re-plan only unmet work (windowed evidence + any rebase breakage). Do not wipe the implementation.
