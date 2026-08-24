@@ -11,7 +11,7 @@
 - Fresh editor/import gate run over the workspace exits 0 with no parse/resource/script diagnostics on the changed scenes and scripts.
 
 ## ⬜ Pending
-- The card sits above the hovered shop slot without covering the entire Towers bar and does not overlap the right-side tower details panel when both are visible at once.
+- The card sits above the hovered shop slot without covering the entire Towers bar and does not overlap the right-side tower details panel when both are visible at once. — pending manual windowed screenshot pass (`.gen/manual-report.md` absent; headless geometry half verified green)
 
 ## ❌ Impossible
 (none)

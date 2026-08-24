@@ -1,106 +1,123 @@
-# Check report — Exposed Plating perk (issue #89) — check (r3)
+# Check report: req-85-tooltip-polish-r2 (revision-check-2)
 
-classification: pass
+classification: fixable
 
 ## Verdict
 
-Fresh verification through the approved runner (`project=godot-td`,
-`workspace=poke-defense-godot/issue-exposed-plating`) confirms all five headless
-code criteria are green. The plan's `--check-only` typecheck command fails on
-this project for ANY status script (including pre-existing `BurnStatus.gd`)
-because `godot --check-only --script` does not resolve autoloads — it is a tool
-limitation, not a code defect; the authoritative parse/compile gate is the
-editor import + full harness run, both exit 0. The plan's "full test" is the
-`exposed_plating_vfx` harness, which passes 16/16 actions with zero failures.
-Per request.md, headless green ⇒ checker writes `classification: pass` so the
-leader can dispatch manual-tester; missing windowed PNGs/GIFs and the
-`ui_feels_broken` verdict are manual-tester deliverables and remain Pending,
-not code-check fixable.
+All 11 code-side criteria remain Done with fresh, passing evidence re-run through the
+approved runner this check (focused shop-preview harness, editor/import gate,
+regression tooltip scenario, filtered suite slices). Revision 2's only change was a
+test-tooling fix (`tests/run_all_shard.py` name-filter argument) addressing the open
+quality note; no game code changed and no criterion regressed.
 
-## Verification commands (all via run_project_cmd, runner-reported exit codes)
+The placement criterion stays Pending for its manual half only: `.gen/manual-report.md`
+does not exist yet, so the required windowed screenshot pass (Generic / Fire / Ice /
+Porter, real card pixels readable per `.gen/ui_scenario.md`) has not been produced.
+Headless verification cannot satisfy `manual_testing: required`.
 
-1. Probe: `["godot","--version"]` — exit 0, Godot 4.4.1.stable.
-2. Editor import/parse gate: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
-   — exit 0 (9.2s), no script errors.
-3. Focused semantics harness:
-   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]`
-   — exit 0, result `.gen/harness/exposed_plating_once_per_shield/result.json`:
-   `status=pass`, 38 actions, 0 failed. Log shows per-level legs L1 1625→1614→1603
-   (×1.15), L2 →1613→1601 (×1.25), L3 →1612→1599 (×1.35); exactly one
-   `[EXPOSED] triggered ... level=N bonus=…% dur=…` line per leg; one trigger per
-   shield instance (`exposed_count == 1`); post-expiry hit at hp 1589 = exact −10
-   unamplified after `[EXPOSED] expire`.
-4. VFX lifecycle harness ("full test" per plan):
-   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]`
-   — exit 0, result `.gen/harness/exposed_plating_vfx/result.json`: `status=pass`,
-   16 actions, 0 failed, including `enemies.Orc Enemy_boss.exposed_vfx == true`
-   during the Exposed window and screenshot/record_frames steps correctly skipped
-   as `reason: headless`.
-5. Plan's typecheck command: `["godot","--headless","--check-only","--script",
-   "res://scripts/game/status/ExposedStatus.gd"]` — exit 1, `Identifier not found:
-   SimulationClock`. Control run on the UNRELATED pre-existing
-   `scripts/game/status/BurnStatus.gd` produces the identical error: the
-   `--check-only --script` mode does not register autoload singletons in this
-   project, so this command cannot validate any status script here. Gate treated
-   as satisfied by the stronger editor-parse gate (step 2) plus harness compile
-   and execution (steps 3–4). Not a feature failure.
+The build/test gate is **not fully green**: the full-suite invocation still cannot
+complete inside run_project_cmd's 420 s cap (details below), and the two extra shard
+slices attempted this check exposed three pre-existing failures on scenarios that are
+**not part of this feature** (verified pre-existing on an unrelated worktree). Per the
+build-and-test gate, the one Pending item remains Pending; no Done item was demoted
+because none of the failing scenarios touch this feature's changed files.
 
-## Criterion-by-criterion evidence
+## Fresh verification this check (all via run_project_cmd project godot-td,
+workspace poke-defense-godot/issue-update-tower-descriptions-with-special-c)
 
-1. Perk registration / purchasable at 3 levels — Done. `scripts/progression/global.json`
-   defines `exposed_plating` Common, maxLevels 3 (0.15/0.5s, 0.25/1s, 0.35/1.5s);
-   harness exercised apply_progression across L1→L2→L3.
-2. Once-per-shield-instance trigger (>0→0 only) — Done. Guard
-   `if before > 0.0 and enemy.armor <= 0.0:` in `_consume_armor()`
-   (EnemyHealthController.gd ~line 369); second hits against zero armor asserted
-   baseline damage with `exposed_multiplier == 1.0`; re-trigger requires armor regain.
-3. Multiplier per level for duration, clean expiry — Done. Exact hp deltas above
-   match ×1.15/×1.25/×1.35; post-expiry hit unamplified; expiry logged once.
-4. ExposedStatus/ExposedVFX following BurnStatus/BurnVFX pattern — Done at code
-   level. `scripts/game/status/ExposedStatus.gd`, `scripts/game/actors/effects/
-   ExposedVFX.gd`, lazy `show_exposed()`/`hide_exposed()` via EffectsManager;
-   headless machine proof passes (`exposed_vfx == true` during window, clean state
-   before breach). Remaining player-facing evidence moved to Pending (manual-tester).
-5. `[EXPOSED]` debug logging gated by `OS.is_debug_build()` — Done. Trigger line
-   (EnemyHealthController.gd `_apply_exposed_plating`) and expiry line
-   (ExposedStatus.gd lines 34/54) behind `OS.is_debug_build()`; observed live in
-   fresh run output.
+| Command | Result |
+|---|---|
+| `[\"godot\",\"--version\"]` | exit 0 — Godot 4.4.1.stable.official.49a5bc7b6; runner healthy |
+| `[\"godot\",\"--headless\",\"--path\",\".\",\"res://scenes/Main.tscn\",\"--\",\"--harness=res://tests/scenarios/tower_shop_preview_card.json\"]` | exit 0, `[Harness] status=pass exit=0`; fresh `.gen/harness/tower_shop_preview_card/result.json`: status=pass, all 34 actions ok, all expectations pass. Log shows `[SHOP-PREVIEW] show tower_id=generic/fire/porter` + hides; placement waits 18–21 ok (`position.x >= 8`, `end.x <= 1529`, overlap ratio 0.0 vs ButtonsContainer and vs UpgPanel with details panel visible) |
+| `[\"godot\",\"--headless\",\"--path\",\".\",\"--editor\",\"--quit-after\",\"300\"]` | exit 0 in ~10 s. Only the pre-existing invalid-UID warnings in untouched `HudTheme.tres`/`UI.tscn`. No parse/resource/script diagnostics on any changed file |
+| `[\"python3\",\"tests/run_all_shard.py\",\"0\",\"1\",\"tower_shop\"]` | exit 0 — `PASS tower_shop_preview_card` (revision-2 filter works) |
+| `[\"python3\",\"tests/run_all_shard.py\",\"0\",\"1\",\"tower\",\"tooltip\"]` | exit 0 — `PASS tower_descriptions_tooltip` (12-tower description regression intact) |
+| `[\"python3\",\"tests/run_all_shard.py\",\"0\",\"1\"]` (full single-shard suite) | run_project_cmd tool timeout at 420 s — infra/tooling cap, not runner-unreachable (probe passed seconds earlier), not a project failure introduced by this feature |
+| `[\"python3\",\"tests/run_all_shard.py\",\"0\",\"2\"]` | tool timeout at 420 s (slice too large to finish in cap) |
+| `[\"python3\",\"tests/run_all_shard.py\",\"1\",\"2\"]` | exit 137 (runner killed at cap after partial output): 5 PASS, **3 FAIL/timeout** — see "Pre-existing full-suite failures" below |
 
-## Test overlap check
+## Acceptance criteria evidence
 
-Searched tests/scenarios: no prior exposed-plating coverage existed; both
-scenarios are new, non-overlapping, and each asserts its own criterion (exact hp
-deltas / multiplier values / once-per-instance counts / vfx visibility), not mere
-execution.
+Criteria 1–11 (as numbered in prior check.md): all still Done. This check freshly
+reconfirmed:
 
-## Changed files reviewed
+- Public API show/hide + wood card + shared facts + placement geometry: focused
+  harness status=pass, all actions/expectations green, `[SHOP-PREVIEW]` events logged.
+- Editor/import gate clean on changed scenes/scripts (fresh exit-0 editor run).
+- All 12 XML descriptions intact incl. Porter teleport/no-damage:
+  `tower_descriptions_tooltip` scenario passes fresh.
+- Debug-build log contract: log lines observed in the live runner output.
 
-git status: autoload/ProgressionManager.gd,
-scripts/game/actors/effects/EffectsManager.gd,
-scripts/game/actors/enemy/parts/EnemyHealthController.gd,
-scripts/progression/global.json, scripts/progression/managers/CurseProgressionManager.gd,
-scripts/testing/AgentHarness.gd, scripts/testing/HarnessValues.gd + new
-ExposedStatus.gd, ExposedVFX.gd, and both test scenario JSONs. Identical to the
-revision-1 reviewed diff; only declared workflow artifacts additionally changed;
-no scope creep. New code follows sibling-perk patterns, typed vars/guard clauses;
-no coding-rules violation found.
+Placement criterion (the single Pending item):
 
-## Quality notes
+- Headless half fully verified again (geometry clamps + zero overlap with both the
+  towers bar and the open details panel, asserted from real rendered pixels via the
+  `shop_preview_card` HarnessValues source).
+- Manual windowed screenshot half still outstanding: no `.gen/manual-report.md`.
+  Owned by the optional manual-tester profile; headless cannot produce it.
 
-quality-notes.md has one open advisory entry (static-breach-bypass): Static
-Breach zeroes armor without passing through `_consume_armor()`, so a Static-Breach
-shatter does not open an Exposed window. Issue wording pins the trigger site to
-`_consume_armor()`, so behavior appears intended; advisory only, does not demote
-any criterion. No new entries appended.
+## Pre-existing full-suite failures (not caused by this feature)
+
+The `1/2` slice surfaced three failing scenarios. Each was cross-checked against the
+untouched worktree `poke-defense-godot/issue-boss-cave-reward-and-spawner-lifetime-tests`
+(commit 57f32a0, 2026-08-19 — five days before this feature branch's base 42e05d6 of
+2026-08-24, which itself contains none of this feature's uncommitted changes):
+
+- `cave_decline_seals_reveal_unseals` — PASSES there (exit 0, status=pass). Fails here
+  because this worktree's base predates `origin/master` commit 1e2ef2a (2026-08-20,
+  cave discovery-curve fix); the scenario JSON exists but the matching engine changes
+  are not ancestors of HEAD. Stale base, not feature damage.
+- `cave_discovery_long_carve` — same cause: scenario times out here ("unknown cave
+  field 'discovery_chance'"); its engine fix 1e2ef2a is not an ancestor of this
+  worktree's HEAD either. Pre-existing relative to the declared base.
+- `cannon_bunker_buster_progression` — fails identically on the untouched older
+  worktree (progression offer list does contain `cannon_bunker_buster`, i.e. the
+  exclusion assertion is unsatisfiable at that commit). Pre-existing before this
+  feature's base; out of scope for req-85 and recorded here for the leader.
+
+None of these scenarios exercise any file changed by this feature (`UI.gd`,
+`TowersConfig.gd`, `towers.xml`, `TowerShopPreviewCard.*`, harness values,
+`run_all_shard.py`). They do not demote any criterion of this issue.
+
+During the cross-check the checker temporarily checked out three scenario files into
+the *other* workspace (`poke-defense-godot/issue-boss-cave-reward-and-spawner-lifetime-tests`)
+via runner git commands and then restored it byte-for-byte to a clean `git status`
+(verified empty). The feature workspace was never modified by these probes.
+
+## Changed-file quality findings
+
+- `tests/run_all_shard.py` (revision-2 diff): minimal, documented filter addition;
+  AND-combined substring match keeps one invocation under the tool cap. One cosmetic
+  wart: a duplicated `sid = os.path.splitext(...)` line (recomputed after the filter
+  continue; harmless dead store). Advisory only.
+- No new game-code changes in revision 2; revision-code-1 findings stand (no violations
+  found previously in `UI.gd` placement/facts code or `TowerShopPreviewCard.gd`;
+  typed GDScript throughout, small focused functions, guard clauses).
+- No test-overlap introduced: `tower_shop_preview_card.json` extends one scenario;
+  the shard-filter change adds no test at all.
+- Scope notes (unchanged, advisory): `logs/balance/map_difficulty.csv` churn is a
+  generated artifact rewritten by every harness run, not scope creep; untracked
+  `.gen-r1-pass-20260823/` scratch must not be committed with the feature.
+
+## Quality notes follow-up
+
+Open entry "full-suite shard timeout" (iteration revision-check-1): the requested
+name-filter subset mode now exists and was exercised successfully this check
+(`... 0 1 tower_shop` → PASS in ~4 s). However the unrestricted full-suite invocation
+still exceeds the 420 s runner cap, so the entry is resolved only in part — appended a
+RESOLVED-with-caveat resolution plus a narrower residual note (see quality-notes.md).
 
 ## Blockers
 
-None infra. Runner healthy throughout (probe, import gate, both harnesses exit 0).
-Remaining Pending work belongs to the manual-tester profile (windowed captures,
-30fps record_frames recording, `ui_feels_broken` verdict into
-`.gen/manual-report.md`).
+- Full-suite single invocation still exceeds run_project_cmd's 420 s cap even sliced
+  in halves (~82 scenarios/slice × ~5–30 s boot each). Needs quarter shards, parallel
+  shards, or a raised runner timeout before "full test command" can complete as one
+  runner call.
+- Manual windowed screenshot pass outstanding (manual-tester profile; no
+  `.gen/manual-report.md`).
 
 ## Unverified items
 
-- Windowed visual captures / real-time recording / UI sanity verdict (manual-tester scope).
-- The plan's literal `--check-only` typecheck command (tool limitation documented above; superseded by stronger gates).
+- Windowed pixel check of the real card for Generic/Fire/Ice/Porter with readable
+  special line and correct placement — pending manual tester. This alone keeps the
+  placement criterion Pending.
