@@ -1,22 +1,20 @@
 {
-  "run_id": "tw-104-dead-options-modal-r2",
-  "feature": "dead-options-modal-scene",
+  "run_id": "req-117-gen-hud-textures-r2",
+  "feature": "gen-hud-textures-py-cannot-run-all-three",
   "status": "running",
-  "started_at": "2026-08-24T07:46:05.341Z",
+  "started_at": "2026-08-24T07:48:08.456Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/tw-104-dead-options-modal-r2/",
-  "heartbeat_at": "2026-08-24T07:46:05.341Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-117-gen-hud-textures-r2/",
+  "heartbeat_at": "2026-08-24T07:48:08.456Z",
   "last_node": null,
-  "active_node": "plan",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 311766,
+  "process_id": 312841,
   "host": "f1a4230ec90b",
-  "phase": "plan",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:47:33.968231+00:00",
-    "last_success_at": "2026-08-24T07:46:09.674542+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T07:48:08.456996+00:00"
   },
   "metrics": {}
 }

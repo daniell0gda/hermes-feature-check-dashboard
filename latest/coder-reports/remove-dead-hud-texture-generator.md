@@ -1,4 +1,4 @@
-# Coder report: remove-dead-hud-texture-generator\n\n# Coder report: remove-dead-hud-texture-generator (revision 2)
+# Coder report: remove-dead-hud-texture-generator (revision 2)
 
 ## Changed files
 - `tools/gen_hud_textures.py` — deleted (committed)
@@ -20,4 +20,3 @@ the worktree") resolved: everything is now committed.
 ## Notes
 - Git LFS post-commit hook warns git-lfs missing on host path; commit itself succeeded (no LFS-tracked paths touched). Not a criterion issue.
 - Pre-existing HudTheme.tres stale-UID warnings unchanged legacy state, not introduced by this change.
-\n

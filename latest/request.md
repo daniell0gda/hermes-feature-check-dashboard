@@ -1,41 +1,93 @@
-# Request: issue-dead-options-modal-scene (issue #104) — r2
+# Request: gen-hud-textures-py-cannot-run-all-three (r2)
 
-## Feature
-Delete unused Options clones so only the live `OptionsScreen` remains.
+**Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/117
+**Project runner:** `godot-td`
+**Workspace:** `poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three`
+**Branch:** `issue/gen-hud-textures-py-cannot-run-all-three`
+**Request id:** `req-117-gen-hud-textures-r2`
+**Starting revision:** `9d54964` (`origin/master` after hard reset)
 
-Dead files (delete all four + `.uid` sidecars):
-- `scenes/ui/Options.tscn` + `scripts/ui/Options.gd` (`class_name OptionsModal`)
-- `scenes/ui/OptionsMenu.tscn` + `scripts/ui/OptionsMenu.gd` (`class_name OptionsMenu`)
+## Why this is a fresh run
 
-Live surface (keep): `scenes/ui/OptionsScreen.tscn` / `scripts/ui/OptionsScreen.gd`.
-- Pause menu: `scripts/ui/UI.gd` preloads `OptionsScreen.tscn`
-- Main menu: `scripts/MainMenu.gd` `OPTIONS_SCREEN` loads the same scene as a child modal
+Daniel: "Rerun from the beginning, plan wasn't produced."
 
-## Acceptance criteria (issue body + Daniel comments 2026-08-20 / 2026-08-21)
-1. Repo-wide search finds no remaining reference to `Options.tscn`, `OptionsModal`, `OptionsMenu.tscn`, or class `OptionsMenu` (own deleted files do not count).
-2. Both dead pairs are gone from the tree, including orphaned `.uid` sidecars.
-3. Editor/import gate passes: `godot --headless --path . --editor --quit-after 300` exit 0, no parse/missing-resource errors.
-4. Pause-menu Options still opens live `OptionsScreen` (existing scenario `tests/scenarios/issue_dead_options_live_pause_menu.json`).
-5. Main-menu Options still opens live `OptionsScreen` (existing script `tests/ui/issue_dead_options_main_menu.gd`).
-6. Focused gameplay still loads: `smoke_placement` `status: pass`, exit 0.
+The previous run (`117-gen-hud-20260823`) coded and checked **without** writing `.gen/plan.md` or `.gen/clusters/*.md`. That attempt is archived at:
 
-No new visual required — deletion only. Windowed sanity of both live Options paths is enough if the planner marks manual testing required.
+`.gen-blocked-117-gen-hud-20260823-attempt1/`
 
-## Hard non-goals (r1 burned a full revision budget on these)
-- Do **not** treat `smoke_tower_roster` as a hard gate. It fails identically on pristine master (`map_10` egg dies before wave 3). Advisory only. See `.gen/quality-notes.md` and `.gen-blocked-tw-104-dead-options-modal-r1-attempt1/`.
-- Do **not** edit `tests/scenarios/smoke_tower_roster.json`.
-- Do **not** touch `models/**` (LFS). This host has no `git-lfs`; model dirty files are noise.
-- Do **not** change harness, `project.godot`, or unrelated gameplay to “make the full suite green”.
+Historical commit `d06b5de` (`fix: drop broken gen_hud_textures.py and unused crate-derived HUD slices`) is **unverified reference only**. The worktree is reset to `origin/master`. Do **not** treat the archived check as done. Do **not** skip the planner.
 
-## Runner / workspace
-- Project folder: poke-defense-godot. Runner key: **godot-td**
-- Workspace: **poke-defense-godot/issue-dead-options-modal-scene**
-- Branch: `issue/dead-options-modal-scene`, rebased onto `origin/master` (`9d54964`) 2026-08-24
-- Use `run_project_cmd` only; explicit scene arg before user args for gameplay harnesses.
+## Hard planner gate
 
-## Historical context (unverified as current evidence)
-r1 (`tw-104-dead-options-modal-r1`) deleted the `Options` pair and proved both live Options paths. Checker still classified `fixable` because the plan named `smoke_tower_roster` as the full test command. That run is archived at `.gen-blocked-tw-104-dead-options-modal-r1-attempt1/`. Treat those artifacts as history. r1 also missed Daniel’s extra scope: delete the `OptionsMenu` pair too.
+The planner **must** write:
 
-Working tree already has the `Options` pair deleted and the two live-path tests. Keep that. Add the `OptionsMenu` deletion. Fresh plan/code/check required.
+- `.gen/plan.md`
+- one or more `.gen/clusters/<id>.md` with exclusive file ownership, `parallel: true|false`, dependencies, acceptance criteria
 
-request-id: tw-104-dead-options-modal-r2
+Do not implement until those artifacts exist. Do not invent nested plan state.
+
+## Plain language
+
+The HUD crate-texture generator cannot run because its three source JPGs are gone. Either restore those sources so the script works, or delete the dead script and keep the still-used HUD icons.
+
+## Problem
+
+`tools/gen_hud_textures.py` (572 lines) cannot run. Its three sources are absent from the repo and from disk:
+
+- `textures/_source/woden_panel.jpg`
+- `textures/_source/woden_panel_wide.jpg`
+- `textures/_source/woden_panel_wide_darkonly.jpg`
+
+Current wood-panel redesign uses `panel-square.png` / `panel-wide.png` via `tools/prep_hud_assets.py`.
+
+Still-used outputs under `textures/ui/hud/` (keep these unless you re-derive them):
+
+- `icon_coin.png` — `scenes/ui/widgets/PricedButton.tscn`
+- `towers_panel.png` — `themes/hud/HudTheme.tres`
+- `icon_heart.png` — `scenes/UI.tscn`
+- `wood_slot.png`, `slot_empty.png` (script also writes these; confirm live references before deleting)
+
+The script already documents that the JPGs are missing (comment at lines 16–20). That comment is not a fix.
+
+## Acceptance
+
+One of:
+
+1. Restore the crate JPGs to `textures/_source/` and `gen_hud_textures.py` runs clean, or
+2. Re-derive still-used outputs from current sources via `prep_hud_assets.py` **or** keep the committed live PNGs unchanged, then delete `gen_hud_textures.py` plus **unreferenced** dead outputs.
+
+Either way `tools/` must contain no script whose sources are missing.
+
+Prefer option 2 if `git log --all -- '*woden_panel*'` is empty. Option 1 is valid only if the JPGs can actually be recovered.
+
+If option 2: do **not** delete `icon_coin.png`, `icon_heart.png`, or `towers_panel.png`. Only delete outputs that are unused by scenes/themes/scripts.
+
+`tools/gen_hud_icons.py` still claims `icon_coin` / `icon_heart` come from `gen_hud_textures.py` — update that docstring if the generator is deleted.
+
+## Verification (runner only)
+
+Project `godot-td`, workspace `poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three`.
+
+Tokenized `run_project_cmd` examples:
+
+```json
+{"project":"godot-td","workspace":"poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three","cmd":["python3","--version"]}
+{"project":"godot-td","workspace":"poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three","cmd":["godot","--headless","--path",".","--editor","--quit-after","300"]}
+```
+
+- Prove no remaining `tools/*.py` references missing `_source` files.
+- Prove live HUD assets still exist and are referenced.
+- Editor/import gate if textures change.
+- Git/worktree ops are Hermes-side, not runner: `git diff --check`, `git status --short`.
+
+## Manual testing
+
+`manual_testing: none` if committed player-facing PNGs are unchanged.
+If HUD art look changes, `manual_testing: required` with windowed shots (never `--headless`) plus `ui_feels_broken: yes|no`.
+
+## Redo notes
+
+- Do not invent runner workspace names (`godot-td/issue-117` is wrong).
+- Never use host `godot` / `npm` instead of `run_project_cmd`.
+- Worker image may lack Pillow; do not require regenerating committed PNGs if they stay byte-identical.
+- Dashboard publication is required on the leader path; include the public run URL in the terminal summary.
