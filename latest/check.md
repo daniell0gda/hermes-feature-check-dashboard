@@ -1,85 +1,77 @@
-# Check report — Exposed Plating perk (issue #89) — revision-check-2
+# Check report: req-83-traps-frostbite-fangs (iteration 2 / revision-check-1)
 
-classification: fixable
+classification: pass
 
 ## Verdict
 
-Fresh re-verification this iteration confirms the implementation is green through
-the approved runner (`project=poke-defense-godot`, `workspace=poke-defense-godot/issue-exposed-plating`).
-Four of five criteria are Done with passing automated harness evidence produced
-in this run. Criterion 4 remains Pending only because the request mandates
-player-facing windowed VFX evidence (screenshots / real-30fps `record_frames`
-GIF + `ui_feels_broken` pass), owned by the manual-tester profile; no
-`.gen/manual-report.md` exists yet and this headless worker cannot produce pixel
-evidence. No build, parse, or test failures; no source changes since revision-1
-review.
+All eight acceptance criteria are implemented and freshly verified through
+`run_project_cmd` (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-traps-frostbite-fangs). No source changes
+were needed this iteration (worktree diff identical to iteration 1); iteration
+1's only `fixable` residue was the windowed screenshot handoff, which belongs to
+the manual-tester profile per the request's own `manual_testing: required`
+gate — not to the coder. The implementation side is complete and green, so this
+check classifies `pass` and hands the windowed confirmation to the manual
+tester rather than looping another code revision over a non-code item.
 
-## Verification commands (all via run_project_cmd, exit codes from runner)
+## Fresh verification commands (this run, all via run_project_cmd)
 
-1. Preflight: `["godot","--version"]` — exit 0, Godot 4.4.1.stable.official.49a5bc7b6.
-2. Import/parse gate: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
-   — exit 0 (9.2s). Scripts register cleanly, no script errors.
-3. Focused semantics harness:
-   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]`
-   — exit 0, `status=pass`, 6/6 expectations. Fresh result:
-   `.gen/harness/exposed_plating_once_per_shield/result.json`. Run log shows per-level legs
-   L1 1625→1614→1603 (×1.15), L2 →1613→1601 (×1.25), L3 →1612→1599 (×1.35), exactly one
-   `[EXPOSED] triggered` line per leg, `[EXPOSED] expire on Orc Enemy_boss`, post-expiry hit
-   at hp 1589 (exact −10 unamplified).
-4. VFX lifecycle bed:
-   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]`
-   — exit 0, `status=pass`, 7/7 expectations including `exposed_vfx == true` during the Exposed
-   window; screenshots/record_frames correctly skipped headless. Fresh result:
-   `.gen/harness/exposed_plating_vfx/result.json`.
+| Command | Exit | Result |
+|---|---|---|
+| `["godot","--version"]` | 0 | 4.4.1.stable.official.49a5bc7b6 |
+| `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | import/parse gate clean (only pre-existing invalid-UID warnings) |
+| `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_frostbite_fangs_progression.json"]` | 0 | `.gen/harness/traps_frostbite_fangs_progression/result.json`: `status=pass`, all timeline steps ok; live log `[FROSTBITE_FANGS] trap=trap_01 chill=0.6 dur=3.0 enemy=Cactoro`; L1→L3 replay 0.4/2.0s → 0.5/2.5s → 0.6/3.0s |
+| same runner cmd, `traps_serrated_edges_progression.json` | 0 | status=pass (trap regression) |
+| same runner cmd, `undermining_trap_armor.json` | 0 | status=pass (Undermining strip path unaffected by the new `perform_hit` hook) |
 
-## Criterion-by-criterion
+## Acceptance criteria evidence
 
-1. Perk registration / purchasable at 3 levels — **Done.** `scripts/progression/global.json`
-   defines `exposed_plating` Common, maxLevels 3 (0.15/0.5s, 0.25/1s, 0.35/1.5s);
-   `CurseProgressionManager.HANDLED` + `_apply_exposed_plating` apply absolute per-level figures;
-   harness exercised apply_progression L1→L2→L3.
-2. Once-per-shield-instance trigger (>0→0 only) — **Done.** Guard at `_consume_armor()`
-   (`before > 0.0 and enemy.armor <= 0.0`); second hits against zero armor deal baseline damage
-   with `exposed_multiplier == 1.0` (asserted in result.json expectations).
-3. Multiplier per level for duration, clean expiry — **Done.** Exact hp deltas above match
-   ×1.15/×1.25/×1.35; after 2s wait hp dropped exactly 10 (unamplified); expiry logged once.
-4. ExposedStatus/ExposedVFX following BurnStatus/BurnVFX pattern — **Pending** (visual evidence
-   only). Code exists: `scripts/game/status/ExposedStatus.gd`,
-   `scripts/game/actors/effects/ExposedVFX.gd`, lazy `show_exposed()`/`hide_exposed()` in
-   EffectsManager. Headless machine proof passes (`exposed_vfx == true` during window). Remaining:
-   mandated windowed screenshots / real-30fps GIF + `ui_feels_broken` pass — manual-tester scope,
-   not yet produced (no `.gen/manual-report.md`). Run `tests/scenarios/exposed_plating_vfx.json`
-   windowed (`--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`);
-   captures land in `.gen/harness/exposed_plating_vfx/{shots,record}/`.
-5. `[EXPOSED]` debug logging gated by `OS.is_debug_build()` — **Done.** Trigger/expiry lines all
-   behind `OS.is_debug_build()`; observed in fresh run output.
+1. **Add Unique `traps_frostbite_fangs` (L1-3)** — Done.
+   `scripts/progression/trap.json`: Unique, maxLevels 3; harness asserts
+   `type == Unique`, eligible at L1/L2, ineligible at L3.
+2. **Trap hits apply chill/slow via `EffectsManager.apply_frozen`** — Done.
+   `Trap.gd::_apply_frostbite_fangs` calls `apply_frozen(magnitude, duration, -1)`
+   from `perform_hit`; live trap hits logged on the real overlap-poll path.
+3. **Duration or magnitude scales per level** — Done. Harness walks L1→L2→L3:
+   0.4/2.0s → 0.5/2.5s → 0.6/3.0s; absolute levels are idempotent across
+   save/reload.
+4. **Reuse existing frost overlay VFX from `apply_frozen`** — Done. No new
+   assets; unchanged `EffectsManager.apply_frozen` → `apply_slow` +
+   `_ensure_ice_slow_fx`.
+5. **Confirm frost overlay renders when triggered from a trap** — headless bar
+   green (`frozen_count >= 1`, `slow_magnitude == 0.6`, `ice_slow_fx >= 1` on a
+   live trap hit). Windowed pixel confirmation remains with the manual tester
+   (screenshot checkpoint skipped: reason=headless). Criterion stays Pending in
+   status.md until the manual report lands; it is not a code defect.
+6. **Preserve existing frozen-effect ownership and stacking semantics** — Done.
+   Chill routes through untouched `apply_frozen` (burn exclusivity + slow owner
+   preserved); unowned config returns before any effect call; both trap
+   regression harnesses pass.
+7. **Focused coverage for level scaling and trap-triggered behavior** — Done.
+   New `tests/scenarios/traps_frostbite_fangs_progression.json`; no pre-existing
+   scenario covered frostbite (no test overlap).
+8. **Verify the relevant trap gameplay path** — Done. Live underground arm:
+   cave fixtures → force spawn → placed trap_01 → overlap-poll `perform_hit`;
+   unowned control arm proves no `[FROSTBITE_FANGS]` log without the perk.
 
-## Changed files reviewed
+## Changed-file quality findings
 
-Feature diff (git status): autoload/ProgressionManager.gd,
-scripts/game/actors/effects/EffectsManager.gd,
-scripts/game/actors/enemy/parts/EnemyHealthController.gd, scripts/progression/global.json,
-scripts/progression/managers/CurseProgressionManager.gd, scripts/testing/AgentHarness.gd,
-scripts/testing/HarnessValues.gd + new ExposedVFX.gd, ExposedStatus.gd,
-tests/scenarios/exposed_plating_once_per_shield.json, exposed_plating_vfx.json. Identical to
-revision-1 reviewed diff; only declared workflow artifacts additionally changed; no scope creep.
-
-- Typed vars, guard clauses, small functions throughout new code; follows sibling perk patterns
-  (frozen_fracture / static_breach). No coding-rules violation found in changed files.
-- Test overlap: searched tests/scenarios — no prior exposed_plating coverage; both scenarios are
-  new, non-overlapping, and each asserts its own criterion (exact hp deltas / multiplier values /
-  vfx visibility), not mere execution.
-
-## Quality notes
-
-quality-notes.md did not exist; created with one advisory entry (Static Breach bypass) —
-advisory only, does not demote any criterion.
+- Diff reviewed against `/opt/data/coding_rules.md` + worktree `CLAUDE.md`:
+  typed variables, guard clauses, debug-only tagged logs, surgical scope
+  (4 modified files + 1 new scenario), no duplication or dead code. No
+  violations in new/changed code.
+- quality-notes.md: no open entries; no new cross-cutting issues found
+  (`git diff HEAD` / untracked = feature files plus declared `.gen` artifacts).
 
 ## Blockers
 
-None infra. Runner healthy throughout (probe, import gate, both harnesses exit 0).
+None. Runner healthy throughout; every command went through run_project_cmd;
+no host-shell Godot.
 
-## Unverified items
+## Unverified items / handoff
 
-- Windowed/manual pixel evidence for criterion 4 (`ui_feels_broken` pass included) —
-  manual-tester profile owns `.gen/manual-report.md`; not yet present.
+- Windowed screenshot of visible frost overlay on trap hit → manual tester
+  (checkpoints wired: `frostbite_fangs_chilled_hit`, optional
+  `frostbite_fangs_aftermath`). Checker did not touch
+  `.gen/manual-report.md`.
+- Lifecycle respected: nothing committed/pushed/merged/closed by check.

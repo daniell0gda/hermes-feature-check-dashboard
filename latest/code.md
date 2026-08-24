@@ -1,53 +1,46 @@
-# Coder report: implementation\n\n# Coder report: implementation — revision 2
+# Coder report: implementation\n\n# Coder report: implementation (revision 1)
 
-## Scope of this iteration
-
-Revision 2 instruction: "Redo the failed criteria, then wait for check."
-The single Pending/failed item is criterion 4's mandated player-facing windowed
-VFX evidence (screenshots / real-30fps `record_frames` GIF + `ui_feels_broken`
-pass). That evidence is manual-tester-profile scope: this runner worker is
-headless-only, so no code change can produce it here. This iteration therefore
-redid the full automated verification of the implementation from a clean
-worker to prove nothing regressed, and refreshed all `.gen` harness evidence.
-
-No source files were changed in this iteration (git status identical to
-revision 1's reviewed diff).
+Task: revision-code-1 / cluster implementation. Re-verify the previously green
+criteria after the checker's fixable classification; no code defects were
+identified by check.md — the only residual item is the windowed screenshot
+handoff to the manual tester.
 
 ## Changed files
-- (none this iteration)
+
+No source changes this iteration (worktree diff identical to iteration 1):
+- `scripts/progression/trap.json` — mod (from iteration 1)
+- `scripts/progression/managers/TrapProgressionManager.gd` — mod (iteration 1)
+- `autoload/ProgressionManager.gd` — mod (iteration 1)
+- `scripts/game/actors/Trap.gd` — mod (iteration 1)
+- `tests/scenarios/traps_frostbite_fangs_progression.json` — new (iteration 1)
 
 ## Criteria
-- 1. Perk registered / purchasable at 3 levels — Done (unchanged)
-- 2. Once-per-shield-instance trigger (>0→0 only) — Done (unchanged)
-- 3. Multiplier per level for duration, clean expiry — Done (unchanged)
-- 4. ExposedStatus/ExposedVFX pattern — code Done; windowed pixel evidence still owned by manual-tester profile (headless machine proof passes)
-- 5. `[EXPOSED]` debug logs gated by `OS.is_debug_build()` — Done (unchanged)
 
-## Commands and results (all via run_project_cmd, project=poke-defense-godot)
-- `["godot","--version"]` — exit 0; Godot 4.4.1.stable.official.49a5bc7b6.
-- `["git","status","--short"]` — exit 0; exactly the 7 modified + 4 new feature files from the reviewed diff, nothing new.
-- Focused semantics harness:
-  `godot --headless --path . res://scenes/Main.tscn --audio-driver Dummy -- --harness=res://tests/scenarios/exposed_plating_once_per_shield.json`
-  — exit 0, status=pass, 6/6 expectations. Run log confirms per-level legs:
-  L1 hp 1625→1614→1603 (×1.15), L2 →1613→1601 (×1.25), L3 →1612→1599 (×1.35);
-  one `[EXPOSED] triggered` line per leg; after expiry wait hp 1589 (exact −10,
-  unamplified) and `[EXPOSED] expire on Orc Enemy_boss`. Fresh result:
-  `.gen/harness/exposed_plating_once_per_shield/result.json`.
-- VFX lifecycle bed:
-  `godot --headless --path . res://scenes/Main.tscn --audio-driver Dummy -- --harness=res://tests/scenarios/exposed_plating_vfx.json`
-  — exit 0, status=pass, 7/7 expectations (`exposed_vfx` asserted true during
-  the Exposed window); screenshots and record_frames correctly skipped headless.
-  Fresh result: `.gen/harness/exposed_plating_vfx/result.json`.
+All eight acceptance criteria remain Done; nothing moved back to Pending.
+The windowed frost-overlay confirmation stays with the manual tester per
+`manual_testing: required` (scenario checkpoints already wired:
+`frostbite_fangs_chilled_hit`, optional `frostbite_fangs_aftermath`).
 
-## Notes / handoff for tester
-- Remaining blocker to Done on criterion 4 is ONLY windowed evidence. Run
-  `tests/scenarios/exposed_plating_vfx.json` windowed, e.g.:
-  `godot --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy res://scenes/Main.tscn -- --harness=res://tests/scenarios/exposed_plating_vfx.json`
-  Captures land in `.gen/harness/exposed_plating_vfx/{shots,record}/`
-  (`before_breach_no_wash`, `exposed_wash_on_breach`, `wash_cleared_after_expiry`,
-  plus real engine frames for GIF export). End with `ui_feels_broken: yes|no`.
-- Gotchas unchanged from revision 1: breaching hit itself IS amplified; Static
-  Breach armor-zero path bypasses `_consume_armor` so it never fires Exposed;
-  harness runs need the explicit scene arg before `--`; enemy model GLB missing
-  in this worktree is pre-existing and unrelated (fallback path exercised).
+## Commands and results
+
+All via run_project_cmd (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-traps-frostbite-fangs):
+
+| Command | Exit | Result |
+|---|---|---|
+| `["git","status","--short"]` | 0 | same 4 modified + 1 new feature files as iteration 1 |
+| `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | import/parse gate clean (only pre-existing invalid-UID warnings) |
+| `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_frostbite_fangs_progression.json"]` | 0 | status=pass; live trap hits logged `[FROSTBITE_FANGS] trap=trap_01 chill=0.6 dur=3.0 enemy=Cactoro`; L1→L3 replay logged 0.4/2.0s → 0.5/2.5s → 0.6/3.0s |
+| same runner cmd, `traps_serrated_edges_progression.json` | 0 | status=pass |
+| same runner cmd, `undermining_trap_armor.json` | 0 | status=pass (Underming strip path unaffected by the `perform_hit` hook) |
+
+Evidence refreshed under `.gen/harness/`:
+- `.gen/harness/traps_frostbite_fangs_progression/result.json` — status=pass
+- `.gen/harness/traps_serrated_edges_progression/result.json` — status=pass
+- `.gen/harness/undermining_trap_armor/result.json` — status=pass
+
+## Notes
+
+- Nothing committed/pushed/merged/closed (lifecycle respected).
+- The stale-out.log gotcha from iteration 1 did not recur; logs were fresh.
 \n
