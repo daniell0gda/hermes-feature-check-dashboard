@@ -1,69 +1,20 @@
 {
   "run_id": "req-117-gen-hud-textures-r2",
   "feature": "gen-hud-textures-py-cannot-run-all-three",
-  "status": "failed",
-  "started_at": "2026-08-24T07:48:08.456Z",
-  "ended_at": "2026-08-24T07:56:22.955Z",
+  "status": "running",
+  "started_at": "2026-08-24T08:04:41.468Z",
+  "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-117-gen-hud-textures-r2/",
-  "heartbeat_at": "2026-08-24T07:56:22.955Z",
-  "last_node": "check",
+  "heartbeat_at": "2026-08-24T08:04:41.468Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-24T07:56:18.456Z",
-  "process_id": 312841,
+  "last_event_at": null,
+  "process_id": 319402,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:56:22.955503+00:00",
-    "last_success_at": "2026-08-24T07:56:22.953949+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T08:04:41.468130+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 52280,
-        "output_tokens": 2282
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 0,
-        "output_tokens": 0
-      },
-      {
-        "task_id": "revision-code-2",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 46779,
-        "output_tokens": 2197
-      },
-      {
-        "task_id": "revision-check-2",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 0,
-        "output_tokens": 0
-      }
-    ]
-  }
+  "metrics": {}
 }
