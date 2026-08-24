@@ -52,5 +52,14 @@
     "duration_ms": 39956,
     "summary": "Gate decision complete.\n\n- Read request/plan/status; check passed with only the manual windowed proof pending.\n- Decision: `required` \u2014 the story (torches mounted on real wall faces, no mid-corridor sticks, spacing 4) is new, player-visible\u2026",
     "error": null
+  },
+  {
+    "sequence": 7,
+    "timestamp": "2026-08-24T10:27:57.563Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 429430,
+    "summary": "The `release_project_worker` tool isn't exposed in this session's toolset, so I couldn't release the worker \u2014 noting that as a cleanup follow-up for the orchestrator.\n\nManual-test result: PASSED. Scenario: .gen/ui_scenario.md. Report: /work\u2026",
+    "error": null
   }
 ]
