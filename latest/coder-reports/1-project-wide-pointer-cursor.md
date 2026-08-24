@@ -1,4 +1,4 @@
-# Coder report: 1-project-wide-pointer-cursor\n\n# Coder report: 1-project-wide-pointer-cursor
+# Coder report: 1-project-wide-pointer-cursor
 
 ## Changed files
 - `project.godot` — mod: registered `PointerCursor="*res://scripts/ui/PointerCursor.gd"` autoload (appended last; autoload order otherwise untouched)
@@ -26,4 +26,3 @@
 - PointerCursor mechanism: `get_tree().node_added` hook for dynamically created buttons + one deferred whole-tree sweep at startup. Measured during probing (see `.gen/pointer_diag.txt`): node_added alone missed 39 of 52 scene-file buttons because scene instancing completes before autoload `_ready`.
 - HarnessActions is RefCounted — it has no `get_viewport()`; `hover_ui` warps via `loop.root.warp_mouse(center)` (root Window). First attempt using `self.get_viewport()` was a compile error, caught on the first focused run.
 - `logs/balance/map_difficulty.csv` shows modified in git status but is untouched runtime-generated balance output from harness runs (pre-existing dirty state from prior runs in this worktree); not part of this feature.
-\n
