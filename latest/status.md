@@ -1,12 +1,13 @@
 ## ✅ Done
-- Perk definition registered like other progression perks; purchasable at 3 levels.
-- Trigger fires exactly once per shield instance: only on the >0 → 0 transition. Hits while armor is already 0 do NOT re-trigger; re-trigger requires the enemy regaining armor first.
-- Damage-taken multiplier applies for the debuff duration, per level values above, then expires cleanly.
-- New VFX: `ExposedStatus`/`ExposedVFX` following the existing `BurnStatus`/`BurnVFX` pattern — cracked-shield emissive overlay for the duration, lazily instantiated by `EffectsManager` like `BurnVFX`/`OilVFX`. Headless machine proof passes (`exposed_plating_vfx`: `status=pass`, exit 0, all actions ok incl. `exposed_vfx == true` during the Exposed window); remaining windowed screenshots / real-30fps `record_frames` GIF + `ui_feels_broken` verdict are manual-tester scope (no `.gen/manual-report.md` yet), not code-check work.
-- Debug logging: `[EXPOSED] prefix lines on trigger and expiry, gated by `OS.is_debug_build()`.
+- After the final `_update_camera_for_layer("underground")` call in the live arm, the scenario repositions the active Camera3D to sit close above the trap position (small height, tiny z offset) and aim at the trap, so the framing is near top-down; this holds at the moment each subsequent screenshot and record_frames action runs.
+- Debug-build [FROSTBITE_CAMERA] log line per close-camera application, naming the trap position and camera height so a failed shot can be diagnosed from `.gen/harness/_logs`.
+- A fresh windowed (non-headless) capture of `frostbite_fangs_chilled_hit` shows the trap and at least one live underground enemy large enough in frame to judge body color; neither a distant speck nor a crop of empty floor qualifies.
+- In that fresh PNG the chilled enemy's frost/ice tint is clearly distinguishable from a normal green Cactoro body.
+- The explicit `record_frames` action produces consecutive engine frames suitable for a 30fps GIF of the chill applying, and fresh PNG/GIF copies are present under `.gen/screenshots/`.
+- A NEW `.gen/check.md` written this run records the verdict from the fresh shots only; if the shots are still a distant speck or empty-floor crop the classification is `fixable`, and headless pass tags alone never satisfy the visual criterion.
 
 ## ⬜ Pending
-- Manual player-facing evidence only (manual-tester profile): windowed gameplay captures of the Exposed overlay appearing on a real armored enemy at the breach moment and disappearing on expiry; real-time 30fps recording from the harness `record_frames` path of `exposed_plating_vfx`; manual UI sanity pass ending with an explicit `ui_feels_broken: yes|no` verdict recorded in `.gen/manual-report.md`.
+- A fresh `.gen/harness/traps_frostbite_fangs_progression/result.json` from a headless run of the updated scenario reports `status: pass` with all expectations green (frozen_count >= 1, slow_magnitude 0.40 at L1, ice_slow_fx >= 1, unowned control frozen_count == 0) — fresh headless run times out at 420s (1 attempt this iteration, 6 total); scenario hangs in `record_frames` under the headless dummy renderer; only passing result.json is windowed (headless: false)
+- A manual windowed test answering `ui_feels_broken: yes` fails the manual test — no `.gen/manual-report.md` exists; manual tester has not reported
 
 ## ❌ Impossible
-- (none)
