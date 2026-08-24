@@ -1,22 +1,20 @@
 {
-  "run_id": "issue-cave-seal-regression-r1",
-  "feature": "fix cave seal route regression",
-  "status": "failed",
-  "started_at": "2026-08-24T21:49:09.587Z",
-  "ended_at": "2026-08-24T22:03:17.971Z",
-  "error": "code worker returned no reply (empty model or exhausted API retries)",
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-cave-seal-regression-r1/",
-  "heartbeat_at": "2026-08-24T22:03:17.971Z",
-  "last_node": "code",
+  "run_id": "issue45-water-flood-r1",
+  "feature": "water-conductive-flood-wet-splash",
+  "status": "running",
+  "started_at": "2026-08-24T22:04:52.225Z",
+  "ended_at": null,
+  "error": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
+  "heartbeat_at": "2026-08-24T22:04:52.225Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-24T22:03:12.625Z",
-  "process_id": 502645,
+  "last_event_at": null,
+  "process_id": 503844,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T22:03:17.971591+00:00",
-    "last_success_at": "2026-08-24T22:03:17.970424+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T22:04:52.225750+00:00"
   },
   "metrics": {}
 }
