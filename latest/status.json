@@ -1,69 +1,22 @@
 {
-  "run_id": "req-83-traps-frostbite-fangs-r2",
-  "feature": "traps-frostbite-fangs",
+  "run_id": "req-89-exposed-plating-r2",
+  "feature": "Exposed Plating perk",
   "status": "running",
-  "started_at": "2026-08-24T06:52:26.866Z",
+  "started_at": "2026-08-24T07:06:43.523Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r2/",
-  "heartbeat_at": "2026-08-24T07:12:58.307Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-24T07:12:58.307Z",
-  "process_id": 279907,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r2/",
+  "heartbeat_at": "2026-08-24T07:13:16.370Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-24T07:13:16.370Z",
+  "process_id": 287796,
   "host": "f1a4230ec90b",
-  "phase": "manual-tester",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:13:03.021230+00:00",
-    "last_success_at": "2026-08-24T07:13:03.018939+00:00",
+    "last_attempt_at": "2026-08-24T07:13:16.371246+00:00",
+    "last_success_at": "2026-08-24T07:08:22.246877+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 50925,
-        "output_tokens": 1063
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 0,
-        "output_tokens": 0
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 33365,
-        "output_tokens": 1341
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 0,
-        "output_tokens": 0
-      }
-    ]
-  }
+  "metrics": {}
 }
