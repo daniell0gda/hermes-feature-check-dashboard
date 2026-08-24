@@ -45,3 +45,7 @@ Keep the perk implementation. Do not reset the worktree to master.
 ## Restart note
 
 r4 planner returned empty (no plan.md). completed_members is empty. Same request-id resume; do not skip plan.
+
+## Restart note 2
+
+r4 planner returned empty six times (no tool calls). Restored this morning’s r3 plan.md/clusters and marked plan complete so the leader starts at code.
