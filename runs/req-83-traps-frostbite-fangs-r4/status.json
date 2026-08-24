@@ -1,80 +1,20 @@
 {
   "run_id": "req-83-traps-frostbite-fangs-r4",
   "feature": "traps-frostbite-fangs",
-  "status": "failed",
-  "started_at": "2026-08-24T13:55:54.797Z",
-  "ended_at": "2026-08-24T14:31:36.409Z",
+  "status": "running",
+  "started_at": "2026-08-24T14:32:49.252Z",
+  "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r4/",
-  "heartbeat_at": "2026-08-24T14:31:36.409Z",
-  "last_node": "check",
+  "heartbeat_at": "2026-08-24T14:32:49.252Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-24T14:31:31.535Z",
-  "process_id": 431056,
+  "last_event_at": null,
+  "process_id": 443591,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T14:31:36.409623+00:00",
-    "last_success_at": "2026-08-24T14:31:36.408468+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T14:32:49.252680+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 126177,
-        "output_tokens": 4876
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 136594,
-        "output_tokens": 4329
-      },
-      {
-        "task_id": "revision-code-2",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "revision-check-2",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 155180,
-        "output_tokens": 5188
-      }
-    ]
-  }
+  "metrics": {}
 }
