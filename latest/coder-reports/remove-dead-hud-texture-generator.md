@@ -1,4 +1,4 @@
-# Coder report: remove-dead-hud-texture-generator\n\n# Coder report: remove-dead-hud-texture-generator
+# Coder report: remove-dead-hud-texture-generator
 
 ## Changed files
 - `tools/gen_hud_textures.py` — deleted (dead generator; sources `woden_panel*.jpg` unrecoverable)
@@ -25,4 +25,3 @@
 - Pre-existing warnings during import: HudTheme.tres ext_resources carry stale UIDs and fall back to text paths for textures that still exist. Not introduced by this change; left untouched.
 - Deleted files were never referenced by any `.tscn`/`.tres`/`.gd`; rendered HUD pixels unchanged. manual_testing: none.
 - Untracked scratch dir `.gen-blocked-117-gen-hud-20260823-attempt1/` predates this run and was not touched.
-\n
