@@ -1,70 +1,20 @@
 {
   "run_id": "leader-loop",
   "feature": "Smoke",
-  "status": "completed",
-  "started_at": "2026-08-23T08:54:37.094Z",
-  "ended_at": "2026-08-23T08:54:58.240Z",
+  "status": "running",
+  "started_at": "2026-08-24T07:02:08.605Z",
+  "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-loop/",
-  "heartbeat_at": "2026-08-23T08:54:58.240Z",
-  "last_node": "team-leader",
+  "heartbeat_at": "2026-08-24T07:02:08.605Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-23T08:54:58.226Z",
-  "process_id": 6964,
+  "last_event_at": null,
+  "process_id": 283488,
   "host": "f1a4230ec90b",
-  "phase": "team-leader",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-23T08:54:58.240149+00:00",
-    "last_success_at": "2026-08-23T08:54:58.225883+00:00",
-    "last_error": null,
-    "last_skipped_remote_at": "2026-08-23T08:54:58.238325+00:00"
+    "last_attempt_at": "2026-08-24T07:02:08.605266+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      }
-    ]
-  }
+  "metrics": {}
 }
