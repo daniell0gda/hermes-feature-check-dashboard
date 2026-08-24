@@ -16,5 +16,14 @@
     "duration_ms": 221037,
     "summary": "The `release_project_worker` action isn't exposed in this session's toolset (only `run_project_cmd` exists, and it's a disposable worker that isn't tracked as persistent), so I'm leaving the worker as-is rather than fabricating a release ca\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-24T18:48:30.900Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 313236,
+    "summary": "Check complete for issue #116 r4 (commit 66ab8e7).\n\nVerified done: 9. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes (all prior entries carry RESOL\u2026",
+    "error": null
   }
 ]
