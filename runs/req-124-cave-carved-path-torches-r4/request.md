@@ -8,11 +8,11 @@
 
 ## Problem (Daniel, 2026-08-24)
 
-A hardcoded `MAX_TORCHES = 250` is not future-proof. A 40×40 grid can fit; a 60×60 (or larger) map will run out. Also the current spacing (`TORCH_SPACING = 1`, every corridor cell) is too dense — **make the distance between torches a little bit bigger**.
+A hardcoded `MAX_TORCHES = 250` is not future-proof. **Map size is not fixed** — Daniel does not know future sizes; it might be 100×100 or anything else. Also the current spacing (`TORCH_SPACING = 1`, every corridor cell) is too dense — **make the distance between torches a little bit bigger**.
 
 ## Required solution
 
-- **No fixed torch cap that a larger map can exhaust.** Compute the budget from the live grid (e.g. carved corridor cell count, or `grid_width * grid_depth`) so 40×40, 60×60, and bigger maps all keep full corridor coverage. Do not leave dark carved segments because a constant cap was hit.
+- **No map-size constant and no fixed torch cap.** Do not special-case 40, 60, or 100. Derive the pool/budget from the **live** `grid_width`/`grid_depth` (and/or carved corridor cell count) every update so any future map size keeps full corridor coverage. Do not leave dark carved segments because a constant cap was hit.
 - **Widen spacing a little** vs r3 (every cell). Keep walls/curves lit; do not go back to the old clump-every-3rd-wall-face bug. Unique-cell stride along the corridor, not raw wall-face list.
 - **Do not change torch light intensity** (`Torch.gd` energy / radius / color / OmniLight settings stay byte-for-byte unchanged).
 
@@ -20,7 +20,7 @@ A hardcoded `MAX_TORCHES = 250` is not future-proof. A 40×40 grid can fit; a 60
 
 - Every carved cave path tile that should be lit still has torch coverage, including curve / bent / side-to-side tunnels
 - New carves still get torches
-- A 60×60 (or equivalent larger) grid does not hit a hardcoded cap that leaves uncovered corridor cells
+- Any grid size (including 100×100 and unknown larger maps) does not hit a hardcoded cap that leaves uncovered corridor cells
 - Spacing is visibly a bit farther than r3 every-cell packing
 - `Torch.gd` intensity unchanged
 
