@@ -1,43 +1,32 @@
-# Acceptance Plan: issue-130-middle-drag-carve-bird-view-flip
+# Acceptance Plan: fix-cave-seal-route-regression
 
 ## Verification
 
-- Focused test: ["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/carve_pan_no_flip.json"]
-- Full test: ["bash", ".gen/run_full_suite.sh"]
-- Typecheck/build: ["godot", "--headless", "--editor", "--path", ".", "--quit-after", "3"]
-
-manual_testing: required
+- Focused test: `["bash", "-lc", "fail=0; for n in cave_decline_seals_reveal_unseals cave_pending_seals_entrance_instantly; do PATH=/opt/data/profiles/code/home/bin:$PATH godot --headless --path . res://scenes/Main.tscn -- \"--harness=res://tests/scenarios/$n.json\" || fail=1; done; exit $fail"]`
+- Full test: `["bash", "-lc", "fail=0; for n in cave_spawn_within_grid cave_discovery_chance cave_discovery_long_carve cave_discovery_pending_placement cave_reveal_only_unseals_carved_blocks carve_stops_at_discovered_cave declined_cave_torches_extinguish underground_grid_from_map underground_map_cost_override smoke_placement cave_decline_seals_reveal_unseals cave_pending_seals_entrance_instantly; do PATH=/opt/data/profiles/code/home/bin:$PATH godot --headless --path . res://scenes/Main.tscn -- \"--harness=res://tests/scenarios/$n.json\" || fail=1; done; exit $fail"]`
+- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "3"]`
 
 ## Clusters
 
-1. carve-pan-stability — files: `scripts/game/Game.gd` — depends on: none
-- While carve bird view is armed, holding middle mouse and moving it a small amount translates the camera and its view target together without changing the camera's yaw or up direction: the camera's horizontal basis vector (`basis.x`) stays within a near-zero angular delta (< 0.05 rad) of its pre-drag value.
-- While carve bird view is armed, larger continued middle-mouse pans keep the camera orientation stable across every motion event — no event during the pan produces a yaw change of roughly 90° or 180°.
-- While the camera is nearly straight down even when carve mode is not armed, the same pan input does not rebuild the camera basis via a degenerate up-vector look-at that flips yaw.
-- Zooming from the nearly straight-down pose also preserves yaw instead of flipping it.
-- With carve bird view armed, holding the right mouse button and dragging still orbits the camera around the target, and the pitch stays inside the armed clamp (~0.05–1.55 rad) so no drag snaps across the pole.
-- A quick right-click while carve mode is active still cancels carve mode.
-- Debug-build [CARVE_CAMERA] log line per completed middle-mouse pan while bird view is armed, containing pre-pan and post-pan yaw.
-2. carve-pan-regression-scenario — files: `tests/scenarios/carve_pan_no_flip.json`, `tests/scenarios/carve_camera_drag_spin.json`, `scripts/testing/HarnessValues.gd` — depends on: 1
-- A harness value source exposes the post-pan camera basis/yaw delta (from the camera basis, not position-offset atan2) so scenarios can assert that a scripted middle-drag changed translation only, not orientation.
-- The focused scenario arms carve mode on the underground layer, then drives a middle-button press followed by mouse motion events through the real `_input` path (not a rotate-camera harness shortcut) and asserts the camera position translated by the expected amount while the basis.x-yaw delta is below 0.05 rad.
-- The `carve_camera_drag_spin` scenario's rotate action actually invokes camera rotation (its harness call does not fail with an argument-conversion error) and still passes with yaw stable after a large vertical drag past the old clamp.
-- The existing `carve_camera_topdown` scenario still passes unchanged after the pan fix.
+1. cave-route-unblock — files: `scripts/game/CaveSystem.gd`, `autoload/UndergroundSystem.gd` and/or `tests/scenarios/cave_decline_seals_reveal_unseals.json`, `tests/scenarios/cave_pending_seals_entrance_instantly.json` — depends on: none
+- A fresh run of the `cave_decline_seals_reveal_unseals` harness scenario completes every timeline step and reports status pass with exit code 0.
+- A fresh run of the `cave_pending_seals_entrance_instantly` harness scenario completes every timeline step and reports status pass with exit code 0.
+- After loading map_9, adding one hole and one exit inside the underground grid bounds, and carving a straight corridor between them with no cave placed, the underground reports a route from the hole position before any cave sealing logic runs.
+- Placing a pending cave whose footprint covers part of an already-routable carved corridor still blocks only the route while the cave is pending/declined, and confirming the cave restores the route through the same corridor (existing intended sealing behaviour preserved).
+- The root-cause commit/change that made the straight carved corridor unroutable on map_9 is identified and documented in `.gen/changes.md`, stating whether it was a gameplay bug fixed in game code or stale scenario setup updated with explanatory notes.
+- The ten companion scenarios (`cave_spawn_within_grid`, `cave_discovery_chance`, `cave_discovery_long_carve`, `cave_discovery_pending_placement`, `cave_reveal_only_unseals_carved_blocks`, `carve_stops_at_discovered_cave`, `declined_cave_torches_extinguish`, `underground_grid_from_map`, `underground_map_cost_override`, `smoke_placement`) all pass fresh after the fix.
+- A fresh focused-run runner stdout/stderr contains no new Godot parse/script errors compared to the pre-existing baseline noise.
+- Debug-build `[UNDERGROUND]` log line per failed route computation: emitted when route finding finds no valid path, including the requested from/to cell coordinates so unroutable fixtures are diagnosable from the harness log alone.
 
 ## Criteria
 
-- While carve bird view is armed, holding middle mouse and moving it a small amount translates the camera and its view target together without changing the camera's yaw or up direction: the camera's horizontal basis vector (`basis.x`) stays within a near-zero angular delta (< 0.05 rad) of its pre-drag value.
-- While carve bird view is armed, larger continued middle-mouse pans keep the camera orientation stable across every motion event — no event during the pan produces a yaw change of roughly 90° or 180°.
-- While the camera is nearly straight down even when carve mode is not armed, the same pan input does not rebuild the camera basis via a degenerate up-vector look-at that flips yaw.
-- Zooming from the nearly straight-down pose also preserves yaw instead of flipping it.
-- With carve bird view armed, holding the right mouse button and dragging still orbits the camera around the target, and the pitch stays inside the armed clamp (~0.05–1.55 rad) so no drag snaps across the pole.
-- A quick right-click while carve mode is active still cancels carve mode.
-- Debug-build [CARVE_CAMERA] log line per completed middle-mouse pan while bird view is armed, containing pre-pan and post-pan yaw.
-- A harness value source exposes the post-pan camera basis/yaw delta (from the camera basis, not position-offset atan2) so scenarios can assert that a scripted middle-drag changed translation only, not orientation.
-- The focused scenario arms carve mode on the underground layer, then drives a middle-button press followed by mouse motion events through the real `_input` path (not a rotate-camera harness shortcut) and asserts the camera position translated by the expected amount while the basis.x-yaw delta is below 0.05 rad.
-- The `carve_camera_drag_spin` scenario's rotate action actually invokes camera rotation (its harness call does not fail with an argument-conversion error) and still passes with yaw stable after a large vertical drag past the old clamp.
-- The existing `carve_camera_topdown` scenario still passes unchanged after the pan fix.
+- A fresh run of the `cave_decline_seals_reveal_unseals` harness scenario completes every timeline step and reports status pass with exit code 0.
+- A fresh run of the `cave_pending_seals_entrance_instantly` harness scenario completes every timeline step and reports status pass with exit code 0.
+- After loading map_9, adding one hole and one exit inside the underground grid bounds, and carving a straight corridor between them with no cave placed, the underground reports a route from the hole position before any cave sealing logic runs.
+- Placing a pending cave whose footprint covers part of an already-routable carved corridor still blocks only the route while the cave is pending/declined, and confirming the cave restores the route through the same corridor (existing intended sealing behaviour preserved).
+- The root-cause commit/change that made the straight carved corridor unroutable on map_9 is identified and documented in `.gen/changes.md`, stating whether it was a gameplay bug fixed in game code or stale scenario setup updated with explanatory notes.
+- The ten companion scenarios (`cave_spawn_within_grid`, `cave_discovery_chance`, `cave_discovery_long_carve`, `cave_discovery_pending_placement`, `cave_reveal_only_unseals_carved_blocks`, `carve_stops_at_discovered_cave`, `declined_cave_torches_extinguish`, `underground_grid_from_map`, `underground_map_cost_override`, `smoke_placement`) all pass fresh after the fix.
+- A fresh focused-run runner stdout/stderr contains no new Godot parse/script errors compared to the pre-existing baseline noise.
+- Debug-build `[UNDERGROUND]` log line per failed route computation: emitted when route finding finds no valid path, including the requested from/to cell coordinates so unroutable fixtures are diagnosable from the harness log alone.
 
-## Manual testing
-
-Required (manual_testing: required): windowed 30fps GIF under Xvfb :77 (directly, not xvfb-run) showing carve arm → small middle-drag → large drag, with the path preview's L-shape keeping its screen orientation throughout. Screenshot key is `name`. See `.gen/ui_scenario.md`. If the tester answers `ui_feels_broken: yes`, manual testing fails regardless of automated results. Pre-existing red legacy-domain failures in the full suite are known pre-existing and recorded in quality-notes; they do not block this issue.
+Manual testing: none (headless harness regression only)
