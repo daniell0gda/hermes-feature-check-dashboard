@@ -25,5 +25,14 @@
     "duration_ms": 227017,
     "summary": "Revision check complete. All headless criteria re-verified fresh through run_project_cmd (preflight godot --version exit 0; editor gate `--editor --quit-after 2` exit 0, clean scan; full suite `test_torch_budget_scaling.tscn` 11 ok / 0 fail\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-24T10:17:25.091Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 206729,
+    "summary": "Done. Summary of revision-code-2:\n\nState on arrival: all headless criteria were already green from the prior iteration; the only open code item was the quality-notes advisory that the unit suite wrote its result file into the source tree.\n\n\u2026",
+    "error": null
   }
 ]
