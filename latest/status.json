@@ -1,20 +1,22 @@
 {
-  "run_id": "req-89-exposed-plating-r2",
-  "feature": "Exposed Plating perk",
+  "run_id": "leader-resume",
+  "feature": "Smoke",
   "status": "running",
-  "started_at": "2026-08-24T07:06:43.523Z",
+  "started_at": "2026-08-24T07:06:04.397Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r2/",
-  "heartbeat_at": "2026-08-24T07:06:43.523Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-resume/",
+  "heartbeat_at": "2026-08-24T07:06:04.397Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": null,
-  "process_id": 287796,
+  "process_id": 286455,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:06:43.523701+00:00"
+    "last_attempt_at": "2026-08-24T07:07:39.740159+00:00",
+    "last_success_at": "2026-08-24T07:06:08.613330+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
