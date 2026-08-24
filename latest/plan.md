@@ -1,42 +1,42 @@
-# Acceptance Plan: exposed-plating-closeup-evidence
+# Acceptance Plan: game-ready-blocks-map-load (issue #116, r3)
+
+Scope note: this run is verify + leftover gaps over the existing uncommitted
+phased world build — not a rewrite of the pan/loading implementation.
 
 ## Verification
 
-- Focused test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]`
-- Full test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]`
-- Typecheck/build: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://tests/loading/test_map_loading_screen_driving.tscn", "--log-file", ".gen/loading_driving_r3.log"]`
+- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/map_build_phases.json", "--log-file", ".gen/map_build_phases_r3.log"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]`
 
-All three are executed through `run_project_cmd` with `project=godot-td`, `workspace=poke-defense-godot/issue-exposed-plating`. The windowed close-up evidence run uses the same token shape without `--headless`, adding `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
+manual_testing: required
 
 ## Clusters
 
-1. headless-regression-rerun — files: `.gen/harness/exposed_plating_once_per_shield/result.json`, `.gen/harness/exposed_plating_vfx/result.json` — depends on: none
-- A fresh headless run of `tests/scenarios/exposed_plating_once_per_shield.json` ends with status `pass` and every expectation met, confirming the trigger fires exactly once per shield instance (>0 to 0 transition only) after the rebase.
-- A fresh headless run of `tests/scenarios/exposed_plating_vfx.json` ends with status `pass` and every expectation met, including log lines containing `[EXPOSED] triggered on` and `[EXPOSED] expire on`.
-2. closeup-vfx-scenario — files: `tests/scenarios/exposed_plating_vfx.json` — depends on: none
-- During the windowed VFX scenario, the active camera aims at the boss enemy and moves close enough that the enemy occupies a large part of the rendered frame before any screenshot checkpoint fires.
-- In every screenshot and recorded frame captured by the scenario, the debug panel is hidden or positioned so it does not cover the enemy.
-- The `record_frames` capture spans the whole Exposed window while zoomed on the enemy and saves more than zero real consecutive engine frames suitable for GIF export.
-3. visible-wash-proof — files: `scripts/game/actors/effects/ExposedVFX.gd`, `.gen/screenshots/`, `.gen/manual-report.md` — depends on: 2
-- In the windowed close-up run, the "during Exposed" still shows an obvious amber wash over the enemy body that differs from the "before breach" still when compared by eye.
-- In the windowed close-up run, the "after expiry" still matches the "before breach" still by eye: the amber wash is gone.
-- If the close-up "during" still shows no visible overlay, `ExposedVFX` is strengthened (alpha/emission energy/shell size) until the before/during frames visibly differ; metadata `exposed_vfx == true` alone never counts as passing this criterion.
-- The proving PNGs and the exported GIF are copied into `.gen/screenshots/` and embedded in `.gen/manual-report.md`, which ends with a `ui_feels_broken: yes|no` verdict line.
+1. loading-screen-driving — files: `scripts/MapLoadingScreen.gd`, `scripts/ui/LoadingSequence.gd`, `scripts/game/Game.gd`, `tests/loading/test_map_loading_screen_driving.gd`, `tests/scenarios/map_build_phases.json` — depends on: none
+- During the world-build portion of a map load, the loading screen's progress bar advances in multiple observable increments beyond its post-threaded-load value instead of sitting at or near 100% while the world builds.
+- The status caption changes at least once during the world build: a building-phase caption replaces the static "Building Map" line before the screen is replaced by the game scene.
+- A selected map id that is missing or unparseable falls back to `map_1` before any world-building phase begins, and the load proceeds to completion with `map_1`.
+- No single frame during a post-boot, loading-screen-driven map load exceeds ~100ms wall-clock, measured from the driving-test's frame timing / `[MAP_BUILD]` log output; any first cold castle instantiate cost is paid at boot warm-up, not in that measurement.
+- Debug-build `[MAP_BUILD]` log line per completed world-build phase, naming the phase and its elapsed milliseconds.
+2. phased-build-playable — files: `tests/scenarios/map_build_phases.json`, `scripts/game/Game.gd` — depends on: 1
+- After a phased map load completes without a driver, the scene is playable: harness reaches `game_state == "playing"` on the requested `map_id`, non-zero total wave count, and at least one live wave-1 surface enemy spawns.
+- Booting `res://scenes/Main.tscn` directly with no MapLoadingScreen registered still runs every build phase to completion.
+- `setup_as_menu_backdrop` still completes a full backdrop world (existing `menu_backdrop_map` scenario passes unchanged).
+- Buildings are generated before trees/rocks in the phased path, and decoration counts match master's scaling/clearance behaviour via `record_placed_counts()` for both one-shot and phased paths.
 
 ## Criteria
 
-- A fresh headless run of `tests/scenarios/exposed_plating_once_per_shield.json` ends with status `pass` and every expectation met, confirming the trigger fires exactly once per shield instance (>0 to 0 transition only) after the rebase.
-- A fresh headless run of `tests/scenarios/exposed_plating_vfx.json` ends with status `pass` and every expectation met, including log lines containing `[EXPOSED] triggered on` and `[EXPOSED] expire on`.
-- During the windowed VFX scenario, the active camera aims at the boss enemy and moves close enough that the enemy occupies a large part of the rendered frame before any screenshot checkpoint fires.
-- In every screenshot and recorded frame captured by the scenario, the debug panel is hidden or positioned so it does not cover the enemy.
-- The `record_frames` capture spans the whole Exposed window while zoomed on the enemy and saves more than zero real consecutive engine frames suitable for GIF export.
-- In the windowed close-up run, the "during Exposed" still shows an obvious amber wash over the enemy body that differs from the "before breach" still when compared by eye.
-- In the windowed close-up run, the "after expiry" still matches the "before breach" still by eye: the amber wash is gone.
-- If the close-up "during" still shows no visible overlay, `ExposedVFX` is strengthened (alpha/emission energy/shell size) until the before/during frames visibly differ; metadata `exposed_vfx == true` alone never counts as passing this criterion.
-- The proving PNGs and the exported GIF are copied into `.gen/screenshots/` and embedded in `.gen/manual-report.md`, which ends with a `ui_feels_broken: yes|no` verdict line.
+- During the world-build portion of a map load, the loading screen's progress bar advances in multiple observable increments beyond its post-threaded-load value instead of sitting at or near 100% while the world builds.
+- The status caption changes at least once during the world build: a building-phase caption replaces the static "Building Map" line before the screen is replaced by the game scene.
+- A selected map id that is missing or unparseable falls back to `map_1` before any world-building phase begins, and the load proceeds to completion with `map_1`.
+- No single frame during a post-boot, loading-screen-driven map load exceeds ~100ms wall-clock, measured from the driving-test's frame timing / `[MAP_BUILD]` log output; any first cold castle instantiate cost is paid at boot warm-up, not in that measurement.
+- Debug-build `[MAP_BUILD]` log line per completed world-build phase, naming the phase and its elapsed milliseconds.
+- After a phased map load completes without a driver, the scene is playable: harness reaches `game_state == "playing"` on the requested `map_id`, non-zero total wave count, and at least one live wave-1 surface enemy spawns.
+- Booting `res://scenes/Main.tscn` directly with no MapLoadingScreen registered still runs every build phase to completion.
+- `setup_as_menu_backdrop` still completes a full backdrop world (existing `menu_backdrop_map` scenario passes unchanged).
+- Buildings are generated before trees/rocks in the phased path, and decoration counts match master's scaling/clearance behaviour via `record_placed_counts()` for both one-shot and phased paths.
 
-## Notes
-
-- manual_testing: required
-- Existing uncommitted WIP (perk registration, `ExposedStatus.gd`, `ExposedVFX.gd`, both scenario JSONs) is preserved; this plan covers only the unmet close-up visual evidence work plus the post-rebase headless re-run.
-- The r5 far-camera shots archived under `.gen/harness/exposed_plating_vfx/r5-too-far/` are explicitly not evidence and must not be copied to `.gen/screenshots/`.
+Manual testing (required): windowed PNG or 30fps GIF of the loading screen
+mid-world-build showing the bar visibly past the threaded-load portion with a
+build-phase caption (see `.gen/ui_scenario.md`).
