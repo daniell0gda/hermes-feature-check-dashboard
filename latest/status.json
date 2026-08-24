@@ -1,47 +1,22 @@
 {
-  "run_id": "req-83-traps-frostbite-fangs-r2",
-  "feature": "traps-frostbite-fangs",
+  "run_id": "leader-resume",
+  "feature": "Smoke",
   "status": "running",
-  "started_at": "2026-08-24T06:52:26.866Z",
+  "started_at": "2026-08-24T07:02:35.511Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r2/",
-  "heartbeat_at": "2026-08-24T07:03:19.195Z",
-  "last_node": "code",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-resume/",
+  "heartbeat_at": "2026-08-24T07:02:35.511Z",
+  "last_node": null,
   "active_node": "check",
-  "last_event_at": "2026-08-24T07:03:19.195Z",
-  "process_id": 279907,
+  "last_event_at": null,
+  "process_id": 283488,
   "host": "f1a4230ec90b",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:03:25.578921+00:00",
-    "last_success_at": "2026-08-24T07:03:25.578293+00:00",
+    "last_attempt_at": "2026-08-24T07:04:11.426631+00:00",
+    "last_success_at": "2026-08-24T07:02:40.191730+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 50925,
-        "output_tokens": 1063
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 0,
-        "output_tokens": 0
-      }
-    ]
-  }
+  "metrics": {}
 }
