@@ -25,5 +25,14 @@
     "duration_ms": 360722,
     "summary": "Worker release isn't exposed as a callable tool in this session, so I'm leaving workspace lifecycle to the leader.\n\nCheck complete for issue #116 r5 (game-ready-blocks-map-load).\n\nVerified done: 9. Pending: 0 \u2014 0 due to build/test failures,\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-24T20:14:50.239Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 32631,
+    "summary": "Gate decision complete.\n\n- Read skill manual-testing-gate plus request.md, plan.md, check.md, status.md.\n- Decision: manual_testing: required \u2014 the r5 run introduces a player-visible story (loading-screen bar advancing with changing caption\u2026",
+    "error": null
   }
 ]
