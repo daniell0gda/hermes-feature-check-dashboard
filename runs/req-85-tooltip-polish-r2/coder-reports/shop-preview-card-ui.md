@@ -1,25 +1,59 @@
-# Coder report: shop-preview-card-ui
+# Coder report: shop-preview-card-ui (revision 1 — placement criterion)
 
 ## Changed files
-- `data/towers.xml` — mod: added `description` attribute to all 12 combat towers (Porter's states teleport-to-underground-tunnels + deals no damage; Floodgate's states the periodic tunnel flood).
-- `systems/TowersConfig.gd` — mod: parse/store/serve `description` (`tower_descriptions`, `get_description`).
-- `scripts/ui/UI.gd` — mod: new `_tower_tooltip_facts(tower_id)` shared content source; `_build_tower_tooltip` now renders from it; new public `show_tower_shop_preview(tower_id)` / `hide_tower_shop_preview()` plus harness reads (`is_shop_preview_card_visible`, `get_shop_preview_card_text`, `count_occurrences_in_shop_preview_text`, `shop_preview_events*`, `shop_slot_tooltip_texts_are_empty`); card positioned above the hovered slot, clamped away from the right details panel; unlocked slots get empty default tooltip (lock reason kept for locked); slot hover signals wired in `_populate_tower_button`; debug-build `[SHOP-PREVIEW] show/hide` logs naming the tower id.
-- `scenes/ui/widgets/TowerShopPreviewCard.tscn` — new: PanelContainer card, `SidePanel` frame + inner `ModalWell` + `ModalTitle` from HudTheme, wrapping description label, Stats and Perks boxes. Lives under `UI/Root`.
-- `scripts/ui/hud/TowerShopPreviewCard.gd` — new: fills title/body/stat rows (Cost/Range/Fire Rate/Damage with HUD glyphs) / perk lines from the shared facts dict; `as_text()` plain-text mirror for harness reads; never a flat "Cost: X | Range: Y" line.
-- `tests/scenarios/tower_shop_preview_card.json` — new focused scenario.
+- `scripts/ui/UI.gd` — mod: rewrote `_position_shop_preview_card()` (real-size-driven
+  above-the-bar offset + horizontal clamp that respects the visible `Root/UpgPanel` right
+  edge); added `_shop_preview_card_overlap_ratio_with_node()`, `get_shop_preview_card_rect()`,
+  `shop_preview_card_overlaps_rect()` harness reads; added a `_process()` per-frame bottom
+  clamp against `Root/ButtonsContainer`'s global rect; `show_tower_shop_preview()` kept fully
+  synchronous (no await) so every show appends its event and log line.
+- `scripts/testing/HarnessValues.gd` — mod: new `shop_preview_card` source exposing
+  visible/position/size/end from the card's real rendered pixels.
+- `scenes/ui/widgets/TowerShopPreviewCard.tscn` — mod: Description label gets an explicit
+  `custom_minimum_size = Vector2(232, 0)` (fixed wrap width) instead of expand-fill.
+- `scripts/ui/hud/TowerShopPreviewCard.gd` — mod: perk labels pinned to
+  `SIZE_SHRINK_BEGIN` so their fixed wrap width drives deterministic minimum height.
+- `tests/scenarios/tower_shop_preview_card.json` — mod: scenario now runs on `map_10`,
+  places a hole+tower and opens the details panel, then asserts with the panel visible:
+  card on-screen (`position.x >= 8`, `end.x <= 1529`), zero-overlap with
+  `Root/ButtonsContainer` AND `Root/UpgPanel`; event count updated to 6.
 
 ## Criteria
-All cluster criteria implemented; verified via runner below. The windowed manual screenshot pass (Generic/Fire/Ice/Porter per `.gen/ui_scenario.md`) remains for the manual tester — headless runs cannot satisfy it.
+- "The card sits above the hovered shop slot without covering the entire Towers bar and does
+  not overlap the right-side tower details panel when both are visible at once." — Done
+  (previously Pending): now asserted headlessly through real rendered geometry.
 
 ## Commands and results
-All via `run_project_cmd` project `godot-td`, workspace `poke-defense-godot/issue-update-tower-descriptions-with-special-c`.
+All via `run_project_cmd` project `godot-td`, workspace
+`poke-defense-godot/issue-update-tower-descriptions-with-special-c`.
 
-1. Editor/import gate `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0. Only pre-existing invalid-UID warnings in `themes/hud/HudTheme.tres` / `scenes/UI.tscn` (whole theme, untouched by this change). No parse/script/resource diagnostics on changed files.
-2. Focused harness `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/tower_shop_preview_card.json"]` — exit 0, `[Harness] status=pass exit=0`. Log shows `[SHOP-PREVIEW] show tower_id=generic`, `hide`, `show fire`, `show porter`, `hide`. Result at `.gen/harness/tower_shop_preview_card/result.json`.
-3. Full sweep `python3 tests/run_all_shard.py 0 1` via runner timed out twice at the tool's 420 s cap (~74 scenarios × up to ~30 s boot each far exceeds one call). Re-ran every scenario individually through the runner instead: 74 result.json files under `.gen/harness/`, 58 pass, 16 non-pass. Verified pre-existing on base 42e05d6 in a sibling worktree (issue-dead-options-modal-scene, same commit): identical 16 fail there (14 timeouts from LFS-smugged glTF models making sim time run >5x real time; `cave_discovery_long_carve` carved_tiles 961 < 1000 random-discovery flake; `projectiles_5x_roster` balista/bazooka/cannon damage>0 flake). None of the 16 touches this change's surface; all UI/tooltip scenarios including the new one pass.
+1. Focused harness `[\"godot\",\"--headless\",\"--path\",\".\",\"res://scenes/Main.tscn\",\"--\",\"--harness=res://tests/scenarios/tower_shop_preview_card.json\"]`
+   — exit 0, `[Harness] status=pass exit=0`. All timeline actions ok including the four new
+   placement waits; expectations 4/4 pass; log shows `[SHOP-PREVIEW] show tower_id=generic /
+   fire / porter`, two `hide`. Result at `.gen/harness/tower_shop_preview_card/result.json`.
+   Measured card geometry during debugging: position (8, 634), size 332x254 → bottom edge 888
+   vs ButtonsContainer top 890, overlap ratio 0.0.
+2. Editor/import gate `[\"godot\",\"--headless\",\"--path\",\".\",\"--editor\",\"--quit-after\",\"300\"]`
+   — exit 0; only the pre-existing invalid-UID warnings in untouched `HudTheme.tres`/`UI.tscn`
+   texture refs. No diagnostics on changed files.
+3. Regression: `tower_descriptions_tooltip.json` focused run — exit 0, status=pass.
+4. Full shard sweep `python3 tests/run_all_shard.py 0 1`: not re-run this revision; per the
+   prior round it exceeds the runner's 420 s tool cap (~74 scenarios × ~30 s boot). The r1
+   per-scenario evidence stands; this revision only touches the preview-card path plus one
+   new harness source, both covered by (1)–(3).
 
-## Notes
-- Porter dedupe: hardcoded "Teleports non-boss enemies..." line removed from `UI.gd`; the XML description is the single teleport/no-damage explanation ("Requires a hole nearby." remains as a perk line). Floodgate likewise: flood explanation now only in XML description; cooldown lines remain as perk lines.
-- Card content equality with `_build_tower_tooltip` is by construction (both render from `_tower_tooltip_facts`; damage text is extracted back out of the built stat lines).
-- Gotcha for tester: engine stdout `[SHOP-PREVIEW]` lines appear in the harness log; the deterministic assertion path is `ui.shop_preview_events()` (engine file log flushes late).
-- Gotcha: `.gen-r1-pass-20260823/` scratch dir exists in the worktree root from the prior r1 round (untracked, not part of this change).
+## Notes / gotchas for tester
+- The overlap bug was twofold: (a) the old code positioned by `custom_minimum_size.x` and a
+  hardcoded `-400px` margin guess, so the freshly filled card could dip ~9 px into the bar;
+  (b) autowrap labels settle their wrapped height one layout pass late, so any size measured
+  synchronously can underestimate. Fix = measure max(min_size, current size), clamp against
+  `Root/ButtonsContainer` (the outer panel — NOT the inner TowerButtons row, whose top sits
+  lower) in `_process` every frame.
+- Gotcha: making `show_tower_shop_preview` async (await process_frame) silently breaks the
+  harness/event contract — `HarnessActions._call_method` uses `callv` without holding the
+  returned GDScriptFunctionState, so later shows get freed before resuming (events/log lines
+  never fire). Keep it synchronous.
+- Scenario moved to `map_10`: on `map_1` the tower_details_panel placement spot is
+  path_blocked, so the details-panel-visible half of the test cannot be set up there.
+- Manual windowed screenshot pass (Generic/Fire/Ice/Porter per `.gen/ui_scenario.md`) still
+  required for pixel legibility — headless cannot satisfy that half.
