@@ -1,22 +1,69 @@
 {
-  "run_id": "req-85-tooltip-polish-r2",
-  "feature": "tower-description-tooltip-polish",
+  "run_id": "req-124-cave-carved-path-torches-r5",
+  "feature": "cave-carved-path-torches",
   "status": "running",
-  "started_at": "2026-08-24T10:18:01.291Z",
+  "started_at": "2026-08-24T09:59:49.875Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-tooltip-polish-r2/",
-  "heartbeat_at": "2026-08-24T10:18:01.291Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
-  "process_id": 391652,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-124-cave-carved-path-torches-r5/",
+  "heartbeat_at": "2026-08-24T10:19:58.764Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-24T10:19:58.764Z",
+  "process_id": 384153,
   "host": "f1a4230ec90b",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T10:19:36.548538+00:00",
-    "last_success_at": "2026-08-24T10:18:06.053102+00:00",
+    "last_attempt_at": "2026-08-24T10:19:58.764947+00:00",
+    "last_success_at": "2026-08-24T10:17:33.951199+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 72964,
+        "output_tokens": 3146
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 80751,
+        "output_tokens": 2938
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 90091,
+        "output_tokens": 3924
+      },
+      {
+        "task_id": "revision-code-2",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 88101,
+        "output_tokens": 2978
+      }
+    ]
+  }
 }
