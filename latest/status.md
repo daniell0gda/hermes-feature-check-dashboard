@@ -1,14 +1,12 @@
 ## ✅ Done
-- The repository contains no `tools/*.py` script whose input sources are missing under `textures/_source/`; after the change a reference check over all tool scripts reports zero references to nonexistent source paths.
-- `tools/gen_hud_textures.py` no longer exists in the working tree.
-- `textures/ui/hud/icon_coin.png`, `icon_heart.png`, and `towers_panel.png` still exist and remain byte-identical to their committed versions at the starting revision.
-- Every remaining file under `textures/ui/hud/` that is referenced by any scene, theme, or script resource resolves to an existing file (no dangling texture references after deletion).
-- Files under `textures/ui/hud/` written only by the deleted generator and not referenced by any scene, theme, or script (including `wood_slot.png` and `slot_empty.png`) no longer exist in the working tree.
-- The docstring of `tools/gen_hud_icons.py` no longer states that `icon_coin` or `icon_heart` come from `gen_hud_textures.py`.
-- A Godot headless editor/import run over the project completes without errors introduced by the removed textures.
+- Perk definition registered like other progression perks; purchasable at 3 levels.
+- Trigger fires exactly once per shield instance: only on the >0 → 0 transition. Hits while armor is already 0 do NOT re-trigger; re-trigger requires the enemy regaining armor first.
+- Damage-taken multiplier applies for the debuff duration, per level values above, then expires cleanly.
+- New VFX: `ExposedStatus`/`ExposedVFX` following the existing `BurnStatus`/`BurnVFX` pattern — cracked-shield emissive overlay for the duration, lazily instantiated by `EffectsManager` like `BurnVFX`/`OilVFX`. Headless machine proof passes (`exposed_plating_vfx`: `status=pass`, exit 0, all actions ok incl. `exposed_vfx == true` during the Exposed window); remaining windowed screenshots / real-30fps `record_frames` GIF + `ui_feels_broken` verdict are manual-tester scope (no `.gen/manual-report.md` yet), not code-check work.
+- Debug logging: `[EXPOSED] prefix lines on trigger and expiry, gated by `OS.is_debug_build()`.
 
 ## ⬜ Pending
-- (none)
+- Manual player-facing evidence only (manual-tester profile): windowed gameplay captures of the Exposed overlay appearing on a real armored enemy at the breach moment and disappearing on expiry; real-time 30fps recording from the harness `record_frames` path of `exposed_plating_vfx`; manual UI sanity pass ending with an explicit `ui_feels_broken: yes|no` verdict recorded in `.gen/manual-report.md`.
 
 ## ❌ Impossible
 - (none)
