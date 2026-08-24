@@ -755,6 +755,11 @@
     "url": "runs/20260814-092950-ddae52/"
   },
   {
+    "run_id": "131-pointer-cursor-r2",
+    "status": "running",
+    "url": "runs/131-pointer-cursor-r2/"
+  },
+  {
     "run_id": "131-pointer-cursor-r1",
     "status": "failed",
     "url": "runs/131-pointer-cursor-r1/"
