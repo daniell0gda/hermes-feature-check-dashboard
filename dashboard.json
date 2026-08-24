@@ -46,7 +46,7 @@
   },
   {
     "run_id": "req-89-exposed-plating-r3",
-    "status": "running",
+    "status": "failed",
     "url": "runs/req-89-exposed-plating-r3/"
   },
   {
