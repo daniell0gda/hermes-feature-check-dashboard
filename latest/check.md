@@ -1,68 +1,106 @@
-# Check report — corrosive-soak-90 revision-check-1 (iteration 4)
+# Check report — Exposed Plating perk (issue #89) — check (r3)
 
 classification: pass
 
 ## Verdict
 
-All 14 acceptance criteria are verified Done this iteration. Every gate ran fresh
-through `run_project_cmd` (project=poke-defense-godot,
-workspace=poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat) and
-passed: editor/parse gate exit 0 with no Parse Error, focused harness exit 0
-`[Harness] status=pass exit=0` (58 actions, all ok, result at
-`.gen/harness/floodgate_corrosive_soak/result.json`, fresh run
-20260824000002), full armor-damage suite exit 0 `18 ok, 0 failed` (the previous
-r3 full-suite blocker was Git-LFS pointer resolution + stale imports — worktree
-setup fixed by the coder, no repo file changed for it). Criterion 10 (master
-merged ProgressionManager behaviors) was additionally proven this iteration via
-fresh runs of its own regression scenarios: `undermining_progression`
-(status=pass, trap armor damage 8/15/25 per level observed in raw stdout) and
-`upgrade_click_money_popup` (status=pass, reward popup fired).
+Fresh verification through the approved runner (`project=godot-td`,
+`workspace=poke-defense-godot/issue-exposed-plating`) confirms all five headless
+code criteria are green. The plan's `--check-only` typecheck command fails on
+this project for ANY status script (including pre-existing `BurnStatus.gd`)
+because `godot --check-only --script` does not resolve autoloads — it is a tool
+limitation, not a code defect; the authoritative parse/compile gate is the
+editor import + full harness run, both exit 0. The plan's "full test" is the
+`exposed_plating_vfx` harness, which passes 16/16 actions with zero failures.
+Per request.md, headless green ⇒ checker writes `classification: pass` so the
+leader can dispatch manual-tester; missing windowed PNGs/GIFs and the
+`ui_feels_broken` verdict are manual-tester deliverables and remain Pending,
+not code-check fixable.
 
-## Verification commands (all via run_project_cmd)
+## Verification commands (all via run_project_cmd, runner-reported exit codes)
 
-| Command | Exit | Result |
-|---|---|---|
-| `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 |
-| Editor gate: `godot --headless --path . --editor --quit-after 300` | 0 | Pass; global classes registered; no Parse Error (pre-existing UID warnings only) |
-| Focused: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/floodgate_corrosive_soak.json` | 0 | `[Harness] status=pass exit=0`; result `.gen/harness/floodgate_corrosive_soak/result.json`; raw stdout shows `[FLOODGATE] floodgate_corrosive_soak L1/L2/L3 applied -> amplification 0.25/0.45/0.7`, `[CORROSIVE_SOAK] corroded applied on enemy=Alien level=1`, amplified hits bonus=25%/45%/70% armor_dmg=50/58/68, `[CORROSIVE_SOAK] corroded expired on enemy=Alien dur=6.0`. Only non-gating pre-existing warnings after exit. |
-| Full suite: `godot --headless --path . res://tests/tower/test_tower_armor_damage.tscn` | 0 | `18 ok, 0 failed` incl. ballista bolt reached armored enemy / strips 20.0 armor / loses only reduced HP |
-| `undermining_progression` scenario | 0 | status=pass; undermining L1/L2/L3 -> trap armor damage 8.0/15.0/25.0 |
-| `upgrade_click_money_popup` scenario | 0 | status=pass; reward popup created |
+1. Probe: `["godot","--version"]` — exit 0, Godot 4.4.1.stable.
+2. Editor import/parse gate: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
+   — exit 0 (9.2s), no script errors.
+3. Focused semantics harness:
+   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]`
+   — exit 0, result `.gen/harness/exposed_plating_once_per_shield/result.json`:
+   `status=pass`, 38 actions, 0 failed. Log shows per-level legs L1 1625→1614→1603
+   (×1.15), L2 →1613→1601 (×1.25), L3 →1612→1599 (×1.35); exactly one
+   `[EXPOSED] triggered ... level=N bonus=…% dur=…` line per leg; one trigger per
+   shield instance (`exposed_count == 1`); post-expiry hit at hp 1589 = exact −10
+   unamplified after `[EXPOSED] expire`.
+4. VFX lifecycle harness ("full test" per plan):
+   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]`
+   — exit 0, result `.gen/harness/exposed_plating_vfx/result.json`: `status=pass`,
+   16 actions, 0 failed, including `enemies.Orc Enemy_boss.exposed_vfx == true`
+   during the Exposed window and screenshot/record_frames steps correctly skipped
+   as `reason: headless`.
+5. Plan's typecheck command: `["godot","--headless","--check-only","--script",
+   "res://scripts/game/status/ExposedStatus.gd"]` — exit 1, `Identifier not found:
+   SimulationClock`. Control run on the UNRELATED pre-existing
+   `scripts/game/status/BurnStatus.gd` produces the identical error: the
+   `--check-only --script` mode does not register autoload singletons in this
+   project, so this command cannot validate any status script here. Gate treated
+   as satisfied by the stronger editor-parse gate (step 2) plus harness compile
+   and execution (steps 3–4). Not a feature failure.
 
-## Criteria evidence (plan order)
+## Criterion-by-criterion evidence
 
-1. Perk defined, maxLevels 3, Unique, floodgate-only — PASS (`scripts/progression/floodgate_tower.json`: `"type": "Unique"`, `"compatibility": {"towers": ["floodgate"]}`); harness actions 17–20 assert enabled/level/amplification.
-2. Absolute 25/45/70% per level, no compounding — PASS (sequential apply_progression asserts 0.25→0.45→0.70; armor math exact: 1000→950→852→784).
-3. apply_progression exposes enabled+fraction; reset_for_new_game clears — PASS (actions 16–20 and 53–54: enabled==false).
-4. `[FLOODGATE]` debug log per level application — PASS (observed in fresh runner stdout).
-5. Corroded gained on discharge with perk; none without — PASS (actions 21–22 corroded_count==1; unowned control actions 55–56 corroded_marked=false, corroded_count==0).
-6. Amplified other-tower strip per level, HP unchanged — PASS (balista hits: 40→50/58/68 armor loss at L1/L2/L3; hp field unchanged at 100000 across amplified hits, only discharge's own 1.0 damage applied).
-7. Floodgate follow-up not amplified — PASS (actions 29–30: floodgate-sourced 40 → armor 910 exactly = plain 40 strip).
-8. Expiry restores baseline — PASS (clear_corroded through the update_corroded expiry path, actions 47–51: post-expiry balista hit strips exactly 40, rust_tint_count==0).
-9. `[CORROSIVE_SOAK]` logs applied/amplified/excluded flag — PASS (raw stdout observed; amplified lines carry bonus % and attacker_excluded).
-10. Master merged ProgressionManager behaviors keep passing — PASS (fresh undermining_progression + upgrade_click_money_popup scenario runs both status=pass on this tree with the feature changes present).
-11. Rust tint distinct from wet tint, reverts on expiry — PASS (automated: `enemies.rust_tint_count == 1` while Corroded (action 23), `== 0` after expiry (action 49), exercised through the real GLB mesh path; distinct color/strength constants CORROSION_RUST_COLOR/CORROSION_TINT_STRENGTH vs contamination tint. Player-facing visual confirmation remains a manual-testing item per plan's `manual_testing: required`.)
-12. Deterministic staging via max-armor-per-id pin — PASS (set_armor then `enemy.staged.Alien.max_armor/armor == 1000` waits before every hit; HarnessValues pins by id requiring max_armor>0; `_enemy_report` takes max armor per id).
-13. End-to-end per-level amplification + unowned control — PASS (actions 21–27, 33–38, 41–46; control actions 53–57).
-14. Isolation on same setup — PASS (actions 28–31: second floodgate-sourced hit matches unowned baseline strip).
+1. Perk registration / purchasable at 3 levels — Done. `scripts/progression/global.json`
+   defines `exposed_plating` Common, maxLevels 3 (0.15/0.5s, 0.25/1s, 0.35/1.5s);
+   harness exercised apply_progression across L1→L2→L3.
+2. Once-per-shield-instance trigger (>0→0 only) — Done. Guard
+   `if before > 0.0 and enemy.armor <= 0.0:` in `_consume_armor()`
+   (EnemyHealthController.gd ~line 369); second hits against zero armor asserted
+   baseline damage with `exposed_multiplier == 1.0`; re-trigger requires armor regain.
+3. Multiplier per level for duration, clean expiry — Done. Exact hp deltas above
+   match ×1.15/×1.25/×1.35; post-expiry hit unamplified; expiry logged once.
+4. ExposedStatus/ExposedVFX following BurnStatus/BurnVFX pattern — Done at code
+   level. `scripts/game/status/ExposedStatus.gd`, `scripts/game/actors/effects/
+   ExposedVFX.gd`, lazy `show_exposed()`/`hide_exposed()` via EffectsManager;
+   headless machine proof passes (`exposed_vfx == true` during window, clean state
+   before breach). Remaining player-facing evidence moved to Pending (manual-tester).
+5. `[EXPOSED]` debug logging gated by `OS.is_debug_build()` — Done. Trigger line
+   (EnemyHealthController.gd `_apply_exposed_plating`) and expiry line
+   (ExposedStatus.gd lines 34/54) behind `OS.is_debug_build()`; observed live in
+   fresh run output.
 
-## Changed-file quality findings
+## Test overlap check
 
-Diff reviewed against /opt/data/coding_rules.md + project CLAUDE.md:
-surgical, minimal (10 modified files + 1 new scenario, ~384 insertions), mirrors
-the existing FrozenFracture/Oil patterns, typed GDScript variables, debug-only
-`[TAG]` logging per CLAUDE.md, guard clauses instead of deep nesting, no casts
-as string enums, no speculative abstraction found. No per-criterion quality
-violation. Prior advisory items resolved: scratch `logs/full_suite.log` removed;
-`defeat_all` harness effect is referenced by the scenario's staging rationale
-comment (kept as deliberate cleanup primitive, not dead code).
+Searched tests/scenarios: no prior exposed-plating coverage existed; both
+scenarios are new, non-overlapping, and each asserts its own criterion (exact hp
+deltas / multiplier values / once-per-instance counts / vfx visibility), not mere
+execution.
+
+## Changed files reviewed
+
+git status: autoload/ProgressionManager.gd,
+scripts/game/actors/effects/EffectsManager.gd,
+scripts/game/actors/enemy/parts/EnemyHealthController.gd,
+scripts/progression/global.json, scripts/progression/managers/CurseProgressionManager.gd,
+scripts/testing/AgentHarness.gd, scripts/testing/HarnessValues.gd + new
+ExposedStatus.gd, ExposedVFX.gd, and both test scenario JSONs. Identical to the
+revision-1 reviewed diff; only declared workflow artifacts additionally changed;
+no scope creep. New code follows sibling-perk patterns, typed vars/guard clauses;
+no coding-rules violation found.
+
+## Quality notes
+
+quality-notes.md has one open advisory entry (static-breach-bypass): Static
+Breach zeroes armor without passing through `_consume_armor()`, so a Static-Breach
+shatter does not open an Exposed window. Issue wording pins the trigger site to
+`_consume_armor()`, so behavior appears intended; advisory only, does not demote
+any criterion. No new entries appended.
 
 ## Blockers
 
-None.
+None infra. Runner healthy throughout (probe, import gate, both harnesses exit 0).
+Remaining Pending work belongs to the manual-tester profile (windowed captures,
+30fps record_frames recording, `ui_feels_broken` verdict into
+`.gen/manual-report.md`).
 
 ## Unverified items
 
-None blocking. Manual windowed rust-tint screenshot evidence (with
-`ui_feels_broken`) is still owed under the plan's `manual_testing: required`
-note — that is a manual-tester deliverable, not an automated criterion gap.
+- Windowed visual captures / real-time recording / UI sanity verdict (manual-tester scope).
+- The plan's literal `--check-only` typecheck command (tool limitation documented above; superseded by stronger gates).
