@@ -1,36 +1,20 @@
 {
   "run_id": "issue-cave-seal-regression-r1",
   "feature": "fix cave seal route regression",
-  "status": "failed",
-  "started_at": "2026-08-24T20:59:51.852Z",
-  "ended_at": "2026-08-24T21:48:13.143Z",
-  "error": "code worker returned no reply (empty model or exhausted API retries)",
+  "status": "running",
+  "started_at": "2026-08-24T21:49:09.587Z",
+  "ended_at": null,
+  "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-cave-seal-regression-r1/",
-  "heartbeat_at": "2026-08-24T21:48:13.143Z",
-  "last_node": "code",
+  "heartbeat_at": "2026-08-24T21:49:09.587Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-24T21:48:08.148Z",
-  "process_id": 492513,
+  "last_event_at": null,
+  "process_id": 502645,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T21:48:13.143113+00:00",
-    "last_success_at": "2026-08-24T21:48:13.141701+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T21:49:09.587758+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 29218,
-        "output_tokens": 2899
-      }
-    ]
-  }
+  "metrics": {}
 }
