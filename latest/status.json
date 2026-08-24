@@ -1,21 +1,21 @@
 {
   "run_id": "corrosive-soak-90-r2",
   "feature": "corrosive-soak-perk",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-24T07:07:52.665Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-24T07:38:36.458Z",
+  "error": "code worker failed: missing coder-reports/ or changes.md",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/corrosive-soak-90-r2/",
-  "heartbeat_at": "2026-08-24T07:38:31.973Z",
+  "heartbeat_at": "2026-08-24T07:38:36.458Z",
   "last_node": "code",
   "active_node": null,
   "last_event_at": "2026-08-24T07:38:31.973Z",
   "process_id": 288292,
   "host": "f1a4230ec90b",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:38:31.973951+00:00",
-    "last_success_at": "2026-08-24T07:18:32.146372+00:00",
+    "last_attempt_at": "2026-08-24T07:38:36.458625+00:00",
+    "last_success_at": "2026-08-24T07:38:36.457254+00:00",
     "last_error": null
   },
   "metrics": {
