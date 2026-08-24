@@ -1,41 +1,45 @@
-# Acceptance Plan: issue-108-harness-non-game-scene
+# Acceptance Plan: gen-hud-textures-py-cannot-run-all-three
+
+Resolution path: option 2 (delete the dead generator). `git log --all -- '*woden_panel*'` is
+empty on this worktree, so the crate JPGs cannot be recovered from history; the three source
+JPGs do not exist on disk either. `gen_hud_textures.py` is therefore unrunnable dead code.
+Its still-referenced outputs (`icon_coin.png`, `icon_heart.png`, `towers_panel.png`) stay
+committed and byte-identical. Its unreferenced outputs (`wood_slot.png`, `slot_empty.png`,
+`wood_panel_wide.png`, `wood_panel_wide_dark.png`) have no references in any `.tscn`, `.tres`,
+or `.gd` file and are deleted with the script. `tools/gen_hud_icons.py`'s docstring claim that
+`icon_coin`/`icon_heart` come from `gen_hud_textures.py` is updated.
 
 ## Verification
 
-- Focused test: `run_project_cmd project=godot-td workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene cmd=["godot","--headless","--path",".","res://scenes/MainMenu.tscn","--","--harness=res://tests/scenarios/main_menu.json"]`
-- Full test: `run_project_cmd project=godot-td workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene cmd=["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/menu_backdrop_map.json"]`
-- Typecheck/build: `run_project_cmd project=godot-td workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene cmd=["godot","--headless","--path",".","--editor","--quit-after","300"]`
+- Focused test: `{"project":"godot-td","workspace":"poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three","cmd":["python3","tools/check_hud_asset_refs.py"]}`
+  (a repo-local checker added by this feature: asserts no `tools/*.py` mentions missing `_source`
+  paths, and every remaining `textures/ui/hud/*.png` referenced by scenes/themes/scripts exists;
+  exit non-zero on failure)
+- Full test: `{"project":"godot-td","workspace":"poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three","cmd":["godot","--headless","--path",".","--import","--quit-after","300"]}`
+- Typecheck/build: `{"project":"godot-td","workspace":"poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three","cmd":["godot","--headless","--path",".","--editor","--quit-after","300"]}`
 
-manual_testing: required — player-facing main menu over the live 3D backdrop needs a `-Windowed` screenshot plus a UI-sanity pass (`ui_feels_broken: yes|no`).
+## Manual testing
+
+manual_testing: none — no player-facing PNG referenced by scenes/themes is modified; deleted
+files were unreferenced, so rendered HUD pixels are unchanged.
 
 ## Clusters
 
-1. scenario-scene-selection — files: `scripts/testing/HarnessScenario.gd`, `.claude/skills/game-test/scripts/Run-Scenario.ps1`, `scripts/testing/AgentHarness.gd` — depends on: none
-- A scenario JSON with no top-level `scene` key boots `res://scenes/Main.tscn`, preserving all existing game-scenario behaviour.
-- A scenario JSON that declares a `scene` value boots that scene as the harness's current scene.
-- The PowerShell wrapper forwards the scenario's declared scene to Godot instead of always launching `res://scenes/Main.tscn`.
-- When the declared scene is loaded, the harness stops waiting for boot once the declared scene is current and does not require a `Game` child with live placement; game-dependent actions on such a run fail their own action rather than timing out the whole run at boot.
-2. node-path-value-source — files: `scripts/testing/HarnessValues.gd` — depends on: none
-- A value source resolves a named property of any node addressed by NodePath relative to the current scene root.
-- A dotted field name digs into the returned property value (e.g. transform components) instead of failing.
-- A missing node path, missing property, or failed dig produces an explicit failed expectation record, never a silent default value.
-3. main-menu-scenario — files: `tests/scenarios/main_menu.json` — depends on: 1, 2
-- A `main_menu` scenario boots `res://scenes/MainMenu.tscn` headlessly and finishes with status `pass`.
-- After two camera probes separated by a multi-second wait, the menu backdrop camera's orbit is reported as moving.
-- The menu backdrop world reports at least one enemy on the surface layer within the scenario budget.
-- The menu Play button is reported enabled via the node-path value source, without adding test-only methods to production code.
+1. remove-dead-hud-texture-generator — files: `tools/gen_hud_textures.py`, `textures/ui/hud/wood_slot.png`, `textures/ui/hud/slot_empty.png`, `textures/ui/hud/wood_panel_wide.png`, `textures/ui/hud/wood_panel_wide_dark.png` (+ their `.import` files if present), `tools/gen_hud_icons.py`, `tools/check_hud_asset_refs.py` — depends on: none
+- The repository contains no `tools/*.py` script whose input sources are missing under `textures/_source/`; after the change a reference check over all tool scripts reports zero references to nonexistent source paths.
+- `tools/gen_hud_textures.py` no longer exists in the working tree.
+- `textures/ui/hud/icon_coin.png`, `icon_heart.png`, and `towers_panel.png` still exist and remain byte-identical to their committed versions at the starting revision.
+- Every remaining file under `textures/ui/hud/` that is referenced by any scene, theme, or script resource resolves to an existing file (no dangling texture references after deletion).
+- Files under `textures/ui/hud/` written only by the deleted generator and not referenced by any scene, theme, or script (including `wood_slot.png` and `slot_empty.png`) no longer exist in the working tree.
+- The docstring of `tools/gen_hud_icons.py` no longer states that `icon_coin` or `icon_heart` come from `gen_hud_textures.py`.
+- A Godot headless editor/import run over the project completes without errors introduced by the removed textures.
 
 ## Criteria
 
-- A scenario JSON with no top-level `scene` key boots `res://scenes/Main.tscn`, preserving all existing game-scenario behaviour.
-- A scenario JSON that declares a `scene` value boots that scene as the harness's current scene.
-- The PowerShell wrapper forwards the scenario's declared scene to Godot instead of always launching `res://scenes/Main.tscn`.
-- When the declared scene is loaded, the harness stops waiting for boot once the declared scene is current and does not require a `Game` child with live placement; game-dependent actions on such a run fail their own action rather than timing out the whole run at boot.
-- A value source resolves a named property of any node addressed by NodePath relative to the current scene root.
-- A dotted field name digs into the returned property value (e.g. transform components) instead of failing.
-- A missing node path, missing property, or failed dig produces an explicit failed expectation record, never a silent default value.
-- A `main_menu` scenario boots `res://scenes/MainMenu.tscn` headlessly and finishes with status `pass`.
-- After two camera probes separated by a multi-second wait, the menu backdrop camera's orbit is reported as moving.
-- The menu backdrop world reports at least one enemy on the surface layer within the scenario budget.
-- The menu Play button is reported enabled via the node-path value source, without adding test-only methods to production code.
-- Debug-build [HARNESS] log line per declared-scene boot, naming the booted scene path and whether an embedded Game world was found.
+- The repository contains no `tools/*.py` script whose input sources are missing under `textures/_source/`; after the change a reference check over all tool scripts reports zero references to nonexistent source paths.
+- `tools/gen_hud_textures.py` no longer exists in the working tree.
+- `textures/ui/hud/icon_coin.png`, `icon_heart.png`, and `towers_panel.png` still exist and remain byte-identical to their committed versions at the starting revision.
+- Every remaining file under `textures/ui/hud/` that is referenced by any scene, theme, or script resource resolves to an existing file (no dangling texture references after deletion).
+- Files under `textures/ui/hud/` written only by the deleted generator and not referenced by any scene, theme, or script (including `wood_slot.png` and `slot_empty.png`) no longer exist in the working tree.
+- The docstring of `tools/gen_hud_icons.py` no longer states that `icon_coin` or `icon_heart` come from `gen_hud_textures.py`.
+- A Godot headless editor/import run over the project completes without errors introduced by the removed textures.
