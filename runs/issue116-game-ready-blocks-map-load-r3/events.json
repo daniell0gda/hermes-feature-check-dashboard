@@ -43,5 +43,14 @@
     "duration_ms": 219547,
     "summary": "Worker release isn't exposed as a separate tool in this session; leaving workspace lifecycle to the leader.\n\nCheck complete. Artifacts written:\n- /workspace/git-workspaces/poke-defense-godot/issue-game-ready-blocks-map-load/.gen/check.md\n- \u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-24T14:53:13.118Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 52648,
+    "summary": "Manual testing gate complete.\n\n- Read skill, request.md, plan.md, check.md, status.md.\n- Decision: `required` \u2014 check passed (all 9 criteria verified), and the story is new, player-visible, and capturable: a still PNG of the loading screen \u2026",
+    "error": null
   }
 ]
