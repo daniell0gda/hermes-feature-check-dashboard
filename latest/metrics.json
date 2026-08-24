@@ -43,6 +43,17 @@
       "cost_status": "unknown",
       "input_tokens": 43364,
       "output_tokens": 534
+    },
+    {
+      "task_id": "manual-tester",
+      "cluster_id": null,
+      "role": "manual-tester",
+      "model": "stealth/ox-alpha",
+      "model_tier": null,
+      "cost_usd": 0.0,
+      "cost_status": "unknown",
+      "input_tokens": 38960,
+      "output_tokens": 2170
     }
   ]
 }
