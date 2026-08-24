@@ -1,41 +1,36 @@
-# Acceptance Plan: issue-dead-options-modal-scene (r2)
+# Acceptance Plan: req-124-cave-carved-path-torches-r5
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "--harness=res://tests/scenarios/issue_dead_options_live_pause_menu.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "--harness=res://tests/scenarios/smoke_placement.json"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
-
-All commands run via `run_project_cmd` (project key `godot-td`, workspace `poke-defense-godot/issue-dead-options-modal-scene`). Explicit scene arg before user args for gameplay harnesses.
+- Focused test: `run_project_cmd(godot-td, issue-cave-carved-path-torches): ["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/carve_curved_torches_coverage.json"]`
+- Full test: `run_project_cmd(godot-td, issue-cave-carved-path-torches): ["godot", "--headless", "--path", ".", "res://tests/caves/test_torch_budget_scaling.tscn"]`
+- Typecheck/build: `run_project_cmd(godot-td, issue-cave-carved-path-torches): ["godot", "--headless", "--path", ".", "--editor", "--quit-after", "2"]`
 
 ## Clusters
 
-1. dead-options-optionsmenu-cleanup — files: `scenes/ui/OptionsMenu.tscn`, `scenes/ui/OptionsMenu.tscn.uid`, `scripts/ui/OptionsMenu.gd`, `scripts/ui/OptionsMenu.gd.uid` — depends on: none
-- A repo-wide search over project files (*.gd, *.tscn, *.godot, *.json) excluding `.gen`/`.git` finds zero references to `Options.tscn`, `OptionsModal`, `OptionsMenu.tscn`, or class `OptionsMenu` outside the deleted files themselves.
-- All four dead files (`Options.tscn`, `Options.gd` + `.uid`, `OptionsMenu.tscn`, `OptionsMenu.gd` + `.uid`) are absent from the working tree and the diff contains no additions re-adding them.
-- The headless editor/import gate (`godot --headless --path . --editor --quit-after 300`) exits 0 with no parse errors and no missing-resource errors in its output.
-- Running the existing scenario `tests/scenarios/issue_dead_options_live_pause_menu.json` exits 0 with all expectations green, proving the pause-menu Options button instantiates the live `OptionsScreen`.
-- Running the existing script `tests/ui/issue_dead_options_main_menu.gd` exits 0, proving the main-menu Options control instantiates the live `OptionsScreen` visibly.
-- `tests/scenarios/smoke_placement.json` reports `status: pass` and exits 0.
-- The diff touches only the four deleted files: no changes under `models/**`, no changes to `project.godot`, the test harness, or `tests/scenarios/smoke_tower_roster.json`.
+1. wall-mount-and-spacing — files: `scripts/game/underground/TorchPlacer.gd`, `tests/caves/test_torch_budget_scaling.gd` — depends on: none
+- TORCH_SPACING equals 4.
+- On a straight carved corridor, consecutive spacing-pass torch grid cells are separated by exactly TORCH_SPACING unique corridor cells (stride counted on unique cells, not on raw wall-face entries).
+- For every torch position returned by calculate_torch_positions, the horizontal offset from its grid cell center lies along exactly one cardinal axis with magnitude WALL_OFFSET, and the neighbouring cell in that direction is solid rock (a real wall from the voxel grid).
+- Torch positions produced by the coverage-repair pass satisfy the same real-wall rule: their offsets are single-axis cardinal WALL_OFFSET mounts onto adjacent solid cells, never diagonal or zero-offset mid-corridor sticks.
+- With no max_torches cap, torch count scales with live grid dimensions (no hardcoded maximum); at a large carved grid the placer still returns torches for the whole path.
+- Debug-build [TORCH_PLACER] log line per coverage-repair torch added, naming the uncovered target cell and the chosen wall direction (debug builds only).
+2. coverage-and-light-regression — files: `scripts/game/underground/TorchPlacer.gd`, `tests/scenarios/carve_curved_torches_coverage.json`, `scripts/game/underground/Torch.gd` — depends on: 1
+- After carving an L-shaped side-to-side path with a bend, every required corridor cell is lit: the harness reports uncovered_corridor_cells == 0 with active torch count > 0.
+- Torch lighting constants are unchanged from the pre-change baseline: Torch.LIGHT_RADIUS, light energy, omni range/attenuation, and colour are identical to the values on branch commit f161e1d before this fix.
+3. windowed-manual-proof — files: `.gen/ui_scenario.md` — depends on: 2
+- Manual windowed run (no --headless): underground screenshots of a curved side-to-side carve show every torch hugging a wall face, with no stick floating mid-corridor or hovering in front of a wall; ui_feels_broken: no.
+
+manual_testing: required
 
 ## Criteria
 
-- A repo-wide search over project files (*.gd, *.tscn, *.godot, *.json) excluding `.gen`/`.git` finds zero references to `Options.tscn`, `OptionsModal`, `OptionsMenu.tscn`, or class `OptionsMenu` outside the deleted files themselves.
-- All four dead files (`Options.tscn`, `Options.gd` + `.uid`, `OptionsMenu.tscn`, `OptionsMenu.gd` + `.uid`) are absent from the working tree and the diff contains no additions re-adding them.
-- The headless editor/import gate (`godot --headless --path . --editor --quit-after 300`) exits 0 with no parse errors and no missing-resource errors in its output.
-- Running the existing scenario `tests/scenarios/issue_dead_options_live_pause_menu.json` exits 0 with all expectations green, proving the pause-menu Options button instantiates the live `OptionsScreen`.
-- Running the existing script `tests/ui/issue_dead_options_main_menu.gd` exits 0, proving the main-menu Options control instantiates the live `OptionsScreen` visibly.
-- `tests/scenarios/smoke_placement.json` reports `status: pass` and exits 0.
-- The diff touches only the four deleted files: no changes under `models/**`, no changes to `project.godot`, the test harness, or `tests/scenarios/smoke_tower_roster.json`.
-
-## Manual testing
-
-manual_testing: optional
-Windowed sanity of both live Options paths (pause menu → Options, main menu → Options) is sufficient; deletion introduces no new visual. `smoke_tower_roster` is advisory only (pre-existing map_10 failure on pristine master) and must not gate acceptance.
-
-## Non-goals
-
-- Do not edit `tests/scenarios/smoke_tower_roster.json`, the harness, or `project.godot`.
-- Do not touch `models/**` (no LFS on host; dirty model files are noise).
-- No new visuals, features, or refactors beyond deleting the two dead pairs.
+- TORCH_SPACING equals 4.
+- On a straight carved corridor, consecutive spacing-pass torch grid cells are separated by exactly TORCH_SPACING unique corridor cells (stride counted on unique cells, not on raw wall-face entries).
+- For every torch position returned by calculate_torch_positions, the horizontal offset from its grid cell center lies along exactly one cardinal axis with magnitude WALL_OFFSET, and the neighbouring cell in that direction is solid rock (a real wall from the voxel grid).
+- Torch positions produced by the coverage-repair pass satisfy the same real-wall rule: their offsets are single-axis cardinal WALL_OFFSET mounts onto adjacent solid cells, never diagonal or zero-offset mid-corridor sticks.
+- With no max_torches cap, torch count scales with live grid dimensions (no hardcoded maximum); at a large carved grid the placer still returns torches for the whole path.
+- Debug-build [TORCH_PLACER] log line per coverage-repair torch added, naming the uncovered target cell and the chosen wall direction (debug builds only).
+- After carving an L-shaped side-to-side path with a bend, every required corridor cell is lit: the harness reports uncovered_corridor_cells == 0 with active torch count > 0.
+- Torch lighting constants are unchanged from the pre-change baseline: Torch.LIGHT_RADIUS, light energy, omni range/attenuation, and colour are identical to the values on branch commit f161e1d before this fix.
+- Manual windowed run (no --headless): underground screenshots of a curved side-to-side carve show every torch hugging a wall face, with no stick floating mid-corridor or hovering in front of a wall; ui_feels_broken: no.
