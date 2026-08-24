@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r8/",
-  "heartbeat_at": "2026-08-24T14:49:07.422Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-24T14:49:07.422Z",
+  "heartbeat_at": "2026-08-24T14:49:48.716Z",
+  "last_node": "team-leader",
+  "active_node": null,
+  "last_event_at": "2026-08-24T14:49:48.716Z",
   "process_id": 433222,
   "host": "f1a4230ec90b",
-  "phase": "team-leader",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T14:49:12.284166+00:00",
-    "last_success_at": "2026-08-24T14:49:12.282896+00:00",
+    "last_attempt_at": "2026-08-24T14:49:48.716811+00:00",
+    "last_success_at": "2026-08-24T14:49:16.972982+00:00",
     "last_error": null
   },
   "metrics": {

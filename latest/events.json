@@ -43,5 +43,14 @@
     "duration_ms": 262796,
     "summary": "Verified done: 9. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes (open advisory `static-breach-bypass` re-checked, still open by design). Verificat\u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-24T14:49:48.716Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 36432,
+    "summary": "Gate decision complete.\n\n- Read request/plan/check/status: check classification is `pass` with fresh headless (6/6, 7/7) and windowed close-up evidence green; the remaining acceptance item is human eye-verification of the player-facing VFX \u2026",
+    "error": null
   }
 ]
