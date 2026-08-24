@@ -25,5 +25,14 @@
     "duration_ms": 255716,
     "summary": "Check complete. Artifacts written:\n\n- /workspace/git-workspaces/poke-defense-godot/issue-exposed-plating/.gen/check.md \u2014 `classification: pass`\n- /workspace/git-workspaces/poke-defense-godot/issue-exposed-plating/.gen/status.md\n\nSummary: Fr\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-24T07:25:04.509Z",
+    "node": "team-leader",
+    "status": "failed",
+    "duration_ms": 191086,
+    "summary": "\"team-leader worker failed: missing manual_testing.md\"",
+    "error": "\"team-leader worker failed: missing manual_testing.md\""
   }
 ]
