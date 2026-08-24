@@ -6,18 +6,18 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-loop/",
-  "heartbeat_at": "2026-08-24T07:05:46.514Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-24T07:05:46.514Z",
+  "heartbeat_at": "2026-08-24T07:05:50.937Z",
+  "last_node": "code",
+  "active_node": "check",
+  "last_event_at": "2026-08-24T07:05:50.937Z",
   "process_id": 286455,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:05:46.522978+00:00",
-    "last_success_at": "2026-08-24T07:05:46.513642+00:00",
+    "last_attempt_at": "2026-08-24T07:05:50.948460+00:00",
+    "last_success_at": "2026-08-24T07:05:50.936671+00:00",
     "last_error": null,
-    "last_skipped_remote_at": "2026-08-24T07:05:46.522071+00:00"
+    "last_skipped_remote_at": "2026-08-24T07:05:50.947275+00:00"
   },
   "metrics": {
     "invocations": [
@@ -25,6 +25,17 @@
         "task_id": "plan",
         "cluster_id": null,
         "role": "plan",
+        "model": null,
+        "model_tier": null,
+        "cost_usd": null,
+        "cost_status": "unavailable",
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
         "model": null,
         "model_tier": null,
         "cost_usd": null,
