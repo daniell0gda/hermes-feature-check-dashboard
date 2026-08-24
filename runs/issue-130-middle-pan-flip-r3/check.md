@@ -1,88 +1,87 @@
-# Check report — issue-130-middle-drag-carve-bird-view-flip (fresh run)
+# Check report — issue-130-middle-drag-carve-bird-view-flip (revision-check-1)
 
 classification: fixable
 
 ## Verdict
 
-All ten acceptance criteria are implemented and pass their focused harness
-verification (editor/import gate + three focused scenarios, all exit 0, all
-expectations pass). The plan's full-suite gate fails: `.gen/run_full_suite.sh`
-(last completed run 2026-08-23 20:49) shows 184/242 pass, 20 fail,
-38 timeout. The failures are in unrelated legacy scenarios (progression
-unlock flags, cave carve RNG thresholds, roster/wave timing), none touch the
-carve-camera code path. Per gate rules (no Done while full suite red), all
-criteria are moved to Pending. Manual GIF evidence also remains outstanding
-(`manual_testing: required`).
+Fresh verification re-run through `run_project_cmd` (profile `godot-td`,
+workspace `poke-defense-godot/issue-130`). Editor/import gate exit 0, focused
+scenario `carve_pan_no_flip` pass (exit 0), regression scenarios
+`carve_camera_drag_spin` and `carve_camera_topdown` pass (exit 0). The plan's
+full-suite gate remains red: `.gen/full_suite.txt` (run 2026-08-23 20:49,
+unchanged tree since 20:15) shows 184 pass / 20 fail / 38 timeout; every
+`carve_*` scenario passes and none of the failures touch the carve-camera code
+path, but per gate rules no criterion may be Done while the suite is red.
+Manual GIF (`manual_testing: required`) also remains outstanding. All ten
+criteria stay Pending.
 
 ## Runner
 
-- `run_project_cmd` used for every verification command. Profile key
-  `godot-td`, workspace `poke-defense-godot/issue-130`.
-  `{"project":"godot-td","workspace":"poke-defense-godot/issue-130","cmd":["godot","--version"]}` → exit 0.
-- Note: `project: poke-defense-godot` resolves to a broken worker profile — every
-  command exits 137 / HTTP 422 after ~1s. Use profile `godot-td`.
-- `bash`/`sh -c .gen/run_full_suite.sh` is not allowlisted by the runner profile
-  (HTTP 400 "cmd executable not allowed"); the full suite was verified from the
-  fresh on-disk artifacts of the runner-era run rather than re-executed
-  end-to-end this session.
+- Preflight `[godot,--version]` → exit 0, Godot 4.4.1.stable.
+- Every build/test command below ran through `run_project_cmd`; no host-shell
+  project commands used.
 
 ## Gate results
 
 | Gate | Command | Result |
 |---|---|---|
-| Typecheck/build | `[godot,--headless,--path,.,--editor,--quit-after,300]` via runner | exit 0 — import clean, no script errors (only pre-existing HudTheme UID warnings) |
-| Focused: carve_pan_no_flip | `[godot,--headless,--path,.,res://scenes/Main.tscn,--,--harness=res://tests/scenarios/carve_pan_no_flip.json]` | status=pass, exit 0; carve_pan_translated_only=true, carve_pan_yaw_delta=0.0 (< 0.01); probes show basis_x_yaw=0.0 before/after small (dx12) and large (dx-90) middle-drag through real `_input`; position translated; `[CARVE_CAMERA] pan complete (pre yaw=0.000000 post yaw=0.000000)` logged per motion event |
-| Focused: carve_camera_drag_spin | same form | status=pass, exit 0; carve_drag_spin_no_flip=true (no pole crossing after huge vertical drag, top-down kept through horizontal drag) |
-| Focused: carve_camera_topdown | same form | status=pass, exit 0; arm/cancel basis restore, dig-hole non-top-down, log regexes all pass |
-| Full suite | `.gen/run_full_suite.sh` | FAILED — 184 pass / 20 fail / 38 timeout (.gen/full_suite.txt, logs .gen/full_*.log). Failures unrelated to carve camera (e.g. smoke_tower_roster wave/damage expectations, cannon_bunker_buster progression flag, cave_discovery_long_carve carved_tiles 961<1000) |
+| Typecheck/build | `[godot,--headless,--path,.,--editor,--quit-after,300]` | exit 0, import clean (pre-existing HudTheme UID warnings only) |
+| Focused | `[godot,--headless,--path,.,res://scenes/Main.tscn,--,--harness=res://tests/scenarios/carve_pan_no_flip.json]` | status=pass, exit 0 |
+| Regression | same form, `carve_camera_drag_spin.json` | status=pass, exit 0 (see caveat below) |
+| Regression | same form, `carve_camera_topdown.json` | status=pass, exit 0; all 7 expectations pass on genuine transitions |
+| Full suite | `.gen/run_full_suite.sh` artifacts (`.gen/full_suite.txt`) | FAILED — 184 pass / 20 fail / 38 timeout; carve_* all pass |
 
-Result files: `/workspace/poke-defense-godot/.gen/harness/<scenario>/result.json`.
+Focused evidence detail (`.gen/harness/carve_pan_no_flip/result.json`):
+`carve_pan_translated_only=true`, `carve_pan_yaw_delta=0.0 < 0.01`; probes show
+basis_x_yaw 0.0 before/after small (dx=12) and large (dx=-90) middle-drags;
+camera position translated (-28.8,-6.97,-19.2 then 187.2,-6.97,-163.2) at
+constant distance 18.03; nine `[CARVE_CAMERA] pan complete (pre yaw=… post yaw=…)`
+lines logged through the real `_input` path; cancel restored pre-carve angles.
 
 ## Criteria → status/evidence
 
 Cluster 1 (carve-pan-stability, scripts/game/Game.gd):
-1. Small middle-drag translates without yaw/up change — Pending — implemented (pan skips degenerate look_at when armed or near-vertical); passing focused evidence above.
-2. Larger continued pans stable across every event — Pending — same scenario, large drag probe basis_x_yaw delta 0.0.
-3. Near-vertical pan without carve mode never rebuilds basis via look_at(UP) — Pending — guard at Game.gd `_input` pan branch (`absf(view_dir.dot(UP)) < 0.999`).
-4. Zoom from top-down preserves yaw — Pending — `_zoom_camera` guard (same epsilon).
-5. Right-drag orbit with clamp ~0.05–1.55 while armed — Pending — carve_camera_drag_spin pass.
-6. Quick right-click cancels carve — Pending — carve_camera_topdown plain-cancel expectation + `[CARVE_CAMERA] cancel restored pre-carve angles`.
-7. Debug `[CARVE_CAMERA]` pan-complete line with pre/post yaw — Pending — observed in focused run stdout.
+1. Small middle-drag translates without yaw/up change — Pending — focused scenario pass (above).
+2. Large continued pans stable across every event — Pending — same scenario, dx=-90 probe delta 0.0.
+3. Near-vertical non-carve pan never rebuilds basis via look_at(UP) — Pending — guard present in Game.gd pan branch; covered by focused run.
+4. Zoom from top-down preserves yaw — Pending — `_zoom_camera` guard; carve_camera_topdown pass.
+5. Right-drag orbit with clamp ~0.05–1.55 while armed — Pending — carve_camera_topdown `carve_camera_basis_kept_player_angle_after_rotation_cancel` passes with genuine basis change.
+6. Quick right-click cancels carve — Pending — topdown `carve_camera_basis_restored_after_plain_cancel` + `[CARVE_CAMERA] cancel restored pre-carve angles`.
+7. Debug `[CARVE_CAMERA]` pan-complete line with pre/post yaw — Pending — observed 9× in focused stdout.
 
 Cluster 2 (regression scenario):
-8. Harness value source exposes yaw/basis delta — Pending — HarnessValues.gd `carve_pan_yaw_delta` / `carve_pan_translated_only` over basis_x_yaw.
-9. Scenario drives real `_input` middle press+move+release, asserts translation-only — Pending — HarnessActions.gd `mouse_pan` pushes InputEventMouseButton/Motion through viewport.
-10. Existing carve_camera_drag_spin & carve_camera_topdown still pass unchanged — Pending — both pass.
+8. Harness value source exposes yaw/basis delta — Pending — HarnessValues.gd `_carve_pan_check` over basis_x_yaw.
+9. Scenario drives real `_input` middle press+move+release asserting translation-only — Pending — `mouse_pan` actions ok=true in result.json.
+10. Existing carve_camera_drag_spin & carve_camera_topdown still pass unchanged — Pending — both status=pass exit 0.
 
-No criterion demoted for quality violations; no new-test overlap found
-(carve_pan_no_flip.json is a new behavior, not covered by prior scenarios).
+No criterion demoted for a quality violation in its own changed code; the two
+open advisory notes below are unchanged since iteration 2 and are not repeated.
 
 ## Quality findings (changed code)
 
-- scripts/game/Game.gd diff (+29/-5): guards well-commented; debug logging gated
-  by `OS.is_debug_build()`; no casts; meets the quality bar. No violation.
-- Duplicated logic: the `carve_drag_spin_no_flip` block appears twice inside
-  `_carve_camera_check` in scripts/testing/HarnessValues.gd (once as early
-  return, again in the match). Harmless but redundant — cleanup suggested.
-  Recorded in quality-notes.md (advisory).
-- Pre-existing HudTheme.tres missing-texture errors appear in every run;
-  legacy, out of scope for this issue.
+- scripts/game/Game.gd (+29/-5): degenerate look_at guards well-commented,
+  debug log gated by OS.is_debug_build(); meets coding_rules bar. No violation.
+- New finding appended to quality-notes.md (advisory): the
+  `carve_camera_drag_spin` scenario drives `_rotate_camera` via harness
+  `call` with args `["@Camera3D",[0,500]]`, which errors twice per run
+  (`Cannot convert argument 1 from String to Object`) — the rotate shortcut
+  never executes and its no-flip assertion holds vacuously. Real-input coverage
+  of rotation lives in carve_camera_topdown/manual, so criteria are not left
+  unverified, but the scenario should fix its args to a real camera NodePath.
 
 ## Blockers / unverified items
 
-- Full-suite gate red (58 non-passing legacy scenarios) — blocks Done status.
-- Manual windowed 30fps GIF (Xvfb :77, carve arm → middle-drag → L-preview static)
-  still required per request.md; not produced this run.
+- Full-suite gate red (20 fail + 38 timeout, legacy domains unrelated to
+  carve camera) — blocks Done status per gate rules.
+- Manual windowed 30fps GIF (Xvfb :77; carve arm → middle-drag → L-preview
+  static) not produced; `manual_testing: required` outstanding.
 
-## quality-notes.md appendices
+## quality-notes.md appends
 
-## carve-pan-harness-duplicate-block  (iteration 2)
-files: scripts/testing/HarnessValues.gd
-`_carve_camera_check` contains the `carve_drag_spin_no_flip` logic twice
-(early return plus an identical match arm). Remove the duplicate branch.
-
-## hudtheme-missing-textures  (iteration 2)
-files: themes/hud/HudTheme.tres
-Every scenario run logs repeated "referenced non-existent resource
-res://textures/ui/hud/wood_panel.png" parse errors. Pre-existing legacy issue,
-unrelated to issue-130; fix separately.
+## carve-drag-spin-vacuous-rotate-shortcut  (iteration revision-check-1)
+files: tests/scenarios/carve_camera_drag_spin.json
+The scenario's `call game._rotate_camera` actions pass `"@Camera3D"` (String)
+as the first argument; Game.gd logs `Cannot convert argument 1 from String to
+Object` twice and the camera never moves, so `carve_drag_spin_no_flip` passes
+vacuously. Fix the args to resolve a real Camera node (or use mouse-driven
+input like mouse_pan), keeping the probes meaningful.
