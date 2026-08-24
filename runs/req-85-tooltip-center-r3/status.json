@@ -1,12 +1,12 @@
 {
   "run_id": "req-85-tooltip-center-r3",
   "feature": "shop-preview-card-center-on-tower",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-24T15:53:05.683Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-24T16:08:54.136Z",
+  "error": "code worker returned no reply (empty model or exhausted API retries)",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-tooltip-center-r3/",
-  "heartbeat_at": "2026-08-24T16:08:49.251Z",
+  "heartbeat_at": "2026-08-24T16:08:54.136Z",
   "last_node": "code",
   "active_node": null,
   "last_event_at": "2026-08-24T16:08:49.251Z",
@@ -14,8 +14,8 @@
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T16:08:49.251961+00:00",
-    "last_success_at": "2026-08-24T15:53:15.570653+00:00",
+    "last_attempt_at": "2026-08-24T16:08:54.136124+00:00",
+    "last_success_at": "2026-08-24T16:08:54.134543+00:00",
     "last_error": null
   },
   "metrics": {}
