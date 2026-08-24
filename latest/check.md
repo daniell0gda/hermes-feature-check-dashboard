@@ -1,77 +1,101 @@
-# Check report: gen-hud-textures-py-cannot-run-all-three (iteration 2)
+# Check report: harness-can-boot-non-game-scenes (Issue #108) — revision-check-2
 
-classification: fixable
+classification: pass
 
 ## Verdict
 
-All 7 acceptance criteria verified Done. All three plan verification commands were
-re-run fresh through `run_project_cmd` (project `godot-td`, workspace
-`poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three`) and exited 0.
+Fresh runner verification this iteration (project=godot-td,
+workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene, all through
+`run_project_cmd`): preflight, build/import gate, focused main_menu harness, and
+full default-scene regression all passed with exit 0. All 10 Done criteria hold
+on fresh evidence. The single Pending item is the `-Windowed` screenshot +
+`ui_feels_broken` manual sanity pass, which the plan assigns to the
+manual-tester profile and which a headless-only runner cannot produce; no
+`.gen/manual-report.md` exists yet. No source changes were made in revision 2;
+the diff is unchanged from prior iterations.
 
-Note on classification: the runner itself is healthy (all commands executed and
-returned exit 0), so `blocked` does not apply. The single reason this is not
-`pass` is recorded under Blockers below — the implementor's changes are still
-uncommitted in the worktree, which is a workflow gap the leader must resolve
-before merge; it does not invalidate any criterion evidence.
+## Verification commands (all via run_project_cmd)
 
-## Commands run (fresh, via run_project_cmd)
+- Preflight: `["godot","--version"]` → exit 0, Godot 4.4.1.stable.official.49a5bc7b6.
+- Typecheck/build/import:
+  `["godot","--headless","--path",".","--editor","--quit-after","300"]`
+  → exit 0 (~10s); clean filesystem scan and import actions, no script errors.
+- Focused main_menu harness:
+  `["godot","--headless","--path",".","res://scenes/MainMenu.tscn","--","--harness=res://tests/scenarios/main_menu.json"]`
+  → exit 0 (~15s); `.gen/harness/main_menu/result.json` freshly rewritten:
+  status=pass, scene=res://scenes/MainMenu.tscn. Expectations all pass:
+  menu_orbit_moving=true (source=harness), enemies surface=2 >= 1,
+  PlayButton.disabled=false via source=node. Camera probes: yaw 0.1140 → 0.3498
+  rad across the 6s wait; screenshot action explicitly skipped headless as
+  designed. Boot log line observed live in fresh output:
+  `[HARNESS] booted declared scene=res://scenes/MainMenu.tscn embedded_game=true`.
+- Full default-scene regression:
+  `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/menu_backdrop_map.json"]`
+  → exit 0 (~6s); `[Harness] status=pass exit=0`; scenario JSON has no top-level
+  `scene` key and boots Main.tscn unchanged.
+- Retained negative probe `.gen/harness/negative_menu_game_action/result.json`:
+  status=fail with an explicit failed enemies.total expectation against
+  MainMenu.tscn — a game-dependent expectation fails its own run rather than
+  silently passing or timing out at boot.
 
-| Command | Exit | Result |
-|---|---|---|
-| `python3 tools/check_hud_asset_refs.py` | 0 | `OK: all tool _source references resolve; all referenced hud textures exist` |
-| `godot --headless --path . --import --quit-after 300` | 0 | import scan completed, no errors |
-| `godot --headless --path . --editor --quit-after 300` | 0 | editor load completed, no errors |
+## Acceptance criteria — evidence
 
-## Criterion evidence
+Done:
 
-1. No tools/*.py references missing `_source` sources — PASS. Fresh
-   `check_hud_asset_refs.py` exit 0 via runner. The checker scans all of
-   `tools/*.py` for `textures/_source/...` references and validates existence.
-2. `tools/gen_hud_textures.py` gone — PASS. File absent from working tree
-   (`git status` shows `D tools/gen_hud_textures.py`).
-3. icon_coin.png / icon_heart.png / towers_panel.png byte-identical to starting
-   revision 9d54964 — PASS. md5 comparison against `git show 9d54964:...`:
-   f7f27e0b…, 363528e9…, 781cdec1… identical in both.
-4. No dangling hud texture references from scenes/themes/scripts — PASS. Grep for
-   deleted filenames across `.tscn/.tres/.gd/.py` found zero references;
-   checker's dangling-reference pass also green.
-5. Unreferenced generator outputs deleted — PASS. `wood_slot.png`, `slot_empty.png`,
-   `wood_panel_wide.png`, `wood_panel_wide_dark.png` absent; no `.import`
-   sidecars existed for them (confirmed by listing `textures/ui/hud/`).
-6. `gen_hud_icons.py` docstring updated — PASS. Diff removes the
-   "icon_coin/icon_heart come from gen_hud_textures.py" sentence; no remaining
-   mention of gen_hud_textures anywhere.
-7. Godot headless editor/import clean — PASS. Both runner invocations exit 0,
-   no errors attributable to removed textures (pre-existing HudTheme.tres stale-UID
-   warnings noted by coder are unchanged legacy state).
+1. No `scene` key → Main.tscn unchanged — full menu_backdrop_map regression green (fresh).
+2. Declared `scene` boots as current scene — fresh focused result records
+   scene=res://scenes/MainMenu.tscn and passes.
+3. PS wrapper forwards declared scene — Run-Scenario.ps1 parses JSON `scene`,
+   falls back to res://scenes/Main.tscn on absence/parse failure, injects it in
+   place of the hard-coded path (DryRun prints the arg list). Static review;
+   pwsh is not executable inside the Godot worker image.
+4. Declared-scene boot wait stops without requiring a direct Game/placement;
+   `_await_game()` branches to `HarnessScenario.find_game_world()` once the
+   declared scene is current; game-dependent expectations fail their own run —
+   negative probe evidence above.
+5. Node-path value source resolves any property relative to scene root —
+   PlayButton.disabled resolved via source=node in the fresh focused run.
+6. Dotted field dig — `_node_property` splits field on "." and routes to the
+   existing `_dig()`; dig failure produces a failed resolve.
+7. Missing node/property/path/no-scene → explicit `_failure(...)`, never a
+   silent default.
+8. main_menu headless pass — fresh result.json status=pass.
+9. Orbit moving asserted over time — probe pair differs in position/basis/yaw.
+10. Enemies on surface layer within budget — wait_for_condition ok, actual=2 >= 1.
+11. Debug-build `[HARNESS]` boot log line naming scene + embedded-game presence —
+    observed live in the fresh focused-run output (AgentHarness.gd, gated behind
+    `OS.is_debug_build()`).
 
-## Changed-file quality review
+Pending:
 
-- `tools/check_hud_asset_refs.py` (new): clean, minimal, no rule violations
-  (stdlib only, clear regexes, non-zero exit on failure, no speculative config).
-  Adequate as an automated test: it asserts both criteria (missing _source refs,
-  dangling hud refs) and would fail if either regressed — e.g. restoring a
-  reference to `textures/_source/woden_panel.jpg` or deleting `icon_coin.png`
-  makes it exit 1.
-- `gen_hud_icons.py` docstring edit: surgical, correct.
-- No test-overlap issue: no prior automated test covered these criteria.
-- Scope creep check (`git diff HEAD` + untracked): only cluster-owned files
-  changed plus new checker. Pre-existing untracked `.gen-blocked-117-.../`
-  archive predates this run and was not touched. Declared `.gen/` artifacts not
-  counted.
+- `-Windowed` screenshot of menu over map backdrop plus `ui_feels_broken`
+  sanity pass: owned by the manual-tester profile per the plan's
+  `manual_testing` note; cannot be produced by the headless-only runner. Not
+  Impossible — concretely achievable outside the runner.
 
-## quality-notes.md
+## Changed-file quality
 
-No prior entries existed; none appended. No cross-cutting violations found.
+Diff reviewed (`git diff HEAD`; untracked tests/scenarios/main_menu.json):
+
+- HarnessScenario.gd — additive typed const/var, documented static
+  `find_game_world()`. OK.
+- AgentHarness.gd — guard-clause branch, typed locals, debug-gated print, adds
+  `scene` to result payload. OK.
+- HarnessValues.gd — new documented `node` source; `_game_node()`/`_live_enemies()`
+  both route through the shared `find_game_world()` (iteration-1 quality note
+  stays RESOLVED). OK.
+- Run-Scenario.ps1 — surgical change, fallback preserved, parse failure warns
+  without aborting. OK.
+- tests/scenarios/main_menu.json — first non-game scenario; no overlap found
+  with any pre-existing test or scenario in tests/scenarios.
+
+Pre-existing benign run noise (invalid-UID warnings for HudTheme/UI textures,
+missing GLB loads under the dummy renderer, exit-time RID leak messages) exists
+on master paths untouched by this diff — not attributable to this feature.
+
+No new cross-cutting quality violations; quality-notes.md unchanged this iteration.
 
 ## Blockers
 
-- Changes are uncommitted in the worktree (deletions + modified
-  `tools/gen_hud_icons.py` + untracked `tools/check_hud_asset_refs.py`). The
-  checker performs no git commits; leader should commit before merge. This
-  workflow gap is why classification is `fixable` rather than `pass`; it is not
-  a criterion failure.
-
-## Unverified items
-
-- None. All criteria have fresh runner-based evidence.
+None. The remaining work is the manual `-Windowed` screenshot/UI-sanity pass,
+which belongs to the manual-tester profile, not to code revision.
