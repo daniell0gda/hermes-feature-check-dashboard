@@ -1,78 +1,75 @@
-# Check report — issue-130-middle-drag-carve-bird-view-flip (revision-check-2)
+# Check report: issue-ground-material-ignores-cache (issue #115)
 
 classification: fixable
 
 ## Verdict
 
-Fresh verification re-run through `run_project_cmd` (profile `godot-td`,
-workspace `poke-defense-godot/issue-130`; preflight `[godot,--version]` exit 0,
-Godot 4.4.1.stable). Editor/import gate exit 0. Focused scenario
-`carve_pan_no_flip` pass (exit 0): two real `_input` middle-button pans
-(dx=12/dy=8 steps=3 and dx=-90/dy=60 steps=6) translate the camera with basis_x_yaw
-delta exactly 0.0 at every probe; nine `[CARVE_CAMERA] pan complete (pre yaw=… post yaw=…)`
-debug lines logged; cancel restored pre-carve angles. Regression scenarios pass:
-`carve_camera_topdown` all 7 expectations on genuine transitions
-(pitch 0.588 → 1.5708 on arm, restored on plain cancel, kept player angle
-(yaw -0.4, pitch 1.35) after manual rotation + cancel); `carve_camera_drag_spin`
-pass — but see the still-open advisory note: its `call game._rotate_camera`
-actions still pass `["@Camera3D",[0,500]]` through the generic call path,
-error out silently, and leave the camera unmoved, so its expectation holds
-vacuously.
+All six acceptance criteria verified Done by fresh runner-based verification.
+Classification `fixable` solely because the implementation remains **uncommitted**
+in the worktree (`git status`: modified `scripts/game/Game.gd`,
+`scripts/utils/EnvironmentUtils.gd`, `scripts/utils/TextureAtlasUtils.gd`;
+untracked `tests/scenarios/ground_material_map_switch.json`,
+`tests/scenarios/manual_ground_material_map_switch.json`). No build, test,
+quality, or evidence failures were found; committing the change is a mechanical
+fix.
 
-The plan's full-suite gate remains red. Fresh `.gen/run_full_suite.sh` run
-completed this iteration (2026-08-24 04:43, tree unchanged since 2026-08-23 20:15):
-107 pass / 10 fail / 24 timeout across 141 scenarios. Every `carve_*` scenario
-passes and none of the failures touch the carve-camera code path, but per gate
-rules no criterion may be Done while the full suite is red. Manual windowed GIF
-(`manual_testing: required`) also remains outstanding. All ten criteria stay
-Pending.
+## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-ground-material-ignores-cache)
 
-## Gate results
+| Gate | Command | Exit | Result |
+|---|---|---|---|
+| Runner probe | `["godot","--version"]` | 0 | Godot 4.4.1.stable.official.49a5bc7b6 |
+| Typecheck/build + full suite | `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | Import/editor pass; no script parse errors |
+| Focused harness | `["godot","--headless","--path",".","res://scenes/Main.tscn","--quit-after","6000","--","--harness=res://tests/scenarios/ground_material_map_switch.json"]` | 0 | `[Harness] status=pass exit=0` |
 
-| Gate | Command | Result |
-|---|---|---|
-| Typecheck/build | `[godot,--headless,--path,.,--editor,--quit-after,300]` via runner | exit 0, import clean |
-| Focused | `[godot,--headless,--path,.,res://scenes/Main.tscn,--,--harness=res://tests/scenarios/carve_pan_no_flip.json]` via runner | status=pass, exit 0 |
-| Regression | same form, `carve_camera_drag_spin.json` | status=pass, exit 0 (vacuously — open quality note) |
-| Regression | same form, `carve_camera_topdown.json` | status=pass, exit 0, genuine transitions |
-| Full suite | `.gen/run_full_suite.sh` → `.gen/full_suite.txt` (fresh this run) | FAILED — 107 pass / 10 fail / 24 timeout; carve_* all pass |
+Fresh result: `.gen/harness/ground_material_map_switch/result.json` — `status:
+"pass"`, both expectations pass
+(`grass=ok dirt=ok tint=0.309804,0.498039,0.309804`; log contains `[GROUND]
+ground material created`). Timeline executed map_1→map_2→map_1→map_2 (double
+switch), all four load_map actions ok. Run log shows five ground-material
+creations, each `[GROUND] ground material created:
+from_cache=map_grass.jpg,underground_floor.jpg fresh=none`.
 
-Focused evidence (`.gen/harness/carve_pan_no_flip/result.json`, fresh):
-`carve_pan_translated_only=true`, `carve_pan_yaw_delta=0.0 < 0.01`;
-camera_probe basis_x_yaw = 0.0 at armed_topdown / before_pan / after_small_pan /
-after_large_pan / after_pan; both mouse_pan actions ok=true through real `_input`.
+## Criteria evidence
 
-## Criteria → status/evidence
+1. CACHE_MODE_REUSE, no CACHE_MODE_IGNORE in ground path — Verified.
+   TextureAtlasUtils `_load_ground_texture` loads both textures with
+   `ResourceLoader.CACHE_MODE_REUSE`; grep finds no remaining
+   CACHE_MODE_IGNORE in TextureAtlasUtils.gd / EnvironmentUtils.gd.
+2. Root cause + sampler reassignment fix — Verified. Comment documents the
+   cause; `EnvironmentUtils._update_ground_plane_color` re-asserts
+   grass_albedo/dirt_albedo when missing, using CACHE_MODE_REUSE.
+3. Non-empty albedo samplers after double map switch — Verified via harness
+   expectation 1 (probe asserts both textures are Texture2D after 4 map loads).
+4. grass_tint follows newly loaded map's config — Verified by same probe
+   assertion (tint equals loaded map color 5209935). Advisory only: all shipped
+   maps share this color, so distinctness across maps is untestable today —
+   tracked in quality-notes (open, advisory).
+5. Fresh harness result.json pass — Verified (path above, fresh timestamp).
+6. Debug `[GROUND]` log per creation naming cached vs fresh — Verified in run
+   log and log expectation; gated on `OS.is_debug_build()`.
+7. Fallback regression check — Code-inspected: fallback branches (Grass.png
+   tile atlas / StandardMaterial3D) untouched in diff; probe explicitly handles
+   "not shader material". No automated test exercises the fallback branch —
+   accepted as unchanged-code criterion per plan wording ("existing fallbacks
+   unchanged").
 
-Cluster 1 (carve-pan-stability, scripts/game/Game.gd):
-1. Small middle-drag translates without yaw/up change — Pending — focused scenario pass.
-2. Large continued pans stable across every event — Pending — same scenario, large pan delta 0.0.
-3. Near-vertical non-carve pan never runs look_at(UP) — Pending — guard at Game.gd ~1201 (`absf(view_dir.dot(UP)) < 0.999` plus carve-arm skip); covered by focused run.
-4. Zoom from top-down preserves yaw — Pending — `_zoom_camera` guard at Game.gd ~1329; topdown scenario pass.
-5. Right-drag orbit with clamp ~0.05–1.55 while armed — Pending — topdown `after_manual_rotation` pitch=1.35 (inside clamp), genuine basis change; clamp code at Game.gd ~1355.
-6. Quick right-click cancels carve — Pending — `carve_camera_basis_restored_after_plain_cancel` pass + `[CARVE_CAMERA] cancel restored pre-carve angles`.
-7. Debug `[CARVE_CAMERA] pan complete` line with pre/post yaw — Pending — observed 9× in focused stdout, gated by OS.is_debug_build().
+## Changed-file quality findings
 
-Cluster 2 (regression scenario):
-8. Harness value source exposes yaw/basis delta — Pending — HarnessValues.gd `_carve_pan_check` over basis_x_yaw/probes.
-9. Scenario drives real `_input` middle press+move+release asserting translation-only — Pending — mouse_pan actions ok=true, expectations pass.
-10. Existing carve_camera_drag_spin & carve_camera_topdown pass unchanged — Pending — both status=pass exit 0 (drag_spin vacuous, see quality note).
+No rule violations found in the new code (typed GDScript, guard clauses,
+debug-gated logging, no casts violating rules, surgical scope). Test-overlap
+check: no pre-existing scenario asserted ground-material sampler state;
+`tests/scenarios/ground_material_map_switch.json` is novel coverage.
 
-No criterion demoted for a quality violation in its own changed code; the one
-open advisory note below is unchanged since revision-check-1.
+Note (advisory): `Game.gd.__ground_shader_probe` is harness instrumentation
+living in production script — consistent with the established AgentHarness
+"source: game, field" pattern used by other scenarios in this repo; not a
+violation.
 
-## Changed-code quality
+## Blockers
 
-scripts/game/Game.gd (+29/-5 uncommitted): degenerate look_at guards well
-commented, debug log correctly gated by OS.is_debug_build(), surgical scope;
-meets coding_rules.md + CLAUDE.md bar. No violation. No new cross-cutting issues
-in the diff (only pre-existing `logs/balance/` churn, which request.md says to
-leave uncommitted).
+None. Runner healthy throughout; all commands returned exit 0 on first attempt.
 
-## Blockers / unverified items
+## Unverified items
 
-- Full-suite gate red (10 fail + 24 timeout, legacy domains unrelated to carve
-  camera) — blocks Done status per gate rules.
-- Manual windowed 30fps GIF (Xvfb :77; carve arm → middle-drag → L-preview
-  static) not produced; `manual_testing: required` outstanding.
-- Open advisory: `carve_camera_drag_spin.json` rotate shortcut vacuous (below).
+- Manual windowed screenshot evidence (manual_testing: required) is owned by
+  the manual-tester profile; not assessed here.

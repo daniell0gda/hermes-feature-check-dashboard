@@ -16,5 +16,14 @@
     "duration_ms": 246330,
     "summary": "Revision-verification complete. Summary:\n\nScope: revision 1 redo \u2014 no code changes required; the iteration-1 implementation (uncommitted worktree diff: TextureAtlasUtils.gd CACHE_MODE_REUSE loads + `[GROUND]` cache/fresh log, EnvironmentUti\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-24T05:09:20.808Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 167256,
+    "summary": "Verified done: 6. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes (existing advisory `ground-map-tint-distinctness` remains open and valid). Verific\u2026",
+    "error": null
   }
 ]

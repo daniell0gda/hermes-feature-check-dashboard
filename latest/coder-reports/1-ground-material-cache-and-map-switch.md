@@ -1,4 +1,4 @@
-# Coder report: 1-ground-material-cache-and-map-switch\n\n# Coder report: 1-ground-material-cache-and-map-switch (revision verification, rev 1)
+# Coder report: 1-ground-material-cache-and-map-switch (revision verification, rev 1)
 
 ## Changed files
 - none — revision pass; iteration-1 implementation (uncommitted worktree changes to
@@ -24,4 +24,3 @@
 - Runner flake: the editor gate intermittently returned exit 137 (~1s, HTTP 422) on repeated identical invocations before succeeding on retry with full output — transient worker issue, not a project failure.
 - Open quality-note advisory `ground-map-tint-distinctness` still valid (all shipped maps share grassColor 5209935); not resolved by this change.
 - Manual windowed screenshot evidence remains owned by the manual-tester profile.
-\n

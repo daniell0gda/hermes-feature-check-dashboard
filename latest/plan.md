@@ -1,37 +1,36 @@
-# Acceptance Plan: issue-130-middle-drag-carve-bird-view-flip
+# Acceptance Plan: issue-ground-material-ignores-cache
 
-## Verification
-
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/carve_pan_no_flip.json"]`
-- Full test: `["bash", ".gen/run_full_suite.sh"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "3"]`
+Issue #115 — `TextureAtlasUtils.create_ground_plane_material` must load both
+ground textures with `ResourceLoader.CACHE_MODE_REUSE` so the resource cache and
+the `AssetPreloader` startup preload of `res://textures/underground_floor.jpg`
+are honoured. The original "shader-only" map-switch appearance must be traced to
+its real cause (missing albedo sampler reassignment in
+`EnvironmentUtils._update_ground_plane_color`) and fixed so the ground keeps its
+blended grass/dirt textures across repeated map switches.
 
 manual_testing: required
 
+## Verification
+
+- Focused test: `run_project_cmd ["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--quit-after", "6000", "--", "--harness=res://tests/scenarios/ground_material_map_switch.json"]`
+- Full test: `run_project_cmd ["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+- Typecheck/build: `run_project_cmd ["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+
 ## Clusters
 
-1. carve-pan-stability — files: `scripts/game/Game.gd` — depends on: none
-- While carve bird view is armed (`_carve_camera_armed`), holding middle mouse and moving it a small amount translates the camera and its view target together without changing the camera's yaw or up direction: the camera's horizontal basis vector (`basis.x`) stays within a near-zero angular delta of its pre-drag value.
-- While carve bird view is armed, larger continued middle-mouse pans keep the camera orientation stable across every motion event — no event during the pan produces a yaw change of roughly 90° or 180°.
-- While the camera is nearly straight down even when carve mode is not armed, the same pan input does not rebuild the camera basis in a way that flips yaw (the degenerate `look_at(..., Vector3.UP)` path never runs for a top-down pose).
-- If zooming while the camera is nearly straight down can rebuild orientation via `look_at`, zooming from the top-down pose also preserves yaw instead of flipping it.
-- With carve bird view armed, holding the right mouse button and dragging still orbits the camera around the target, and the pitch stays inside the armed clamp (~0.05–1.55 rad) so no drag snaps across the pole.
-- A quick right-click while carve mode is active still cancels carve mode.
-- Debug-build `[CARVE_CAMERA]` log line when a middle-mouse pan completes while bird view is armed, containing the pre-pan and post-pan yaw so any future flip is traceable.
-2. carve-pan-regression-scenario — files: `scripts/testing/HarnessValues.gd`, `tests/scenarios/carve_pan_no_flip.json` — depends on: 1
-- A harness value source exposes the post-pan camera yaw/basis delta so scenarios can assert that a scripted middle-drag changed translation only, not orientation.
-- The focused scenario arms carve mode on the underground layer, then drives a middle-button press followed by mouse motion events through the real `_input` path (not a rotate-camera harness shortcut) and asserts the camera position translated by the expected amount while the yaw/basis.x delta is near zero.
-- The existing `carve_camera_drag_spin` and `carve_camera_topdown` scenarios still pass unchanged after the pan fix.
+1. ground-material-cache-and-map-switch — files: `scripts/utils/TextureAtlasUtils.gd`, `scripts/utils/EnvironmentUtils.gd`, `tests/scenarios/ground_material_map_switch.json` — depends on: none
+- Ground plane material textures (`map_grass.jpg`, `underground_floor.jpg`) are loaded with `ResourceLoader.CACHE_MODE_REUSE`, and no `CACHE_MODE_IGNORE` load remains in the ground plane material path.
+- After loading a map whose ground uses the grass/dirt blend shader material, switching maps twice leaves the ground plane's ShaderMaterial with non-empty `grass_albedo` and `dirt_albedo` Texture2D parameters (asserted via the AgentHarness scenario).
+- After the same double map switch, the `grass_tint` parameter reflects the newly loaded map's configured grass color rather than a stale color from the previous map.
+- The harness scenario passes headlessly with fresh `.gen/harness/ground_material_map_switch/result.json` status `pass`.
+- Debug-build `[GROUND]` log line per ground material creation event, naming which textures were assigned from cache versus freshly loaded.
+- No regression in the fallback paths: when either ground texture or the blend shader is absent, `create_ground_plane_material` still returns a usable material (existing Grass.png tile / StandardMaterial3D fallbacks unchanged).
 
 ## Criteria
 
-- While carve bird view is armed (`_carve_camera_armed`), holding middle mouse and moving it a small amount translates the camera and its view target together without changing the camera's yaw or up direction: the camera's horizontal basis vector (`basis.x`) stays within a near-zero angular delta of its pre-drag value.
-- While carve bird view is armed, larger continued middle-mouse pans keep the camera orientation stable across every motion event — no event during the pan produces a yaw change of roughly 90° or 180°.
-- While the camera is nearly straight down even when carve mode is not armed, the same pan input does not rebuild the camera basis in a way that flips yaw (the degenerate `look_at(..., Vector3.UP)` path never runs for a top-down pose).
-- If zooming while the camera is nearly straight down can rebuild orientation via `look_at`, zooming from the top-down pose also preserves yaw instead of flipping it.
-- With carve bird view armed, holding the right mouse button and dragging still orbits the camera around the target, and the pitch stays inside the armed clamp (~0.05–1.55 rad) so no drag snaps across the pole.
-- A quick right-click while carve mode is active still cancels carve mode.
-- Debug-build `[CARVE_CAMERA]` log line when a middle-mouse pan completes while bird view is armed, containing the pre-pan and post-pan yaw so any future flip is traceable.
-- A harness value source exposes the post-pan camera yaw/basis delta so scenarios can assert that a scripted middle-drag changed translation only, not orientation.
-- The focused scenario arms carve mode on the underground layer, then drives a middle-button press followed by mouse motion events through the real `_input` path (not a rotate-camera harness shortcut) and asserts the camera position translated by the expected amount while the yaw/basis.x delta is near zero.
-- The existing `carve_camera_drag_spin` and `carve_camera_topdown` scenarios still pass unchanged after the pan fix.
+- Ground plane material textures (`map_grass.jpg`, `underground_floor.jpg`) are loaded with `ResourceLoader.CACHE_MODE_REUSE`, and no `CACHE_MODE_IGNORE` load remains in the ground plane material path.
+- After loading a map whose ground uses the grass/dirt blend shader material, switching maps twice leaves the ground plane's ShaderMaterial with non-empty `grass_albedo` and `dirt_albedo` Texture2D parameters (asserted via the AgentHarness scenario).
+- After the same double map switch, the `grass_tint` parameter reflects the newly loaded map's configured grass color rather than a stale color from the previous map.
+- The harness scenario passes headlessly with fresh `.gen/harness/ground_material_map_switch/result.json` status `pass`.
+- Debug-build `[GROUND]` log line per ground material creation event, naming which textures were assigned from cache versus freshly loaded.
+- No regression in the fallback paths: when either ground texture or the blend shader is absent, `create_ground_plane_material` still returns a usable material (existing Grass.png tile / StandardMaterial3D fallbacks unchanged).
