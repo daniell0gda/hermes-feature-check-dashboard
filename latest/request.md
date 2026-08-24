@@ -1,44 +1,47 @@
-# Request: #116 game-ready-blocks-map-load (r2)
+# Request: traps_frostbite_fangs (r4 — full plan required)
 
-## Project
-- Workspace: `/workspace/git-workspaces/poke-defense-godot/issue-game-ready-blocks-map-load`
-- Branch: `issue/game-ready-blocks-map-load` (rebased onto current origin/master)
-- Runner key: `godot-td`
-- Runner workspace name: `poke-defense-godot/issue-game-ready-blocks-map-load` only.
-- If runner 422/no docker: host Godot is allowed: `PATH=/opt/data/profiles/code/home/bin`. Do **not** classify host-ok as `blocked`.
+- request_id: req-83-traps-frostbite-fangs-r4
+project: godot-td
+workspace: poke-defense-godot/issue-traps-frostbite-fangs
+issue: https://github.com/daniell0gda/poke-defense-godot/issues/83
+- branch: issue/traps-frostbite-fangs
+- intent: restart from the beginning because the last team run published an empty / unusable plan. Planner must write a real `.gen/plan.md` and one `.gen/clusters/<id>.md` per cluster before any code work.
 
-Keep existing uncommitted camera/loading files. Do not revert. Do not commit/stash/push `logs/`.
+## History (do not treat as evidence)
 
-## Issue
-https://github.com/daniell0gda/poke-defense-godot/issues/116
+- Archived: `.gen-r3-check-timeout/` (r3 check timed out after 1800s). `.gen-r2-stale-pass/` is also stale.
+- Earlier human review FAILED: wide underground shot, enemy is a speck; zoom PNG is empty floor.
+- Those archived files are not current evidence. Do not copy old `check.md` / screenshots into this run.
 
-`MapLoadingScreen` already threads `Main.tscn`. The remaining wait is instantiate + `Game._ready()` world build. Split that build into resumable phases so the loading bar and captions move during world build, and no single frame stalls more than ~100ms.
+## Feature (already in the worktree — do not revert)
 
-## Already in the tree (keep)
-- Phased `Game` world build + `MapLoadingScreen` driver.
-- Threaded GLTF/castle poll (no blocking parse on a driven frame).
-- Boot warm-up pays first cold castle instantiate.
-- Loading-screen driving test + `map_build_phases` harness.
-- After rebase: keep master's decoration count scaling and building-clearance. Buildings must be generated **before** trees/rocks. `record_placed_counts()` exists for both one-shot and phased paths.
+Unique `traps_frostbite_fangs` L1-3. Trap hits call `EffectsManager.apply_frozen`. Magnitude/duration scale. Existing frost VFX.
 
-## Done when
-- `MapLoadingScreen`'s bar advances during the world build rather than jumping over it.
-- Status caption changes at least once during world build (not stuck on static "Building Map").
-- Missing/unparseable map id falls back to `map_1` before world-build phases.
-- No single frame stalls for more than ~100ms during a map load (measure from `[MAP_BUILD]` / loading-test frame log). First cold castle instantiate may still be paid at **boot** warm-up, not during post-boot map load.
-- After a phased map load the scene is playable (`playing`, requested `map_id`, waves, spawnable enemies).
-- Direct `Main.tscn` boot and `setup_as_menu_backdrop` still complete the full build.
-- Windowed PNG (or 30fps GIF) of the loading screen mid-world-build showing the bar past the threaded-load portion. Manual testing is **required**.
+Keep the perk implementation. Do not reset the worktree to master.
 
-## Runner notes
-- Use only `run_project_cmd`; no shell operators; Godot `--log-file .gen/<name>.log`.
-- Windowed: `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
-- Harness: `godot [--headless] --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/map_build_phases.json`
-- Driving test: `godot --headless --path . res://tests/loading/test_map_loading_screen_driving.tscn`
-- If a check/code worker returns 0 tokens / empty model result, retry that member only. Do not rewrite the pan/loading implementation.
-- Stale `.gen/status.md` / `check.md` from r1 (2026-08-23) are historical. Write fresh ones.
+## Required this run
 
-## Context
-- Previous official team run `issue116-game-ready-blocks-map-load-r1` ended `failed` / `classification: fixable` (frame budget + add_child-in-_ready test crash + missing PNG).
-- Later resumes fixed the test crash and threaded loads. Daniel asked to retry the team after empty model results.
-- This r2 is verify + leftover gaps + required windowed shots, not a rewrite.
+1. Planner MUST produce a non-empty `.gen/plan.md` with verification commands, `manual_testing: required`, clusters, and acceptance criteria copied from this request. Also write `.gen/clusters/*.md` and a generic `.gen/ui_scenario.md`. An empty or missing plan is a failed run.
+2. Keep the perk implementation.
+3. Change `tests/scenarios/traps_frostbite_fangs_progression.json` so the windowed shot is close and top-down on the trap + live enemy. `_update_camera_for_layer` resets to the default far camera — after that call, set `Camera3D.position` close above the trap (small height, tiny z offset) and `look_at` the trap. Enemy body must fill enough of the frame to see frost vs green.
+4. Keep explicit `screenshot` + 30fps `record_frames` GIF. Copy fresh PNGs/GIF to `.gen/screenshots/`.
+5. Checker must write a NEW `.gen/check.md`. If shots are still a distant speck or a crop of empty floor: `classification: fixable`. Headless tags alone do not pass the visual criterion. Use the exact line `classification: pass` (or `fixable`).
+6. `ui_feels_broken: yes` fails the manual test.
+7. Runner only: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-traps-frostbite-fangs`. Never `project=poke-defense-godot`.
+8. Do not commit, push, merge, or close.
+
+## Manual testing
+
+`manual_testing: required`. Windowed only. No `--headless`.
+
+## Done when (issue)
+
+- Unique `traps_frostbite_fangs` (L1-3) exists.
+- Trap hits apply chill via `EffectsManager.apply_frozen`.
+- Duration or magnitude scales per level.
+- Reuse existing frost overlay VFX.
+- Confirm the frost overlay is visible on a close top-down shot of a live enemy.
+
+## Restart note
+
+r4 planner returned empty (no plan.md). completed_members is empty. Same request-id resume; do not skip plan.
