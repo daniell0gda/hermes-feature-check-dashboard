@@ -1,51 +1,54 @@
-# Request: traps_frostbite_fangs (r4 — full plan required)
+# Request: Exposed Plating perk (issue #89) — continuation r8
 
-- request_id: req-83-traps-frostbite-fangs-r4
+- **Repo:** daniell0gda/poke-defense-godot
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/89
 project: godot-td
-workspace: poke-defense-godot/issue-traps-frostbite-fangs
-issue: https://github.com/daniell0gda/poke-defense-godot/issues/83
-- branch: issue/traps-frostbite-fangs
-- intent: restart from the beginning because the last team run published an empty / unusable plan. Planner must write a real `.gen/plan.md` and one `.gen/clusters/<id>.md` per cluster before any code work.
+workspace: poke-defense-godot/issue-exposed-plating
+- **Workspace:** poke-defense-godot/issue-exposed-plating
+- **Branch:** issue/exposed-plating (on origin/master @ 42e05d6; implementation is uncommitted WIP — preserve it)
+- **Request ID:** req-89-exposed-plating-r8
+- **Runner key:** `godot-td` — workers MUST use `project=godot-td`, `workspace=poke-defense-godot/issue-exposed-plating`. Never invent workspace names. Never use `project=poke-defense-godot`.
 
-## History (do not treat as evidence)
+## Feature
 
-- Archived: `.gen-r3-check-timeout/` (r3 check timed out after 1800s). `.gen-r2-stale-pass/` is also stale.
-- Earlier human review FAILED: wide underground shot, enemy is a speck; zoom PNG is empty floor.
-- Those archived files are not current evidence. Do not copy old `check.md` / screenshots into this run.
+New progression perk `exposed_plating` (Common, global, 3 levels). When an enemy's armor transitions from >0 to 0 (same site as `_consume_armor()`), it gains an "Exposed" status:
 
-## Feature (already in the worktree — do not revert)
+- L1: +15% damage taken, 0.5s
+- L2: +25% damage taken, 1s
+- L3: +35% damage taken, 1.5s
 
-Unique `traps_frostbite_fangs` L1-3. Trap hits call `EffectsManager.apply_frozen`. Magnitude/duration scale. Existing frost VFX.
+## Historical runs (context only, not evidence)
 
-Keep the perk implementation. Do not reset the worktree to master.
+- r1–r3: perk implemented; headless harnesses pass. Old checkers treated missing windowed shots as code-check `fixable`.
+- r4: tester used the wrong runner key `poke-defense-godot` → no shots.
+- r5: windowed `exposed_plating_vfx` captured 1920x1080 PNGs, but they are **not** acceptable: far camera, tiny enemy, Debug Panel covers the left third, wash not inspectable. Archived under `.gen/harness/exposed_plating_vfx/r5-too-far/`.
+- r6: close-up plan written (`camera_focus` + hidden debug panel + 30fps GIF). Code worker died empty. Dashboard `req-89-exposed-plating-r6` is terminal `failed`. Do not reuse that run id.
+- After r6: worktree rebased onto origin/master `42e05d6`. Stash-pop kept master's `mouse_pan` **and** this issue's `camera_focus` / `set_debug_panel`.
+- r7: planner reused the close-up plan. Code worker died with `empty model or exhausted API retries`. Dashboard `req-89-exposed-plating-r7` is terminal `failed`. Do not reuse that run id. Close-up stills from earlier attempts still showed **no** amber wash on the body.
 
-## Required this run
+## Acceptance criteria
 
-1. Planner MUST produce a non-empty `.gen/plan.md` with verification commands, `manual_testing: required`, clusters, and acceptance criteria copied from this request. Also write `.gen/clusters/*.md` and a generic `.gen/ui_scenario.md`. An empty or missing plan is a failed run.
-2. Keep the perk implementation.
-3. Change `tests/scenarios/traps_frostbite_fangs_progression.json` so the windowed shot is close and top-down on the trap + live enemy. `_update_camera_for_layer` resets to the default far camera — after that call, set `Camera3D.position` close above the trap (small height, tiny z offset) and `look_at` the trap. Enemy body must fill enough of the frame to see frost vs green.
-4. Keep explicit `screenshot` + 30fps `record_frames` GIF. Copy fresh PNGs/GIF to `.gen/screenshots/`.
-5. Checker must write a NEW `.gen/check.md`. If shots are still a distant speck or a crop of empty floor: `classification: fixable`. Headless tags alone do not pass the visual criterion. Use the exact line `classification: pass` (or `fixable`).
-6. `ui_feels_broken: yes` fails the manual test.
-7. Runner only: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-traps-frostbite-fangs`. Never `project=poke-defense-godot`.
-8. Do not commit, push, merge, or close.
+1. Perk definition registered like other progression perks; purchasable at 3 levels.
+2. Trigger fires exactly once per shield instance: only on the >0 → 0 transition. Hits while armor is already 0 do NOT re-trigger; re-trigger requires the enemy regaining armor first.
+3. Damage-taken multiplier applies for the debuff duration, per level values above, then expires cleanly.
+4. New VFX: `ExposedStatus`/`ExposedVFX` following `BurnStatus`/`BurnVFX` — cracked-shield amber emissive overlay for the duration, lazily instantiated by `EffectsManager`.
+5. Debug logging: `[EXPOSED]` prefix on trigger and expiry, gated by `OS.is_debug_build()`.
+6. **Player-facing proof (this run's remaining work):** a human looking at the PNG must immediately see the overlay on the Orc King. Required:
+   - After the boss exists, aim `camera_target` at the enemy and zoom in (`camera_focus`) so the enemy fills a large part of the frame.
+   - Hide the Debug Panel; it must not cover the enemy.
+   - Three windowed stills: before breach (no wash) / during Exposed (obvious amber wash on the body) / after expiry (wash gone).
+   - Real 30fps GIF from harness `record_frames` of the zoomed enemy across the window (not a screenshot slideshow).
+   - Copy proving PNGs + GIF into `.gen/screenshots/` and embed them in `.gen/manual-report.md`.
+   - End with `ui_feels_broken: yes|no`. A yes fails.
+   - If the overlay is still invisible at a close camera, that is a **code** failure — strengthen `ExposedVFX` (alpha/energy/shell size, unshaded, larger capsule) until the before/during frames differ by eye. Do not pass on metadata `exposed_vfx == true` alone.
 
-## Manual testing
+## Verification requirements
 
-`manual_testing: required`. Windowed only. No `--headless`.
+- Fresh focused headless: `tests/scenarios/exposed_plating_once_per_shield.json` and `tests/scenarios/exposed_plating_vfx.json` via `run_project_cmd` (`godot-td`).
+- If headless criteria 1–3 and 5 are green, checker writes `classification: pass` so the leader can dispatch manual-tester. Missing windowed PNGs/GIFs are a manual-tester job, not a code-check `fixable` — **unless** the close-up stills show no overlay, which is fixable code.
+- Manual testing: REQUIRED. Never `--headless`. Windowed args when Vulkan fails: `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`.
+- Native Godot through `run_project_cmd`; explicit scene argument before user args.
 
-## Done when (issue)
+## Preserve
 
-- Unique `traps_frostbite_fangs` (L1-3) exists.
-- Trap hits apply chill via `EffectsManager.apply_frozen`.
-- Duration or magnitude scales per level.
-- Reuse existing frost overlay VFX.
-- Confirm the frost overlay is visible on a close top-down shot of a live enemy.
-
-## Restart note
-
-r4 planner returned empty (no plan.md). completed_members is empty. Same request-id resume; do not skip plan.
-
-## Restart note 2
-
-r4 planner returned empty six times (no tool calls). Restored this morning’s r3 plan.md/clusters and marked plan complete so the leader starts at code.
+Keep the existing uncommitted source diff and new files (`ExposedVFX.gd`, `ExposedStatus.gd`, both scenarios, `camera_focus` / `set_debug_panel` in `HarnessActions.gd`). Re-plan only if the r7 close-up plan is stale; otherwise implement/verify the unmet close-up visual work. Do not wipe the perk implementation. Do not reuse request ids r6 or r7.

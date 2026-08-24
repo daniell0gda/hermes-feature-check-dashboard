@@ -1,57 +1,35 @@
 {
-  "run_id": "req-83-traps-frostbite-fangs-r4",
-  "feature": "traps-frostbite-fangs",
+  "run_id": "req-89-exposed-plating-r8",
+  "feature": "exposed-plating",
   "status": "running",
-  "started_at": "2026-08-24T13:55:54.797Z",
+  "started_at": "2026-08-24T14:06:03.525Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r4/",
-  "heartbeat_at": "2026-08-24T14:19:35.389Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-24T14:19:35.389Z",
-  "process_id": 431056,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r8/",
+  "heartbeat_at": "2026-08-24T14:22:53.799Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-24T14:22:53.799Z",
+  "process_id": 433222,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T14:19:40.043464+00:00",
-    "last_success_at": "2026-08-24T14:19:40.042039+00:00",
+    "last_attempt_at": "2026-08-24T14:22:53.799872+00:00",
+    "last_success_at": "2026-08-24T14:14:24.299031+00:00",
     "last_error": null
   },
   "metrics": {
     "invocations": [
       {
-        "task_id": "check",
+        "task_id": "plan",
         "cluster_id": null,
-        "role": "check",
+        "role": "plan",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 126177,
-        "output_tokens": 4876
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": null,
-        "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 136594,
-        "output_tokens": 4329
+        "input_tokens": 96733,
+        "output_tokens": 5601
       }
     ]
   }
