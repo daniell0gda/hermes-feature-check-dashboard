@@ -1,20 +1,22 @@
 {
-  "run_id": "corrosive-soak-90-r2",
-  "feature": "corrosive-soak-perk",
+  "run_id": "req-89-exposed-plating-r2",
+  "feature": "Exposed Plating perk",
   "status": "running",
-  "started_at": "2026-08-24T07:07:52.665Z",
+  "started_at": "2026-08-24T07:06:43.523Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/corrosive-soak-90-r2/",
-  "heartbeat_at": "2026-08-24T07:07:52.665Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r2/",
+  "heartbeat_at": "2026-08-24T07:06:43.523Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
-  "process_id": 288292,
+  "process_id": 287796,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:07:52.665599+00:00"
+    "last_attempt_at": "2026-08-24T07:08:17.989584+00:00",
+    "last_success_at": "2026-08-24T07:06:47.814789+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
