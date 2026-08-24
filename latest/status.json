@@ -1,22 +1,20 @@
 {
-  "run_id": "req-83-traps-frostbite-fangs-r2",
-  "feature": "traps-frostbite-fangs",
+  "run_id": "leader-smoke",
+  "feature": "Smoke",
   "status": "running",
-  "started_at": "2026-08-24T06:52:26.866Z",
+  "started_at": "2026-08-24T07:01:46.083Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r2/",
-  "heartbeat_at": "2026-08-24T06:52:26.866Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/leader-smoke/",
+  "heartbeat_at": "2026-08-24T07:01:46.084Z",
   "last_node": null,
-  "active_node": "plan",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 279907,
+  "process_id": 283488,
   "host": "f1a4230ec90b",
-  "phase": "plan",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T06:53:58.230149+00:00",
-    "last_success_at": "2026-08-24T06:52:31.389593+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T07:01:46.084156+00:00"
   },
   "metrics": {}
 }
