@@ -1,58 +1,42 @@
-# Request: Warlord's Doctrine — readable windowed armor-bar evidence
+# Request
 
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/87
-- **Project:** poke-defense-godot
-- **Runner key:** `godot-td`
-- **Git workspace:** `/workspace/git-workspaces/poke-defense-godot/issue-warlords-doctrine`
-- **Workspace id:** `poke-defense-godot/issue-warlords-doctrine`
-- **Branch:** `issue/warlords-doctrine` (uncommitted perk implementation on current `origin/master`)
-- **Request ID:** `warlords-doctrine-r2`
+- request_id: req-124-cave-carved-path-torches-r5
+- issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
+- project runner key: `godot-td`
+- workspace: `poke-defense-godot/issue-cave-carved-path-torches`
+- branch: `issue/cave-carved-path-torches` @ `f161e1d` (extend; do not reset)
 
-## Feature (plain English)
+## Problem (Daniel, 2026-08-24)
 
-Towers deal more damage, but every enemy spawns with extra armor. The perk itself is already implemented. This run only has to make the granted armor bar *visibly readable* in windowed shots.
+Coverage/lighting works, but some torches (he thinks maybe every 2nd) sit **in the corridor, not on the wall**. Screenshots: mid-path sticks floating in front of the wall while neighbors are wall-mounted.
 
-## Historical (do not re-implement unless broken)
+Also set **`TORCH_SPACING = 4`**.
 
-`warlords-doctrine-r1` already implemented and auto-verified:
+## Likely cause
 
-- Perk `warlords_doctrine` Common global, 3 levels: L1 +5% dmg / 8% HP armor, L2 +9% / 12%, L3 +14% / 15%.
-- Bonus armor additive on innate `enemies.xml` armor at `Enemy.setup()` after max_hp is final.
-- Damage stacks additively with `tower_dmg` via `_warlords_damage_ratio` in `get_global_damage_multiplier()`.
-- Headless `tests/scenarios/warlords_doctrine.json` pass (L1/L2/L3 multipliers, Mushnub granted 1.76, Orc boss 303.75, reset to 0).
-- `enemy_armor_ballista` / `enemy_armor_trap` still pass.
-- Files already changed (keep them): `autoload/ProgressionManager.gd`, `scripts/game/actors/Enemy.gd`, `scripts/progression/global.json`, `tests/scenarios/warlords_doctrine.json`, `tests/scenarios/enemy_armor_bar_visual.json`.
+`TorchPlacer._best_wall_torch_for` (coverage repair) returns
+`wall_offset = Vector3(WALL_OFFSET * 0.5, 0, WALL_OFFSET * 0.5)` — diagonal into the walkway, not a real wall face.
+Spacing-pass torches use a single cardinal wall offset; repair-pass torches do not.
 
-r1 manual-tester wrote `.gen/manual-report.md` PASSED, but the pixels do **not** prove the armor bar:
+## Required
 
-- Debug Panel covers the left third of the frame.
-- Camera is a distant top-down of map_3; Mushnub is a tiny purple placeholder (GLB missing in this worktree).
-- Named “close-ups” (`doctrine_armor_*.png`) are just wide crops of that same distant shot. Two bars are not readable. `ui_feels_broken: yes` for evidence purposes.
+- Every placed torch must mount on a **real adjacent solid wall** (cardinal wall offset from `_wall_cells`). No mid-corridor / in-front-of-wall sticks.
+- `TORCH_SPACING = 4` (unique corridor-cell stride, not raw wall-face list).
+- Keep live-grid torch budget (no hardcoded MAX_TORCHES). Keep curves lit via coverage repair, but repair must also pick a real wall mount.
+- **Do not change torch light intensity** (`Torch.gd` energy/radius/color/omni unchanged).
 
-Archive of r1 dashboard: https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r1/
+## Done when
 
-## Remaining acceptance (this run)
+- No torch stands in the walkway; all hug a wall
+- Spacing is 4
+- Curves/side-to-side carved path still covered
+- Windowed underground screenshots show wall-mounted torches (not floating mid-path)
+- `ui_feels_broken: no` on those shots
 
-1. Windowed (no `--headless`) `enemy_armor_bar_visual` (or a dedicated follow-up scenario) produces PNGs where a human can clearly see:
-   - a previously-unarmored enemy (Mushnub / map_3 wave 1) with Warlord's Doctrine L1 active
-   - **two** bars: HP row + granted armor row, filled at spawn
-   - armor fill shrinks after a scripted armor hit
-   - armor row hidden once armor is 0
-2. Hide the Debug Panel before screenshots (`UI.debug_panel.visible = false` or equivalent harness call). Do not leave the gray debug overlay in evidence shots.
-3. Camera must aim at the **live enemy position** (`camera_target` = enemy world pos, then `_update_camera_for_layer("surface")`). Hardcoded `[-8,0,-8]` is wrong if the spawn is elsewhere. Zoom close enough that the bars are more than a couple of pixels (raise camera / shorten `surface_distance` only for the shot if a public setter exists; do not permanently change default camera for the game).
-4. If Mushnub GLB is missing, still make the bars readable (zoom, bigger bar scale for the shot, or a larger unarmored enemy type that still has config armor 0). Do not fake armor with a naturally armored enemy for the doctrine leg.
-5. `ui_feels_broken: no` on each final screenshot. Misplaced/clipped HUD or a covering debug panel fails.
-6. Fresh windowed PNGs copied to `.gen/screenshots/` (overwrite the unreadable r1 crops).
-7. Re-run focused `warlords_doctrine.json` headless so perk behavior is still green after any scenario/camera change.
-8. Do **not** reformat unrelated `global.json` entries (existing advisory: whitespace noise).
+## Manual testing
 
-## Runner notes
+required. Windowed, no `--headless`. Underground, side-to-side carve with a curve, camera at `camera_target`.
 
-- `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-warlords-doctrine`.
-- Native Godot; harness scene before user args: `godot --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json`
-- Windowed evidence: no `--headless`; add `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
-- `manual_testing: required`. Windowed PNGs required. A pass with unreadable bars is a fail.
+## Runner
 
-## Lifecycle
-
-Do not commit, push, merge, or close the issue.
+`godot-td` / `poke-defense-godot/issue-cave-carved-path-torches`. Write a real non-empty `.gen/plan.md`.

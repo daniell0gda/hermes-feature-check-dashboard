@@ -1,47 +1,22 @@
 {
-  "run_id": "warlords-doctrine-r2",
-  "feature": "Warlord's Doctrine perk",
+  "run_id": "req-124-cave-carved-path-torches-r5",
+  "feature": "cave-carved-path-torches",
   "status": "running",
-  "started_at": "2026-08-24T08:21:41.244Z",
+  "started_at": "2026-08-24T08:52:09.381Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/warlords-doctrine-r2/",
-  "heartbeat_at": "2026-08-24T08:54:57.538Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-24T08:54:57.538Z",
-  "process_id": 327257,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-124-cave-carved-path-torches-r5/",
+  "heartbeat_at": "2026-08-24T08:57:30.742Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-24T08:57:30.742Z",
+  "process_id": 341008,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T08:55:06.196427+00:00",
-    "last_success_at": "2026-08-24T08:55:06.195545+00:00",
+    "last_attempt_at": "2026-08-24T08:57:30.743358+00:00",
+    "last_success_at": "2026-08-24T08:53:48.627025+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 76120,
-        "output_tokens": 5244
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 246911,
-        "output_tokens": 5635
-      }
-    ]
-  }
+  "metrics": {}
 }
