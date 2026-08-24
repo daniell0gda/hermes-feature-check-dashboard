@@ -1,12 +1,16 @@
 ## ✅ Done
-- Perk definition registered like other progression perks; purchasable at 3 levels.
-- Trigger fires exactly once per shield instance: only on the >0 → 0 transition. Hits while armor is already 0 do NOT re-trigger; re-trigger requires the enemy regaining armor first.
-- Damage-taken multiplier applies for the debuff duration, per level values above, then expires cleanly.
-- New VFX: `ExposedStatus`/`ExposedVFX` following the existing `BurnStatus`/`BurnVFX` pattern — cracked-shield emissive overlay for the duration, lazily instantiated by `EffectsManager` like `BurnVFX`/`OilVFX`. Headless machine proof passes (`exposed_plating_vfx`: `status=pass`, exit 0, all actions ok incl. `exposed_vfx == true` during the Exposed window); remaining windowed screenshots / real-30fps `record_frames` GIF + `ui_feels_broken` verdict are manual-tester scope (no `.gen/manual-report.md` yet), not code-check work.
-- Debug logging: `[EXPOSED] prefix lines on trigger and expiry, gated by `OS.is_debug_build()`.
+- A fresh headless run of `tests/scenarios/exposed_plating_once_per_shield.json` ends with status `pass` and every expectation met, confirming the trigger fires exactly once per shield instance (>0 to 0 transition only) at all three perk levels after the rebase.
+- A fresh headless run of `tests/scenarios/exposed_plating_vfx.json` ends with status `pass` and every expectation met, including log lines containing `[EXPOSED] triggered on` and `[EXPOSED] expire on`.
+- During the windowed VFX scenario, the active camera aims at the boss enemy and moves close enough that the enemy occupies a large part of the rendered frame before any screenshot checkpoint fires.
+- In every screenshot and recorded frame captured by the scenario, the debug panel is hidden or positioned so it does not cover the enemy.
+- The `record_frames` capture spans the whole Exposed window while zoomed on the enemy and saves more than zero real consecutive engine frames suitable for GIF export.
+- In the windowed close-up run, the "during Exposed" still shows an obvious amber wash over the enemy body that differs from the "before breach" still when compared by eye.
+- In the windowed close-up run, the "after expiry" still matches the "before breach" still by eye: the amber wash is gone.
+- If the close-up "during" still shows no visible overlay, `ExposedVFX` is strengthened (alpha/emission energy/shell size) until the before/during frames visibly differ; metadata `exposed_vfx == true` alone never counts as passing this criterion.
+- The proving PNGs and the exported GIF are copied into `.gen/screenshots/` and embedded in `.gen/manual-report.md`, which ends with a `ui_feels_broken: yes|no` verdict line.
 
 ## ⬜ Pending
-- Manual player-facing evidence only (manual-tester profile): windowed gameplay captures of the Exposed overlay appearing on a real armored enemy at the breach moment and disappearing on expiry; real-time 30fps recording from the harness `record_frames` path of `exposed_plating_vfx`; manual UI sanity pass ending with an explicit `ui_feels_broken: yes|no` verdict recorded in `.gen/manual-report.md`.
+- (none)
 
 ## ❌ Impossible
 - (none)
