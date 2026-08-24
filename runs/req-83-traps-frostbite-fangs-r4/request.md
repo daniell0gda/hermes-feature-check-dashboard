@@ -41,3 +41,7 @@ Keep the perk implementation. Do not reset the worktree to master.
 - Duration or magnitude scales per level.
 - Reuse existing frost overlay VFX.
 - Confirm the frost overlay is visible on a close top-down shot of a live enemy.
+
+## Restart note
+
+r4 planner returned empty (no plan.md). completed_members is empty. Same request-id resume; do not skip plan.
