@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-108-harness-cannot-boot-menu-scene-r2/",
   "heartbeat_at": "2026-08-24T07:56:46.403Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-24T07:56:46.403Z",
   "process_id": 311680,
   "host": "f1a4230ec90b",
-  "phase": "plan",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:56:46.405367+00:00",
-    "last_success_at": "2026-08-24T07:50:34.938939+00:00",
+    "last_attempt_at": "2026-08-24T07:56:50.981368+00:00",
+    "last_success_at": "2026-08-24T07:56:50.980089+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 78586,
         "output_tokens": 2572
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 69261,
+        "output_tokens": 6300
       }
     ]
   }
