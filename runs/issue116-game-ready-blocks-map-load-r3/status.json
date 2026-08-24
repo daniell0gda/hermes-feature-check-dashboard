@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r3/",
-  "heartbeat_at": "2026-08-24T14:53:13.118Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-24T14:53:13.118Z",
+  "heartbeat_at": "2026-08-24T15:02:28.176Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-24T15:02:28.176Z",
   "process_id": 432145,
   "host": "f1a4230ec90b",
-  "phase": "manual-tester",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T14:53:17.724822+00:00",
-    "last_success_at": "2026-08-24T14:53:17.723768+00:00",
+    "last_attempt_at": "2026-08-24T15:02:28.176682+00:00",
+    "last_success_at": "2026-08-24T14:53:21.971904+00:00",
     "last_error": null
   },
   "metrics": {

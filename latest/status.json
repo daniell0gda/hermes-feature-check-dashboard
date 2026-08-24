@@ -1,21 +1,21 @@
 {
-  "run_id": "req-89-exposed-plating-r8",
-  "feature": "exposed-plating",
-  "status": "completed",
-  "started_at": "2026-08-24T14:06:03.525Z",
-  "ended_at": "2026-08-24T14:55:50.940Z",
+  "run_id": "issue116-game-ready-blocks-map-load-r3",
+  "feature": "game-ready-blocks-map-load",
+  "status": "running",
+  "started_at": "2026-08-24T14:01:34.415Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r8/",
-  "heartbeat_at": "2026-08-24T14:55:50.940Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r3/",
+  "heartbeat_at": "2026-08-24T15:02:28.176Z",
   "last_node": "manual-tester",
   "active_node": null,
-  "last_event_at": "2026-08-24T14:55:44.630Z",
-  "process_id": 433222,
+  "last_event_at": "2026-08-24T15:02:28.176Z",
+  "process_id": 432145,
   "host": "f1a4230ec90b",
-  "phase": "manual-tester",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T14:55:50.940029+00:00",
-    "last_success_at": "2026-08-24T14:55:50.937370+00:00",
+    "last_attempt_at": "2026-08-24T15:02:28.176682+00:00",
+    "last_success_at": "2026-08-24T14:53:21.971904+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,19 +28,19 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 96733,
-        "output_tokens": 5601
+        "input_tokens": 49616,
+        "output_tokens": 3623
       },
       {
         "task_id": "code",
         "cluster_id": "implementation",
         "role": "code",
-        "model": null,
+        "model": "stealth/ox-alpha",
         "model_tier": null,
-        "cost_usd": null,
-        "cost_status": "unavailable",
-        "input_tokens": null,
-        "output_tokens": null
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 168345,
+        "output_tokens": 9438
       },
       {
         "task_id": "check",
@@ -50,8 +50,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 78859,
-        "output_tokens": 3385
+        "input_tokens": 143116,
+        "output_tokens": 8064
       },
       {
         "task_id": "revision-code-1",
@@ -61,8 +61,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 219103,
-        "output_tokens": 13115
+        "input_tokens": 170421,
+        "output_tokens": 5534
       },
       {
         "task_id": "revision-check-1",
@@ -72,8 +72,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 172072,
-        "output_tokens": 4326
+        "input_tokens": 140044,
+        "output_tokens": 4558
       },
       {
         "task_id": "manual-testing-gate",
@@ -83,19 +83,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 27856,
-        "output_tokens": 499
-      },
-      {
-        "task_id": "manual-tester",
-        "cluster_id": null,
-        "role": "manual-tester",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 84141,
-        "output_tokens": 4749
+        "input_tokens": 26827,
+        "output_tokens": 570
       }
     ]
   }
