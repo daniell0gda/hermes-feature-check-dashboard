@@ -1,26 +1,15 @@
 {
   "invocations": [
     {
-      "task_id": "code",
-      "cluster_id": "implementation",
-      "role": "code",
-      "model": "stealth/ox-alpha",
-      "model_tier": null,
-      "cost_usd": 0.0,
-      "cost_status": "unknown",
-      "input_tokens": 84594,
-      "output_tokens": 5749
-    },
-    {
-      "task_id": "check",
+      "task_id": "plan",
       "cluster_id": null,
-      "role": "check",
+      "role": "plan",
       "model": "stealth/ox-alpha",
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 115325,
-      "output_tokens": 5874
+      "input_tokens": 93192,
+      "output_tokens": 3113
     }
   ]
 }

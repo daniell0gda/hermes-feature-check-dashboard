@@ -1,46 +1,35 @@
 {
-  "run_id": "corrosive-soak-90-r3",
-  "feature": "corrosive-soak-perk",
+  "run_id": "req-83-traps-frostbite-fangs-r3",
+  "feature": "traps-frostbite-fangs",
   "status": "running",
-  "started_at": "2026-08-24T08:47:51.990Z",
+  "started_at": "2026-08-24T07:16:57.944Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/corrosive-soak-90-r3/",
-  "heartbeat_at": "2026-08-24T08:58:58.658Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-24T08:58:58.658Z",
-  "process_id": 338460,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r3/",
+  "heartbeat_at": "2026-08-24T08:59:41.525Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-24T08:59:41.525Z",
+  "process_id": 292510,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T08:59:03.090864+00:00",
-    "last_success_at": "2026-08-24T08:59:03.089336+00:00",
+    "last_attempt_at": "2026-08-24T08:59:41.526510+00:00",
+    "last_success_at": "2026-08-24T08:18:44.985100+00:00",
     "last_error": null
   },
   "metrics": {
     "invocations": [
       {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 84594,
-        "output_tokens": 5749
-      },
-      {
-        "task_id": "check",
+        "task_id": "plan",
         "cluster_id": null,
-        "role": "check",
+        "role": "plan",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 115325,
-        "output_tokens": 5874
+        "input_tokens": 93192,
+        "output_tokens": 3113
       }
     ]
   }

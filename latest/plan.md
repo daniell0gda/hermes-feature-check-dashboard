@@ -1,52 +1,35 @@
-# Acceptance Plan: Progression Corrosive Soak perk (Floodgate)
+# Acceptance Plan: traps_frostbite_fangs (r3 — camera/visual proof)
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/floodgate_corrosive_soak.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://tests/tower/test_tower_armor_damage.tscn"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
+- Focused test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_frostbite_fangs_progression.json"]`
+- Full test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/traps_serrated_edges_progression.json"]`
+- Typecheck/build: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
 
-Note: raw Godot stdout must be inspected for Parse Error / Failed loading resource even when a harness result reports status=pass. `.glb` LFS import errors are pre-existing noise and not gating. Current tree state (r2 baseline): full armor-damage suite passes (18 ok / 0 failed); editor gate passes; the focused harness fails with status=timeout — its staged enemy is gone by the time `set_armor` runs ("no live enemy at index 0"), so cluster 4 must make enemy staging deterministic before any hit or observation.
+All commands run through `run_project_cmd` with `project=godot-td`, `workspace=poke-defense-godot/issue-traps-frostbite-fangs`. Never `project=poke-defense-godot`. Note: the repository exposes per-scenario AgentHarness runs and the editor parse gate; there is no single aggregate-suite runner, so the full-test slot uses the nearest sibling trap-perk progression scenario (shared Trap/perk code) as the widest runnable regression command.
 
 manual_testing: required
 
 ## Clusters
 
-1. perk-definition-and-manager — files: `scripts/progression/floodgate_tower.json`, `scripts/progression/managers/FloodgateTowerProgressionManager.gd` — depends on: none
-- The `corrosive_soak` perk is defined in Floodgate's progression file with maxLevels 3, type Unique, compatibility restricted to the `floodgate` tower only, so it never appears as a reward choice for other towers or in generic pools.
-- Each of the three levels carries its level's absolute armor-damage amplification of 25% / 45% / 70% respectively, so replaying levels 1..N on load lands on level N's value instead of compounding.
-- After `apply_progression` with the owned level, the Floodgate progression state exposes an enabled flag and the level's amplification fraction (0.25 / 0.45 / 0.70), and after `reset_for_new_game()` it reads enabled=false with amplification back to zero.
-- Debug-build `[FLOODGATE]` log line per corrosive-soak level application naming the perk, the applied level and the resulting amplification fraction.
-
-2. corroded-status-and-amplification — files: `scripts/game/actors/enemy/parts/EnemyHealthController.gd`, `scripts/game/actors/towers/FloodgateTower.gd` — depends on: 1
-- An enemy hit by a Floodgate discharge while the perk is owned gains the Corroded state; without the perk owned, discharge hits leave no Corroded state.
-- While an enemy is Corroded, an armor-damage hit from a tower other than Floodgate strips 25% / 45% / 70% more armor at perk levels 1 / 2 / 3 than the same hit would without Corroded; HP damage from that hit is unchanged.
-- A Floodgate-sourced follow-up hit against a Corroded enemy is not amplified: its armor damage equals what it would deal to a non-Corroded enemy.
-- When the Corroded state expires, subsequent other-tower armor-damage hits are no longer amplified.
-- Debug-build `[CORROSIVE_SOAK]` log line per Corroded-state application naming the enemy and the active perk level, and one per amplified armor hit naming the enemy, the bonus percentage and whether the attacker was excluded.
-- Master behaviors three-way merged into `ProgressionManager.gd` (undermining, press_button, reward_popups) keep passing their existing progression checks after the corrosive-soak changes.
-
-3. corroded-rust-tint — files: `scripts/game/underground/WaterSubmersionSystem.gd` — depends on: 2
-- While an enemy is Corroded, its model carries a distinct rust-colored tint through the existing water-submersion tint mechanism that differs visibly from the normal wet/soak tint; when the Corroded state ends, the tint returns to the normal wet/soak appearance.
-
-4. gameplay-harness-scenario — files: `tests/scenarios/floodgate_corrosive_soak.json`, `scripts/testing/HarnessValues.gd` — depends on: 2
-- The headless gameplay harness stages a live armored enemy deterministically — the enemy is confirmed alive and at its staged armor value immediately before each hit action, using the max-armor-per-id report field rather than index-0 lookup — so no hit or observation ever targets an absent or unarmored spawn.
-- The headless gameplay harness proves end-to-end: with the perk applied at each level, a Floodgate discharge hit followed by another tower's armor-damage hit yields the level's amplified armor loss on the same enemy setup, and a matching unowned-perk control run yields no amplification.
-- The headless gameplay harness proves isolation on the same enemy setup: after the Floodgate discharge hit, a second Floodgate-sourced hit's armor effect matches the unowned-perk control run.
+1. close-camera-scenario — files: `tests/scenarios/traps_frostbite_fangs_progression.json`, optionally `scripts/game/Game.gd` (a debug-only camera-focus helper following the existing `debug_look_at_backdrop_earth` pattern, only if the harness `call` schema cannot otherwise reach `Camera3D.position`) — depends on: none
+- After the final `_update_camera_for_layer("underground")` call in the live arm, the scenario repositions the active Camera3D to sit close above the trap position (small height, tiny z offset) and aim at the trap, so the framing is near top-down; this holds at the moment each subsequent screenshot and record_frames action runs.
+- A fresh `.gen/harness/traps_frostbite_fangs_progression/result.json` from a headless run of the updated scenario reports `status: pass` with all expectations green (frozen_count >= 1, slow_magnitude 0.40 at L1, ice_slow_fx >= 1, unowned control frozen_count == 0).
+- Debug-build [FROSTBITE_CAMERA] log line per close-camera application, naming the trap position and camera height so a failed shot can be diagnosed from `.gen/harness/_logs`.
+2. visual-evidence-verdict — files: `.gen/screenshots/`, `.gen/check.md` — depends on: 1
+- A fresh windowed (non-headless) capture of `frostbite_fangs_chilled_hit` shows the trap and at least one live underground enemy large enough in frame to judge body color; neither a distant speck nor a crop of empty floor qualifies.
+- In that fresh PNG the chilled enemy's frost/ice tint is clearly distinguishable from a normal green Cactoro body.
+- The explicit `record_frames` action produces consecutive engine frames suitable for a 30fps GIF of the chill applying, and fresh PNG/GIF copies are present under `.gen/screenshots/`.
+- A NEW `.gen/check.md` written this run records the verdict from the fresh shots only; if the shots are still a distant speck or empty-floor crop the classification is `fixable`, and headless pass tags alone never satisfy the visual criterion.
+- A manual windowed test answering `ui_feels_broken: yes` fails the manual test.
 
 ## Criteria
 
-- The `corrosive_soak` perk is defined in Floodgate's progression file with maxLevels 3, type Unique, compatibility restricted to the `floodgate` tower only, so it never appears as a reward choice for other towers or in generic pools.
-- Each of the three levels carries its level's absolute armor-damage amplification of 25% / 45% / 70% respectively, so replaying levels 1..N on load lands on level N's value instead of compounding.
-- After `apply_progression` with the owned level, the Floodgate progression state exposes an enabled flag and the level's amplification fraction (0.25 / 0.45 / 0.70), and after `reset_for_new_game()` it reads enabled=false with amplification back to zero.
-- Debug-build `[FLOODGATE]` log line per corrosive-soak level application naming the perk, the applied level and the resulting amplification fraction.
-- An enemy hit by a Floodgate discharge while the perk is owned gains the Corroded state; without the perk owned, discharge hits leave no Corroded state.
-- While an enemy is Corroded, an armor-damage hit from a tower other than Floodgate strips 25% / 45% / 70% more armor at perk levels 1 / 2 / 3 than the same hit would without Corroded; HP damage from that hit is unchanged.
-- A Floodgate-sourced follow-up hit against a Corroded enemy is not amplified: its armor damage equals what it would deal to a non-Corroded enemy.
-- When the Corroded state expires, subsequent other-tower armor-damage hits are no longer amplified.
-- Debug-build `[CORROSIVE_SOAK]` log line per Corroded-state application naming the enemy and the active perk level, and one per amplified armor hit naming the enemy, the bonus percentage and whether the attacker was excluded.
-- Master behaviors three-way merged into `ProgressionManager.gd` (undermining, press_button, reward_popups) keep passing their existing progression checks after the corrosive-soak changes.
-- While an enemy is Corroded, its model carries a distinct rust-colored tint through the existing water-submersion tint mechanism that differs visibly from the normal wet/soak tint; when the Corroded state ends, the tint returns to the normal wet/soak appearance.
-- The headless gameplay harness stages a live armored enemy deterministically — the enemy is confirmed alive and at its staged armor value immediately before each hit action, using the max-armor-per-id report field rather than index-0 lookup — so no hit or observation ever targets an absent or unarmored spawn.
-- The headless gameplay harness proves end-to-end: with the perk applied at each level, a Floodgate discharge hit followed by another tower's armor-damage hit yields the level's amplified armor loss on the same enemy setup, and a matching unowned-perk control run yields no amplification.
-- The headless gameplay harness proves isolation on the same enemy setup: after the Floodgate discharge hit, a second Floodgate-sourced hit's armor effect matches the unowned-perk control run.
+- After the final `_update_camera_for_layer("underground")` call in the live arm, the scenario repositions the active Camera3D to sit close above the trap position (small height, tiny z offset) and aim at the trap, so the framing is near top-down; this holds at the moment each subsequent screenshot and record_frames action runs.
+- A fresh `.gen/harness/traps_frostbite_fangs_progression/result.json` from a headless run of the updated scenario reports `status: pass` with all expectations green (frozen_count >= 1, slow_magnitude 0.40 at L1, ice_slow_fx >= 1, unowned control frozen_count == 0).
+- Debug-build [FROSTBITE_CAMERA] log line per close-camera application, naming the trap position and camera height so a failed shot can be diagnosed from `.gen/harness/_logs`.
+- A fresh windowed (non-headless) capture of `frostbite_fangs_chilled_hit` shows the trap and at least one live underground enemy large enough in frame to judge body color; neither a distant speck nor a crop of empty floor qualifies.
+- In that fresh PNG the chilled enemy's frost/ice tint is clearly distinguishable from a normal green Cactoro body.
+- The explicit `record_frames` action produces consecutive engine frames suitable for a 30fps GIF of the chill applying, and fresh PNG/GIF copies are present under `.gen/screenshots/`.
+- A NEW `.gen/check.md` written this run records the verdict from the fresh shots only; if the shots are still a distant speck or empty-floor crop the classification is `fixable`, and headless pass tags alone never satisfy the visual criterion.
+- A manual windowed test answering `ui_feels_broken: yes` fails the manual test.
