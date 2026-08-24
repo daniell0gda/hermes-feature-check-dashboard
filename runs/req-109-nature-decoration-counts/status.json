@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-109-nature-decoration-counts/",
   "heartbeat_at": "2026-08-24T05:22:39.237Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "team-leader",
   "last_event_at": "2026-08-24T05:22:39.237Z",
   "process_id": 258765,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T05:22:39.237716+00:00",
-    "last_success_at": "2026-08-24T05:13:14.920255+00:00",
+    "last_attempt_at": "2026-08-24T05:22:43.676425+00:00",
+    "last_success_at": "2026-08-24T05:22:43.675518+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 280927,
         "output_tokens": 17492
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 88298,
+        "output_tokens": 4286
       }
     ]
   }
