@@ -1,11 +1,1 @@
-[
-  {
-    "sequence": 1,
-    "timestamp": "2026-08-24T14:06:34.166Z",
-    "node": "check",
-    "status": "completed",
-    "duration_ms": 634404,
-    "summary": "Check complete. Artifacts written to /workspace/git-workspaces/poke-defense-godot/issue-traps-frostbite-fangs/.gen/check.md and .gen/status.md.\n\nVerified done: 6. Pending: 2 \u2014 1 due to build/test failures (fresh headless focused run timed o\u2026",
-    "error": null
-  }
-]
+[]
