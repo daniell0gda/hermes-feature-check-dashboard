@@ -1,4 +1,4 @@
-# Coder report: shop-preview-card-ui\n\n# Coder report: shop-preview-card-ui
+# Coder report: shop-preview-card-ui
 
 ## Changed files
 - `data/towers.xml` — mod: added `description` attribute to all 12 combat towers (Porter's states teleport-to-underground-tunnels + deals no damage; Floodgate's states the periodic tunnel flood).
@@ -23,4 +23,3 @@ All via `run_project_cmd` project `godot-td`, workspace `poke-defense-godot/issu
 - Card content equality with `_build_tower_tooltip` is by construction (both render from `_tower_tooltip_facts`; damage text is extracted back out of the built stat lines).
 - Gotcha for tester: engine stdout `[SHOP-PREVIEW]` lines appear in the harness log; the deterministic assertion path is `ui.shop_preview_events()` (engine file log flushes late).
 - Gotcha: `.gen-r1-pass-20260823/` scratch dir exists in the worktree root from the prior r1 round (untracked, not part of this change).
-\n
