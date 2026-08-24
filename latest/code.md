@@ -1,46 +1,31 @@
-# Coder report: implementation\n\n# Coder report: implementation (clusters 1 + 2)
+# Coder report: implementation\n\n# Coder report: implementation (revision-code-1, clusters 1 + 2)
 
 ## Changed files
-- `scripts/game/underground/TorchPlacer.gd` — modified
-- `scripts/testing/HarnessValues.gd` — modified
-- `scripts/testing/AgentHarness.gd` — modified
-- `tests/caves/test_torch_budget_scaling.gd` — modified
-- `tests/caves/torch_coverage_probe.gd` — modified
+No source changes this revision. The r4 implementation was already in the
+worktree (uncommitted modifications to `scripts/game/underground/TorchPlacer.gd`,
+`scripts/testing/HarnessValues.gd`, `scripts/testing/AgentHarness.gd`,
+`tests/caves/test_torch_budget_scaling.gd`, `tests/caves/torch_coverage_probe.gd`,
+`tests/scenarios/carve_curved_torches_coverage.json`). This run re-verified all
+headless criteria against that state.
 
 ## Criteria
-- TORCH_SPACING equals 4 — Done (was 2)
-- Straight-corridor spacing stride = exactly 4 unique corridor cells — Done (`_spacing_torch_cells` strides unique cells, cols=[0,4,8,...])
-- Every torch from calculate_torch_positions: single-axis cardinal WALL_OFFSET onto solid rock — Done (unit test, 35 torches on L-carve)
-- Coverage-repair torches obey same real-wall rule — Done (unit test, uncapped run incl. repair: 50 torches all mounted; `_best_wall_torch_for` returns only cardinal mounts, never diagonal/zero-offset)
-- Torch count scales with live grid dimensions — Done (100x100 grid: budget=10000, 190 torches, uncovered=0)
-- Debug-build [TORCH_PLACER] log per coverage-repair torch naming cell and wall_dir — Done (visible in both test runs)
-- Harness: L-shaped carve → uncovered_corridor_cells == 0 with torches > 0 — Done (status=pass, 113 torches, uncovered_corridor_cells=0)
-- Torch lighting constants unchanged vs f161e1d — Done (`scripts/game/underground/Torch.gd` byte-identical, md5 40bbbfde46fac932548aeb479ba4f7b6 matches baseline)
+- TORCH_SPACING equals 4 — Done (unit assertion ok; const in TorchPlacer.gd)
+- Straight-corridor stride exactly 4 unique corridor cells — Done (cols=[0,4,...,36])
+- Every torch: single-axis cardinal WALL_OFFSET onto solid rock — Done (35-torch unit assertion ok)
+- Coverage-repair torches obey real-wall rule — Done (50-torch uncapped-run assertion ok; no diagonal/zero-offset mounts)
+- Budget scales with live grid, no hardcoded max — Done (100x100 grid: budget 10000, 190 torches, uncovered=0)
+- Debug [TORCH_PLACER] log per repair torch naming cell + wall_dir — Done (lines present in both runs behind OS.is_debug_build())
+- L-shaped carve fully lit: uncovered_corridor_cells == 0 with torches > 0 — Done (harness status=pass, 113 torches, uncovered=0)
+- Torch lighting constants unchanged vs f161e1d — Done (Torch.gd md5 40bbbfde46fac932548aeb479ba4f7b6 == baseline commit f161e1d; file untouched)
+- Manual windowed screenshots (cluster 3) — not executable headlessly; remains Pending for the manual-tester per .gen/ui_scenario.md
 
 ## Commands and results
-- `godot --headless --path . res://tests/caves/test_torch_budget_scaling.tscn` — exit code 0; "=== torch_budget_scaling: 11 ok, 0 failed ==="
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/carve_curved_torches_coverage.json` — exit code 0; "[Harness] status=pass exit=0"; "[TORCH_PLACER] coverage pass: required_cells=113 torches=113 uncovered=0"; expectations: count=113>0 pass, uncovered_corridor_cells==0 pass, both log regexes pass
-- `godot --headless --path . --editor --quit-after 2` — exit code 0; scripts parse clean (TorchPlacer, HarnessValues, AgentHarness, test files registered without script errors)
+- `godot --headless --path . --editor --quit-after 2` — exit code 0; project scan clean, no script parse errors.
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/carve_curved_torches_coverage.json` — exit code 0; `[Harness] status=pass exit=0`; `[TORCH_PLACER] coverage pass: required_cells=113 torches=113 uncovered=0`; `[TorchManager] Updated torches: 113 active`; result written to `.gen/harness/carve_curved_torches_coverage/result.json`.
+- `godot --headless --path . res://tests/caves/test_torch_budget_scaling.tscn` — exit code 0; `=== torch_budget_scaling: 11 ok, 0 failed ===`.
 
 ## Notes
-- Root cause of the residual dark cells in the live harness was NOT the diagonal repair mount
-  alone. Three interacting issues were fixed:
-  1. `_is_corridor_cell` counted off-grid directions as "no open neighbour", so a hall that
-     reaches the map edge classified edge-middle cells as corridor although they have no wall
-     to mount on. Off-grid now counts as open (exempt), consistently in TorchPlacer,
-     HarnessValues._cell_is_interior, and TorchCoverageProbe.
-  2. `_repair_coverage` re-queued no-wall cells forever until the guard ran out mid-cycle,
-     dropping useful torches and leaving required_cells lit by nothing. Unmountable cells are
-     now dropped permanently from the uncovered set.
-  3. `_best_wall_torch_for` may mount toward the map-edge boundary (rock exists beyond the
-     playable grid) when no in-grid solid neighbour exists — still a single-axis cardinal
-     WALL_OFFSET face hug, never a mid-corridor stick.
-- Tester gotcha: `AgentHarness.materialize_engine_out_log()` previously skipped rewriting
-  `.gen/harness/_logs/<id>.out.log` when a previous run's file contained the identical
-  scenario marker, so log regex expectations were evaluated against STALE output (this made
-  the coverage-pass regex fail with actual:"" even while live values passed). It now always
-  rewrites with this run's slice.
-- Gotcha for future scenarios: GDScript `print("x=", v)` emits "uncovered= 0"-style spacing?
-  No — commas join without space here ("uncovered=11"); verified via cat -A on the fresh log.
-- Cluster 3 (windowed manual proof) not executable headlessly — left for manual run per plan.
+- Pre-existing benign warnings only (stale UIDs in HudTheme.tres/UI.tscn, dummy-renderer RID leaks at exit); none introduced by this change set.
+- TorchPlacer repair log confirms every repair mount is a single cardinal direction (west/north/south/east), never diagonal or zero-offset.
+- Gotcha carried from r4: stale `.gen/harness/_logs/<id>.out.log` masked log-regex expectations; AgentHarness now always rewrites the per-run out.log.
 \n

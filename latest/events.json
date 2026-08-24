@@ -7,5 +7,14 @@
     "duration_ms": 217896,
     "summary": "Check complete. All verification ran fresh through run_project_cmd (project=poke-defense-godot, workspace=poke-defense-godot/issue-cave-carved-path-torches): preflight godot 4.4.1 exit 0; editor/typecheck gate exit 0; focused harness carve_\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-24T10:10:02.302Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 384701,
+    "summary": "The `release_project_worker` tool is not exposed in this session (only `run_project_cmd` is available), so I could not release the worker \u2014 the orchestrator should release it, or I can retry if it becomes available. All other work is done.\n\u2026",
+    "error": null
   }
 ]
