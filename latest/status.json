@@ -1,20 +1,69 @@
 {
-  "run_id": "req-89-exposed-plating-r4",
-  "feature": "Exposed Plating perk",
+  "run_id": "req-117-gen-hud-textures-r2",
+  "feature": "gen-hud-textures-py-cannot-run-all-three",
   "status": "running",
-  "started_at": "2026-08-24T07:32:55.931Z",
+  "started_at": "2026-08-24T07:16:11.189Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r4/",
-  "heartbeat_at": "2026-08-24T07:32:55.931Z",
-  "last_node": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-117-gen-hud-textures-r2/",
+  "heartbeat_at": "2026-08-24T07:33:16.964Z",
+  "last_node": "check",
   "active_node": null,
-  "last_event_at": null,
-  "process_id": 302199,
+  "last_event_at": "2026-08-24T07:33:16.964Z",
+  "process_id": 292058,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:32:55.931285+00:00"
+    "last_attempt_at": "2026-08-24T07:33:16.964524+00:00",
+    "last_success_at": "2026-08-24T07:32:25.173528+00:00",
+    "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 29933,
+        "output_tokens": 3121
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 65873,
+        "output_tokens": 3277
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 44610,
+        "output_tokens": 2969
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 38029,
+        "output_tokens": 2466
+      }
+    ]
+  }
 }
