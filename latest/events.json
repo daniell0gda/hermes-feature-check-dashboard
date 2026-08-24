@@ -7,5 +7,14 @@
     "duration_ms": 271293,
     "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-game-ready-blocks-map-load/.gen/plan.md\n",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-24T18:43:13.210Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 221037,
+    "summary": "The `release_project_worker` action isn't exposed in this session's toolset (only `run_project_cmd` exists, and it's a disposable worker that isn't tracked as persistent), so I'm leaving the worker as-is rather than fabricating a release ca\u2026",
+    "error": null
   }
 ]
