@@ -1,42 +1,42 @@
-# Acceptance Plan: Exposed Plating perk (issue #89) — continuation r2
+# Acceptance Plan: exposed-plating-closeup-evidence
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]`
-- Full test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/exposed_plating_vfx.json"]`
-- Typecheck/build: `["godot", "--headless", "--check-only", "--script", "res://scripts/game/status/ExposedStatus.gd"]`
+- Focused test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]`
+- Full test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]`
+- Typecheck/build: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
 
-manual_testing: required
-
-Note: all project commands run through `run_project_cmd` with `project=godot-td`, `workspace=poke-defense-godot/issue-exposed-plating`. Fresh post-rebase evidence (2026-08-24): both focused harnesses already pass (`status=pass, exit=0`; results under `.gen/harness/`). Remaining unmet work is windowed player-facing evidence only.
+All three are executed through `run_project_cmd` with `project=godot-td`, `workspace=poke-defense-godot/issue-exposed-plating`. The windowed close-up evidence run uses the same token shape without `--headless`, adding `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
 
 ## Clusters
 
-1. exposed-plating-trigger-and-multiplier — files: `autoload/ProgressionManager.gd`, `scripts/progression/global.json`, `scripts/progression/managers/CurseProgressionManager.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd`, `tests/scenarios/exposed_plating_once_per_shield.json` — depends on: none
-- The `exposed_plating` perk is registered in the progression config like other global progression perks and is purchasable at exactly 3 levels.
-- When an enemy's armor transitions from greater than 0 to 0, the enemy gains the Exposed status exactly once for that shield instance; subsequent hits while armor remains 0 do not re-trigger it.
-- After an expired Exposed status ends and the enemy regains armor and loses it again to 0, the Exposed status triggers again.
-- While Exposed is active at level 1, damage taken by the affected enemy is multiplied by 1.15; at level 2 by 1.25; at level 3 by 1.35.
-- When the Exposed duration for the purchased level elapses (0.5s / 1s / 1.5s), the damage-taken multiplier returns to 1.0 without any further trigger until a new armor breach occurs.
-- Debug builds emit a log line with the `[EXPOSED]` prefix on each Exposed trigger (including level and duration) and on each Exposed expiry; release builds do not.
-2. exposed-vfx — files: `scripts/game/actors/effects/EffectsManager.gd`, `scripts/game/actors/effects/ExposedVFX.gd`, `scripts/game/status/ExposedStatus.gd`, `tests/scenarios/exposed_plating_vfx.json` — depends on: none
-- While the Exposed status is active on an enemy, a visible cracked-shield emissive overlay effect is present on that enemy, following the same lazy-instantiation pattern as the existing burn/oil VFX.
-- When the Exposed status expires or the enemy dies, the overlay is removed from that enemy with no leftover nodes or leaked resources.
-3. windowed-manual-evidence — files: none — depends on: 1, 2
-- Windowed gameplay captures show the Exposed overlay appearing on a real armored enemy at the armor-breach moment and disappearing when the status expires, with no visual glitches to surrounding UI.
-- A real-time (30fps) recording of the Exposed VFX on a real enemy exists and plays smoothly, produced from the harness `record_frames` path of `exposed_plating_vfx`.
-- A manual UI sanity pass concludes with an explicit `ui_feels_broken: yes|no` verdict recorded in the manual-test report.
+1. headless-regression-rerun — files: `.gen/harness/exposed_plating_once_per_shield/result.json`, `.gen/harness/exposed_plating_vfx/result.json` — depends on: none
+- A fresh headless run of `tests/scenarios/exposed_plating_once_per_shield.json` ends with status `pass` and every expectation met, confirming the trigger fires exactly once per shield instance (>0 to 0 transition only) after the rebase.
+- A fresh headless run of `tests/scenarios/exposed_plating_vfx.json` ends with status `pass` and every expectation met, including log lines containing `[EXPOSED] triggered on` and `[EXPOSED] expire on`.
+2. closeup-vfx-scenario — files: `tests/scenarios/exposed_plating_vfx.json` — depends on: none
+- During the windowed VFX scenario, the active camera aims at the boss enemy and moves close enough that the enemy occupies a large part of the rendered frame before any screenshot checkpoint fires.
+- In every screenshot and recorded frame captured by the scenario, the debug panel is hidden or positioned so it does not cover the enemy.
+- The `record_frames` capture spans the whole Exposed window while zoomed on the enemy and saves more than zero real consecutive engine frames suitable for GIF export.
+3. visible-wash-proof — files: `scripts/game/actors/effects/ExposedVFX.gd`, `.gen/screenshots/`, `.gen/manual-report.md` — depends on: 2
+- In the windowed close-up run, the "during Exposed" still shows an obvious amber wash over the enemy body that differs from the "before breach" still when compared by eye.
+- In the windowed close-up run, the "after expiry" still matches the "before breach" still by eye: the amber wash is gone.
+- If the close-up "during" still shows no visible overlay, `ExposedVFX` is strengthened (alpha/emission energy/shell size) until the before/during frames visibly differ; metadata `exposed_vfx == true` alone never counts as passing this criterion.
+- The proving PNGs and the exported GIF are copied into `.gen/screenshots/` and embedded in `.gen/manual-report.md`, which ends with a `ui_feels_broken: yes|no` verdict line.
 
 ## Criteria
 
-- The `exposed_plating` perk is registered in the progression config like other global progression perks and is purchasable at exactly 3 levels.
-- When an enemy's armor transitions from greater than 0 to 0, the enemy gains the Exposed status exactly once for that shield instance; subsequent hits while armor remains 0 do not re-trigger it.
-- After an expired Exposed status ends and the enemy regains armor and loses it again to 0, the Exposed status triggers again.
-- While Exposed is active at level 1, damage taken by the affected enemy is multiplied by 1.15; at level 2 by 1.25; at level 3 by 1.35.
-- When the Exposed duration for the purchased level elapses (0.5s / 1s / 1.5s), the damage-taken multiplier returns to 1.0 without any further trigger until a new armor breach occurs.
-- Debug builds emit a log line with the `[EXPOSED]` prefix on each Exposed trigger (including level and duration) and on each Exposed expiry; release builds do not.
-- While the Exposed status is active on an enemy, a visible cracked-shield emissive overlay effect is present on that enemy, following the same lazy-instantiation pattern as the existing burn/oil VFX.
-- When the Exposed status expires or the enemy dies, the overlay is removed from that enemy with no leftover nodes or leaked resources.
-- Windowed gameplay captures show the Exposed overlay appearing on a real armored enemy at the armor-breach moment and disappearing when the status expires, with no visual glitches to surrounding UI.
-- A real-time (30fps) recording of the Exposed VFX on a real enemy exists and plays smoothly, produced from the harness `record_frames` path of `exposed_plating_vfx`.
-- A manual UI sanity pass concludes with an explicit `ui_feels_broken: yes|no` verdict recorded in the manual-test report.
+- A fresh headless run of `tests/scenarios/exposed_plating_once_per_shield.json` ends with status `pass` and every expectation met, confirming the trigger fires exactly once per shield instance (>0 to 0 transition only) after the rebase.
+- A fresh headless run of `tests/scenarios/exposed_plating_vfx.json` ends with status `pass` and every expectation met, including log lines containing `[EXPOSED] triggered on` and `[EXPOSED] expire on`.
+- During the windowed VFX scenario, the active camera aims at the boss enemy and moves close enough that the enemy occupies a large part of the rendered frame before any screenshot checkpoint fires.
+- In every screenshot and recorded frame captured by the scenario, the debug panel is hidden or positioned so it does not cover the enemy.
+- The `record_frames` capture spans the whole Exposed window while zoomed on the enemy and saves more than zero real consecutive engine frames suitable for GIF export.
+- In the windowed close-up run, the "during Exposed" still shows an obvious amber wash over the enemy body that differs from the "before breach" still when compared by eye.
+- In the windowed close-up run, the "after expiry" still matches the "before breach" still by eye: the amber wash is gone.
+- If the close-up "during" still shows no visible overlay, `ExposedVFX` is strengthened (alpha/emission energy/shell size) until the before/during frames visibly differ; metadata `exposed_vfx == true` alone never counts as passing this criterion.
+- The proving PNGs and the exported GIF are copied into `.gen/screenshots/` and embedded in `.gen/manual-report.md`, which ends with a `ui_feels_broken: yes|no` verdict line.
+
+## Notes
+
+- manual_testing: required
+- Existing uncommitted WIP (perk registration, `ExposedStatus.gd`, `ExposedVFX.gd`, both scenario JSONs) is preserved; this plan covers only the unmet close-up visual evidence work plus the post-rebase headless re-run.
+- The r5 far-camera shots archived under `.gen/harness/exposed_plating_vfx/r5-too-far/` are explicitly not evidence and must not be copied to `.gen/screenshots/`.
