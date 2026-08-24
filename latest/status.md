@@ -1,14 +1,17 @@
 ## ✅ Done
-- The perk catalog defines `warlords_doctrine` as a Common global progression with exactly 3 selectable levels whose values are L1 +5% damage / 8% armor, L2 +9% / 12%, L3 +14% / 15% of max HP.
-- Applying `warlords_doctrine` at level L raises the game's global tower-damage multiplier to exactly 1 plus that level's damage ratio (1.05 / 1.09 / 1.14), observable through the progression state the tower damage chain reads.
-- Owning both `tower_dmg` and `warlords_doctrine` produces a combined tower-damage multiplier equal to the sum of both perks' ratios (additive stacking), never one overriding the other.
-- Giving up the perk (`reset_for_new_game`) returns the tower-damage multiplier to exactly 1.0 and the doctrine armor bonus to zero, so enemies spawned afterwards are armored only by their innate config armor.
-- While `warlords_doctrine` is active, an enemy type whose config names no armor spawns with `armor > 0` and `max_armor > 0` equal to the active level's percentage of its max HP; without the perk the same enemy spawns with zero armor.
-- For an enemy with innate config armor, the perk's bonus armor is added on top of the innate value (spawned max_armor equals innate armor plus ratio × max HP), not a replacement.
-- A scripted armor hit against a doctrine-armored enemy strips the granted armor first through the existing armor-soak behavior, and the damage bonus lands in HP according to the normal armor-damage rules.
-- Debug-build `[WARLORDS-DOCTRINE]` log lines appear per doctrine-granted spawn bonus (level, granted armor, enemy id) and per doctrine application (level, bonus, resulting total multiplier), each filterable by that marker.
+(none — full-suite gate failed, all items held below)
 
 ## ⬜ Pending
-- The existing armor bar row becomes visible on a previously-unarmored enemy once the perk grants it armor, showing and animating the granted armor like any innate armor (windowed visual check). — missing evidence: windowed visual checkpoint owned by manual tester; `.gen/manual-report.md` absent
+- While carve bird view is armed (`_carve_camera_armed`), holding middle mouse and moving it a small amount translates the camera and its view target together without changing the camera's yaw or up direction: the camera's horizontal basis vector (`basis.x`) stays within a near-zero angular delta of its pre-drag value.
+- While carve bird view is armed, larger continued middle-mouse pans keep the camera orientation stable across every motion event — no event during the pan produces a yaw change of roughly 90° or 180°.
+- While the camera is nearly straight down even when carve mode is not armed, the same pan input does not rebuild the camera basis in a way that flips yaw (the degenerate `look_at(..., Vector3.UP)` path never runs for a top-down pose).
+- If zooming while the camera is nearly straight down can rebuild orientation via `look_at`, zooming from the top-down pose also preserves yaw instead of flipping it.
+- With carve bird view armed, holding the right mouse button and dragging still orbits the camera around the target, and the pitch stays inside the armed clamp (~0.05–1.55 rad) so no drag snaps across the pole.
+- A quick right-click while carve mode is active still cancels carve mode.
+- Debug-build `[CARVE_CAMERA]` log line when a middle-mouse pan completes while bird view is armed, containing the pre-pan and post-pan yaw so any future flip is traceable.
+- A harness value source exposes the post-pan camera yaw/basis delta so scenarios can assert that a scripted middle-drag changed translation only, not orientation.
+- The focused scenario arms carve mode on the underground layer, then drives a middle-button press followed by mouse motion events through the real `_input` path (not a rotate-camera harness shortcut) and asserts the camera position translated by the expected amount while the yaw/basis.x delta is near zero.
+- The existing `carve_camera_drag_spin` and `carve_camera_topdown` scenarios still pass unchanged after the pan fix.
 
 ## ❌ Impossible
+(none)

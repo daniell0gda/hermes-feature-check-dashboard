@@ -1,4 +1,4 @@
-# Coder report: implementation-rev3\n\n# Coder report: implementation (revision-code-3)
+# Coder report: implementation (revision-code-3)
 
 ## Changed files
 - `tests/scenarios/carve_camera_drag_spin.json` — modified (uncommitted, in main checkout and synced to runner worktree)
@@ -33,25 +33,3 @@
   Any future code change must repeat that copy before running via run_project_cmd.
 - Remaining known blockers (unchanged, not code): full-suite red on legacy domains,
   manual windowed GIF outstanding — both belong to check/manual-tester per revisions.md.
-\n\n# Coder report: implementation\n\n# Coder report: implementation (revision-code-2)
-
-## Changed files
-- none this iteration — pan-stability implementation verified intact from prior cycles:
-  - `scripts/game/Game.gd`
-  - `scripts/testing/HarnessActions.gd`
-  - `scripts/testing/HarnessValues.gd`
-  - `tests/scenarios/carve_pan_no_flip.json`
-
-## Criteria
-All Pending criteria in status.md (pan stability, degenerate look_at guards, right-drag orbit clamp, quick right-click cancel, debug log, harness probes/scenario, regression scenarios) — Done (verified passing).
-
-## Commands and results
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/carve_pan_no_flip.json` — exit 0; status=pass (`carve_pan_translated_only=true`, `carve_pan_yaw_delta=0.0`)
-- same for `carve_camera_drag_spin.json` — exit 0, pass
-- same for `carve_camera_topdown.json` — exit 0, pass
-- `godot --headless --editor --path . --quit-after 3` — exit 0, no script errors
-
-## Notes
-- godot binary requires `export PATH=/opt/data/profiles/code/home/bin:$PATH`.
-- No dashboard events published. Waiting for check.
-\n
