@@ -1,34 +1,40 @@
-# Request: traps_frostbite_fangs (r3 — camera/visual proof)
+# Request: Exposed Plating perk (issue #89) — continuation r2
 
-- request_id: req-83-traps-frostbite-fangs-r3
-project: godot-td
-workspace: poke-defense-godot/issue-traps-frostbite-fangs
-issue: https://github.com/daniell0gda/poke-defense-godot/issues/83
-- branch: issue/traps-frostbite-fangs
-- intent: continuation — keep perk code; fix unreadable frost shots
+- **Repo:** daniell0gda/poke-defense-godot
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/89
+- **Workspace:** poke-defense-godot/issue-exposed-plating
+- **Branch:** issue/exposed-plating (rebased onto origin/master @ e7910d0 on 2026-08-24; implementation is uncommitted WIP, preserve it)
+- **Request ID:** req-89-exposed-plating-r2
+- **Runner key:** `godot-td` — workers MUST use `project=godot-td`, `workspace=poke-defense-godot/issue-exposed-plating`. Never invent workspace names. Never use `project=poke-defense-godot`.
 
-## History (do not treat as evidence)
+## Feature
 
-- req-83 claimed pass. Human review FAILED: wide underground shot, enemy is a speck; zoom PNG is empty floor.
-- req-83-r2 plan/code workers returned empty. Stale `check.md` still said `classification: pass`, so the leader skipped revision and reused yesterday's shots. Archived to `.gen-r2-stale-pass/`. Those files are not current evidence.
+New progression perk `exposed_plating` (Common, global, 3 levels). When an enemy's armor transitions from >0 to 0 (same site as `_consume_armor()`), it gains an "Exposed" status:
 
-## Feature (already implemented — do not revert)
+- L1: +15% damage taken, 0.5s
+- L2: +25% damage taken, 1s
+- L3: +35% damage taken, 1.5s
 
-Unique `traps_frostbite_fangs` L1-3. Trap hits call `EffectsManager.apply_frozen`. Magnitude/duration scale. Existing frost VFX.
+## Historical run (context only, not evidence)
 
-## Required this run
+Run `issue-89-exposed-plating` (2026-08-23) implemented the perk and passed headless harnesses, then ended `classification: fixable` / dashboard `failed` because the checker treated missing windowed VFX screenshots as a code-check failure. That skipped the manual-tester gate. Re-verify everything after the rebase. Do not assume old `.gen/harness` results are still valid.
 
-1. Keep the perk implementation.
-2. Change `tests/scenarios/traps_frostbite_fangs_progression.json` so the windowed shot is close and top-down on the trap + live enemy. `_update_camera_for_layer` resets to the default far camera — after that call, set `Camera3D.position` close above the trap (small height, tiny z offset) and `look_at` the trap. Enemy body must fill enough of the frame to see frost vs green.
-3. Keep explicit `screenshot` + 30fps `record_frames` GIF. Copy fresh PNGs/GIF to `.gen/screenshots/`.
-4. Checker must write a NEW `.gen/check.md`. If shots are still a distant speck or a crop of empty floor: `classification: fixable`. Headless tags alone do not pass the visual criterion.
-5. `ui_feels_broken: yes` fails the manual test.
-6. Runner only: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-traps-frostbite-fangs`. Never `project=poke-defense-godot`.
+## Acceptance criteria
 
-## Manual testing
+1. Perk definition registered like other progression perks; purchasable at 3 levels.
+2. Trigger fires exactly once per shield instance: only on the >0 → 0 transition. Hits while armor is already 0 do NOT re-trigger; re-trigger requires the enemy regaining armor first.
+3. Damage-taken multiplier applies for the debuff duration, per level values above, then expires cleanly.
+4. New VFX: `ExposedStatus`/`ExposedVFX` following the existing `BurnStatus`/`BurnVFX` pattern — cracked-shield emissive overlay for the duration, lazily instantiated by `EffectsManager` like `BurnVFX`/`OilVFX`.
+5. Debug logging: `[EXPOSED]` prefix lines on trigger and expiry, gated by `OS.is_debug_build()`.
 
-`manual_testing: required`. Windowed only. No `--headless`.
+## Verification requirements
 
-## Lifecycle
+- Fresh focused headless harness after the rebase: `tests/scenarios/exposed_plating_once_per_shield.json` and `tests/scenarios/exposed_plating_vfx.json` via `run_project_cmd` (`godot-td`).
+- If headless criteria 1–3 and 5 are green, checker must write `classification: pass` so the leader can dispatch manual-tester. Missing windowed PNGs/GIFs are a manual-tester job, not a code-check `fixable`.
+- Manual testing: REQUIRED (player-facing VFX). Windowed screenshots plus a real 30fps GIF from harness `record_frames` of the Exposed VFX on a real enemy. No headless-only closeout. End with `ui_feels_broken: yes|no`.
+- Windowed Godot args when Vulkan fails: `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`.
+- Native Godot through `run_project_cmd`; explicit scene argument before user args.
 
-Do not commit, push, merge, or close.
+## Preserve
+
+Keep the existing uncommitted source diff and new files (`ExposedVFX.gd`, `ExposedStatus.gd`, both scenarios). Re-plan only unmet work (windowed evidence + any rebase breakage). Do not wipe the implementation.

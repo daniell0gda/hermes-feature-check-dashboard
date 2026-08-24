@@ -1,20 +1,36 @@
 {
-  "run_id": "req-83-traps-frostbite-fangs-r3",
-  "feature": "traps-frostbite-fangs",
+  "run_id": "req-89-exposed-plating-r2",
+  "feature": "Exposed Plating perk",
   "status": "running",
-  "started_at": "2026-08-24T07:16:57.944Z",
+  "started_at": "2026-08-24T07:06:43.523Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r3/",
-  "heartbeat_at": "2026-08-24T07:16:57.944Z",
-  "last_node": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r2/",
+  "heartbeat_at": "2026-08-24T07:17:28.993Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": null,
-  "process_id": 292510,
+  "last_event_at": "2026-08-24T07:17:28.993Z",
+  "process_id": 287796,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:16:57.944176+00:00"
+    "last_attempt_at": "2026-08-24T07:17:28.994296+00:00",
+    "last_success_at": "2026-08-24T07:13:25.649464+00:00",
+    "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 67668,
+        "output_tokens": 4352
+      }
+    ]
+  }
 }
