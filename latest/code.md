@@ -1,30 +1,43 @@
-# Coder report: implementation\n\n# Coder report: implementation
+# Coder report: implementation\n\n# Coder report: implementation (revision 1)
 
-## Changed files
-- none this iteration (re-verification pass; the uncommitted feature diff from
-  revision 1 is preserved intact: autoload/ProgressionManager.gd,
-  scripts/game/actors/effects/EffectsManager.gd, ExposedVFX.gd,
-  scripts/game/status/ExposedStatus.gd, EnemyHealthController.gd,
-  scripts/progression/global.json, CurseProgressionManager.gd,
-  HarnessValues.gd / AgentHarness.gd, both test scenarios)
+## Changed files (this revision)
+- `scripts/game/underground/WaterSubmersionSystem.gd` — modified
+- `scripts/testing/HarnessValues.gd` — modified
+- `tests/scenarios/floodgate_corrosive_soak.json` — modified
+
+(Carried from iteration 1, unchanged this revision: floodgate_tower.json,
+FloodgateTowerProgressionManager.gd, ProgressionManager.gd, FloodgateTower.gd,
+EnemyStatusController.gd, EnemyHealthController.gd, Enemy.gd, HarnessActions.gd.)
+
+## Work done
+1. Fixed the criterion-11 gap (rust tint never asserted): the tint path silently no-op'd on GLB
+   enemies because it required `material_override`. Now duplicates the first mesh-surface
+   material (`get_active_material(0)` → duplicate → `set_surface_override_material`) with a
+   `rust_override_surface` meta; removal drops the duplicate so the original material returns.
+   Also fixed `_get_enemy_mesh_instance` returning a declared-but-null `mesh_instance` property
+   instead of falling through to the recursive subtree search. Scenario now asserts
+   `enemies.rust_tint_count == 1` while Corroded and `== 0` after expiry.
+2. Fixed the full-suite blocker (was 15 ok / 3 failed, "pre-existing"): root cause was Git-LFS —
+   all `.glb` files in the fresh worktree were unresolved LFS pointers (132-byte pointer text)
+   with stale `.import` files marked `valid=false`, so tower models failed to load and the
+   ballista bolt never spawned. Installed git-lfs 3.7.0 to ~/.local/bin, ran `git lfs pull`
+   (fsck OK), flipped 109 `valid=false` imports to `valid=true`, re-ran the editor gate so Godot
+   reimported every GLB. No tracked repo file changed for this — worktree setup only.
 
 ## Criteria
-- Perk registered in progression config, purchasable at 3 levels — Done
-- Trigger fires exactly once per shield instance (>0 → 0 only) — Done
-- Multiplier per level for duration, clean expiry — Done
-- ExposedStatus/ExposedVFX per BurnStatus/BurnVFX pattern — code Done;
-  player-facing windowed evidence remains manual-tester scope (cluster 3)
-- `[EXPOSED]` debug logging gated by OS.is_debug_build() — Done
+All 14 criteria now have passing automated evidence; none blocked.
 
-## Commands and results (all via run_project_cmd, project=godot-td)
-- `["godot","--version"]` — exit 0; Godot 4.4.1.stable.official.49a5bc7b6
-- `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0 (11.4s); no script errors; ExposedStatus/ExposedVFX register as global classes
-- `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]` — exit 0, status=pass, 6/6 expectations. Per-level hp legs: L1 1625→1614→1603 (×1.15), L2 →1613→1601 (×1.25), L3 →1612→1599 (×1.35); one `[EXPOSED] triggered` line per leg with level+duration; `[EXPOSED] expire on Orc Enemy_boss`; post-expiry hit at hp 1589 (exact −10). Result: `.gen/harness/exposed_plating_once_per_shield/result.json`
-- `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]` — exit 0, status=pass, 7/7 including exposed_vfx true during the window; record_frames correctly skipped headless. Result: `.gen/harness/exposed_plating_vfx/result.json`
-- `["godot","--headless","--check-only","--script","res://scripts/game/status/ExposedStatus.gd"]` — exit 1 "Identifier not found: SimulationClock"; the pre-existing `BurnStatus.gd` fails identically under this mode. `--check-only --script` does not register project autoloads in Godot 4.4, so it cannot validate any autoload-dependent script. Import gate + full-scene harnesses are the compile evidence.
+## Commands and results (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat)
+- `godot --headless --path . --editor --quit-after 300` — exit 0; 109 GLBs reimported; global classes registered; no Parse Error.
+- Focused: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/floodgate_corrosive_soak.json` — exit 0; `[Harness] status=pass exit=0`; result at `.gen/harness/floodgate_corrosive_soak/result.json` (58 actions, all ok). Raw stdout: `[FLOODGATE] floodgate_corrosive_soak L1/L2/L3 applied -> amplification 0.25/0.45/0.7`; `[CORROSIVE_SOAK] corroded applied on enemy=Alien level=1`; amplified hits bonus=25%/45%/70% armor_dmg=50.0/58.0/68.0; `[CORROSIVE_SOAK] corroded expired on enemy=Alien dur=6.0`. Armor arithmetic: 1000→950 (L1 incl. excluded Floodgate follow-up →910)→852 (L2)→784 (L3)→744 post-expiry; unowned control corroded_count==0. Only non-gating `.glb` LFS noise absent; remaining warnings are pre-existing UID warnings and dummy-renderer exit leaks.
+- Full suite: `godot --headless --path . res://tests/tower/test_tower_armor_damage.tscn` — exit 0; `18 ok, 0 failed` including "the ballista fired a bolt that reached the armored enemy" / "strips 20.0 armor" / "loses only reduced HP".
 
-## Notes
-- No source changes were needed or made; fresh post-rebase verification is green.
-- Pre-existing unrelated warnings/errors observed on every run (invalid UID ext_resources in HudTheme/UI.tscn, missing GLBs incl. `Orc Enemy.glb`, exit-time RID leak noise under Dummy renderer) — present on master paths, not introduced by this feature.
-- Manual-tester still owns cluster 3: run `exposed_plating_vfx` windowed (`--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`) for shots + real 30fps record_frames GIF into `.gen/harness/exposed_plating_vfx/{shots,record}/`, then record `ui_feels_broken: yes|no`.
+## Notes for checker
+- The previous r3 "pre-existing environment failure" classification is obsolete: with LFS
+  pointers resolved and imports validated, the full suite is green on this tree WITH the feature
+  changes present.
+- Scratch `logs/full_suite.log` deleted as advised by check.md.
+- Manual windowed rust-tint screenshot evidence remains outstanding per plan's manual_testing
+  note; automated assertion now covers presence/reversion via rust_tint_count.
 \n
