@@ -16,5 +16,14 @@
     "duration_ms": 587493,
     "summary": "Done. Summary:\n\n**Root cause found and fixed (r5 blocker):** The 8 runtime `ERROR: Failed loading resource` lines were not missing binaries \u2014 the six failing `.glb` assets had stale de-contented-era `.import` sidecars (`valid=false`, no `de\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-24T20:14:12.464Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 360722,
+    "summary": "Worker release isn't exposed as a callable tool in this session, so I'm leaving workspace lifecycle to the leader.\n\nCheck complete for issue #116 r5 (game-ready-blocks-map-load).\n\nVerified done: 9. Pending: 0 \u2014 0 due to build/test failures,\u2026",
+    "error": null
   }
 ]
