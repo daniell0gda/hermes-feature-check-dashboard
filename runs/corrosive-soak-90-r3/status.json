@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/corrosive-soak-90-r3/",
-  "heartbeat_at": "2026-08-24T09:25:50.758Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-24T09:25:50.758Z",
+  "heartbeat_at": "2026-08-24T09:29:48.445Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-24T09:29:48.445Z",
   "process_id": 338460,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T09:25:55.349805+00:00",
-    "last_success_at": "2026-08-24T09:25:55.348575+00:00",
+    "last_attempt_at": "2026-08-24T09:29:48.445811+00:00",
+    "last_success_at": "2026-08-24T09:25:59.954507+00:00",
     "last_error": null
   },
   "metrics": {

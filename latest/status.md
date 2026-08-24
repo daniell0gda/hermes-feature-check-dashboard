@@ -1,7 +1,4 @@
 ## ✅ Done
-- criterion
-
-## ⬜ Pending
 - The `corrosive_soak` perk is defined in Floodgate's progression file with maxLevels 3, type Unique, compatibility restricted to the `floodgate` tower only, so it never appears as a reward choice for other towers or in generic pools.
 - Each of the three levels carries its level's absolute armor-damage amplification of 25% / 45% / 70% respectively, so replaying levels 1..N on load lands on level N's value instead of compounding.
 - After `apply_progression` with the owned level, the Floodgate progression state exposes an enabled flag and the level's amplification fraction (0.25 / 0.45 / 0.70), and after `reset_for_new_game()` it reads enabled=false with amplification back to zero.
@@ -16,6 +13,9 @@
 - The headless gameplay harness stages a live armored enemy deterministically — the enemy is confirmed alive and at its staged armor value immediately before each hit action, using the max-armor-per-id report field rather than index-0 lookup — so no hit or observation ever targets an absent or unarmored spawn.
 - The headless gameplay harness proves end-to-end: with the perk applied at each level, a Floodgate discharge hit followed by another tower's armor-damage hit yields the level's amplified armor loss on the same enemy setup, and a matching unowned-perk control run yields no amplification.
 - The headless gameplay harness proves isolation on the same enemy setup: after the Floodgate discharge hit, a second Floodgate-sourced hit's armor effect matches the unowned-perk control run.
+
+## ⬜ Pending
+- criterion
 
 ## ❌ Impossible
 - criterion — reason
