@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-108-harness-cannot-boot-menu-scene-r2/",
-  "heartbeat_at": "2026-08-24T07:45:55.169Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-24T07:50:24.130Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-24T07:50:24.130Z",
   "process_id": 311680,
   "host": "f1a4230ec90b",
   "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:47:29.929239+00:00",
-    "last_success_at": "2026-08-24T07:45:59.711308+00:00",
+    "last_attempt_at": "2026-08-24T07:50:24.131502+00:00",
+    "last_success_at": "2026-08-24T07:47:34.219653+00:00",
     "last_error": null
   },
   "metrics": {}

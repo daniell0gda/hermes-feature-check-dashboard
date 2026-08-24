@@ -1,106 +1,101 @@
-# Check report — Exposed Plating perk (issue #89) — check (r3)
+# Check report: harness-can-boot-non-game-scenes (Issue #108) — revision-check-2
 
 classification: pass
 
 ## Verdict
 
-Fresh verification through the approved runner (`project=godot-td`,
-`workspace=poke-defense-godot/issue-exposed-plating`) confirms all five headless
-code criteria are green. The plan's `--check-only` typecheck command fails on
-this project for ANY status script (including pre-existing `BurnStatus.gd`)
-because `godot --check-only --script` does not resolve autoloads — it is a tool
-limitation, not a code defect; the authoritative parse/compile gate is the
-editor import + full harness run, both exit 0. The plan's "full test" is the
-`exposed_plating_vfx` harness, which passes 16/16 actions with zero failures.
-Per request.md, headless green ⇒ checker writes `classification: pass` so the
-leader can dispatch manual-tester; missing windowed PNGs/GIFs and the
-`ui_feels_broken` verdict are manual-tester deliverables and remain Pending,
-not code-check fixable.
+Fresh runner verification this iteration (project=godot-td,
+workspace=poke-defense-godot/issue-harness-cannot-boot-menu-scene, all through
+`run_project_cmd`): preflight, build/import gate, focused main_menu harness, and
+full default-scene regression all passed with exit 0. All 10 Done criteria hold
+on fresh evidence. The single Pending item is the `-Windowed` screenshot +
+`ui_feels_broken` manual sanity pass, which the plan assigns to the
+manual-tester profile and which a headless-only runner cannot produce; no
+`.gen/manual-report.md` exists yet. No source changes were made in revision 2;
+the diff is unchanged from prior iterations.
 
-## Verification commands (all via run_project_cmd, runner-reported exit codes)
+## Verification commands (all via run_project_cmd)
 
-1. Probe: `["godot","--version"]` — exit 0, Godot 4.4.1.stable.
-2. Editor import/parse gate: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
-   — exit 0 (9.2s), no script errors.
-3. Focused semantics harness:
-   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]`
-   — exit 0, result `.gen/harness/exposed_plating_once_per_shield/result.json`:
-   `status=pass`, 38 actions, 0 failed. Log shows per-level legs L1 1625→1614→1603
-   (×1.15), L2 →1613→1601 (×1.25), L3 →1612→1599 (×1.35); exactly one
-   `[EXPOSED] triggered ... level=N bonus=…% dur=…` line per leg; one trigger per
-   shield instance (`exposed_count == 1`); post-expiry hit at hp 1589 = exact −10
-   unamplified after `[EXPOSED] expire`.
-4. VFX lifecycle harness ("full test" per plan):
-   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]`
-   — exit 0, result `.gen/harness/exposed_plating_vfx/result.json`: `status=pass`,
-   16 actions, 0 failed, including `enemies.Orc Enemy_boss.exposed_vfx == true`
-   during the Exposed window and screenshot/record_frames steps correctly skipped
-   as `reason: headless`.
-5. Plan's typecheck command: `["godot","--headless","--check-only","--script",
-   "res://scripts/game/status/ExposedStatus.gd"]` — exit 1, `Identifier not found:
-   SimulationClock`. Control run on the UNRELATED pre-existing
-   `scripts/game/status/BurnStatus.gd` produces the identical error: the
-   `--check-only --script` mode does not register autoload singletons in this
-   project, so this command cannot validate any status script here. Gate treated
-   as satisfied by the stronger editor-parse gate (step 2) plus harness compile
-   and execution (steps 3–4). Not a feature failure.
+- Preflight: `["godot","--version"]` → exit 0, Godot 4.4.1.stable.official.49a5bc7b6.
+- Typecheck/build/import:
+  `["godot","--headless","--path",".","--editor","--quit-after","300"]`
+  → exit 0 (~10s); clean filesystem scan and import actions, no script errors.
+- Focused main_menu harness:
+  `["godot","--headless","--path",".","res://scenes/MainMenu.tscn","--","--harness=res://tests/scenarios/main_menu.json"]`
+  → exit 0 (~15s); `.gen/harness/main_menu/result.json` freshly rewritten:
+  status=pass, scene=res://scenes/MainMenu.tscn. Expectations all pass:
+  menu_orbit_moving=true (source=harness), enemies surface=2 >= 1,
+  PlayButton.disabled=false via source=node. Camera probes: yaw 0.1140 → 0.3498
+  rad across the 6s wait; screenshot action explicitly skipped headless as
+  designed. Boot log line observed live in fresh output:
+  `[HARNESS] booted declared scene=res://scenes/MainMenu.tscn embedded_game=true`.
+- Full default-scene regression:
+  `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/menu_backdrop_map.json"]`
+  → exit 0 (~6s); `[Harness] status=pass exit=0`; scenario JSON has no top-level
+  `scene` key and boots Main.tscn unchanged.
+- Retained negative probe `.gen/harness/negative_menu_game_action/result.json`:
+  status=fail with an explicit failed enemies.total expectation against
+  MainMenu.tscn — a game-dependent expectation fails its own run rather than
+  silently passing or timing out at boot.
 
-## Criterion-by-criterion evidence
+## Acceptance criteria — evidence
 
-1. Perk registration / purchasable at 3 levels — Done. `scripts/progression/global.json`
-   defines `exposed_plating` Common, maxLevels 3 (0.15/0.5s, 0.25/1s, 0.35/1.5s);
-   harness exercised apply_progression across L1→L2→L3.
-2. Once-per-shield-instance trigger (>0→0 only) — Done. Guard
-   `if before > 0.0 and enemy.armor <= 0.0:` in `_consume_armor()`
-   (EnemyHealthController.gd ~line 369); second hits against zero armor asserted
-   baseline damage with `exposed_multiplier == 1.0`; re-trigger requires armor regain.
-3. Multiplier per level for duration, clean expiry — Done. Exact hp deltas above
-   match ×1.15/×1.25/×1.35; post-expiry hit unamplified; expiry logged once.
-4. ExposedStatus/ExposedVFX following BurnStatus/BurnVFX pattern — Done at code
-   level. `scripts/game/status/ExposedStatus.gd`, `scripts/game/actors/effects/
-   ExposedVFX.gd`, lazy `show_exposed()`/`hide_exposed()` via EffectsManager;
-   headless machine proof passes (`exposed_vfx == true` during window, clean state
-   before breach). Remaining player-facing evidence moved to Pending (manual-tester).
-5. `[EXPOSED]` debug logging gated by `OS.is_debug_build()` — Done. Trigger line
-   (EnemyHealthController.gd `_apply_exposed_plating`) and expiry line
-   (ExposedStatus.gd lines 34/54) behind `OS.is_debug_build()`; observed live in
-   fresh run output.
+Done:
 
-## Test overlap check
+1. No `scene` key → Main.tscn unchanged — full menu_backdrop_map regression green (fresh).
+2. Declared `scene` boots as current scene — fresh focused result records
+   scene=res://scenes/MainMenu.tscn and passes.
+3. PS wrapper forwards declared scene — Run-Scenario.ps1 parses JSON `scene`,
+   falls back to res://scenes/Main.tscn on absence/parse failure, injects it in
+   place of the hard-coded path (DryRun prints the arg list). Static review;
+   pwsh is not executable inside the Godot worker image.
+4. Declared-scene boot wait stops without requiring a direct Game/placement;
+   `_await_game()` branches to `HarnessScenario.find_game_world()` once the
+   declared scene is current; game-dependent expectations fail their own run —
+   negative probe evidence above.
+5. Node-path value source resolves any property relative to scene root —
+   PlayButton.disabled resolved via source=node in the fresh focused run.
+6. Dotted field dig — `_node_property` splits field on "." and routes to the
+   existing `_dig()`; dig failure produces a failed resolve.
+7. Missing node/property/path/no-scene → explicit `_failure(...)`, never a
+   silent default.
+8. main_menu headless pass — fresh result.json status=pass.
+9. Orbit moving asserted over time — probe pair differs in position/basis/yaw.
+10. Enemies on surface layer within budget — wait_for_condition ok, actual=2 >= 1.
+11. Debug-build `[HARNESS]` boot log line naming scene + embedded-game presence —
+    observed live in the fresh focused-run output (AgentHarness.gd, gated behind
+    `OS.is_debug_build()`).
 
-Searched tests/scenarios: no prior exposed-plating coverage existed; both
-scenarios are new, non-overlapping, and each asserts its own criterion (exact hp
-deltas / multiplier values / once-per-instance counts / vfx visibility), not mere
-execution.
+Pending:
 
-## Changed files reviewed
+- `-Windowed` screenshot of menu over map backdrop plus `ui_feels_broken`
+  sanity pass: owned by the manual-tester profile per the plan's
+  `manual_testing` note; cannot be produced by the headless-only runner. Not
+  Impossible — concretely achievable outside the runner.
 
-git status: autoload/ProgressionManager.gd,
-scripts/game/actors/effects/EffectsManager.gd,
-scripts/game/actors/enemy/parts/EnemyHealthController.gd,
-scripts/progression/global.json, scripts/progression/managers/CurseProgressionManager.gd,
-scripts/testing/AgentHarness.gd, scripts/testing/HarnessValues.gd + new
-ExposedStatus.gd, ExposedVFX.gd, and both test scenario JSONs. Identical to the
-revision-1 reviewed diff; only declared workflow artifacts additionally changed;
-no scope creep. New code follows sibling-perk patterns, typed vars/guard clauses;
-no coding-rules violation found.
+## Changed-file quality
 
-## Quality notes
+Diff reviewed (`git diff HEAD`; untracked tests/scenarios/main_menu.json):
 
-quality-notes.md has one open advisory entry (static-breach-bypass): Static
-Breach zeroes armor without passing through `_consume_armor()`, so a Static-Breach
-shatter does not open an Exposed window. Issue wording pins the trigger site to
-`_consume_armor()`, so behavior appears intended; advisory only, does not demote
-any criterion. No new entries appended.
+- HarnessScenario.gd — additive typed const/var, documented static
+  `find_game_world()`. OK.
+- AgentHarness.gd — guard-clause branch, typed locals, debug-gated print, adds
+  `scene` to result payload. OK.
+- HarnessValues.gd — new documented `node` source; `_game_node()`/`_live_enemies()`
+  both route through the shared `find_game_world()` (iteration-1 quality note
+  stays RESOLVED). OK.
+- Run-Scenario.ps1 — surgical change, fallback preserved, parse failure warns
+  without aborting. OK.
+- tests/scenarios/main_menu.json — first non-game scenario; no overlap found
+  with any pre-existing test or scenario in tests/scenarios.
+
+Pre-existing benign run noise (invalid-UID warnings for HudTheme/UI textures,
+missing GLB loads under the dummy renderer, exit-time RID leak messages) exists
+on master paths untouched by this diff — not attributable to this feature.
+
+No new cross-cutting quality violations; quality-notes.md unchanged this iteration.
 
 ## Blockers
 
-None infra. Runner healthy throughout (probe, import gate, both harnesses exit 0).
-Remaining Pending work belongs to the manual-tester profile (windowed captures,
-30fps record_frames recording, `ui_feels_broken` verdict into
-`.gen/manual-report.md`).
-
-## Unverified items
-
-- Windowed visual captures / real-time recording / UI sanity verdict (manual-tester scope).
-- The plan's literal `--check-only` typecheck command (tool limitation documented above; superseded by stronger gates).
+None. The remaining work is the manual `-Windowed` screenshot/UI-sanity pass,
+which belongs to the manual-tester profile, not to code revision.

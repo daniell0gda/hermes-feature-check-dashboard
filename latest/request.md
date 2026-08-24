@@ -1,42 +1,59 @@
-# Request: Exposed Plating perk (issue #89) — continuation r2
+# Request: Issue #108 — Harness cannot boot a non-game scene, so the main menu is untestable
 
-- **Repo:** daniell0gda/poke-defense-godot
-- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/89
-project: godot-td
-workspace: poke-defense-godot/issue-exposed-plating
-- **Workspace:** poke-defense-godot/issue-exposed-plating
-- **Branch:** issue/exposed-plating (rebased onto origin/master @ e7910d0 on 2026-08-24; implementation is uncommitted WIP, preserve it)
-- **Request ID:** req-89-exposed-plating-r5 (r4 tester got the wrong runner key `poke-defense-godot` and produced no shots. request.md now has literal `project: godot-td` / `workspace: poke-defense-godot/issue-exposed-plating` so the dispatcher prompt is correct. Resume at manual-tester only.)
-- **Runner key:** `godot-td` — workers MUST use `project=godot-td`, `workspace=poke-defense-godot/issue-exposed-plating`. Never invent workspace names. Never use `project=poke-defense-godot`.
+- Project: poke-defense-godot
+- Runner key: `godot-td` (never the folder name)
+- Runner workspace: `poke-defense-godot/issue-harness-cannot-boot-menu-scene`
+- Branch: `issue/harness-cannot-boot-menu-scene` (rebased onto origin/master 2026-08-24)
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/108
+- Type: harness / ui · priority:medium
+- Request id: `req-108-harness-cannot-boot-menu-scene-r2`
 
-## Feature
+## Problem
 
-New progression perk `exposed_plating` (Common, global, 3 levels). When an enemy's armor transitions from >0 to 0 (same site as `_consume_armor()`), it gains an "Exposed" status:
+Every scenario used to run against `res://scenes/Main.tscn`, hard-coded in
+`.claude/skills/game-test/scripts/Run-Scenario.ps1`, and `AgentHarness._await_game()`
+blocked until `current_scene` had a `Game` child whose `Placement.tower_placement`
+was non-null. Non-game scenes such as `scenes/MainMenu.tscn` were unreachable.
 
-- L1: +15% damage taken, 0.5s
-- L2: +25% damage taken, 1s
-- L3: +35% damage taken, 1.5s
+## Implementation already present (keep it)
 
-## Historical run (context only, not evidence)
+Uncommitted work already exists on this worktree after a clean rebase onto
+`origin/master` plus a resolved `HarnessValues.gd` merge (keep both master's
+`nature` / `last_action.*` sources AND this issue's `node` source plus
+`harness.menu_orbit_moving`). Do not rewrite from scratch.
 
-Run `issue-89-exposed-plating` (2026-08-23) implemented the perk and passed headless harnesses, then ended `classification: fixable` / dashboard `failed` because the checker treated missing windowed VFX screenshots as a code-check failure. That skipped the manual-tester gate. Re-verify everything after the rebase. Do not assume old `.gen/harness` results are still valid.
+Touched files:
 
-## Acceptance criteria
+- `scripts/testing/HarnessScenario.gd` — optional `scene`, `DEFAULT_SCENE`, `find_game_world()`
+- `scripts/testing/AgentHarness.gd` — declared-scene boot wait, debug `[HARNESS] booted declared scene=...`
+- `scripts/testing/HarnessValues.gd` — `source=node` plus `menu_orbit_moving`
+- `.claude/skills/game-test/scripts/Run-Scenario.ps1` — forwards scenario `scene`
+- `tests/scenarios/main_menu.json` — boots `res://scenes/MainMenu.tscn`
 
-1. Perk definition registered like other progression perks; purchasable at 3 levels.
-2. Trigger fires exactly once per shield instance: only on the >0 → 0 transition. Hits while armor is already 0 do NOT re-trigger; re-trigger requires the enemy regaining armor first.
-3. Damage-taken multiplier applies for the debuff duration, per level values above, then expires cleanly.
-4. New VFX: `ExposedStatus`/`ExposedVFX` following the existing `BurnStatus`/`BurnVFX` pattern — cracked-shield emissive overlay for the duration, lazily instantiated by `EffectsManager` like `BurnVFX`/`OilVFX`.
-5. Debug logging: `[EXPOSED]` prefix lines on trigger and expiry, gated by `OS.is_debug_build()`.
+## Historical reference only (not fresh evidence)
 
-## Verification requirements
+Prior team-work run `issue-108-harness-non-game-scene-211634` (2026-08-22) reported
+checker `classification: pass` and a windowed manual-tester pass. That evidence is
+stale after the 26-commit rebase. Re-verify everything from scratch.
 
-- Fresh focused headless harness after the rebase: `tests/scenarios/exposed_plating_once_per_shield.json` and `tests/scenarios/exposed_plating_vfx.json` via `run_project_cmd` (`godot-td`).
-- If headless criteria 1–3 and 5 are green, checker must write `classification: pass` so the leader can dispatch manual-tester. Missing windowed PNGs/GIFs are a manual-tester job, not a code-check `fixable`.
-- Manual testing: REQUIRED (player-facing VFX). Windowed screenshots plus a real 30fps GIF from harness `record_frames` of the Exposed VFX on a real enemy. No headless-only closeout. End with `ui_feels_broken: yes|no`.
-- Windowed Godot args when Vulkan fails: `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`.
-- Native Godot through `run_project_cmd`; explicit scene argument before user args.
+## Done when
 
-## Preserve
+1. `HarnessScenario` accepts an optional `scene` (default `res://scenes/Main.tscn`) and
+   `Run-Scenario.ps1` passes it through instead of hard-coding the path.
+2. `AgentHarness._await_game()` no longer requires a `Game` with a live `Placement` when
+   the scenario declares it does not need one — a screenshot-and-expectation-only
+   timeline must run against any scene.
+3. A value source can read a property at an arbitrary node path under the current scene.
+4. A `main_menu` scenario boots `scenes/MainMenu.tscn`, waits, asserts the camera moved
+   and enemies are on the field, and takes a `-Windowed` screenshot of the menu over the map.
 
-Keep the existing uncommitted source diff and new files (`ExposedVFX.gd`, `ExposedStatus.gd`, both scenarios). Re-plan only unmet work (windowed evidence + any rebase breakage). Do not wipe the implementation.
+## Redo notes
+
+- Use runner key `godot-td`, workspace `poke-defense-godot/issue-harness-cannot-boot-menu-scene`.
+- Godot on Linux via runner; windowed evidence with
+  `--rendering-method gl_compatibility --audio-driver Dummy` when Vulkan fails.
+- Manual testing is required: player-facing menu over live backdrop → windowed PNGs/GIF,
+  plus overall UI-sanity (`ui_feels_broken: yes|no`) on every final screenshot.
+- Widen `main_menu.json` enemy wait if windowed software-GL flakes (prior note: 30s was
+  tight at ~1–2 fps). Do not weaken other criteria.
+- Do not commit, push, merge, or close.

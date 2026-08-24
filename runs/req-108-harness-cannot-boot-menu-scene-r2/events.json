@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-24T07:50:24.130Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 174201,
+    "summary": "All artifacts verified consistent: every criterion appears once in plan.md and exactly one cluster file; ui_scenario.md present; manual_testing: required set.\n\nFresh verification results (this run, post-rebase):\n- Focused headless `main_men\u2026",
+    "error": null
+  }
+]
