@@ -1,38 +1,35 @@
-# Acceptance Plan: water-conductive-flood-wet-splash
+# Acceptance Plan: fix-cave-harness-scenario-determinism
 
 ## Verification
 
-- Focused test: `["python3", "tests/run_all_shard.py", "0", "1", "water_conductive_flood"]`
-- Full test: `["python3", "tests/run_all_shard.py", "0", "1"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--import", "--quit-after", "5"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/cave_decline_seals_reveal_unseals.json"]`
+- Full test: `["bash", ".gen/run_full_suite.sh"]`
+- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "3"]`
 
 ## Clusters
 
-1. water-flood-perk-definition — files: `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd` — depends on: none
-- The perk definition `water_conductive_flood` exists in the Water tower progression data as a Unique and is reported eligible by progression lookup like other Water Uniques.
-- Applying the perk through progression raises its level to 1 and exposes its small-radius configuration (radius value greater than zero) via the Water progression manager's accessor surface.
-2. water-flood-splash-aoe — files: `scripts/game/actors/Projectile.gd`, `scripts/game/actors/effects/EffectsManager.gd` — depends on: 1
-- With `water_conductive_flood` applied, a Water projectile hit applies Wet to every alive enemy within the perk's configured radius of the hit target; a scenario proves at least two enemies Wet from one hit, not only the direct target.
-- Without the perk, a Water projectile hit applies Wet only to the direct target; nearby enemies within the would-be radius stay non-Wet (regression guard on existing behavior).
-- Enemies outside the configured radius are not made Wet by the hit even when the perk is applied.
-- On a Water hit with the perk applied, the spawned splash effect visually extends at least to the perk's configured radius so the covered area matches the Wet area (same small-radius visual approach the Ice cone uses).
-- Wet applied by the flood perk renders per-enemy through the existing EnemyHealthBar status icon for each affected enemy, with no new asset required.
-- Debug-build [WATER-FLOOD] log line per multi-enemy Wet application event, naming the hit target and the count of enemies Wetted in the radius.
+1. cave-scenario-determinism — files: `scripts/game/CaveSystem.gd`, `tests/scenarios/cave_decline_seals_reveal_unseals.json`, `tests/scenarios/cave_pending_seals_entrance_instantly.json` — depends on: none
+- A fresh run of the `cave_decline_seals_reveal_unseals` harness scenario completes every timeline step and reports status pass with exit code 0.
+- A fresh run of the `cave_pending_seals_entrance_instantly` harness scenario completes every timeline step and reports status pass with exit code 0.
+- After loading map_9, adding one hole and one exit inside the underground grid bounds, and carving a straight corridor between them, the scenario's wait for `underground.has_route_from <hole> == true` succeeds — random cave discovery during the carve no longer seals the corridor (random discovery disabled via harness before carving).
+- Both updated scenarios still exercise the fixture cave's decline/pending seal and reveal/unseal behaviour exactly as before (the fix does not weaken what the scenarios were written to prove); each scenario's notes[] documents why random discovery is disabled.
+- The diagnostic leftover `tests/scenarios/zz_probe_plain_corridor.json` is removed from the repository.
+- The root-cause change that made a straight carved corridor unroutable on map_9 (instant sealing of a randomly discovered cave during the scenario's own carve) is documented in `.gen/changes.md`, stating whether it is intended gameplay behaviour or a bug fixed in game code.
+- Debug-build [CAVE] log line per harness-driven disable of random cave discovery, naming the event and the resulting effective discovery chance so determinism of a run is confirmable from the log.
+2. cave-regression-suite — files: none — depends on: 1
+- The ten companion scenarios (`cave_spawn_within_grid`, `cave_discovery_chance`, `cave_discovery_long_carve`, `cave_discovery_pending_placement`, `cave_reveal_only_unseals_carved_blocks`, `carve_stops_at_discovered_cave`, `declined_cave_torches_extinguish`, `underground_grid_from_map`, `underground_map_cost_override`, `smoke_placement`) all report status pass with exit code 0 on a fresh run after the fix.
+- A fresh focused-run runner stdout/stderr contains no new Godot parse/script errors compared to the pre-existing baseline noise (known pre-existing HudTheme texture-load noise excluded).
+
+manual_testing: none
 
 ## Criteria
 
-- The perk definition `water_conductive_flood` exists in the Water tower progression data as a Unique and is reported eligible by progression lookup like other Water Uniques.
-- Applying the perk through progression raises its level to 1 and exposes its small-radius configuration (radius value greater than zero) via the Water progression manager's accessor surface.
-- With `water_conductive_flood` applied, a Water projectile hit applies Wet to every alive enemy within the perk's configured radius of the hit target; a scenario proves at least two enemies Wet from one hit, not only the direct target.
-- Without the perk, a Water projectile hit applies Wet only to the direct target; nearby enemies within the would-be radius stay non-Wet (regression guard on existing behavior).
-- Enemies outside the configured radius are not made Wet by the hit even when the perk is applied.
-- On a Water hit with the perk applied, the spawned splash effect visually extends at least to the perk's configured radius so the covered area matches the Wet area (same small-radius visual approach the Ice cone uses).
-- Wet applied by the flood perk renders per-enemy through the existing EnemyHealthBar status icon for each affected enemy, with no new asset required.
-- Debug-build [WATER-FLOOD] log line per multi-enemy Wet application event, naming the hit target and the count of enemies Wetted in the radius.
-
-manual_testing: required
-
-## Notes
-
-- Focused command assumes new scenario files named with substring `water_conductive_flood` under `tests/scenarios/` (e.g. an AoE-application scenario and a no-perk regression scenario); if the implementor names them differently, adjust the filter substring accordingly.
-- Windowed screenshot evidence of the splash radius covering nearby enemies is captured by manual testing per `.gen/ui_scenario.md`; headless cannot capture pixels.
+- A fresh run of the `cave_decline_seals_reveal_unseals` harness scenario completes every timeline step and reports status pass with exit code 0.
+- A fresh run of the `cave_pending_seals_entrance_instantly` harness scenario completes every timeline step and reports status pass with exit code 0.
+- After loading map_9, adding one hole and one exit inside the underground grid bounds, and carving a straight corridor between them, the scenario's wait for `underground.has_route_from <hole> == true` succeeds — random cave discovery during the carve no longer seals the corridor (random discovery disabled via harness before carving).
+- Both updated scenarios still exercise the fixture cave's decline/pending seal and reveal/unseal behaviour exactly as before (the fix does not weaken what the scenarios were written to prove); each scenario's notes[] documents why random discovery is disabled.
+- The diagnostic leftover `tests/scenarios/zz_probe_plain_corridor.json` is removed from the repository.
+- The root-cause change that made a straight carved corridor unroutable on map_9 (instant sealing of a randomly discovered cave during the scenario's own carve) is documented in `.gen/changes.md`, stating whether it is intended gameplay behaviour or a bug fixed in game code.
+- Debug-build [CAVE] log line per harness-driven disable of random cave discovery, naming the event and the resulting effective discovery chance so determinism of a run is confirmable from the log.
+- The ten companion scenarios (`cave_spawn_within_grid`, `cave_discovery_chance`, `cave_discovery_long_carve`, `cave_discovery_pending_placement`, `cave_reveal_only_unseals_carved_blocks`, `carve_stops_at_discovered_cave`, `declined_cave_torches_extinguish`, `underground_grid_from_map`, `underground_map_cost_override`, `smoke_placement`) all report status pass with exit code 0 on a fresh run after the fix.
+- A fresh focused-run runner stdout/stderr contains no new Godot parse/script errors compared to the pre-existing baseline noise (known pre-existing HudTheme texture-load noise excluded).
