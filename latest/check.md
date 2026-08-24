@@ -1,93 +1,52 @@
-# Check report — issue-exposed-plating (revision-check-1, iteration 2)
+# Check report: game-ready-blocks-map-load (issue #116, r3, revision-check-1)
 
 classification: pass
 
 ## Verdict
 
-All nine acceptance criteria verified Done with fresh evidence through
-`run_project_cmd` (project=godot-td,
-workspace=poke-defense-godot/issue-exposed-plating). No host-shell Godot was
-used. The revision fixed the previously missing player-facing proof: the
-worktree's `models/glb/Orc Enemy.glb` was a 131-byte git-LFS pointer (git-lfs
-absent in the runner image), so the boss rendered invisible and no wash could
-be seen. The real 146,420-byte blob is restored, the `.import` remap repaired,
-and fresh windowed close-up captures show the amber wash clearly.
+All nine acceptance criteria are verified Done with fresh evidence produced this
+iteration through the approved project runner (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-game-ready-blocks-map-load). Build/import
+gate and both test commands pass. No open quality violations in the changed
+code; one advisory note is recorded in quality-notes.md.
 
-## Verification commands (all via run_project_cmd, exit codes from the runner)
+## Commands and results (all via run_project_cmd, exit codes from the runner)
 
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Preflight | `["godot","--version"]` | 0 | Godot 4.4.1.stable.official.49a5bc7b6 |
-| Typecheck/build | `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | Import/scan OK; pre-existing invalid-UID warnings in legacy `.tres/.tscn` only |
-| Focused test | `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]` | 0 | `[Harness] status=pass exit=0`; fresh `.gen/harness/exposed_plating_once_per_shield/result.json`, 6/6 expectations pass |
-| Full test | `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]` | 0 | `[Harness] status=pass exit=0`; fresh `.gen/harness/exposed_plating_vfx/result.json`, 7/7 expectations pass incl. log `contains [EXPOSED] triggered on` and `[EXPOSED] expire on` |
+- Preflight: `["godot","--version"]` — exit 0, Godot 4.4.1.stable.official.49a5bc7b6.
+- Typecheck/build gate: `["godot","--headless","--path",".","--import"]` — exit 0, clean import (pre-existing invalid-UID warnings in HudTheme.tres/UI.tscn only; not part of this diff's scope).
+- Focused test: `["godot","--headless","--path",".","res://tests/loading/test_map_loading_screen_driving.tscn","--log-file",".gen/check_r4_driving.log"]` — exit 0, "7 ok, 0 failed"; `.gen/loading_harness/result.json` status=pass, max_frame_msec=88.7 (<100), 175 bar samples, 100+ world-build bar steps, full phase-caption trace.
+- Full test: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/map_build_phases.json","--log-file",".gen/check_r4_map_build_phases.log"]` — exit 0, `[Harness] status=pass exit=0`, 7/7 expectations pass (`.gen/harness/map_build_phases/result.json`).
+- Regression: `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/menu_backdrop_map.json"]` — exit 0, status=pass, 4/4 expectations.
 
-Fresh focused log shows the full behavior chain live at all three levels:
-`[Armor] Orc Enemy_boss depleted: 60.0 armor removed by 60.0 armor damage` →
-`[EXPOSED] trigger on Orc Enemy_boss dur=0.5/1.0/1.5` →
-`[EXPOSED] triggered on … level=1/2/3 bonus=15%/25%/35%` → exactly one trigger
-per shield instance → `[EXPOSED] expire on Orc Enemy_boss` →
-`exposed_multiplier` back to 1.0 (`exposed == false`). The log also shows
-`[ENEMY DEBUG] Loaded GLB model: res://models/glb/Orc Enemy.glb` (previously
-"GLB not found"), confirming the model fix is live.
+## Acceptance criteria evidence
 
-Windowed evidence (from the revision's windowed run, exit 0, status=pass,
-`record_frames captured=6 saved=6`): `.gen/screenshots/` contains
-`before_breach_no_wash.png`, `exposed_wash_on_breach.png`,
-`wash_cleared_after_expiry.png`, `exposed_window.gif` (ffmpeg 6 fps from the 6
-real consecutive record frames in `.gen/harness/exposed_plating_vfx/record/`).
-Checker eye-verification of the fresh PNGs: before = natural green body,
-during = unmistakable bright amber/orange wash over the whole body, after =
-green again matching before; enemy fills a large part of the frame
-(camera_focus distance 3.0), debug panel not covering the enemy.
-`.gen/manual-report.md` exists, embeds the evidence, and ends with
-`ui_feels_broken: no`.
+1. Bar advances in multiple increments during world build — PASS. result.json status=pass with 175 bar samples and 100+ distinct world-build steps past the 50% threaded-load boundary; asserted by the driving test's `>=3 distinct increments` check (test_map_loading_screen_driving.gd line 112).
+2. Building-phase caption replaces static "Building Map" — PASS. result.json captions trace "Building Map - Loading Map Configuration" through "Building Map - Finalizing".
+3. Missing/unparseable map id falls back to map_1 before world build — PASS. Fresh driving log: `MapLoadingScreen: map 'no_such_map_here' is missing or unreadable, using map_1` appears before the first `[MAP_BUILD]` line; world built on map_1; both fallback checks pass (7 ok / 0 failed).
+4. No post-boot driven-load frame over ~100ms — PASS. Test-measured max_frame_msec 88.7 < 100, asserted by `_check(_max_frame_msec < 100.0)` (test line 119). Warm Models 1..34 pre-parse slices keep vegetation slices at 0-6ms in the fresh log; residual >100ms phases appear only on the no-driver boot warm-up path, which the scenario scopes out of the budget.
+5. Debug `[MAP_BUILD]` line per completed phase with elapsed ms — PASS. ~190 "done in N ms" lines in the fresh driving log; map_build_phases regex expectations (including the `{8,}` phase-line regex) all pass.
+6. Phased load playable without driver — PASS. map_build_phases harness: map_id=map_1, game_state=playing, total_waves=4 > 0, enemies.surface=1 >= 1, wave 1 triggered.
+7. Direct Main.tscn boot completes every phase — PASS. Same harness run logs all phases through 'Finalizing' with no driver registered.
+8. `setup_as_menu_backdrop` unchanged — PASS. menu_backdrop_map status=pass, 4/4 expectations, exit 0.
+9. Buildings before trees/rocks; `record_placed_counts()` both paths — PASS. Fresh logs show phase order Warm Models → Instantiate Warm → Grass → Buildings → Trees 1/4..4/4 → Bushes → Flowers → Dead Trees → Rocks → Record Counts in both driven and no-driver runs.
 
-## Acceptance criteria status
-
-All nine plan criteria Done:
-1–2. Fresh focused harness pass — perk registered (`exposed_plating == 3`
-progression expectation), trigger exactly once per >0→0 transition
-(`EnemyHealthController._consume_armor` gated on `before > 0.0 and
-armor <= 0.0`).
-3. Multiplier applies for the per-level duration then expires cleanly
-(`exposed_multiplier == 1.0`, `exposed == false` after `[EXPOSED] expire on`).
-4. `ExposedStatus`/`ExposedVFX` following the BurnStatus/BurnVFX pattern,
-lazily instantiated by `EffectsManager.show_exposed()`; `exposed_vfx`
-expectation true during the window.
-5. `[EXPOSED]` logging gated by `OS.is_debug_build()` — log-expectation
-assertions pass in both fresh headless runs.
-6. Player-facing proof — close-up framing, hidden debug panel, three stills
-(green / amber / green, eye-verified by this checker on the fresh PNGs),
-6-frame real `record_frames` GIF, PNGs+GIF in `.gen/screenshots/`, embedded in
-`.gen/manual-report.md` ending `ui_feels_broken: no`. The strengthen clause was
-not needed: root cause was the missing GLB, not weak VFX.
+Manual testing (required): present and visually inspected this iteration —
+`.gen/screenshots/loading_screen_midbuild_{0,1,2}.png` (2026-08-24 14:46) show a
+partially filled bar past the threaded-load portion with captions such as
+"Building Map - Loading Map Configuration".
 
 ## Changed-file quality findings
 
-Diff vs HEAD: 9 modified files + new `ExposedVFX.gd`, `ExposedStatus.gd`, two
-scenario JSONs, restored GLB.
-- No type-cast violations; enums referenced by identifier; surgical scope;
-  ExposedVFX follows the established StaticBreachVFX/BurnVFX material-override
-  pattern; config access mirrors the existing `get_frozen_fracture_config`
-  shape.
-- New scenario tests do not overlap existing coverage — no other scenario
-  exercises `exposed_plating`.
-- Minor advisory only: `var _saved_camera_transform` declared mid-file between
-  methods in `HarnessActions.gd` (GDScript-legal, unconventional placement).
-- Pre-existing invalid-UID warnings in legacy `.tres/.tscn` files are unrelated
-  legacy state, not part of this diff.
-
-## Quality notes
-
-Re-checked `.gen/quality-notes.md`: entry `static-breach-bypass` (iteration 2)
-is advisory and still open — Static Breach's separate armor-zero path still
-bypasses `_consume_armor()`, but issue wording pins the trigger site to
-`_consume_armor()`, so behavior appears intended. Left open for leader
-confirmation; no new entries appended. No scope creep found in the diff; the
-GLB restore and `.import` repair were necessary setup fixes for this issue's
-own evidence, not unrelated changes.
+- `git diff HEAD -- scripts tests` (740 added lines) contains zero newly added type casts (`as X`); only comment prose uses "as". The iteration-3 cast findings (Game.gd, NatureDecoration.gd) are resolved in the current tree.
+- The driving test asserts the criteria (increments, caption trace, fallback, <100ms frame, MAP_BUILD lines) and writes `.gen/loading_harness/result.json`; no overlap with pre-existing harness scenarios, which cover the no-driver and backdrop paths instead.
+- No scope creep: changed files (LOADING_SYSTEM.md, LoadingScreen.gd, MapLoadingScreen.gd, Game.gd, NatureDecoration.gd, AssetPreloader.gd, tests/loading/*, tests/scenarios/map_build_phases.json) all serve the issue; workflow artifacts excluded.
+- Advisory (quality-notes.md, does not demote): Game.gd line 476 carries a pre-existing `# TEMP TEST: 3x width` path-width multiplier — it exists verbatim on HEAD (line 299) and is not a violation introduced by this diff.
+- No other violations against /opt/data/coding_rules.md or the project CLAUDE.md in newly added code.
 
 ## Blockers
 
-None. Runner reachable and used for every project command; no host-shell Godot.
+None. Runner healthy throughout; all commands ran through run_project_cmd.
+
+## Unverified items
+
+None.

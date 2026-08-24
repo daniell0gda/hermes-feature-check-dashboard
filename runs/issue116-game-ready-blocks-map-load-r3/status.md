@@ -12,4 +12,3 @@
 ## ⬜ Pending
 
 ## ❌ Impossible
-
