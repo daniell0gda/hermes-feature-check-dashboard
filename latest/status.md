@@ -9,7 +9,6 @@
 - A harness value source exposes the post-pan camera basis/yaw delta (from the camera basis, not position-offset atan2) so scenarios can assert that a scripted middle-drag changed translation only, not orientation.
 - The focused scenario arms carve mode on the underground layer, then drives a middle-button press followed by mouse motion events through the real `_input` path (not a rotate-camera shortcut) and asserts the camera position translated by the expected amount while the basis.x-yaw delta is below 0.05 rad.
 - The `carve_camera_drag_spin` scenario's rotate action actually invokes camera rotation (its harness call does not fail with an argument-conversion error) and still passes with yaw stable after a large vertical drag past the old clamp.
-- The existing `carve_camera_topdown` scenario still passes unchanged after the pan fix.
 
 ## ⬜ Pending
 (none)
