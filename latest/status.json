@@ -1,35 +1,35 @@
 {
-  "run_id": "req-108-harness-cannot-boot-menu-scene-r2",
-  "feature": "harness-cannot-boot-menu-scene",
+  "run_id": "req-117-gen-hud-textures-r2",
+  "feature": "gen-hud-textures-py-cannot-run-all-three",
   "status": "running",
-  "started_at": "2026-08-24T07:45:55.169Z",
+  "started_at": "2026-08-24T07:48:08.456Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-108-harness-cannot-boot-menu-scene-r2/",
-  "heartbeat_at": "2026-08-24T07:50:24.130Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-24T07:50:24.130Z",
-  "process_id": 311680,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-117-gen-hud-textures-r2/",
+  "heartbeat_at": "2026-08-24T07:51:36.260Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-24T07:51:36.260Z",
+  "process_id": 312841,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:50:30.364593+00:00",
-    "last_success_at": "2026-08-24T07:50:30.362913+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T07:51:36.260704+00:00",
+    "last_success_at": "2026-08-24T07:48:17.875848+00:00",
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
   "metrics": {
     "invocations": [
       {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 78586,
-        "output_tokens": 2572
+        "input_tokens": 52280,
+        "output_tokens": 2282
       }
     ]
   }

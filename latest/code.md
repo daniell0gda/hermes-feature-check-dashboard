@@ -1,20 +1,44 @@
-# Coder report: implementation\n\n# Coder report: implementation (revision-code-2)
+# Coder report: remove-dead-hud-texture-generator\n\n# Coder report: remove-dead-hud-texture-generator (revision 2)
 
 ## Changed files
-- none — no source changes this revision; all criteria were already implemented in prior iterations and re-verified green.
+
+All changes were already committed in the previous iteration as `5f6b15a`
+("chore: remove dead gen_hud_textures.py generator and its unreferenced
+outputs"); this revision's fixable blocker (uncommitted worktree) is resolved —
+`git status --short` now shows only the pre-existing untracked
+`.gen-blocked-117-gen-hud-20260823-attempt1/` archive, which predates this run
+and was not touched. Diff vs starting revision 9d54964:
+
+- `tools/gen_hud_textures.py` — deleted (573 lines; unrunnable dead code, woden_panel source JPGs lost)
+- `textures/ui/hud/slot_empty.png`, `wood_slot.png`, `wood_panel_wide.png`, `wood_panel_wide_dark.png` — deleted (unreferenced outputs; no `.import` sidecars existed)
+- `tools/gen_hud_icons.py` — docstring edit removing the false icon_coin/icon_heart provenance claim
+- `tools/check_hud_asset_refs.py` — new repo-local guard checker (stdlib only)
 
 ## Criteria
-- All cluster 1/2/3 implementation criteria — Done (fresh verification below).
-- `-Windowed` screenshot criterion — Pending: headless-only runner cannot render windowed; requires manual-tester profile per plan's `manual_testing` note.
 
-## Commands and results (all via run_project_cmd, project=poke-defense-godot)
-- `["godot","--version"]` — exit 0; Godot 4.4.1.stable.official.49a5bc7b6.
-- Focused `["godot","--headless","--path",".","res://scenes/MainMenu.tscn","--","--harness=res://tests/scenarios/main_menu.json"]` — exit 0 (~14s); `.gen/harness/main_menu/result.json` rewritten fresh: status=pass, scene=res://scenes/MainMenu.tscn. Expectations all pass: menu_orbit_moving=true (source=harness), enemies.surface=2 >= 1, PlayButton.disabled=false via source=node. Boot log line observed live: `[HARNESS] booted declared scene=res://scenes/MainMenu.tscn embedded_game=true`.
-- Full regression `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/menu_backdrop_map.json"]` — exit 0 (~6s); `[Harness] status=pass exit=0`; scenario has no top-level `scene` key and boots Main.tscn unchanged.
-- Build/import gate `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0 (~10s); clean import scan, no script errors.
+All 7 criteria — Done (verified fresh this revision):
+
+- No tools/*.py missing-_source refs — check_hud_asset_refs.py exit 0
+- gen_hud_textures.py gone — absent from tree and from HEAD
+- icon_coin/icon_heart/towers_panel byte-identical to 9d54964 — md5 verified:
+  f7f27e0b…, 363528e9…, 781cdec1… match in both
+- No dangling hud texture references — checker pass green
+- Unreferenced generator outputs deleted — all four absent
+- gen_hud_icons.py docstring updated — grep finds zero `gen_hud_textures` refs under tools/
+- Godot headless import/editor runs clean — both exit 0 via runner
+
+## Commands and results
+
+Run fresh this revision through run_project_cmd
+(project godot-td, workspace poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three):
+
+- `python3 tools/check_hud_asset_refs.py` — exit 0; "OK: all tool _source references resolve; all referenced hud textures exist"
+- `godot --headless --path . --import --quit-after 300` — exit 0; full scan completed, no errors
+- `godot --headless --path . --editor --quit-after 300` — exit 0; editor load completed, no errors
 
 ## Notes
-- No code edits were needed for revision 2; the working tree is unchanged from the previous iteration.
-- Pre-existing benign noise in runs (not introduced by this work): invalid-UID warnings for HudTheme/UI textures, missing GLB model load errors (dummy renderer), exit-time RID leak messages from the headless dummy renderer.
-- The only outstanding item remains the manual `-Windowed` screenshot + `ui_feels_broken` sanity pass.
+
+- Previous blocker resolved: changes are committed in `5f6b15a`; worktree clean.
+- Known pre-existing legacy state (unchanged): HudTheme.tres stale-UID warning;
+  unrelated to removed textures.
 \n

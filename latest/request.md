@@ -1,59 +1,93 @@
-# Request: Issue #108 — Harness cannot boot a non-game scene, so the main menu is untestable
+# Request: gen-hud-textures-py-cannot-run-all-three (r2)
 
-- Project: poke-defense-godot
-- Runner key: `godot-td` (never the folder name)
-- Runner workspace: `poke-defense-godot/issue-harness-cannot-boot-menu-scene`
-- Branch: `issue/harness-cannot-boot-menu-scene` (rebased onto origin/master 2026-08-24)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/108
-- Type: harness / ui · priority:medium
-- Request id: `req-108-harness-cannot-boot-menu-scene-r2`
+**Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/117
+**Project runner:** `godot-td`
+**Workspace:** `poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three`
+**Branch:** `issue/gen-hud-textures-py-cannot-run-all-three`
+**Request id:** `req-117-gen-hud-textures-r2`
+**Starting revision:** `9d54964` (`origin/master` after hard reset)
+
+## Why this is a fresh run
+
+Daniel: "Rerun from the beginning, plan wasn't produced."
+
+The previous run (`117-gen-hud-20260823`) coded and checked **without** writing `.gen/plan.md` or `.gen/clusters/*.md`. That attempt is archived at:
+
+`.gen-blocked-117-gen-hud-20260823-attempt1/`
+
+Historical commit `d06b5de` (`fix: drop broken gen_hud_textures.py and unused crate-derived HUD slices`) is **unverified reference only**. The worktree is reset to `origin/master`. Do **not** treat the archived check as done. Do **not** skip the planner.
+
+## Hard planner gate
+
+The planner **must** write:
+
+- `.gen/plan.md`
+- one or more `.gen/clusters/<id>.md` with exclusive file ownership, `parallel: true|false`, dependencies, acceptance criteria
+
+Do not implement until those artifacts exist. Do not invent nested plan state.
+
+## Plain language
+
+The HUD crate-texture generator cannot run because its three source JPGs are gone. Either restore those sources so the script works, or delete the dead script and keep the still-used HUD icons.
 
 ## Problem
 
-Every scenario used to run against `res://scenes/Main.tscn`, hard-coded in
-`.claude/skills/game-test/scripts/Run-Scenario.ps1`, and `AgentHarness._await_game()`
-blocked until `current_scene` had a `Game` child whose `Placement.tower_placement`
-was non-null. Non-game scenes such as `scenes/MainMenu.tscn` were unreachable.
+`tools/gen_hud_textures.py` (572 lines) cannot run. Its three sources are absent from the repo and from disk:
 
-## Implementation already present (keep it)
+- `textures/_source/woden_panel.jpg`
+- `textures/_source/woden_panel_wide.jpg`
+- `textures/_source/woden_panel_wide_darkonly.jpg`
 
-Uncommitted work already exists on this worktree after a clean rebase onto
-`origin/master` plus a resolved `HarnessValues.gd` merge (keep both master's
-`nature` / `last_action.*` sources AND this issue's `node` source plus
-`harness.menu_orbit_moving`). Do not rewrite from scratch.
+Current wood-panel redesign uses `panel-square.png` / `panel-wide.png` via `tools/prep_hud_assets.py`.
 
-Touched files:
+Still-used outputs under `textures/ui/hud/` (keep these unless you re-derive them):
 
-- `scripts/testing/HarnessScenario.gd` — optional `scene`, `DEFAULT_SCENE`, `find_game_world()`
-- `scripts/testing/AgentHarness.gd` — declared-scene boot wait, debug `[HARNESS] booted declared scene=...`
-- `scripts/testing/HarnessValues.gd` — `source=node` plus `menu_orbit_moving`
-- `.claude/skills/game-test/scripts/Run-Scenario.ps1` — forwards scenario `scene`
-- `tests/scenarios/main_menu.json` — boots `res://scenes/MainMenu.tscn`
+- `icon_coin.png` — `scenes/ui/widgets/PricedButton.tscn`
+- `towers_panel.png` — `themes/hud/HudTheme.tres`
+- `icon_heart.png` — `scenes/UI.tscn`
+- `wood_slot.png`, `slot_empty.png` (script also writes these; confirm live references before deleting)
 
-## Historical reference only (not fresh evidence)
+The script already documents that the JPGs are missing (comment at lines 16–20). That comment is not a fix.
 
-Prior team-work run `issue-108-harness-non-game-scene-211634` (2026-08-22) reported
-checker `classification: pass` and a windowed manual-tester pass. That evidence is
-stale after the 26-commit rebase. Re-verify everything from scratch.
+## Acceptance
 
-## Done when
+One of:
 
-1. `HarnessScenario` accepts an optional `scene` (default `res://scenes/Main.tscn`) and
-   `Run-Scenario.ps1` passes it through instead of hard-coding the path.
-2. `AgentHarness._await_game()` no longer requires a `Game` with a live `Placement` when
-   the scenario declares it does not need one — a screenshot-and-expectation-only
-   timeline must run against any scene.
-3. A value source can read a property at an arbitrary node path under the current scene.
-4. A `main_menu` scenario boots `scenes/MainMenu.tscn`, waits, asserts the camera moved
-   and enemies are on the field, and takes a `-Windowed` screenshot of the menu over the map.
+1. Restore the crate JPGs to `textures/_source/` and `gen_hud_textures.py` runs clean, or
+2. Re-derive still-used outputs from current sources via `prep_hud_assets.py` **or** keep the committed live PNGs unchanged, then delete `gen_hud_textures.py` plus **unreferenced** dead outputs.
+
+Either way `tools/` must contain no script whose sources are missing.
+
+Prefer option 2 if `git log --all -- '*woden_panel*'` is empty. Option 1 is valid only if the JPGs can actually be recovered.
+
+If option 2: do **not** delete `icon_coin.png`, `icon_heart.png`, or `towers_panel.png`. Only delete outputs that are unused by scenes/themes/scripts.
+
+`tools/gen_hud_icons.py` still claims `icon_coin` / `icon_heart` come from `gen_hud_textures.py` — update that docstring if the generator is deleted.
+
+## Verification (runner only)
+
+Project `godot-td`, workspace `poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three`.
+
+Tokenized `run_project_cmd` examples:
+
+```json
+{"project":"godot-td","workspace":"poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three","cmd":["python3","--version"]}
+{"project":"godot-td","workspace":"poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three","cmd":["godot","--headless","--path",".","--editor","--quit-after","300"]}
+```
+
+- Prove no remaining `tools/*.py` references missing `_source` files.
+- Prove live HUD assets still exist and are referenced.
+- Editor/import gate if textures change.
+- Git/worktree ops are Hermes-side, not runner: `git diff --check`, `git status --short`.
+
+## Manual testing
+
+`manual_testing: none` if committed player-facing PNGs are unchanged.
+If HUD art look changes, `manual_testing: required` with windowed shots (never `--headless`) plus `ui_feels_broken: yes|no`.
 
 ## Redo notes
 
-- Use runner key `godot-td`, workspace `poke-defense-godot/issue-harness-cannot-boot-menu-scene`.
-- Godot on Linux via runner; windowed evidence with
-  `--rendering-method gl_compatibility --audio-driver Dummy` when Vulkan fails.
-- Manual testing is required: player-facing menu over live backdrop → windowed PNGs/GIF,
-  plus overall UI-sanity (`ui_feels_broken: yes|no`) on every final screenshot.
-- Widen `main_menu.json` enemy wait if windowed software-GL flakes (prior note: 30s was
-  tight at ~1–2 fps). Do not weaken other criteria.
-- Do not commit, push, merge, or close.
+- Do not invent runner workspace names (`godot-td/issue-117` is wrong).
+- Never use host `godot` / `npm` instead of `run_project_cmd`.
+- Worker image may lack Pillow; do not require regenerating committed PNGs if they stay byte-identical.
+- Dashboard publication is required on the leader path; include the public run URL in the terminal summary.
