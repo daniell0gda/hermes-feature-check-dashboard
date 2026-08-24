@@ -1,54 +1,51 @@
-# Request: Continue issue #90 — Progression: Corrosive Soak perk (Floodgate)
+# Request: traps_frostbite_fangs (visual evidence redo)
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/90
-Workspace: /workspace/git-workspaces/poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat
-Branch: issue/progression-corrosive-soak-perk-floodgat (reset to origin/master @ e7910d0; prior r1 source restored and 3-way merged)
-Runner: project `godot-td`, workspace `poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat`. Do NOT invent other runner/workspace names.
-
-Request id: corrosive-soak-90-r2
-
-## Continuation (do not start from scratch)
-
-r1 (`corrosive-soak-90-r1`) planned, then the code worker died (~2026-08-23T18:32Z) before check. Source was left uncommitted. Historical r1 artifacts (plan, clusters, harness timeout) are context only — re-verify on this tree.
-
-Already on the worktree (keep and finish; do not rewrite from scratch):
-- Perk `floodgate_corrosive_soak` Unique 3 levels 25/45/70% in `scripts/progression/floodgate_tower.json`
-- `FloodgateTowerProgressionManager.gd` apply/reset/config + `ProgressionManager.get_floodgate_corrosive_soak_config()`
-- Corroded status on Enemy / EnemyStatusController; rust tint via `WaterSubmersionSystem.set_enemy_corroded`
-- Amplification in `EnemyHealthController._apply_corrosive_soak_if_needed` excluding `tower_type_id == floodgate`
-- Floodgate discharge marks via `_mark_corroded_if_needed`
-- Harness helpers + `tests/scenarios/floodgate_corrosive_soak.json`
-
-Master moved 14 commits; `ProgressionManager.gd`, `HarnessActions.gd`, `HarnessValues.gd` were 3-way merged with undermining + press_button + reward_popups. Preserve those master behaviors.
-
-## r1 harness failure (must fix)
-
-`.gen/harness/floodgate_corrosive_soak/result.json` status=timeout:
-- Perk apply and Corroded mark worked (`corroded_count==1`, `amplification==0.25`, `corroded_marked:true`)
-- Then `armor_hit` (balista, armor_damage 40) followed by `enemies.Alien.armor == 950.0` saw **actual 0.0**
-- Likely observation of an unarmored spawn instead of the staged Alien (index-0 vs max-armor-by-id). `HarnessValues._enemy_report` now takes max armor per id — assert via `enemies.Alien.armor` (report) not `enemy.armor` (index 0). Stage armor immediately before the hit and wait 2–3 poll ticks after.
-- Expected L1 math: staged 1000 − 40×1.25 = 950. Floodgate follow-up must match unowned control. HP unchanged.
-
-Treat r1 result as stale. Re-run the focused harness fresh after any harness/scenario fix.
+- request_id: req-83-traps-frostbite-fangs-r2
+project: godot-td
+workspace: poke-defense-godot/issue-traps-frostbite-fangs
+issue: https://github.com/daniell0gda/poke-defense-godot/issues/83
+- branch: issue/traps-frostbite-fangs
+- intent: continuation — keep the perk implementation; fix failed visual proof
 
 ## Feature
 
-New Unique progression perk `corrosive_soak` for Floodgate Tower only, 3 levels:
-- Enemies hit by Floodgate's discharge gain a "Corroded" status.
-- While Corroded, armor-damage taken from **all other towers'** hits is increased by +25% / +45% / +70% by level.
-- Floodgate's own hits are unaffected by its own Corroded status (setup effect, not self-buff).
-- Implemented in `FloodgateTowerProgressionManager.gd` alongside `floodgate_saltwater_purge`.
-- Visual: extend wet/soak shader (`WaterSubmersionSystem`) with a distinct rust tint — no new VFX class.
+Traps with Unique perk `traps_frostbite_fangs` (L1-3) chill on hit via existing `EffectsManager.apply_frozen`. Level scales magnitude/duration. Reuse frost overlay VFX.
 
-## Acceptance criteria
-1. Perk defined with 3 levels and correct amplification values (25/45/70%), Floodgate-only, type Unique.
-2. Corroded status applied on Floodgate discharge hits; amplifies armor-dmg from all towers EXCEPT Floodgate itself.
-3. Editor gate passes (`godot --headless --path . --editor --quit-after 300`).
-4. Focused headless gameplay harness proves: enemy hit by Floodgate → subsequent armor-dmg hit from another tower is amplified per level; Floodgate-own follow-up is not amplified.
-5. Manual testing: required (rust tint is player-facing). Windowed screenshots/GIF via runner, never --headless for manual evidence. Include `ui_feels_broken: yes|no`.
+Implementation is already in the worktree (uncommitted). Do not revert it. Do not re-invent the perk.
 
-## Notes
-- Use exact scene argument before user args in harness commands.
-- Inspect raw Godot stdout for Parse Error / Failed loading resource, not just harness status=pass.
-- Do not commit/push/close.
-- Do not revert unrelated master files. Ignore `.glb` LFS noise; do not commit models.
+## Why this run exists
+
+req-83-traps-frostbite-fangs check/manual-tester claimed pass. Human review of the published shots FAILED:
+
+- `frostbite_fangs_chilled_hit.png` is a wide underground view. The trap is a tiny brown cube on a distant stone pad. Any enemy is a speck. Frost tint is not readable.
+- `frostbite_fangs_chilled_enemy_zoom.png` cropped empty floor. It does not show the trap or an enemy.
+- That does not confirm "frost overlay renders when triggered from a trap."
+
+Old `.gen/check.md`, `status.md`, `manual-report.md`, and `screenshots/` are historical. They are not fresh evidence.
+
+## Required this run
+
+1. Keep Unique `traps_frostbite_fangs` L1-3, `apply_frozen` on trap hit, per-level scale, existing VFX, ownership/stacking.
+2. Fix the focused scenario so windowed shots prove the chill:
+   - Top-down (not side), camera close on the placed trap + live enemy at hit time.
+   - Enemy large enough to see body color. Frost/ice tint must be obvious vs a normal green Cactoro.
+   - Explicit `screenshot` and 30fps `record_frames` GIF (not a still slideshow).
+3. Checker must fail (`classification: fixable`) if shots do not clearly show a frost-tinted enemy next to the trap. Tiny distant specks fail. Wrong crop fails. Headless state tags alone do not pass the visual criterion.
+4. `ui_feels_broken: yes` fails the manual test even if state assertions pass.
+5. Re-run editor import gate + focused harness through the runner after any scenario/source change.
+
+## Runner (mandatory)
+
+Use only `run_project_cmd` with:
+- project=`godot-td`
+- workspace=`poke-defense-godot/issue-traps-frostbite-fangs`
+
+Never `project=poke-defense-godot`. Never host-shell Godot.
+
+## Manual testing
+
+`manual_testing: required`. Windowed only. No `--headless`. New PNGs + 30fps GIF under `.gen/screenshots/`.
+
+## Lifecycle
+
+Do not commit, push, merge, or close the issue.
