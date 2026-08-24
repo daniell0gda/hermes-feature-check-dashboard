@@ -1,20 +1,30 @@
-# Coder report: implementation\n\n# Coder report — implementation (r4, recovered after 1800s timeout)
+# Coder report: implementation\n\n# Coder report: implementation
 
-The code worker implemented the close camera and timed out before writing this file. Artifacts below are from that worker’s on-disk work, not a re-implementation.
+## Changed files
+- none this iteration (re-verification pass; the uncommitted feature diff from
+  revision 1 is preserved intact: autoload/ProgressionManager.gd,
+  scripts/game/actors/effects/EffectsManager.gd, ExposedVFX.gd,
+  scripts/game/status/ExposedStatus.gd, EnemyHealthController.gd,
+  scripts/progression/global.json, CurseProgressionManager.gd,
+  HarnessValues.gd / AgentHarness.gd, both test scenarios)
 
-## Changed
+## Criteria
+- Perk registered in progression config, purchasable at 3 levels — Done
+- Trigger fires exactly once per shield instance (>0 → 0 only) — Done
+- Multiplier per level for duration, clean expiry — Done
+- ExposedStatus/ExposedVFX per BurnStatus/BurnVFX pattern — code Done;
+  player-facing windowed evidence remains manual-tester scope (cluster 3)
+- `[EXPOSED]` debug logging gated by OS.is_debug_build() — Done
 
-- `scripts/game/Game.gd` — debug-only `debug_focus_camera_on(pos)` parks Camera3D close above the trap (height 2.4, tiny +z), `look_at` trap, prints `[FROSTBITE_CAMERA]`.
-- `tests/scenarios/traps_frostbite_fangs_progression.json` — calls `debug_focus_camera_on` after the underground reset, then screenshot + `record_frames`.
-- Perk Unique files already present (not reverted): `trap.json`, `Trap.gd`, `TrapProgressionManager.gd`, `ProgressionManager.gd`.
+## Commands and results (all via run_project_cmd, project=godot-td)
+- `["godot","--version"]` — exit 0; Godot 4.4.1.stable.official.49a5bc7b6
+- `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0 (11.4s); no script errors; ExposedStatus/ExposedVFX register as global classes
+- `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]` — exit 0, status=pass, 6/6 expectations. Per-level hp legs: L1 1625→1614→1603 (×1.15), L2 →1613→1601 (×1.25), L3 →1612→1599 (×1.35); one `[EXPOSED] triggered` line per leg with level+duration; `[EXPOSED] expire on Orc Enemy_boss`; post-expiry hit at hp 1589 (exact −10). Result: `.gen/harness/exposed_plating_once_per_shield/result.json`
+- `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]` — exit 0, status=pass, 7/7 including exposed_vfx true during the window; record_frames correctly skipped headless. Result: `.gen/harness/exposed_plating_vfx/result.json`
+- `["godot","--headless","--check-only","--script","res://scripts/game/status/ExposedStatus.gd"]` — exit 1 "Identifier not found: SimulationClock"; the pre-existing `BurnStatus.gd` fails identically under this mode. `--check-only --script` does not register project autoloads in Godot 4.4, so it cannot validate any autoload-dependent script. Import gate + full-scene harnesses are the compile evidence.
 
-## Verification (this worker, via run_project_cmd)
-
-- `traps_frostbite_fangs_progression` windowed result: `status: pass` at `.gen/harness/traps_frostbite_fangs_progression/result.json` (`headless: false`).
-- Fresh shots: `.gen/screenshots/frostbite_fangs_chilled_hit.png` (close frost overlay + snowflake, not empty floor).
-- 30fps GIF from `record_frames`: `.gen/screenshots/frostbite_fangs_chill_motion.gif`.
-
-## Not written by the timed-out process
-
-Leader killed the worker at 1800s. This report and `changes.md` were filled from the existing diff + harness result so check can run.
+## Notes
+- No source changes were needed or made; fresh post-rebase verification is green.
+- Pre-existing unrelated warnings/errors observed on every run (invalid UID ext_resources in HudTheme/UI.tscn, missing GLBs incl. `Orc Enemy.glb`, exit-time RID leak noise under Dummy renderer) — present on master paths, not introduced by this feature.
+- Manual-tester still owns cluster 3: run `exposed_plating_vfx` windowed (`--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`) for shots + real 30fps record_frames GIF into `.gen/harness/exposed_plating_vfx/{shots,record}/`, then record `ui_feels_broken: yes|no`.
 \n

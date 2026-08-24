@@ -1,106 +1,77 @@
-# Check report — Exposed Plating perk (issue #89) — check (r3)
+# Check report — issue-exposed-plating (iteration: check)
 
-classification: pass
+classification: fixable
 
 ## Verdict
 
-Fresh verification through the approved runner (`project=godot-td`,
-`workspace=poke-defense-godot/issue-exposed-plating`) confirms all five headless
-code criteria are green. The plan's `--check-only` typecheck command fails on
-this project for ANY status script (including pre-existing `BurnStatus.gd`)
-because `godot --check-only --script` does not resolve autoloads — it is a tool
-limitation, not a code defect; the authoritative parse/compile gate is the
-editor import + full harness run, both exit 0. The plan's "full test" is the
-`exposed_plating_vfx` harness, which passes 16/16 actions with zero failures.
-Per request.md, headless green ⇒ checker writes `classification: pass` so the
-leader can dispatch manual-tester; missing windowed PNGs/GIFs and the
-`ui_feels_broken` verdict are manual-tester deliverables and remain Pending,
-not code-check fixable.
+Headless code work is verified green through `run_project_cmd`
+(project=godot-td, workspace=poke-defense-godot/issue-exposed-plating). All
+windowed close-up visual-evidence criteria remain Pending: they belong to the
+manual-tester profile (no `.gen/screenshots/`, no `.gen/manual-report.md`
+exist). This keeps them honestly open instead of claiming player-facing
+proof that does not exist.
 
-## Verification commands (all via run_project_cmd, runner-reported exit codes)
+## Verification commands (all via run_project_cmd)
 
-1. Probe: `["godot","--version"]` — exit 0, Godot 4.4.1.stable.
-2. Editor import/parse gate: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
-   — exit 0 (9.2s), no script errors.
-3. Focused semantics harness:
-   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]`
-   — exit 0, result `.gen/harness/exposed_plating_once_per_shield/result.json`:
-   `status=pass`, 38 actions, 0 failed. Log shows per-level legs L1 1625→1614→1603
-   (×1.15), L2 →1613→1601 (×1.25), L3 →1612→1599 (×1.35); exactly one
-   `[EXPOSED] triggered ... level=N bonus=…% dur=…` line per leg; one trigger per
-   shield instance (`exposed_count == 1`); post-expiry hit at hp 1589 = exact −10
-   unamplified after `[EXPOSED] expire`.
-4. VFX lifecycle harness ("full test" per plan):
-   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]`
-   — exit 0, result `.gen/harness/exposed_plating_vfx/result.json`: `status=pass`,
-   16 actions, 0 failed, including `enemies.Orc Enemy_boss.exposed_vfx == true`
-   during the Exposed window and screenshot/record_frames steps correctly skipped
-   as `reason: headless`.
-5. Plan's typecheck command: `["godot","--headless","--check-only","--script",
-   "res://scripts/game/status/ExposedStatus.gd"]` — exit 1, `Identifier not found:
-   SimulationClock`. Control run on the UNRELATED pre-existing
-   `scripts/game/status/BurnStatus.gd` produces the identical error: the
-   `--check-only --script` mode does not register autoload singletons in this
-   project, so this command cannot validate any status script here. Gate treated
-   as satisfied by the stronger editor-parse gate (step 2) plus harness compile
-   and execution (steps 3–4). Not a feature failure.
+| Gate | Command | Exit | Result |
+|---|---|---|---|
+| Preflight | `["godot","--version"]` | 0 | Godot 4.4.1.stable |
+| Typecheck/build | `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | Import/scan OK; pre-existing invalid-UID warnings in legacy `.tres/.tscn` files only |
+| Focused test | `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]` | 0 | `[Harness] status=pass exit=0`; fresh result at `.gen/harness/exposed_plating_once_per_shield/result.json`, all 6 expectations pass |
+| Full test | `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]` | 0 | `[Harness] status=pass exit=0`; fresh result at `.gen/harness/exposed_plating_vfx/result.json`, all 7 expectations pass incl. log `contains [EXPOSED] triggered on` and `[EXPOSED] expire on` |
 
-## Criterion-by-criterion evidence
+Fresh run logs show the full behavior chain live:
+`[Armor] Orc Enemy_boss depleted` → `[EXPOSED] trigger on Orc Enemy_boss dur=…`
+→ `[EXPOSED] triggered on … level=1/2/3 bonus=15%/25%/35% dur=0.5/1.0/1.5` →
+one trigger per shield instance → `[EXPOSED] expire on Orc Enemy_boss`.
+`exposed_damage_multiplier()` returns 1.0 after expiry (expectation
+`exposed_multiplier == 1.0`, `exposed == false`).
 
-1. Perk registration / purchasable at 3 levels — Done. `scripts/progression/global.json`
-   defines `exposed_plating` Common, maxLevels 3 (0.15/0.5s, 0.25/1s, 0.35/1.5s);
-   harness exercised apply_progression across L1→L2→L3.
-2. Once-per-shield-instance trigger (>0→0 only) — Done. Guard
-   `if before > 0.0 and enemy.armor <= 0.0:` in `_consume_armor()`
-   (EnemyHealthController.gd ~line 369); second hits against zero armor asserted
-   baseline damage with `exposed_multiplier == 1.0`; re-trigger requires armor regain.
-3. Multiplier per level for duration, clean expiry — Done. Exact hp deltas above
-   match ×1.15/×1.25/×1.35; post-expiry hit unamplified; expiry logged once.
-4. ExposedStatus/ExposedVFX following BurnStatus/BurnVFX pattern — Done at code
-   level. `scripts/game/status/ExposedStatus.gd`, `scripts/game/actors/effects/
-   ExposedVFX.gd`, lazy `show_exposed()`/`hide_exposed()` via EffectsManager;
-   headless machine proof passes (`exposed_vfx == true` during window, clean state
-   before breach). Remaining player-facing evidence moved to Pending (manual-tester).
-5. `[EXPOSED]` debug logging gated by `OS.is_debug_build()` — Done. Trigger line
-   (EnemyHealthController.gd `_apply_exposed_plating`) and expiry line
-   (ExposedStatus.gd lines 34/54) behind `OS.is_debug_build()`; observed live in
-   fresh run output.
+## Acceptance criteria status
 
-## Test overlap check
+Done (headless-proven this run):
+1. Perk registered / purchasable at 3 levels — progression expectation
+   `exposed_plating == 3` passed in focused harness.
+2. Trigger exactly once per >0→0 transition — fresh harness pass; code path in
+   `EnemyHealthController._consume_armor` gated on `before > 0.0 and armor <= 0.0`.
+3. Multiplier applies for duration then expires cleanly — `exposed_multiplier`
+   back to 1.0 and `[EXPOSED] expire on` logged in fresh run.
+4. VFX via ExposedStatus/ExposedVFX lazily instantiated by EffectsManager —
+   vfx harness passes (`exposed_vfx` expectation true during window).
+5. Debug logging `[EXPOSED]` gated by `OS.is_debug_build()` — log-expectation
+   assertions passed in both fresh runs.
 
-Searched tests/scenarios: no prior exposed-plating coverage existed; both
-scenarios are new, non-overlapping, and each asserts its own criterion (exact hp
-deltas / multiplier values / once-per-instance counts / vfx visibility), not mere
-execution.
+Pending (manual-tester scope, unchanged from prior status):
+- Windowed camera_focus close-up framing before screenshot checkpoints.
+- Debug panel hidden/not covering enemy in captures.
+- `record_frames` spanning the whole Exposed window (>0 real consecutive frames).
+- Visible amber wash "during" vs "before"/"after" stills by eye.
+- PNGs/GIF copied to `.gen/screenshots/` and embedded in `.gen/manual-report.md`
+  ending with a `ui_feels_broken: yes|no` verdict line.
 
-## Changed files reviewed
+## Changed-file quality findings
 
-git status: autoload/ProgressionManager.gd,
-scripts/game/actors/effects/EffectsManager.gd,
-scripts/game/actors/enemy/parts/EnemyHealthController.gd,
-scripts/progression/global.json, scripts/progression/managers/CurseProgressionManager.gd,
-scripts/testing/AgentHarness.gd, scripts/testing/HarnessValues.gd + new
-ExposedStatus.gd, ExposedVFX.gd, and both test scenario JSONs. Identical to the
-revision-1 reviewed diff; only declared workflow artifacts additionally changed;
-no scope creep. New code follows sibling-perk patterns, typed vars/guard clauses;
-no coding-rules violation found.
+Reviewed diff vs HEAD (8 modified files + ExposedStatus.gd, ExposedVFX.gd,
+two scenario JSONs):
+- No type-cast violations, enum-by-identifier respected, surgical scope,
+  clean-code structure consistent with BurnStatus/BurnVFX pattern.
+- Minor style only: `var _saved_camera_transform` declared mid-file between
+  methods in `HarnessActions.gd`; GDScript-legal but unconventional placement.
+  Advisory, not demoting.
+- New scenario tests do not duplicate existing suite coverage (no other
+  scenario exercises `exposed_plating`).
+- Pre-existing editor parse error in `tools/reimport_buildings.gd` noted by the
+  plan did not appear in this fresh import gate output; unrelated legacy file,
+  not part of this diff.
 
 ## Quality notes
 
-quality-notes.md has one open advisory entry (static-breach-bypass): Static
-Breach zeroes armor without passing through `_consume_armor()`, so a Static-Breach
-shatter does not open an Exposed window. Issue wording pins the trigger site to
-`_consume_armor()`, so behavior appears intended; advisory only, does not demote
-any criterion. No new entries appended.
+Re-checked `.gen/quality-notes.md`: entry `static-breach-bypass` (iteration 2)
+is advisory and its condition is unchanged — Static Breach's separate armor-zero
+path still bypasses `_consume_armor()`. Issue wording pins the trigger site to
+`_consume_armor()`, so behavior appears intended; left open for leader
+confirmation. No new entries appended.
 
 ## Blockers
 
-None infra. Runner healthy throughout (probe, import gate, both harnesses exit 0).
-Remaining Pending work belongs to the manual-tester profile (windowed captures,
-30fps record_frames recording, `ui_feels_broken` verdict into
-`.gen/manual-report.md`).
-
-## Unverified items
-
-- Windowed visual captures / real-time recording / UI sanity verdict (manual-tester scope).
-- The plan's literal `--check-only` typecheck command (tool limitation documented above; superseded by stronger gates).
+None. Runner reachable and used for every project command; no host-shell Godot.
