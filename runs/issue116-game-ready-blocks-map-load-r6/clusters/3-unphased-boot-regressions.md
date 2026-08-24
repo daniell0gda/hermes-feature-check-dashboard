@@ -4,7 +4,6 @@ parallel: false
 depends on: 1
 
 ## Files
-- `scripts/game/Game.gd`
 - `scenes/Main.tscn`
 - `tests/scenarios/map_build_phases.json`
 
