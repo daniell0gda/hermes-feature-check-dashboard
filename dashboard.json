@@ -200,6 +200,11 @@
     "url": "runs/req-108-harness-cannot-boot-menu-scene-r2/"
   },
   {
+    "run_id": "r47-2",
+    "status": "running",
+    "url": "runs/r47-2/"
+  },
+  {
     "run_id": "r47-1",
     "status": "running",
     "url": "runs/r47-1/"
