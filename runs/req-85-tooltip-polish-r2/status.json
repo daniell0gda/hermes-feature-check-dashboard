@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-tooltip-polish-r2/",
-  "heartbeat_at": "2026-08-24T10:25:20.723Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-24T10:25:20.723Z",
+  "heartbeat_at": "2026-08-24T11:44:55.282Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-24T11:44:55.282Z",
   "process_id": 391652,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T10:25:25.333950+00:00",
-    "last_success_at": "2026-08-24T10:25:25.332497+00:00",
+    "last_attempt_at": "2026-08-24T11:44:55.282563+00:00",
+    "last_success_at": "2026-08-24T10:25:30.041360+00:00",
     "last_error": null
   },
   "metrics": {

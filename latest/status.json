@@ -1,22 +1,36 @@
 {
-  "run_id": "issue116-game-ready-blocks-map-load-r2",
-  "feature": "game-ready-blocks-map-load",
-  "status": "failed",
-  "started_at": "2026-08-24T10:52:07.024Z",
-  "ended_at": "2026-08-24T10:58:16.323Z",
-  "error": "plan worker returned no reply (empty model or exhausted API retries)",
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r2/",
-  "heartbeat_at": "2026-08-24T10:58:16.323Z",
-  "last_node": "plan",
+  "run_id": "req-85-tooltip-polish-r2",
+  "feature": "tower-description-tooltip-polish",
+  "status": "running",
+  "started_at": "2026-08-24T10:18:01.291Z",
+  "ended_at": null,
+  "error": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-tooltip-polish-r2/",
+  "heartbeat_at": "2026-08-24T11:44:55.282Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-24T10:58:11.694Z",
-  "process_id": 402249,
+  "last_event_at": "2026-08-24T11:44:55.282Z",
+  "process_id": 391652,
   "host": "f1a4230ec90b",
   "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T10:58:16.323913+00:00",
-    "last_success_at": "2026-08-24T10:58:16.322964+00:00",
+    "last_attempt_at": "2026-08-24T11:44:55.282563+00:00",
+    "last_success_at": "2026-08-24T10:25:30.041360+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 50940,
+        "output_tokens": 4249
+      }
+    ]
+  }
 }

@@ -1,35 +1,43 @@
-# Acceptance Plan: issue-116 game-ready-blocks-map-load
+# Acceptance Plan: req-85-tooltip-polish-r2 — custom shop preview card
 
 ## Verification
 
-- Focused test: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/map_build_phases.json --log-file .gen/map_build_phases.log`
-- Full test: `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/level_walkthrough.json --log-file .gen/level_walkthrough.log`
-- Typecheck/build: `godot --headless --path . --import`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/tower_shop_preview_card.json"]`
+- Full test: `python3 tests/run_all_shard.py 0 1`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
-## Clusters
-
-1. game-phased-build — files: `scripts/game/Game.gd` — depends on: none
-- After a phased map load completes, the resulting scene matches the current synchronous build: the harness `load_map` action reaches `GameState.game_state == "playing"` with the requested `map_id`, a non-zero total wave count, and live enemies spawnable on wave 1 (asserted via harness expectations on a representative map).
-- No single frame during the world build exceeds ~100ms wall-clock, measurable from the scenario run log (per-phase elapsed timings or an equivalent frame-time record written during the load).
-- Booting `res://scenes/Main.tscn` directly without `MapLoadingScreen` driving it (the AgentHarness path) still completes the entire world build: when nothing consumes the phases externally, they all run to completion.
-- `setup_as_menu_backdrop` still produces a complete backdrop world: the existing `menu_backdrop_map` scenario passes unchanged after the build is split into phases.
-- Debug-build `[MAP_BUILD]` log line per world-build phase completion, naming the phase and its elapsed milliseconds.
-2. loading-screen-driving — files: `scripts/MapLoadingScreen.gd`, `scripts/ui/LoadingSequence.gd` — depends on: 1
-- During the world-build portion of a map load, `MapLoadingScreen`'s progress bar advances in multiple observable increments beyond its post-threaded-load value, rather than sitting at or near 100% while the world builds.
-- The status line updates at least once during the world build (a building-phase caption replaces the static "Building Map" line before the screen is replaced by the game scene).
-- A selected map id that is missing or unparseable still falls back to `map_1` before any world-building phase begins, and the run proceeds with `map_1`.
-
-## Criteria
-
-- After a phased map load completes, the resulting scene matches the current synchronous build: the harness `load_map` action reaches `GameState.game_state == "playing"` with the requested `map_id`, a non-zero total wave count, and live enemies spawnable on wave 1 (asserted via harness expectations on a representative map).
-- No single frame during the world build exceeds ~100ms wall-clock, measurable from the scenario run log (per-phase elapsed timings or an equivalent frame-time record written during the load).
-- Booting `res://scenes/Main.tscn` directly without `MapLoadingScreen` driving it (the AgentHarness path) still completes the entire world build: when nothing consumes the phases externally, they all run to completion.
-- `setup_as_menu_backdrop` still produces a complete backdrop world: the existing `menu_backdrop_map` scenario passes unchanged after the build is split into phases.
-- Debug-build `[MAP_BUILD]` log line per world-build phase completion, naming the phase and its elapsed milliseconds.
-- During the world-build portion of a map load, `MapLoadingScreen`'s progress bar advances in multiple observable increments beyond its post-threaded-load value, rather than sitting at or near 100% while the world builds.
-- The status line updates at least once during the world build (a building-phase caption replaces the static "Building Map" line before the screen is replaced by the game scene).
-- A selected map id that is missing or unparseable still falls back to `map_1` before any world-building phase begins, and the run proceeds with `map_1`.
+All runner invocations go through `run_project_cmd` with project `godot-td`, workspace `poke-defense-godot/issue-update-tower-descriptions-with-special-c`. The manual windowed screenshot pass (Generic / Fire / Ice / Porter) is NOT headless-run; see `manual_testing`.
 
 manual_testing: required
 
-The loading-screen UI changes visibly mid-load (bar position and caption during world build), so windowed PNG evidence is required: capture the loading screen mid-world-build showing the bar advanced past the threaded-load portion, using `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
+## Clusters
+
+1. shop-preview-card-ui — files: `scripts/ui/UI.gd`, `scripts/ui/hud/TowerShopSlot.gd`, `scripts/ui/hud/TowerStatRow.gd`, new HUD card script/scene under `scripts/ui/hud/` + `scenes/ui/hud/`, `data/towers.xml` — depends on: none
+- Calling the public preview API (`show_tower_shop_preview(tower_id)` / `hide_tower_shop_preview()`) with an unlocked combat-tower id shows a wood HUD preview card styled with the existing theme family (`SidePanel`/`WidePanel`/`WoodPanel` frame, inner `ModalWell`, `ModalTitle` title, HUD theme fonts), not Godot's default black tooltip popup.
+- The card shows the tower display name as its title, the special-characteristic description as a wrapping body line with readable contrast against the wood panel, and Cost / Range / Damage (plus fire rate where applicable) as distinct HUD stat rows or cost badges in the same visual language as `TowerStatRow` / `CostBadge` — never one jammed "Cost: X | Range: Y" text line.
+- The card sits above the hovered shop slot without covering the entire Towers bar and does not overlap the right-side tower details panel when both are visible at once.
+- Calling `hide_tower_shop_preview()` hides the card completely.
+- Connecting to an existing shop slot's `mouse_entered` shows the same card and `mouse_exited` hides it, matching the public-API behaviour.
+- Unlocked shop slots no longer set Godot's default `tooltip_text` to the built string (it is empty so no default popup can appear); locked slots keep their lock-reason tooltip and non-shop buttons keep their existing tooltips unchanged.
+- The card content and `_build_tower_tooltip` share one content source: every fact shown on the card (name, description, cost, range, damage, perk lines) equals what `_build_tower_tooltip(tower_id)` returns, and the Porter card shows exactly one teleport/no-damage explanation with no duplicated hardcoded extra line (Floodgate likewise shows one flood explanation).
+- All 12 combat towers keep their special description from `data/towers.xml`; Porter's still explicitly states it teleports enemies to the underground tunnels and deals no damage itself.
+- Debug-build [SHOP-PREVIEW] log line per card show and per card hide event, naming the tower id.
+
+## Criteria
+
+- Calling the public preview API (`show_tower_shop_preview(tower_id)` / `hide_tower_shop_preview()`) with an unlocked combat-tower id shows a wood HUD preview card styled with the existing theme family (`SidePanel`/`WidePanel`/`WoodPanel` frame, inner `ModalWell`, `ModalTitle` title, HUD theme fonts), not Godot's default black tooltip popup.
+- The card shows the tower display name as its title, the special-characteristic description as a wrapping body line with readable contrast against the wood panel, and Cost / Range / Damage (plus fire rate where applicable) as distinct HUD stat rows or cost badges in the same visual language as `TowerStatRow` / `CostBadge` — never one jammed "Cost: X | Range: Y" text line.
+- The card sits above the hovered shop slot without covering the entire Towers bar and does not overlap the right-side tower details panel when both are visible at once.
+- Calling `hide_tower_shop_preview()` hides the card completely.
+- Connecting to an existing shop slot's `mouse_entered` shows the same card and `mouse_exited` hides it, matching the public-API behaviour.
+- Unlocked shop slots no longer set Godot's default `tooltip_text` to the built string (it is empty so no default popup can appear); locked slots keep their lock-reason tooltip and non-shop buttons keep their existing tooltips unchanged.
+- The card content and `_build_tower_tooltip` share one content source: every fact shown on the card (name, description, cost, range, damage, perk lines) equals what `_build_tower_tooltip(tower_id)` returns, and the Porter card shows exactly one teleport/no-damage explanation with no duplicated hardcoded extra line (Floodgate likewise shows one flood explanation).
+- All 12 combat towers keep their special description from `data/towers.xml`; Porter's still explicitly states it teleports enemies to the underground tunnels and deals no damage itself.
+- Debug-build [SHOP-PREVIEW] log line per card show and per card hide event, naming the tower id.
+- A focused harness scenario drives `show_tower_shop_preview` for representative towers (including Porter), asserts the shared content facts through the public API/content builder, and ends `status=pass`.
+- Fresh editor/import gate run over the workspace exits 0 with no parse/resource/script diagnostics on the changed scenes and scripts.
+
+## Notes
+
+- Prior r1 screenshots with painted overlays are invalid evidence; the manual tester must capture real windowed shots of Generic, Fire, Ice, and Porter with the actual card pixels visible and the special line legible (vision-read the PNGs; missing card = fail). See `.gen/ui_scenario.md`.
+- Out of scope: rewriting description copy beyond dropping duplicate Porter/Floodgate hardcoded extras, tower combat behaviour, restyling Options / Manage Towers / ProgressionModal.
