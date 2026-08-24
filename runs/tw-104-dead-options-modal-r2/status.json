@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/tw-104-dead-options-modal-r2/",
   "heartbeat_at": "2026-08-24T09:53:36.820Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "team-leader",
   "last_event_at": "2026-08-24T09:53:36.820Z",
   "process_id": 377473,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T09:53:36.820649+00:00",
-    "last_success_at": "2026-08-24T09:49:05.751914+00:00",
+    "last_attempt_at": "2026-08-24T09:53:41.184228+00:00",
+    "last_success_at": "2026-08-24T09:53:41.182903+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 80318,
         "output_tokens": 3007
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 108999,
+        "output_tokens": 3612
       }
     ]
   }
