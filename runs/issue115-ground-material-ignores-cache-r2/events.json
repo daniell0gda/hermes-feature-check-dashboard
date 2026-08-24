@@ -7,5 +7,14 @@
     "duration_ms": 233103,
     "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-ground-material-ignores-cache/.gen/plan.md\n\nSummary:\n- Read request, coding rules, and current sources. The r1 implementation is already in the working tree (TextureAtlasUtils\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-24T05:06:28.980Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 246330,
+    "summary": "Revision-verification complete. Summary:\n\nScope: revision 1 redo \u2014 no code changes required; the iteration-1 implementation (uncommitted worktree diff: TextureAtlasUtils.gd CACHE_MODE_REUSE loads + `[GROUND]` cache/fresh log, EnvironmentUti\u2026",
+    "error": null
   }
 ]

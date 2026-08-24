@@ -1,28 +1,27 @@
-# Coder report: 1-ground-material-cache-and-map-switch\n\n# Coder report: 1-ground-material-cache-and-map-switch (revision-code-1, revision 1)
+# Coder report: 1-ground-material-cache-and-map-switch\n\n# Coder report: 1-ground-material-cache-and-map-switch (revision verification, rev 1)
 
 ## Changed files
-- No source changes this revision. Iteration-1 implementation re-verified as-is:
-  - `scripts/utils/TextureAtlasUtils.gd` (mod, existing)
-  - `scripts/utils/EnvironmentUtils.gd` (mod, existing)
-  - `scripts/game/Game.gd` (mod, existing)
-  - `tests/scenarios/ground_material_map_switch.json` (new, existing)
+- none — revision pass; iteration-1 implementation (uncommitted worktree changes to
+  `scripts/utils/TextureAtlasUtils.gd`, `scripts/utils/EnvironmentUtils.gd`,
+  `scripts/game/Game.gd`, `tests/scenarios/ground_material_map_switch.json`) re-verified after rebase onto d7551d9.
 
 ## Criteria
-- CACHE_MODE_REUSE for ground textures — verified (no CACHE_MODE_IGNORE in ground path).
-- Root cause documented + sampler reassignment fixed — verified (see changes.md iteration 1).
-- Non-empty grass_albedo/dirt_albedo after double map switch — verified via harness probe.
-- grass_tint reflects newly loaded map color — verified (tint = 0.309804,0.498039,0.309804 post-environment).
-- Harness scenario passes headlessly with fresh result.json status pass — verified.
-- Debug [GROUND] log per creation event naming cached vs fresh — verified in run log.
-- Fallback paths unchanged — verified (code untouched this revision).
+- CACHE_MODE_REUSE for map_grass.jpg / underground_floor.jpg, no CACHE_MODE_IGNORE in ground path — Done
+- Non-empty grass_albedo / dirt_albedo after double map switch (harness-asserted) — Done
+- grass_tint follows newly loaded map's configured color — Done
+- Fresh `.gen/harness/ground_material_map_switch/result.json` status `pass` — Done
+- Debug `[GROUND]` log per ground material creation naming cached vs fresh — Done
+- Fallback paths unchanged (Grass.png tile / StandardMaterial3D) — Done
 
 ## Commands and results
-- `["godot","--version"]` — exit 0; Godot 4.4.1.stable.
-- Focused harness: `["godot","--headless","--path",".","res://scenes/Main.tscn","--quit-after","6000","--","--harness=res://tests/scenarios/ground_material_map_switch.json"]` — exit 0; `[Harness] status=pass exit=0`; fresh `.gen/harness/ground_material_map_switch/result.json` has `"status": "pass"`, timeline map_1→map_2→map_1→map_2 all ok, expectation `__ground_shader_probe == "grass=ok dirt=ok tint=0.309804,0.498039,0.309804"` pass, log contains `[GROUND] ground material created`; every creation event logged `from_cache=map_grass.jpg,underground_floor.jpg fresh=none`.
-- Typecheck/build + full-suite gate: `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0, no script parse errors.
+- `["godot","--version"]` via run_project_cmd — exit 0, Godot 4.4.1.stable.
+- Typecheck/build gate `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0, no script parse errors (pre-existing invalid-UID warnings in HudTheme.tres/UI.tscn only).
+- Focused harness `["godot","--headless","--path",".","res://scenes/Main.tscn","--quit-after","6000","--","--harness=res://tests/scenarios/ground_material_map_switch.json"]` — exit 0, `[Harness] status=pass exit=0`.
 
 ## Notes
-- Revision pass only: no code edits were required; all 7 criteria already satisfied by the iteration-1 implementation and re-proven with fresh runs above.
-- Advisory quality note still open (non-blocking): all shipped maps share one grassColor, so the tint assertion cannot distinguish two distinct map colors (`.gen/quality-notes.md` ground-map-tint-distinctness).
-- Pre-existing engine noise unrelated to this change: invalid UID warnings for HUD theme textures, missing GLB imports in headless dummy renderer, RID leak warnings at exit. Present before this feature too.
+- Fresh result.json: probe `grass=ok dirt=ok tint=0.309804,0.498039,0.309804` PASS; `[GROUND] ground material created` log expectation PASS.
+- Run log shows timeline map_1→map_2→map_1→map_2 (double switch); every ground material creation logged `[GROUND] ground material created: from_cache=map_grass.jpg,underground_floor.jpg fresh=none`.
+- Runner flake: the editor gate intermittently returned exit 137 (~1s, HTTP 422) on repeated identical invocations before succeeding on retry with full output — transient worker issue, not a project failure.
+- Open quality-note advisory `ground-map-tint-distinctness` still valid (all shipped maps share grassColor 5209935); not resolved by this change.
+- Manual windowed screenshot evidence remains owned by the manual-tester profile.
 \n
