@@ -1,18 +1,18 @@
 {
   "invocations": [
     {
-      "task_id": "plan",
+      "task_id": "check",
       "cluster_id": null,
-      "role": "plan",
+      "role": "check",
       "model": "stealth/ox-alpha",
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 96733,
-      "output_tokens": 5601
+      "input_tokens": 126177,
+      "output_tokens": 4876
     },
     {
-      "task_id": "code",
+      "task_id": "revision-code-1",
       "cluster_id": "implementation",
       "role": "code",
       "model": null,
@@ -23,15 +23,26 @@
       "output_tokens": null
     },
     {
-      "task_id": "check",
+      "task_id": "revision-check-1",
       "cluster_id": null,
       "role": "check",
       "model": "stealth/ox-alpha",
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 78859,
-      "output_tokens": 3385
+      "input_tokens": 136594,
+      "output_tokens": 4329
+    },
+    {
+      "task_id": "revision-code-2",
+      "cluster_id": "implementation",
+      "role": "code",
+      "model": null,
+      "model_tier": null,
+      "cost_usd": null,
+      "cost_status": "unavailable",
+      "input_tokens": null,
+      "output_tokens": null
     }
   ]
 }
