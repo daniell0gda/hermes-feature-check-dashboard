@@ -7,5 +7,14 @@
     "duration_ms": 125991,
     "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-update-tower-descriptions-with-special-c/.gen/plan.md\n",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-24T15:51:55.863Z",
+    "node": "code",
+    "status": "failed",
+    "duration_ms": 2115325,
+    "summary": "\"code worker returned no reply (empty model or exhausted API retries)\"",
+    "error": "\"code worker returned no reply (empty model or exhausted API retries)\""
   }
 ]
