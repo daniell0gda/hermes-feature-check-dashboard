@@ -1,36 +1,22 @@
 {
-  "run_id": "r47-1",
-  "feature": "Water Tower Riptide - light Slow alongside Wet",
+  "run_id": "issue45-water-flood-r1",
+  "feature": "water-conductive-flood-wet-splash",
   "status": "running",
-  "started_at": "2026-08-24T22:35:02.258Z",
+  "started_at": "2026-08-24T22:33:43.023Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-1/",
-  "heartbeat_at": "2026-08-24T22:42:06.095Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-24T22:42:06.095Z",
-  "process_id": 509177,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
+  "heartbeat_at": "2026-08-24T22:47:20.871Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-24T22:47:20.871Z",
+  "process_id": 508721,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T22:42:11.297090+00:00",
-    "last_success_at": "2026-08-24T22:42:10.688249+00:00",
+    "last_attempt_at": "2026-08-24T22:47:20.872223+00:00",
+    "last_success_at": "2026-08-24T22:33:52.537186+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 53094,
-        "output_tokens": 5659
-      }
-    ]
-  }
+  "metrics": {}
 }

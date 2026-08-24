@@ -1,11 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-24T22:42:06.095Z",
-    "node": "plan",
-    "status": "completed",
-    "duration_ms": 328975,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-water-tower-riptide-light-slow-alongside/.gen/plan.md\n",
-    "error": null
+    "timestamp": "2026-08-24T22:47:20.871Z",
+    "node": "code",
+    "status": "failed",
+    "duration_ms": 812850,
+    "summary": "\"code worker returned no reply (empty model or exhausted API retries)\"",
+    "error": "\"code worker returned no reply (empty model or exhausted API retries)\""
   }
 ]
