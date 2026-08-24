@@ -43,5 +43,14 @@
     "duration_ms": 269286,
     "summary": "Worker release isn't exposed in this checker profile (only `run_project_cmd`), so the workspace is left for the leader to release. Artifacts written.\n\nVerified done: 0. Pending: 10 \u2014 0 due to build/test failures in this issue's code, 8 due \u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-24T04:39:03.233Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 1905173,
+    "summary": "Revision-code-2 complete.\n\nVerification (all real runs, godot at /opt/data/profiles/code/home/bin):\n- carve_pan_no_flip \u2014 exit 0, status=pass; small + large middle-drag pans translate camera with yaw delta 0.0 (< 0.01)\n- carve_camera_drag_s\u2026",
+    "error": null
   }
 ]
