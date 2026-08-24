@@ -1,34 +1,33 @@
-# Request: traps_frostbite_fangs (r3 — camera/visual proof)
+# Request
 
-- request_id: req-83-traps-frostbite-fangs-r3
-project: godot-td
-workspace: poke-defense-godot/issue-traps-frostbite-fangs
-issue: https://github.com/daniell0gda/poke-defense-godot/issues/83
-- branch: issue/traps-frostbite-fangs
-- intent: continuation — keep perk code; fix unreadable frost shots
+- request_id: req-124-cave-carved-path-torches-r4
+- issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
+- project runner key: `godot-td`
+- workspace: `poke-defense-godot/issue-cave-carved-path-torches`
+- branch: `issue/cave-carved-path-torches` (already has r3 placement work at `b5092fc`; extend it, do not reset)
 
-## History (do not treat as evidence)
+## Problem (Daniel, 2026-08-24)
 
-- req-83 claimed pass. Human review FAILED: wide underground shot, enemy is a speck; zoom PNG is empty floor.
-- req-83-r2 plan/code workers returned empty. Stale `check.md` still said `classification: pass`, so the leader skipped revision and reused yesterday's shots. Archived to `.gen-r2-stale-pass/`. Those files are not current evidence.
+A hardcoded `MAX_TORCHES = 250` is not future-proof. **Map size is not fixed** — Daniel does not know future sizes; it might be 100×100 or anything else. Also the current spacing (`TORCH_SPACING = 1`, every corridor cell) is too dense — **make the distance between torches a little bit bigger**.
 
-## Feature (already implemented — do not revert)
+## Required solution
 
-Unique `traps_frostbite_fangs` L1-3. Trap hits call `EffectsManager.apply_frozen`. Magnitude/duration scale. Existing frost VFX.
+- **No map-size constant and no fixed torch cap.** Do not special-case 40, 60, or 100. Derive the pool/budget from the **live** `grid_width`/`grid_depth` (and/or carved corridor cell count) every update so any future map size keeps full corridor coverage. Do not leave dark carved segments because a constant cap was hit.
+- **Widen spacing a little** vs r3 (every cell). Keep walls/curves lit; do not go back to the old clump-every-3rd-wall-face bug. Unique-cell stride along the corridor, not raw wall-face list.
+- **Do not change torch light intensity** (`Torch.gd` energy / radius / color / OmniLight settings stay byte-for-byte unchanged).
 
-## Required this run
+## Done when
 
-1. Keep the perk implementation.
-2. Change `tests/scenarios/traps_frostbite_fangs_progression.json` so the windowed shot is close and top-down on the trap + live enemy. `_update_camera_for_layer` resets to the default far camera — after that call, set `Camera3D.position` close above the trap (small height, tiny z offset) and `look_at` the trap. Enemy body must fill enough of the frame to see frost vs green.
-3. Keep explicit `screenshot` + 30fps `record_frames` GIF. Copy fresh PNGs/GIF to `.gen/screenshots/`.
-4. Checker must write a NEW `.gen/check.md`. If shots are still a distant speck or a crop of empty floor: `classification: fixable`. Headless tags alone do not pass the visual criterion.
-5. `ui_feels_broken: yes` fails the manual test.
-6. Runner only: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-traps-frostbite-fangs`. Never `project=poke-defense-godot`.
+- Every carved cave path tile that should be lit still has torch coverage, including curve / bent / side-to-side tunnels
+- New carves still get torches
+- Any grid size (including 100×100 and unknown larger maps) does not hit a hardcoded cap that leaves uncovered corridor cells
+- Spacing is visibly a bit farther than r3 every-cell packing
+- `Torch.gd` intensity unchanged
 
 ## Manual testing
 
-`manual_testing: required`. Windowed only. No `--headless`.
+required. Windowed, underground, side-to-side carve with curves, top-down aimed at `camera_target`. No `--headless` for manual tester.
 
-## Lifecycle
+## Runner
 
-Do not commit, push, merge, or close.
+`godot-td` / `poke-defense-godot/issue-cave-carved-path-torches`. Write a real non-empty `.gen/plan.md`.

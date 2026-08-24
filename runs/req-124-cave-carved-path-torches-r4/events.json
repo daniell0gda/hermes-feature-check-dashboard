@@ -7,5 +7,14 @@
     "duration_ms": 143967,
     "summary": "\u26a0\ufe0f No reply: the model returned empty content after retries and any fallback providers. Try `continue`, switch model/provider, or inspect the tool output above.\n",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-24T07:20:29.163Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 2846784,
+    "summary": "Implementation complete. Summary:\n\n**Changes** (branch `issue/cave-carved-path-torches`, extending r3 `b5092fc`):\n- `scripts/game/underground/TorchManager.gd` \u2014 removed hardcoded `MAX_TORCHES = 250`; new `_derive_torch_budget(grid_width, gr\u2026",
+    "error": null
   }
 ]
