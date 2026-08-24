@@ -1,58 +1,22 @@
 {
-  "run_id": "req-89-exposed-plating-r2",
-  "feature": "Exposed Plating perk",
+  "run_id": "req-117-gen-hud-textures-r2",
+  "feature": "gen-hud-textures-py-cannot-run-all-three",
   "status": "running",
-  "started_at": "2026-08-24T07:06:43.523Z",
+  "started_at": "2026-08-24T07:16:11.189Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r2/",
-  "heartbeat_at": "2026-08-24T07:21:49.073Z",
-  "last_node": "check",
-  "active_node": "team-leader",
-  "last_event_at": "2026-08-24T07:21:49.073Z",
-  "process_id": 287796,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-117-gen-hud-textures-r2/",
+  "heartbeat_at": "2026-08-24T07:22:02.354Z",
+  "last_node": "plan",
+  "active_node": null,
+  "last_event_at": "2026-08-24T07:22:02.354Z",
+  "process_id": 292058,
   "host": "f1a4230ec90b",
-  "phase": "team-leader",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:21:53.423994+00:00",
-    "last_success_at": "2026-08-24T07:21:53.422673+00:00",
+    "last_attempt_at": "2026-08-24T07:22:02.354577+00:00",
+    "last_success_at": "2026-08-24T07:17:50.480437+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 67668,
-        "output_tokens": 4352
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 161422,
-        "output_tokens": 3878
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 92950,
-        "output_tokens": 5111
-      }
-    ]
-  }
+  "metrics": {}
 }
