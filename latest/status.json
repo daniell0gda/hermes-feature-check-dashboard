@@ -1,22 +1,20 @@
 {
-  "run_id": "issue116-game-ready-blocks-map-load-r6",
-  "feature": "game-ready-blocks-map-load",
+  "run_id": "issue45-water-flood-r1",
+  "feature": "water-conductive-flood-wet-splash",
   "status": "running",
-  "started_at": "2026-08-24T21:28:51.136Z",
+  "started_at": "2026-08-24T21:31:30.268Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r6/",
-  "heartbeat_at": "2026-08-24T21:28:51.136Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
+  "heartbeat_at": "2026-08-24T21:31:30.268Z",
   "last_node": null,
-  "active_node": "code",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 498555,
+  "process_id": 499239,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T21:28:56.191432+00:00",
-    "last_success_at": "2026-08-24T21:28:55.698808+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T21:31:30.268552+00:00"
   },
   "metrics": {}
 }
