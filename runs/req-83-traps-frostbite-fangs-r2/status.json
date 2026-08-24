@@ -6,17 +6,31 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r2/",
-  "heartbeat_at": "2026-08-24T06:52:26.866Z",
-  "last_node": null,
-  "active_node": "plan",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-24T07:03:19.195Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-24T07:03:19.195Z",
   "process_id": 279907,
   "host": "f1a4230ec90b",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T06:53:58.230149+00:00",
-    "last_success_at": "2026-08-24T06:52:31.389593+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T07:03:19.196249+00:00",
+    "last_success_at": "2026-08-24T06:54:02.427402+00:00",
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 50925,
+        "output_tokens": 1063
+      }
+    ]
+  }
 }
