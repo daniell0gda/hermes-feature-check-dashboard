@@ -25,5 +25,14 @@
     "duration_ms": 216526,
     "summary": "Check complete. Summary:\n\nVerified done: 7. Pending: 1 \u2014 manual windowed test (no `.gen/manual-report.md` from the manual-tester profile; not checker-producible). Impossible: 0. Quality notes: resolved the iteration-5 `record_frames` headle\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-24T14:24:59.192Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 319149,
+    "summary": "HTTP 400: Provider returned error\n",
+    "error": null
   }
 ]
