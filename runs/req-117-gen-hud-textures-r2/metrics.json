@@ -32,6 +32,17 @@
       "cost_status": "unknown",
       "input_tokens": 46779,
       "output_tokens": 2197
+    },
+    {
+      "task_id": "revision-check-2",
+      "cluster_id": null,
+      "role": "check",
+      "model": "stealth/ox-alpha",
+      "model_tier": null,
+      "cost_usd": 0.0,
+      "cost_status": "unknown",
+      "input_tokens": 0,
+      "output_tokens": 0
     }
   ]
 }

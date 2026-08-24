@@ -1,21 +1,21 @@
 {
   "run_id": "req-117-gen-hud-textures-r2",
   "feature": "gen-hud-textures-py-cannot-run-all-three",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-24T07:48:08.456Z",
-  "ended_at": null,
+  "ended_at": "2026-08-24T07:56:22.955Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-117-gen-hud-textures-r2/",
-  "heartbeat_at": "2026-08-24T07:56:18.456Z",
+  "heartbeat_at": "2026-08-24T07:56:22.955Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-24T07:56:18.456Z",
   "process_id": 312841,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:56:18.456527+00:00",
-    "last_success_at": "2026-08-24T07:55:21.303873+00:00",
+    "last_attempt_at": "2026-08-24T07:56:22.955503+00:00",
+    "last_success_at": "2026-08-24T07:56:22.953949+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 46779,
         "output_tokens": 2197
+      },
+      {
+        "task_id": "revision-check-2",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 0,
+        "output_tokens": 0
       }
     ]
   }
