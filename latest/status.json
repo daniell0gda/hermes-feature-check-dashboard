@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-cave-seal-regression-r2/",
   "heartbeat_at": "2026-08-24T22:38:03.341Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": null,
   "process_id": 509548,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T22:38:03.341610+00:00"
+    "last_attempt_at": "2026-08-24T22:38:08.872556+00:00",
+    "last_success_at": "2026-08-24T22:38:08.336130+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
