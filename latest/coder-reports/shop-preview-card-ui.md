@@ -1,4 +1,4 @@
-# Coder report: shop-preview-card-ui\n\n# Coder report: shop-preview-card-ui (revision 2 — full-suite tooling fix)
+# Coder report: shop-preview-card-ui (revision 2 — full-suite tooling fix)
 
 ## Changed files
 - `tests/run_all_shard.py` — modified: added optional scenario-id substring filters as
@@ -25,4 +25,3 @@ poke-defense-godot/issue-update-tower-descriptions-with-special-c.
   revision-code-1 stand unchanged.
 - The manual windowed screenshot pass (.gen/ui_scenario.md) is still outstanding and
   cannot be produced headlessly; it keeps the placement criterion Pending.
-\n
