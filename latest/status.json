@@ -1,36 +1,22 @@
 {
-  "run_id": "issue116-game-ready-blocks-map-load-r3",
-  "feature": "game-ready-blocks-map-load",
+  "run_id": "req-89-exposed-plating-r8",
+  "feature": "exposed-plating",
   "status": "running",
-  "started_at": "2026-08-24T14:01:34.415Z",
+  "started_at": "2026-08-24T14:06:03.525Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r3/",
-  "heartbeat_at": "2026-08-24T14:09:16.876Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r8/",
+  "heartbeat_at": "2026-08-24T14:14:15.033Z",
   "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-24T14:09:16.876Z",
-  "process_id": 432145,
+  "active_node": null,
+  "last_event_at": "2026-08-24T14:14:15.033Z",
+  "process_id": 433222,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T14:10:53.384256+00:00",
-    "last_success_at": "2026-08-24T14:09:21.377686+00:00",
+    "last_attempt_at": "2026-08-24T14:14:15.034069+00:00",
+    "last_success_at": "2026-08-24T14:07:43.238863+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 49616,
-        "output_tokens": 3623
-      }
-    ]
-  }
+  "metrics": {}
 }
