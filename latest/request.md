@@ -1,44 +1,54 @@
-# Request: #116 game-ready-blocks-map-load (r3)
+# Request: Exposed Plating perk (issue #89) — continuation r8
 
-## Project
-- Workspace: `/workspace/git-workspaces/poke-defense-godot/issue-game-ready-blocks-map-load`
-- Branch: `issue/game-ready-blocks-map-load` (already on current origin/master)
-- Runner key: `godot-td`
-- Runner workspace name: `poke-defense-godot/issue-game-ready-blocks-map-load` only.
-- If runner 422/no docker: host Godot is allowed: `PATH=/opt/data/profiles/code/home/bin`. Do **not** classify host-ok as `blocked`.
+- **Repo:** daniell0gda/poke-defense-godot
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/89
+project: godot-td
+workspace: poke-defense-godot/issue-exposed-plating
+- **Workspace:** poke-defense-godot/issue-exposed-plating
+- **Branch:** issue/exposed-plating (on origin/master @ 42e05d6; implementation is uncommitted WIP — preserve it)
+- **Request ID:** req-89-exposed-plating-r8
+- **Runner key:** `godot-td` — workers MUST use `project=godot-td`, `workspace=poke-defense-godot/issue-exposed-plating`. Never invent workspace names. Never use `project=poke-defense-godot`.
 
-Keep existing uncommitted loading/world-build files. Do not revert. Do not commit/stash/push `logs/`.
+## Feature
 
-## Issue
-https://github.com/daniell0gda/poke-defense-godot/issues/116
+New progression perk `exposed_plating` (Common, global, 3 levels). When an enemy's armor transitions from >0 to 0 (same site as `_consume_armor()`), it gains an "Exposed" status:
 
-`MapLoadingScreen` already threads `Main.tscn`. The remaining wait is instantiate + `Game._ready()` world build. Split that build into resumable phases so the loading bar and captions move during world build, and no single frame stalls more than ~100ms.
+- L1: +15% damage taken, 0.5s
+- L2: +25% damage taken, 1s
+- L3: +35% damage taken, 1.5s
 
-## Already in the tree (keep)
-- Phased `Game` world build + `MapLoadingScreen` driver.
-- Threaded GLTF/castle poll (no blocking parse on a driven frame).
-- Boot warm-up pays first cold castle instantiate.
-- Loading-screen driving test + `map_build_phases` harness.
-- After rebase: keep master's decoration count scaling and building-clearance. Buildings must be generated **before** trees/rocks. `record_placed_counts()` exists for both one-shot and phased paths.
+## Historical runs (context only, not evidence)
 
-## Done when
-- `MapLoadingScreen`'s bar advances during the world build rather than jumping over it.
-- Status caption changes at least once during world build (not stuck on static "Building Map").
-- Missing/unparseable map id falls back to `map_1` before world-build phases.
-- No single frame stalls for more than ~100ms during a map load (measure from `[MAP_BUILD]` / loading-test frame log). First cold castle instantiate may still be paid at **boot** warm-up, not during post-boot map load.
-- After a phased map load the scene is playable (`playing`, requested `map_id`, waves, spawnable enemies).
-- Direct `Main.tscn` boot and `setup_as_menu_backdrop` still complete the full build.
-- Windowed PNG (or 30fps GIF) of the loading screen mid-world-build showing the bar past the threaded-load portion. Manual testing is **required**.
+- r1–r3: perk implemented; headless harnesses pass. Old checkers treated missing windowed shots as code-check `fixable`.
+- r4: tester used the wrong runner key `poke-defense-godot` → no shots.
+- r5: windowed `exposed_plating_vfx` captured 1920x1080 PNGs, but they are **not** acceptable: far camera, tiny enemy, Debug Panel covers the left third, wash not inspectable. Archived under `.gen/harness/exposed_plating_vfx/r5-too-far/`.
+- r6: close-up plan written (`camera_focus` + hidden debug panel + 30fps GIF). Code worker died empty. Dashboard `req-89-exposed-plating-r6` is terminal `failed`. Do not reuse that run id.
+- After r6: worktree rebased onto origin/master `42e05d6`. Stash-pop kept master's `mouse_pan` **and** this issue's `camera_focus` / `set_debug_panel`.
+- r7: planner reused the close-up plan. Code worker died with `empty model or exhausted API retries`. Dashboard `req-89-exposed-plating-r7` is terminal `failed`. Do not reuse that run id. Close-up stills from earlier attempts still showed **no** amber wash on the body.
 
-## Runner notes
-- Use only `run_project_cmd`; no shell operators; Godot `--log-file .gen/<name>.log`.
-- Windowed: `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
-- Harness: `godot [--headless] --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/map_build_phases.json`
-- Driving test: `godot --headless --path . res://tests/loading/test_map_loading_screen_driving.tscn`
-- If a check/code worker returns 0 tokens / empty model result, retry that member only. Do not rewrite the pan/loading implementation.
-- Stale `.gen/status.md` / `check.md` from r1 (2026-08-23) and the empty-plan r2 (2026-08-24) are historical. Write fresh ones.
+## Acceptance criteria
 
-## Context
-- Previous official team run `issue116-game-ready-blocks-map-load-r1` ended `failed` / `classification: fixable` (frame budget + add_child-in-_ready test crash + missing PNG).
-- r2 (`issue116-game-ready-blocks-map-load-r2`) died at plan with empty model / exhausted API retries. Keep the existing uncommitted implementation.
-- This r3 is verify + leftover gaps + required windowed shots, not a rewrite.
+1. Perk definition registered like other progression perks; purchasable at 3 levels.
+2. Trigger fires exactly once per shield instance: only on the >0 → 0 transition. Hits while armor is already 0 do NOT re-trigger; re-trigger requires the enemy regaining armor first.
+3. Damage-taken multiplier applies for the debuff duration, per level values above, then expires cleanly.
+4. New VFX: `ExposedStatus`/`ExposedVFX` following `BurnStatus`/`BurnVFX` — cracked-shield amber emissive overlay for the duration, lazily instantiated by `EffectsManager`.
+5. Debug logging: `[EXPOSED]` prefix on trigger and expiry, gated by `OS.is_debug_build()`.
+6. **Player-facing proof (this run's remaining work):** a human looking at the PNG must immediately see the overlay on the Orc King. Required:
+   - After the boss exists, aim `camera_target` at the enemy and zoom in (`camera_focus`) so the enemy fills a large part of the frame.
+   - Hide the Debug Panel; it must not cover the enemy.
+   - Three windowed stills: before breach (no wash) / during Exposed (obvious amber wash on the body) / after expiry (wash gone).
+   - Real 30fps GIF from harness `record_frames` of the zoomed enemy across the window (not a screenshot slideshow).
+   - Copy proving PNGs + GIF into `.gen/screenshots/` and embed them in `.gen/manual-report.md`.
+   - End with `ui_feels_broken: yes|no`. A yes fails.
+   - If the overlay is still invisible at a close camera, that is a **code** failure — strengthen `ExposedVFX` (alpha/energy/shell size, unshaded, larger capsule) until the before/during frames differ by eye. Do not pass on metadata `exposed_vfx == true` alone.
+
+## Verification requirements
+
+- Fresh focused headless: `tests/scenarios/exposed_plating_once_per_shield.json` and `tests/scenarios/exposed_plating_vfx.json` via `run_project_cmd` (`godot-td`).
+- If headless criteria 1–3 and 5 are green, checker writes `classification: pass` so the leader can dispatch manual-tester. Missing windowed PNGs/GIFs are a manual-tester job, not a code-check `fixable` — **unless** the close-up stills show no overlay, which is fixable code.
+- Manual testing: REQUIRED. Never `--headless`. Windowed args when Vulkan fails: `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`.
+- Native Godot through `run_project_cmd`; explicit scene argument before user args.
+
+## Preserve
+
+Keep the existing uncommitted source diff and new files (`ExposedVFX.gd`, `ExposedStatus.gd`, both scenarios, `camera_focus` / `set_debug_panel` in `HarnessActions.gd`). Re-plan only if the r7 close-up plan is stale; otherwise implement/verify the unmet close-up visual work. Do not wipe the perk implementation. Do not reuse request ids r6 or r7.
