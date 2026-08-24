@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation (revision-code-2)
+# Coder report: implementation (revision-code-2)
 
 ## Changed files
 - none — no source changes this revision; all criteria were already implemented in prior iterations and re-verified green.
@@ -17,4 +17,3 @@
 - No code edits were needed for revision 2; the working tree is unchanged from the previous iteration.
 - Pre-existing benign noise in runs (not introduced by this work): invalid-UID warnings for HudTheme/UI textures, missing GLB model load errors (dummy renderer), exit-time RID leak messages from the headless dummy renderer.
 - The only outstanding item remains the manual `-Windowed` screenshot + `ui_feels_broken` sanity pass.
-\n

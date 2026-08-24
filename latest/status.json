@@ -1,20 +1,22 @@
 {
-  "run_id": "tw-104-dead-options-modal-r2",
-  "feature": "dead-options-modal-scene",
+  "run_id": "req-108-harness-cannot-boot-menu-scene-r2",
+  "feature": "harness-cannot-boot-menu-scene",
   "status": "running",
-  "started_at": "2026-08-24T07:46:05.341Z",
+  "started_at": "2026-08-24T07:45:55.169Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/tw-104-dead-options-modal-r2/",
-  "heartbeat_at": "2026-08-24T07:46:05.341Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-108-harness-cannot-boot-menu-scene-r2/",
+  "heartbeat_at": "2026-08-24T07:45:55.169Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "plan",
   "last_event_at": null,
-  "process_id": 311766,
+  "process_id": 311680,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:46:05.341751+00:00"
+    "last_attempt_at": "2026-08-24T07:47:29.929239+00:00",
+    "last_success_at": "2026-08-24T07:45:59.711308+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
