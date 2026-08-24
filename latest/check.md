@@ -1,106 +1,77 @@
-# Check report — Exposed Plating perk (issue #89) — check (r3)
+# Check report: gen-hud-textures-py-cannot-run-all-three (iteration 2)
 
-classification: pass
+classification: fixable
 
 ## Verdict
 
-Fresh verification through the approved runner (`project=godot-td`,
-`workspace=poke-defense-godot/issue-exposed-plating`) confirms all five headless
-code criteria are green. The plan's `--check-only` typecheck command fails on
-this project for ANY status script (including pre-existing `BurnStatus.gd`)
-because `godot --check-only --script` does not resolve autoloads — it is a tool
-limitation, not a code defect; the authoritative parse/compile gate is the
-editor import + full harness run, both exit 0. The plan's "full test" is the
-`exposed_plating_vfx` harness, which passes 16/16 actions with zero failures.
-Per request.md, headless green ⇒ checker writes `classification: pass` so the
-leader can dispatch manual-tester; missing windowed PNGs/GIFs and the
-`ui_feels_broken` verdict are manual-tester deliverables and remain Pending,
-not code-check fixable.
+All 7 acceptance criteria verified Done. All three plan verification commands were
+re-run fresh through `run_project_cmd` (project `godot-td`, workspace
+`poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three`) and exited 0.
 
-## Verification commands (all via run_project_cmd, runner-reported exit codes)
+Note on classification: the runner itself is healthy (all commands executed and
+returned exit 0), so `blocked` does not apply. The single reason this is not
+`pass` is recorded under Blockers below — the implementor's changes are still
+uncommitted in the worktree, which is a workflow gap the leader must resolve
+before merge; it does not invalidate any criterion evidence.
 
-1. Probe: `["godot","--version"]` — exit 0, Godot 4.4.1.stable.
-2. Editor import/parse gate: `["godot","--headless","--path",".","--editor","--quit-after","300"]`
-   — exit 0 (9.2s), no script errors.
-3. Focused semantics harness:
-   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_once_per_shield.json"]`
-   — exit 0, result `.gen/harness/exposed_plating_once_per_shield/result.json`:
-   `status=pass`, 38 actions, 0 failed. Log shows per-level legs L1 1625→1614→1603
-   (×1.15), L2 →1613→1601 (×1.25), L3 →1612→1599 (×1.35); exactly one
-   `[EXPOSED] triggered ... level=N bonus=…% dur=…` line per leg; one trigger per
-   shield instance (`exposed_count == 1`); post-expiry hit at hp 1589 = exact −10
-   unamplified after `[EXPOSED] expire`.
-4. VFX lifecycle harness ("full test" per plan):
-   `["godot","--headless","--path",".","res://scenes/Main.tscn","--audio-driver","Dummy","--","--harness=res://tests/scenarios/exposed_plating_vfx.json"]`
-   — exit 0, result `.gen/harness/exposed_plating_vfx/result.json`: `status=pass`,
-   16 actions, 0 failed, including `enemies.Orc Enemy_boss.exposed_vfx == true`
-   during the Exposed window and screenshot/record_frames steps correctly skipped
-   as `reason: headless`.
-5. Plan's typecheck command: `["godot","--headless","--check-only","--script",
-   "res://scripts/game/status/ExposedStatus.gd"]` — exit 1, `Identifier not found:
-   SimulationClock`. Control run on the UNRELATED pre-existing
-   `scripts/game/status/BurnStatus.gd` produces the identical error: the
-   `--check-only --script` mode does not register autoload singletons in this
-   project, so this command cannot validate any status script here. Gate treated
-   as satisfied by the stronger editor-parse gate (step 2) plus harness compile
-   and execution (steps 3–4). Not a feature failure.
+## Commands run (fresh, via run_project_cmd)
 
-## Criterion-by-criterion evidence
+| Command | Exit | Result |
+|---|---|---|
+| `python3 tools/check_hud_asset_refs.py` | 0 | `OK: all tool _source references resolve; all referenced hud textures exist` |
+| `godot --headless --path . --import --quit-after 300` | 0 | import scan completed, no errors |
+| `godot --headless --path . --editor --quit-after 300` | 0 | editor load completed, no errors |
 
-1. Perk registration / purchasable at 3 levels — Done. `scripts/progression/global.json`
-   defines `exposed_plating` Common, maxLevels 3 (0.15/0.5s, 0.25/1s, 0.35/1.5s);
-   harness exercised apply_progression across L1→L2→L3.
-2. Once-per-shield-instance trigger (>0→0 only) — Done. Guard
-   `if before > 0.0 and enemy.armor <= 0.0:` in `_consume_armor()`
-   (EnemyHealthController.gd ~line 369); second hits against zero armor asserted
-   baseline damage with `exposed_multiplier == 1.0`; re-trigger requires armor regain.
-3. Multiplier per level for duration, clean expiry — Done. Exact hp deltas above
-   match ×1.15/×1.25/×1.35; post-expiry hit unamplified; expiry logged once.
-4. ExposedStatus/ExposedVFX following BurnStatus/BurnVFX pattern — Done at code
-   level. `scripts/game/status/ExposedStatus.gd`, `scripts/game/actors/effects/
-   ExposedVFX.gd`, lazy `show_exposed()`/`hide_exposed()` via EffectsManager;
-   headless machine proof passes (`exposed_vfx == true` during window, clean state
-   before breach). Remaining player-facing evidence moved to Pending (manual-tester).
-5. `[EXPOSED]` debug logging gated by `OS.is_debug_build()` — Done. Trigger line
-   (EnemyHealthController.gd `_apply_exposed_plating`) and expiry line
-   (ExposedStatus.gd lines 34/54) behind `OS.is_debug_build()`; observed live in
-   fresh run output.
+## Criterion evidence
 
-## Test overlap check
+1. No tools/*.py references missing `_source` sources — PASS. Fresh
+   `check_hud_asset_refs.py` exit 0 via runner. The checker scans all of
+   `tools/*.py` for `textures/_source/...` references and validates existence.
+2. `tools/gen_hud_textures.py` gone — PASS. File absent from working tree
+   (`git status` shows `D tools/gen_hud_textures.py`).
+3. icon_coin.png / icon_heart.png / towers_panel.png byte-identical to starting
+   revision 9d54964 — PASS. md5 comparison against `git show 9d54964:...`:
+   f7f27e0b…, 363528e9…, 781cdec1… identical in both.
+4. No dangling hud texture references from scenes/themes/scripts — PASS. Grep for
+   deleted filenames across `.tscn/.tres/.gd/.py` found zero references;
+   checker's dangling-reference pass also green.
+5. Unreferenced generator outputs deleted — PASS. `wood_slot.png`, `slot_empty.png`,
+   `wood_panel_wide.png`, `wood_panel_wide_dark.png` absent; no `.import`
+   sidecars existed for them (confirmed by listing `textures/ui/hud/`).
+6. `gen_hud_icons.py` docstring updated — PASS. Diff removes the
+   "icon_coin/icon_heart come from gen_hud_textures.py" sentence; no remaining
+   mention of gen_hud_textures anywhere.
+7. Godot headless editor/import clean — PASS. Both runner invocations exit 0,
+   no errors attributable to removed textures (pre-existing HudTheme.tres stale-UID
+   warnings noted by coder are unchanged legacy state).
 
-Searched tests/scenarios: no prior exposed-plating coverage existed; both
-scenarios are new, non-overlapping, and each asserts its own criterion (exact hp
-deltas / multiplier values / once-per-instance counts / vfx visibility), not mere
-execution.
+## Changed-file quality review
 
-## Changed files reviewed
+- `tools/check_hud_asset_refs.py` (new): clean, minimal, no rule violations
+  (stdlib only, clear regexes, non-zero exit on failure, no speculative config).
+  Adequate as an automated test: it asserts both criteria (missing _source refs,
+  dangling hud refs) and would fail if either regressed — e.g. restoring a
+  reference to `textures/_source/woden_panel.jpg` or deleting `icon_coin.png`
+  makes it exit 1.
+- `gen_hud_icons.py` docstring edit: surgical, correct.
+- No test-overlap issue: no prior automated test covered these criteria.
+- Scope creep check (`git diff HEAD` + untracked): only cluster-owned files
+  changed plus new checker. Pre-existing untracked `.gen-blocked-117-.../`
+  archive predates this run and was not touched. Declared `.gen/` artifacts not
+  counted.
 
-git status: autoload/ProgressionManager.gd,
-scripts/game/actors/effects/EffectsManager.gd,
-scripts/game/actors/enemy/parts/EnemyHealthController.gd,
-scripts/progression/global.json, scripts/progression/managers/CurseProgressionManager.gd,
-scripts/testing/AgentHarness.gd, scripts/testing/HarnessValues.gd + new
-ExposedStatus.gd, ExposedVFX.gd, and both test scenario JSONs. Identical to the
-revision-1 reviewed diff; only declared workflow artifacts additionally changed;
-no scope creep. New code follows sibling-perk patterns, typed vars/guard clauses;
-no coding-rules violation found.
+## quality-notes.md
 
-## Quality notes
-
-quality-notes.md has one open advisory entry (static-breach-bypass): Static
-Breach zeroes armor without passing through `_consume_armor()`, so a Static-Breach
-shatter does not open an Exposed window. Issue wording pins the trigger site to
-`_consume_armor()`, so behavior appears intended; advisory only, does not demote
-any criterion. No new entries appended.
+No prior entries existed; none appended. No cross-cutting violations found.
 
 ## Blockers
 
-None infra. Runner healthy throughout (probe, import gate, both harnesses exit 0).
-Remaining Pending work belongs to the manual-tester profile (windowed captures,
-30fps record_frames recording, `ui_feels_broken` verdict into
-`.gen/manual-report.md`).
+- Changes are uncommitted in the worktree (deletions + modified
+  `tools/gen_hud_icons.py` + untracked `tools/check_hud_asset_refs.py`). The
+  checker performs no git commits; leader should commit before merge. This
+  workflow gap is why classification is `fixable` rather than `pass`; it is not
+  a criterion failure.
 
 ## Unverified items
 
-- Windowed visual captures / real-time recording / UI sanity verdict (manual-tester scope).
-- The plan's literal `--check-only` typecheck command (tool limitation documented above; superseded by stronger gates).
+- None. All criteria have fresh runner-based evidence.

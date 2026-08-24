@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-117-gen-hud-textures-r2/",
-  "heartbeat_at": "2026-08-24T07:29:51.060Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-24T07:29:51.060Z",
+  "heartbeat_at": "2026-08-24T07:32:16.831Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-24T07:32:16.831Z",
   "process_id": 292058,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:29:55.413307+00:00",
-    "last_success_at": "2026-08-24T07:29:55.411746+00:00",
+    "last_attempt_at": "2026-08-24T07:32:16.832158+00:00",
+    "last_success_at": "2026-08-24T07:29:59.645550+00:00",
     "last_error": null
   },
   "metrics": {
