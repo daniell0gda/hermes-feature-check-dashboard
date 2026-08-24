@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue115-ground-material-ignores-cache-r2/",
   "heartbeat_at": "2026-08-24T05:06:28.980Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-24T05:06:28.980Z",
   "process_id": 260956,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T05:06:28.980582+00:00",
-    "last_success_at": "2026-08-24T05:02:27.102497+00:00",
+    "last_attempt_at": "2026-08-24T05:06:33.552843+00:00",
+    "last_success_at": "2026-08-24T05:06:33.552006+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 60304,
         "output_tokens": 4373
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 64806,
+        "output_tokens": 4113
       }
     ]
   }
