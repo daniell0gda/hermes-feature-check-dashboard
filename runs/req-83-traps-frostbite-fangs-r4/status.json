@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r4/",
-  "heartbeat_at": "2026-08-24T10:57:44.264Z",
-  "last_node": null,
-  "active_node": "code",
-  "last_event_at": null,
+  "heartbeat_at": "2026-08-24T12:28:00.202Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-24T12:28:00.202Z",
   "process_id": 403838,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T10:57:49.035903+00:00",
-    "last_success_at": "2026-08-24T10:57:48.562248+00:00",
+    "last_attempt_at": "2026-08-24T12:28:00.203694+00:00",
+    "last_success_at": "2026-08-24T10:57:53.939847+00:00",
     "last_error": null
   },
   "metrics": {}
