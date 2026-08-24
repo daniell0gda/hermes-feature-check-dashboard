@@ -25,5 +25,14 @@
     "duration_ms": 167256,
     "summary": "Verified done: 6. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes (existing advisory `ground-map-tint-distinctness` remains open and valid). Verific\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-24T05:11:39.176Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 133948,
+    "summary": "Revision redo complete. Summary:\n\n- Read plan.md, revisions.md, check.md, status.md, cluster file, and prior coder report. The iteration-1 implementation is present as an uncommitted worktree diff on d7551d9; revisions.md directs a redo of \u2026",
+    "error": null
   }
 ]
