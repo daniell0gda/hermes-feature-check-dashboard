@@ -1,46 +1,42 @@
-# Request: issue-dead-options-modal-scene (issue #104) — r2
+# Request
 
-project: godot-td
-workspace: poke-defense-godot/issue-dead-options-modal-scene
-issue: https://github.com/daniell0gda/poke-defense-godot/issues/104
+- request_id: req-124-cave-carved-path-torches-r5
+- issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
+- project runner key: `godot-td`
+- workspace: `poke-defense-godot/issue-cave-carved-path-torches`
+- branch: `issue/cave-carved-path-torches` @ `f161e1d` (extend; do not reset)
 
-## Feature
-Delete unused Options clones so only the live `OptionsScreen` remains.
+## Problem (Daniel, 2026-08-24)
 
-Dead files (delete all four + `.uid` sidecars):
-- `scenes/ui/Options.tscn` + `scripts/ui/Options.gd` (`class_name OptionsModal`)
-- `scenes/ui/OptionsMenu.tscn` + `scripts/ui/OptionsMenu.gd` (`class_name OptionsMenu`)
+Coverage/lighting works, but some torches (he thinks maybe every 2nd) sit **in the corridor, not on the wall**. Screenshots: mid-path sticks floating in front of the wall while neighbors are wall-mounted.
 
-Live surface (keep): `scenes/ui/OptionsScreen.tscn` / `scripts/ui/OptionsScreen.gd`.
-- Pause menu: `scripts/ui/UI.gd` preloads `OptionsScreen.tscn`
-- Main menu: `scripts/MainMenu.gd` `OPTIONS_SCREEN` loads the same scene as a child modal
+Also set **`TORCH_SPACING = 4`**.
 
-## Acceptance criteria (issue body + Daniel comments 2026-08-20 / 2026-08-21)
-1. Repo-wide search finds no remaining reference to `Options.tscn`, `OptionsModal`, `OptionsMenu.tscn`, or class `OptionsMenu` (own deleted files do not count).
-2. Both dead pairs are gone from the tree, including orphaned `.uid` sidecars.
-3. Editor/import gate passes: `godot --headless --path . --editor --quit-after 300` exit 0, no parse/missing-resource errors.
-4. Pause-menu Options still opens live `OptionsScreen` (existing scenario `tests/scenarios/issue_dead_options_live_pause_menu.json`).
-5. Main-menu Options still opens live `OptionsScreen` (existing script `tests/ui/issue_dead_options_main_menu.gd`).
-6. Focused gameplay still loads: `smoke_placement` `status: pass`, exit 0.
+## Likely cause
 
-No new visual required — deletion only. Windowed sanity of both live Options paths is enough if the planner marks manual testing required.
+`TorchPlacer._best_wall_torch_for` (coverage repair) returns
+`wall_offset = Vector3(WALL_OFFSET * 0.5, 0, WALL_OFFSET * 0.5)` — diagonal into the walkway, not a real wall face.
+Spacing-pass torches use a single cardinal wall offset; repair-pass torches do not.
 
-## Hard non-goals (r1 burned a full revision budget on these)
-- Do **not** treat `smoke_tower_roster` as a hard gate. It fails identically on pristine master (`map_10` egg dies before wave 3). Advisory only. See `.gen/quality-notes.md` and `.gen-blocked-tw-104-dead-options-modal-r1-attempt1/`.
-- Do **not** edit `tests/scenarios/smoke_tower_roster.json`.
-- Do **not** touch `models/**` (LFS). This host has no `git-lfs`; model dirty files are noise.
-- Do **not** change harness, `project.godot`, or unrelated gameplay to “make the full suite green”.
-- Ignore stale r1 `.gen/check.md` / `.gen/revisions.md` / `.gen/clusters/1-delete-dead-options-modal.md` — they wrongly required `smoke_tower_roster`.
+## Required
 
-## Runner / workspace
-- Runner key must be the literal line `project: godot-td` (not the folder name poke-defense-godot).
-- Workspace: poke-defense-godot/issue-dead-options-modal-scene
-- Branch: `issue/dead-options-modal-scene`
-- Use `run_project_cmd` only; explicit scene arg before user args for gameplay harnesses.
+- Every placed torch must mount on a **real adjacent solid wall** (cardinal wall offset from `_wall_cells`). No mid-corridor / in-front-of-wall sticks.
+- `TORCH_SPACING = 4` (unique corridor-cell stride, not raw wall-face list).
+- Keep live-grid torch budget (no hardcoded MAX_TORCHES). Keep curves lit via coverage repair, but repair must also pick a real wall mount.
+- **Do not change torch light intensity** (`Torch.gd` energy/radius/color/omni unchanged).
 
-## Historical context (unverified as current evidence)
-r1 (`tw-104-dead-options-modal-r1`) deleted the `Options` pair and proved both live Options paths. Checker still classified `fixable` because the plan named `smoke_tower_roster` as the full test command. That run is archived at `.gen-blocked-tw-104-dead-options-modal-r1-attempt1/`. Treat those artifacts as history. r1 also missed Daniel’s extra scope: delete the `OptionsMenu` pair too.
+## Done when
 
-Working tree already has both dead pairs deleted and the two live-path tests. Keep that. Do not re-edit `smoke_tower_roster.json`. Fresh code verification + check required.
+- No torch stands in the walkway; all hug a wall
+- Spacing is 4
+- Curves/side-to-side carved path still covered
+- Windowed underground screenshots show wall-mounted torches (not floating mid-path)
+- `ui_feels_broken: no` on those shots
 
-request-id: tw-104-dead-options-modal-r2
+## Manual testing
+
+required. Windowed, no `--headless`. Underground, side-to-side carve with a curve, camera at `camera_target`.
+
+## Runner
+
+`godot-td` / `poke-defense-godot/issue-cave-carved-path-torches`. Write a real non-empty `.gen/plan.md`.

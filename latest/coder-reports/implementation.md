@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation (clusters 1 + 2)
+# Coder report: implementation (clusters 1 + 2)
 
 ## Changed files
 - `scripts/game/underground/TorchPlacer.gd` — modified
@@ -43,4 +43,3 @@
 - Gotcha for future scenarios: GDScript `print("x=", v)` emits "uncovered= 0"-style spacing?
   No — commas join without space here ("uncovered=11"); verified via cat -A on the fresh log.
 - Cluster 3 (windowed manual proof) not executable headlessly — left for manual run per plan.
-\n
