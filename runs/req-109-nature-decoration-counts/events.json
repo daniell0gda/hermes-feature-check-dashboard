@@ -16,5 +16,14 @@
     "duration_ms": 1216925,
     "summary": "Done. Summary of the implementation-cluster run:\n\nContext: the worktree had been reset to origin/master (run r1's diff was gone), so the feature was fully re-implemented this session, including the r1 quality fix.\n\nChanged files\n- scripts/g\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-24T05:22:39.237Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 568684,
+    "summary": "Check complete. All verification ran fresh through `run_project_cmd` (project=poke-defense-godot, workspace=poke-defense-godot/issue-nature-decoration-counts): import gate exit 0, focused scaling harness exit 0 with status=pass and 18/18 ex\u2026",
+    "error": null
   }
 ]

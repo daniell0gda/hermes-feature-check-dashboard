@@ -1,71 +1,85 @@
-# Check report: issue-ground-material-ignores-cache (revision-check-1)
+# Check report: issue-nature-decoration-counts (iteration 2)
 
 classification: pass
 
 ## Verdict
 
-All six acceptance criteria verified Done by fresh runner-based verification
-(iteration 2, revision-check-1). The implementation is unchanged from the r1
-redo; all gates re-run green in this session via run_project_cmd.
+All 7 criteria verified Done with fresh evidence through `run_project_cmd`
+(project=poke-defense-godot, workspace=poke-defense-godot/issue-nature-decoration-counts).
+The iteration-1 quality violation (`[NATURE]` print not gated by
+`OS.is_debug_build()`) is fixed in the current worktree; the print in
+`_apply_decoration_count_scaling()` is now wrapped in `if OS.is_debug_build():`.
+Build/import gate and the full test suite pass.
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-ground-material-ignores-cache)
+## Commands and exit codes (all fresh via run_project_cmd this iteration)
 
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Runner probe | `["godot","--version"]` | 0 | Godot 4.4.1.stable.official.49a5bc7b6 |
-| Typecheck/build + full suite | `["godot","--headless","--path",".","--editor","--quit-after","300"]` | 0 | Import/editor pass, no script parse errors |
-| Focused harness | `["godot","--headless","--path",".","res://scenes/Main.tscn","--quit-after","6000","--","--harness=res://tests/scenarios/ground_material_map_switch.json"]` | 0 | `[Harness] status=pass exit=0` |
+| Command | Exit | Result |
+|---|---|---|
+| `godot --headless --path . --import` | 0 | clean import, no parse errors |
+| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/nature_decoration_scaling.json` | 0 | `.gen/harness/nature_decoration_scaling/result.json`: status=pass, 18/18 expectations pass |
+| `godot --headless --path . res://tests/visuals/test_nature_visibility_range.tscn` | 0 | "16 ok, 0 failed", every test ran to completion (4 of 4) |
+| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/level_walkthrough_lean.json` | 0 | `.gen/harness/level_walkthrough_lean/result.json`: status=pass, elapsed 324.5s; all 10 non-ok actions are marked `"optional": true` by design |
 
-Fresh result `.gen/harness/ground_material_map_switch/result.json`: `status:
-"pass"`, both expectations pass (`grass=ok dirt=ok tint=0.309804,0.498039,0.309804`
-and log contains `[GROUND] ground material created`), timeline
-map_1→map_2→map_1→map_2 with all four load_map actions ok. Run log shows five
-ground-material creations, each `[GROUND] ground material created:
-from_cache=map_grass.jpg,underground_floor.jpg fresh=none`. Pre-existing
-invalid-UID theme warnings and dummy-renderer exit leak noise are unrelated to
-this change.
+Observed in fresh stdout:
+`[NATURE] counts for 20.0x20.0 map (area 400): scale_factor=1.0000 trees=4 bushes=6 flowers=5 dead_trees=2`
+`[NATURE] counts for 50.0x50.0 map (area 2500): scale_factor=6.2500 trees=25 bushes=38 flowers=31 dead_trees=13`
+Override map: `scale_factor=1.0000 trees=9 bushes=3 flowers=7 dead_trees=1`.
 
-## Criteria evidence
+## Criterion evidence
 
-1. CACHE_MODE_REUSE, no CACHE_MODE_IGNORE — Verified. Fresh grep: the only
-   remaining `CACHE_MODE_IGNORE` occurrence in TextureAtlasUtils.gd /
-   EnvironmentUtils.gd is inside an explanatory comment (line 142); both ground
-   textures load through `_load_ground_texture` with `CACHE_MODE_REUSE`.
-2. Root cause + sampler reassignment fix — Verified. Diff shows
-   `EnvironmentUtils._update_ground_plane_color` now re-asserts grass_albedo /
-   dirt_albedo (with CACHE_MODE_REUSE loads) when a sampler is missing.
-3. Non-empty albedo samplers after double map switch — Verified by harness
-   expectation 1 (`grass=ok dirt=ok` after four map loads).
-4. grass_tint follows newly loaded map's config — Verified by same expectation
-   (tint = loaded map color 5209935). Advisory: all shipped maps share this
-   color, so distinctness across maps is untestable today — tracked as open
-   advisory note `ground-map-tint-distinctness`.
-5. Fresh harness result.json pass — Verified (status "pass", finished_at
-   2026-08-24T05:12:54).
-6. Debug `[GROUND]` log naming cached vs fresh — Verified in run log; gated on
-   `OS.is_debug_build()`; five creation events logged.
-7. Fallback regression — Code-inspected: fallback branches (Grass.png tile
-   atlas / StandardMaterial3D) untouched in diff; probe handles non-shader
-   materials. No dedicated automated test exercises the fallback branch;
-   accepted per plan wording ("existing fallbacks unchanged").
+1. 20x20 baseline 4/6/5/2 at factor 1.0 — Done. Harness expectations
+   `map_1.{trees,bushes,flowers,dead_trees}` == 4/6/5/2 and
+   `map_1.scale_factor` == 1.0 all passed against live placed counts from
+   `NatureDecoration.placed_reports`; constants BASELINE_* in
+   scripts/game/NatureDecoration.gd match.
+2. 50x50 = roundi(baseline * 6.25), min 1 — Done. `custom_map.scale_factor`
+   == 6.25, placed 25/38/31/13 (= round of 25 / 37.5 / 31.25 / 12.5); all four
+   expectations passed.
+3. environment.decorations override precedence — Done. Map
+   `map_nature_override_test` yields 9/3/7/1, asserted passing;
+   `_override_or` accepts int/float/{count} forms.
+4. Headless 50x50 harness asserts contract, status pass — Done. Exit 0,
+   result.json status=pass, 18/18.
+5. `[NATURE]` debug log line with width/height/scale/counts — Done. Line
+   present in fresh stdout naming every required field, and now gated by
+   `OS.is_debug_build()` (NatureDecoration.gd lines 228–231). Iteration-1
+   quality demotion resolved.
+6. nature-visibility regression exits 0 — Done. Fresh run exit 0,
+   "16 ok, 0 failed".
+7. Windowed custom_map screenshots + whole-board spread + ui_feels_broken
+   verdict — Done. `.gen/harness/nature_decoration_manual/result.json`
+   status=pass (load_map, wait_for_condition, screenshot, rotate_camera,
+   screenshot), PNGs at `.gen/manual/01_custom_map_50x50_full_board.png` and
+   `.gen/manual/02_custom_map_rotated.png`; manual-tester report records full
+   board coverage incl. far corners and `ui_feels_broken: no`. Visual judgment
+   is the manual-tester profile's domain; the automated capture path was
+   re-verified via the passing scenario result.
+
+## Test overlap check
+
+No overlapping pre-existing coverage found: the scaling scenario is new;
+existing tests cover visibility/culling, not decoration counts.
 
 ## Changed-file quality findings
 
-No rule violations in the new code against /opt/data/coding_rules.md or
-worktree CLAUDE.md: typed GDScript, guard clauses, debug-gated `[GROUND]`
-logging per CLAUDE.md logging rule, surgical scope. Test-overlap check: no
-pre-existing scenario asserted ground-material sampler state; the new scenario
-is novel coverage. Note (advisory): `Game.gd.__ground_shader_probe` is harness
-instrumentation living in a production script, consistent with the repo's
-established AgentHarness pattern; not a violation. Worktree diff remains
-uncommitted (3 modified files, 2 untracked scenarios) — commit is the leader's
-merge step, not a quality failure.
+- scripts/game/NatureDecoration.gd: debug print now gated per CLAUDE.md
+  convention. Typed variables, small focused functions, guard clauses — no
+  applicable violations.
+- scripts/testing/HarnessValues.gd `_nature_field`: follows the existing
+  source-pattern convention documented in the field-source map comment;
+  acceptable.
+- Advisory only (quality-notes.md, not demoting): `placed_reports` static dict
+  grows per loaded map without clearing; bounded per run, not a leak in
+  practice.
 
 ## Blockers
 
-None. All commands exited 0 on first attempt.
+None. Runner healthy throughout; all commands executed via run_project_cmd.
 
-## Unverified items
+## Unverified / notes
 
-- Manual windowed screenshot evidence (manual_testing: required) is owned by
-  the manual-tester profile; not assessed here.
+- Pixel-level whole-board spread and UI-sanity verdict accepted from
+  manual-tester PNG evidence (manual-tester domain, per team workflow).
+- Pre-existing legacy warnings (HUD theme UIDs, missing Petal /
+  Mushroom_Laetiporus / shed.glb models, RID leaks at exit) are out of scope
+  for this diff.
