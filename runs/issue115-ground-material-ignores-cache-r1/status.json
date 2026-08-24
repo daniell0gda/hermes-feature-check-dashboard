@@ -15,7 +15,7 @@
   "phase": "manual-tester",
   "dashboard_publish": {
     "last_attempt_at": "2026-08-22T22:32:01.080440+00:00",
-    "last_success_at": "2026-08-22T22:32:01.078063+00:00",
+    "last_success_at": "2026-08-22T22:32:04.937499+00:00",
     "last_error": null
   },
   "metrics": {
