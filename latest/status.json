@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-130-middle-pan-flip-r4/",
   "heartbeat_at": "2026-08-24T08:51:01.375Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-24T08:51:01.375Z",
   "process_id": 324686,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T08:51:01.376432+00:00",
-    "last_success_at": "2026-08-24T08:28:57.434957+00:00",
+    "last_attempt_at": "2026-08-24T08:51:06.395812+00:00",
+    "last_success_at": "2026-08-24T08:51:06.394324+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 76865,
         "output_tokens": 6985
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 109122,
+        "output_tokens": 7528
       }
     ]
   }
