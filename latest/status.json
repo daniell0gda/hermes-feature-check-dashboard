@@ -1,20 +1,22 @@
 {
   "run_id": "issue116-game-ready-blocks-map-load-r4",
   "feature": "game-ready-blocks-map-load",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-24T18:31:25.276Z",
-  "ended_at": null,
+  "ended_at": "2026-08-24T18:33:00.895Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r4/",
-  "heartbeat_at": "2026-08-24T18:31:25.276Z",
+  "heartbeat_at": "2026-08-24T18:33:00.895Z",
   "last_node": null,
   "active_node": null,
   "last_event_at": null,
   "process_id": 467588,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T18:31:25.276479+00:00"
+    "last_attempt_at": "2026-08-24T18:33:00.895074+00:00",
+    "last_success_at": "2026-08-24T18:31:30.054345+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
