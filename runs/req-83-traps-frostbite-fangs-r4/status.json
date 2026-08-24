@@ -1,21 +1,21 @@
 {
   "run_id": "req-83-traps-frostbite-fangs-r4",
   "feature": "traps-frostbite-fangs",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-24T13:55:54.797Z",
-  "ended_at": null,
+  "ended_at": "2026-08-24T14:31:36.409Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r4/",
-  "heartbeat_at": "2026-08-24T14:31:31.535Z",
+  "heartbeat_at": "2026-08-24T14:31:36.409Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-24T14:31:31.535Z",
   "process_id": 431056,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T14:31:31.536260+00:00",
-    "last_success_at": "2026-08-24T14:25:08.528977+00:00",
+    "last_attempt_at": "2026-08-24T14:31:36.409623+00:00",
+    "last_success_at": "2026-08-24T14:31:36.408468+00:00",
     "last_error": null
   },
   "metrics": {
@@ -63,6 +63,17 @@
         "cost_status": "unavailable",
         "input_tokens": null,
         "output_tokens": null
+      },
+      {
+        "task_id": "revision-check-2",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 155180,
+        "output_tokens": 5188
       }
     ]
   }
