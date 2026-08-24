@@ -1,21 +1,21 @@
 {
-  "run_id": "req-89-exposed-plating-r2",
-  "feature": "Exposed Plating perk",
+  "run_id": "req-117-gen-hud-textures-r2",
+  "feature": "gen-hud-textures-py-cannot-run-all-three",
   "status": "running",
-  "started_at": "2026-08-24T07:06:43.523Z",
+  "started_at": "2026-08-24T07:16:11.189Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r2/",
-  "heartbeat_at": "2026-08-24T07:25:04.509Z",
-  "last_node": "team-leader",
-  "active_node": null,
-  "last_event_at": "2026-08-24T07:25:04.509Z",
-  "process_id": 287796,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-117-gen-hud-textures-r2/",
+  "heartbeat_at": "2026-08-24T07:25:04.001Z",
+  "last_node": "code",
+  "active_node": "check",
+  "last_event_at": "2026-08-24T07:25:04.001Z",
+  "process_id": 292058,
   "host": "f1a4230ec90b",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T07:25:04.509855+00:00",
-    "last_success_at": "2026-08-24T07:21:57.832955+00:00",
+    "last_attempt_at": "2026-08-24T07:25:08.430333+00:00",
+    "last_success_at": "2026-08-24T07:25:08.429091+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 67668,
-        "output_tokens": 4352
+        "input_tokens": 29933,
+        "output_tokens": 3121
       },
       {
         "task_id": "code",
@@ -39,19 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 161422,
-        "output_tokens": 3878
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 92950,
-        "output_tokens": 5111
+        "input_tokens": 65873,
+        "output_tokens": 3277
       }
     ]
   }
