@@ -1,21 +1,21 @@
 {
   "run_id": "req-89-exposed-plating-r8",
   "feature": "exposed-plating",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-24T14:06:03.525Z",
-  "ended_at": null,
+  "ended_at": "2026-08-24T14:55:50.940Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-89-exposed-plating-r8/",
-  "heartbeat_at": "2026-08-24T14:55:44.630Z",
+  "heartbeat_at": "2026-08-24T14:55:50.940Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-24T14:55:44.630Z",
   "process_id": 433222,
   "host": "f1a4230ec90b",
-  "phase": "team-leader",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T14:55:44.631385+00:00",
-    "last_success_at": "2026-08-24T14:49:57.963331+00:00",
+    "last_attempt_at": "2026-08-24T14:55:50.940029+00:00",
+    "last_success_at": "2026-08-24T14:55:50.937370+00:00",
     "last_error": null
   },
   "metrics": {
@@ -85,6 +85,17 @@
         "cost_status": "unknown",
         "input_tokens": 27856,
         "output_tokens": 499
+      },
+      {
+        "task_id": "manual-tester",
+        "cluster_id": null,
+        "role": "manual-tester",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 84141,
+        "output_tokens": 4749
       }
     ]
   }
