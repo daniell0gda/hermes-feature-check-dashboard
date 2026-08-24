@@ -1,77 +1,60 @@
-# Check report: gen-hud-textures-py-cannot-run-all-three (iteration 2)
+# Check report: gen-hud-textures-py-cannot-run-all-three
 
-classification: fixable
+classification: pass
 
 ## Verdict
 
-All 7 acceptance criteria verified Done. All three plan verification commands were
-re-run fresh through `run_project_cmd` (project `godot-td`, workspace
-`poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three`) and exited 0.
+All 7 acceptance criteria verified Done against the worktree at HEAD `5f6b15a`
+("chore: remove dead gen_hud_textures.py generator and its unreferenced outputs").
+Coder report `.gen/coder-reports/remove-dead-hud-texture-generator.md` matches reality.
+No Impossible items; none warranted.
 
-Note on classification: the runner itself is healthy (all commands executed and
-returned exit 0), so `blocked` does not apply. The single reason this is not
-`pass` is recorded under Blockers below — the implementor's changes are still
-uncommitted in the worktree, which is a workflow gap the leader must resolve
-before merge; it does not invalidate any criterion evidence.
+## Verification commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three)
 
-## Commands run (fresh, via run_project_cmd)
+- Focused test: `python3 tools/check_hud_asset_refs.py` → exit 0,
+  "OK: all tool _source references resolve; all referenced hud textures exist"
+- Full test/import gate: `godot --headless --path . --import --quit-after 300` → exit 0,
+  full 109-step scan completed, no errors
+- Typecheck/build gate: `godot --headless --path . --editor --quit-after 300` → exit 0,
+  editor load completed, no errors
 
-| Command | Exit | Result |
-|---|---|---|
-| `python3 tools/check_hud_asset_refs.py` | 0 | `OK: all tool _source references resolve; all referenced hud textures exist` |
-| `godot --headless --path . --import --quit-after 300` | 0 | import scan completed, no errors |
-| `godot --headless --path . --editor --quit-after 300` | 0 | editor load completed, no errors |
+## Per-criterion evidence
 
-## Criterion evidence
+1. No tools/*.py references missing textures/_source sources — PASS.
+   Checker exit 0 on repo. Negative test executed by checker (in a temp fixture): a script
+   referencing a nonexistent `_source` path makes the same checker exit 1 with
+   "FAIL: ... references missing source ...", so the assertion has teeth and would fail if
+   the criterion were broken.
+2. tools/gen_hud_textures.py gone — PASS. File absent from worktree; deleted in 5f6b15a;
+   no remaining mentions of `gen_hud_textures` anywhere under tools/ or in any
+   .gd/.tscn/.tres.
+3. icon_coin.png / icon_heart.png / towers_panel.png byte-identical — PASS.
+   `git diff 9d54964 HEAD -- <the three pngs>` is empty.
+4. No dangling hud texture references — PASS. Checker's dangling-ref scan over all
+   .tscn/.tres/.gd exits 0.
+5. Generator-only outputs deleted (wood_slot.png, slot_empty.png, wood_panel_wide.png,
+   wood_panel_wide_dark.png) — PASS. All four absent from worktree; removed by 5f6b15a.
+6. gen_hud_icons.py docstring updated — PASS. Diff shows the provenance claim replaced;
+   current docstring no longer states icon_coin/icon_heart come from gen_hud_textures.py.
+7. Godot headless editor/import run clean — PASS. Both gates above exit 0 with no errors
+   introduced by the removal (pre-existing HudTheme.tres stale-UID warnings are legacy and
+   unrelated).
 
-1. No tools/*.py references missing `_source` sources — PASS. Fresh
-   `check_hud_asset_refs.py` exit 0 via runner. The checker scans all of
-   `tools/*.py` for `textures/_source/...` references and validates existence.
-2. `tools/gen_hud_textures.py` gone — PASS. File absent from working tree
-   (`git status` shows `D tools/gen_hud_textures.py`).
-3. icon_coin.png / icon_heart.png / towers_panel.png byte-identical to starting
-   revision 9d54964 — PASS. md5 comparison against `git show 9d54964:...`:
-   f7f27e0b…, 363528e9…, 781cdec1… identical in both.
-4. No dangling hud texture references from scenes/themes/scripts — PASS. Grep for
-   deleted filenames across `.tscn/.tres/.gd/.py` found zero references;
-   checker's dangling-reference pass also green.
-5. Unreferenced generator outputs deleted — PASS. `wood_slot.png`, `slot_empty.png`,
-   `wood_panel_wide.png`, `wood_panel_wide_dark.png` absent; no `.import`
-   sidecars existed for them (confirmed by listing `textures/ui/hud/`).
-6. `gen_hud_icons.py` docstring updated — PASS. Diff removes the
-   "icon_coin/icon_heart come from gen_hud_textures.py" sentence; no remaining
-   mention of gen_hud_textures anywhere.
-7. Godot headless editor/import clean — PASS. Both runner invocations exit 0,
-   no errors attributable to removed textures (pre-existing HudTheme.tres stale-UID
-   warnings noted by coder are unchanged legacy state).
+## Changed-file quality findings
 
-## Changed-file quality review
-
-- `tools/check_hud_asset_refs.py` (new): clean, minimal, no rule violations
-  (stdlib only, clear regexes, non-zero exit on failure, no speculative config).
-  Adequate as an automated test: it asserts both criteria (missing _source refs,
-  dangling hud refs) and would fail if either regressed — e.g. restoring a
-  reference to `textures/_source/woden_panel.jpg` or deleting `icon_coin.png`
-  makes it exit 1.
-- `gen_hud_icons.py` docstring edit: surgical, correct.
-- No test-overlap issue: no prior automated test covered these criteria.
-- Scope creep check (`git diff HEAD` + untracked): only cluster-owned files
-  changed plus new checker. Pre-existing untracked `.gen-blocked-117-.../`
-  archive predates this run and was not touched. Declared `.gen/` artifacts not
-  counted.
-
-## quality-notes.md
-
-No prior entries existed; none appended. No cross-cutting violations found.
+- tools/check_hud_asset_refs.py (new, 69 lines): clean, minimal, single-purpose; follows
+  clean-code bar; no rule violations found.
+- tools/gen_hud_icons.py: surgical 2-line docstring fix only. No scope creep.
+- Test overlap check: the new checker does not overlap any existing suite coverage (no prior
+  test asserted tool-source or hud-ref integrity); it replaces no test.
+- git status shows only pre-existing untracked `.gen-blocked-117-gen-hud-20260823-attempt1/`
+  archive plus declared workflow artifacts — not scope creep.
 
 ## Blockers
 
-- Changes are uncommitted in the worktree (deletions + modified
-  `tools/gen_hud_icons.py` + untracked `tools/check_hud_asset_refs.py`). The
-  checker performs no git commits; leader should commit before merge. This
-  workflow gap is why classification is `fixable` rather than `pass`; it is not
-  a criterion failure.
+None. Runner healthy; all three gates ran through run_project_cmd with recorded exit codes.
 
 ## Unverified items
 
-- None. All criteria have fresh runner-based evidence.
+None.

@@ -1,4 +1,4 @@
-# Coder report: remove-dead-hud-texture-generator\n\n# Coder report: remove-dead-hud-texture-generator (revision 2)
+# Coder report: remove-dead-hud-texture-generator (revision 2)
 
 ## Changed files
 - No new changes this revision. The iteration-2 blocker (uncommitted worktree) was
@@ -28,4 +28,3 @@
   (grep verified).
 - Pre-existing legacy HudTheme.tres stale-UID warnings unchanged; not caused by
   this change.
-\n

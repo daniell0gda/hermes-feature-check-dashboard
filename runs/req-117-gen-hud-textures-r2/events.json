@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-24T08:09:05.135Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 258603,
+    "summary": "Check complete. Artifacts written:\n\n- /workspace/git-workspaces/poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three/.gen/check.md\n- /workspace/git-workspaces/poke-defense-godot/issue-gen-hud-textures-py-cannot-run-all-three/.g\u2026",
+    "error": null
+  }
+]
