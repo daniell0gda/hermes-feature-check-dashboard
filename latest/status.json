@@ -1,22 +1,69 @@
 {
-  "run_id": "req-83-traps-frostbite-fangs-r4",
-  "feature": "traps-frostbite-fangs",
+  "run_id": "req-85-tooltip-polish-r2",
+  "feature": "tower-description-tooltip-polish",
   "status": "running",
-  "started_at": "2026-08-24T12:29:32.266Z",
+  "started_at": "2026-08-24T10:18:01.291Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r4/",
-  "heartbeat_at": "2026-08-24T12:29:32.266Z",
-  "last_node": null,
-  "active_node": "check",
-  "last_event_at": null,
-  "process_id": 419875,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-tooltip-polish-r2/",
+  "heartbeat_at": "2026-08-24T12:33:40.308Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-24T12:33:40.308Z",
+  "process_id": 391652,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T12:29:37.195163+00:00",
-    "last_success_at": "2026-08-24T12:29:36.723685+00:00",
+    "last_attempt_at": "2026-08-24T12:33:40.308679+00:00",
+    "last_success_at": "2026-08-24T12:19:43.989765+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "plan",
+        "cluster_id": null,
+        "role": "plan",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 50940,
+        "output_tokens": 4249
+      },
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 88378,
+        "output_tokens": 6454
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 74333,
+        "output_tokens": 5911
+      },
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 167185,
+        "output_tokens": 29474
+      }
+    ]
+  }
 }

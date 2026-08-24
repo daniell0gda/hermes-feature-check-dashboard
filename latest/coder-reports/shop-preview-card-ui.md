@@ -1,4 +1,4 @@
-# Coder report: shop-preview-card-ui\n\n# Coder report: shop-preview-card-ui (revision 1 — placement criterion)
+# Coder report: shop-preview-card-ui (revision 1 — placement criterion)
 
 ## Changed files
 - `scripts/ui/UI.gd` — mod: rewrote `_position_shop_preview_card()` (real-size-driven
@@ -57,4 +57,3 @@ All via `run_project_cmd` project `godot-td`, workspace
   path_blocked, so the details-panel-visible half of the test cannot be set up there.
 - Manual windowed screenshot pass (Generic/Fire/Ice/Porter per `.gen/ui_scenario.md`) still
   required for pixel legibility — headless cannot satisfy that half.
-\n
