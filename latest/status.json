@@ -1,12 +1,12 @@
 {
   "run_id": "issue45-water-flood-r1",
   "feature": "water-conductive-flood-wet-splash",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-24T21:31:30.268Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-24T21:45:28.106Z",
+  "error": "code worker returned no reply (empty model or exhausted API retries)",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
-  "heartbeat_at": "2026-08-24T21:45:23.710Z",
+  "heartbeat_at": "2026-08-24T21:45:28.106Z",
   "last_node": "code",
   "active_node": null,
   "last_event_at": "2026-08-24T21:45:23.710Z",
@@ -14,8 +14,8 @@
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T21:45:23.711013+00:00",
-    "last_success_at": "2026-08-24T21:31:40.461667+00:00",
+    "last_attempt_at": "2026-08-24T21:45:28.106589+00:00",
+    "last_success_at": "2026-08-24T21:45:28.105287+00:00",
     "last_error": null
   },
   "metrics": {}
