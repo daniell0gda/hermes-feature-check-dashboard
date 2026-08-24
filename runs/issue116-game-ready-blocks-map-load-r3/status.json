@@ -1,21 +1,21 @@
 {
   "run_id": "issue116-game-ready-blocks-map-load-r3",
   "feature": "game-ready-blocks-map-load",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-24T14:01:34.415Z",
-  "ended_at": null,
+  "ended_at": "2026-08-24T15:02:33.904Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r3/",
-  "heartbeat_at": "2026-08-24T15:02:28.176Z",
+  "heartbeat_at": "2026-08-24T15:02:33.904Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-24T15:02:28.176Z",
   "process_id": 432145,
   "host": "f1a4230ec90b",
-  "phase": "team-leader",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T15:02:28.176682+00:00",
-    "last_success_at": "2026-08-24T14:53:21.971904+00:00",
+    "last_attempt_at": "2026-08-24T15:02:33.904613+00:00",
+    "last_success_at": "2026-08-24T15:02:33.902637+00:00",
     "last_error": null
   },
   "metrics": {
@@ -85,6 +85,17 @@
         "cost_status": "unknown",
         "input_tokens": 26827,
         "output_tokens": 570
+      },
+      {
+        "task_id": "manual-tester",
+        "cluster_id": null,
+        "role": "manual-tester",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 67981,
+        "output_tokens": 3542
       }
     ]
   }
