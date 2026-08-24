@@ -43,5 +43,14 @@
     "duration_ms": 151508,
     "summary": "Verified done: 6. Pending: 0. Impossible: 0. Quality notes: no changes (existing advisory `ground-map-tint-distinctness` remains open and still accurate). Verification: passed. Blockers: none.\n\nAll gates re-ran fresh via run_project_cmd (pr\u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-24T05:14:49.127Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 29479,
+    "summary": "Manual-testing gate complete.\n\n- Check status: pass (all 6 acceptance criteria verified, harness green).\n- Decision: manual_testing: required \u2014 the fix is a new player-visible story (ground plane keeps its grass/dirt blended textures across\u2026",
+    "error": null
   }
 ]
