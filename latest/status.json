@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/corrosive-soak-90-r3/",
   "heartbeat_at": "2026-08-24T08:58:58.658Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-24T08:58:58.658Z",
   "process_id": 338460,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T08:58:58.659545+00:00",
-    "last_success_at": "2026-08-24T08:54:36.977224+00:00",
+    "last_attempt_at": "2026-08-24T08:59:03.090864+00:00",
+    "last_success_at": "2026-08-24T08:59:03.089336+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 84594,
         "output_tokens": 5749
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 115325,
+        "output_tokens": 5874
       }
     ]
   }
