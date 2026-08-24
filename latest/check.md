@@ -1,79 +1,114 @@
-# Check report — traps_frostbite_fangs (revision-check-2, iteration 7)
+# Check report — issue-116 game-ready-blocks-map-load (revision-check 2, iteration 3)
 
-classification: pass
+classification: fixable
 
 ## Verdict
 
-All automated gates pass. The previous `fixable` was only because `.gen/manual-report.md` was missing — that is the leader's post-pass manual-tester gate, not a code defect.
+Cluster 1 improved but the frame-budget criterion STILL FAILS on a fresh
+cold-cache run. The cast-rule violation from iteration 2 is fixed. Cluster 2's
+new test no longer crashes on typed pairs and now has a 3600-frame watchdog,
+but it never reaches a single assertion: the loading screen's `add_child` of
+the game scene fails inside `_ready` ("Parent node is busy setting up children,
+add_child() failed"), the screen never frees itself, the test spins to its
+watchdog, quits 1, and writes NO result.json — zero checks executed.
+The required windowed PNG manual evidence still does not exist.
 
-## Verification commands (all via run_project_cmd, project=godot-td,
-workspace=poke-defense-godot/issue-traps-frostbite-fangs; fresh this check,
-2026-08-24 ~14:25–14:27 UTC)
+## Verification commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-game-ready-blocks-map-load)
 
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Runner preflight | `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 |
-| Build/typecheck | `godot --headless --path . --editor --quit-after 300` | 0 | editor scan clean, no script parse errors (~10s) |
-| Focused test | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/traps_frostbite_fangs_progression.json` | 0 | `[Harness] status=pass exit=0`, ~9s |
-| Full test slot | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/traps_serrated_edges_progression.json` | 0 | `[Harness] status=pass exit=0`, ~5s |
+- Preflight probe: `["godot","--version"]` → exit 0, Godot 4.4.1.stable.
+- Editor/import gate: `godot --headless --path . --editor --quit-after 300`
+  → exit 0 (clean parse of Game.gd / NatureDecoration.gd /
+  test_map_loading_screen_driving.gd).
+- Focused scenario: `godot --headless --path . res://scenes/Main.tscn --
+  --harness=res://tests/scenarios/map_build_phases.json` → **exit 1,
+  status=fail**; `.gen/harness/map_build_phases/result.json`: 7/8 expectations
+  pass; the failing one is still the `!regex` frame-budget check. Fresh
+  cold-cache timings in `.gen/harness/_logs/map_build_phases.out.log`:
+  'Loading Egg Castle Model' 124 ms, 'Warming Egg Castle Model' 121 ms,
+  'Placing the Egg' 121 ms, 'Growing Vegetation - Trees 1/4' 184 ms,
+  'Dead Trees 1/2' 192 ms — five phases over ~100 ms. A "Warm Models" phase
+  was added before the tree slices, yet the first tree/dead-tree slice still
+  pays the full model-parse cost, so the warm phase is not effective for them.
+- Full suite: level_walkthrough → exit 0, status=pass, but its own log again
+  shows cold phases at 204 / 194 / 127 ms (same budget violation on other
+  maps).
+- Backdrop: menu_backdrop_map → status=pass (exit 0).
+- New cluster-2 test:
+  `godot --headless --path . res://tests/loading/test_map_loading_screen_driving.tscn`
+  → **exit 1 after ~26 s**, watchdog fired:
+  `[SETUP FAIL] test exceeded its 3600-frame watchdog`. Log shows exactly one
+  engine error first: `ERROR: Parent node is busy setting up children,
+  add_child() failed. Consider using add_child.call_deferred(child) instead.`
+  No `.gen/loading_harness/result.json`, no assertion summary line, zero
+  checks ran. Root cause: the harness adds the screen via `add_child` from its
+  own `_ready`; the screen's `_ready → _run_steps → _finish →
+  _build_world_phased` then does `tree.root.add_child(instance)` while the
+  root is still setting up children, so the game instance never enters the
+  tree; the screen waits forever on a world build that can never finish.
+  (Same error also appears when the scene is launched directly.) The test
+  needs `add_child.call_deferred` (or deferred start) in BOTH the harness's
+  screen add and MapLoadingScreen._build_world_phased's game-scene add.
 
-Fresh `.gen/harness/traps_frostbite_fangs_progression/result.json`:
-`status: pass`, all actions ok (L1 chill 0.4/2.0s, L2 0.5/2.5s, L3 0.6/3.0s,
-Unique type, frozen_count >= 1, slow_magnitude 0.6 at L3, ice_slow_fx >= 1,
-unowned control trap_03 produced no `[FROSTBITE_FANGS]` hit), both screenshots
-captured at 1920x1080.
+## Acceptance criteria status
 
-## Acceptance criteria evidence
+Cluster 1 — game-phased-build:
+- PASS — phased parity (playing state, map_id=map_1, total_waves=4>0, wave-1
+  enemies ≥1): all four gameplay expectations pass in
+  .gen/harness/map_build_phases/result.json.
+- FAIL — no single frame >~100 ms during world build: unchanged from iteration
+  2 — cold-cache 124/121/121/184/192 ms on map_1; level_walkthrough log shows
+  204/194/127 ms. The added warm-model phase does not remove the parse cost
+  from the first vegetation slice, and egg-castle load/warm/place remain just
+  over budget.
+- PASS — direct Main.tscn boot completes the whole build without a driver
+  (harness path reaches playing with all phases run synchronously).
+- PASS — menu_backdrop_map scenario passes unchanged.
+- PASS — `[MAP_BUILD] phase '<name>' done in <n> ms` lines present for every
+  phase in every scenario log.
 
-1. Close top-down camera after `_update_camera_for_layer` — DONE.
-   Scenario timeline: two `_update_camera_for_layer("underground")` calls, then
-   `debug_focus_camera_on([0.25,-3.0,0.25])`, re-applied before the explicit
-   screenshot and before `record_frames`. `Game.gd:2013` parks the camera at
-   height 2.4 with tiny +z offset and `look_at` the trap.
-2. Fresh headless result.json pass — DONE (regenerated by this check, see table).
-3. [FROSTBITE_CAMERA] debug log — DONE. Two occurrences in the fresh headless
-   log: `[FROSTBITE_CAMERA] focus pos=(0.25, -25.0, 0.25) height=2.40`.
-4. Windowed close shot with trap + live enemy large in frame — DONE.
-   `.gen/screenshots/frostbite_fangs_chilled_hit.png` (fresh 14:24, 1920x1080):
-   near top-down underground view; the trap and a large chilled enemy body fill
-   the center of frame — not a speck, not empty floor.
-5. Frost tint distinguishable from green body — DONE. In that PNG the Cactoro is
-   icy blue/white with a snowflake VFX above it, clearly distinct from its
-   normal green body; log confirms `[FROZEN DEBUG] ... new color: (0.5694,
-   0.7124, 0.7107)` from original green `(0.3268, 0.4568, 0.1734)`.
-6. record_frames GIF evidence — DONE. Windowed run recorded 6 consecutive frames
-   (`harness/traps_frostbite_fangs_progression/record/frost_hit_0000..0005.png`);
-   `.gen/screenshots/frost_hit_frame_0000.png` and
-   `.gen/screenshots/frostbite_fangs_chill_motion.gif` (733KB) copied fresh. I
-   inspected the GIF: consecutive close frames of the chill applying, suitable
-   for 30fps GIF.
-7. NEW check.md from fresh shots — DONE (this file, written this run; verdict
-   based only on the fresh 14:24 windowed PNG/GIF, which pass the framing test).
-8. Manual windowed test (`ui_feels_broken: yes` fails) — PENDING. The optional
-   manual-tester profile owns `.gen/manual-report.md`; it does not exist. The
-   checker cannot produce it; leader should route to manual testing.
+Cluster 2 — loading-screen-driving:
+- UNVERIFIED — bar advances during world build: implementation exists
+  (MapLoadingScreen._build_world_phased + _on_world_build_phase), but the only
+  automated coverage never executes an assertion (watchdog abort above) and no
+  windowed PNG manual evidence exists.
+- UNVERIFIED — building-phase caption replaces "Building Map": same gap.
+- UNVERIFIED — bad map id falls back to map_1 before world build: logic present
+  and ordered before phases in code (`_load_map_config` runs as step 1, before
+  `_finish`/phases), but the only test never executes its checks.
+
+Manual testing per plan.md (windowed PNG of the loading screen mid-world-build)
+is REQUIRED and missing (.gen contains no manual-report.md and no screenshots).
 
 ## Changed-file quality findings
 
-- `scripts/testing/AgentHarness.gd` `_record_frames`: the headless skip
-  early-returns after `Engine.time_scale` was set and never restores it. Harmless
-  today (headless run exits right after; `engine_time_scale_at_exit` was 1.0) but
-  recorded as a new advisory quality note (iteration 7). Debug/harness-only, does
-  not demote criteria.
-- `Game.gd debug_focus_camera_on` enemy-y snap side effect: pre-existing open
-  note (iteration 4), still advisory (debug-build-only framing aid).
-- Iteration-5 note remains RESOLVED (headless skip works; fresh run ~9s).
-- No test-overlap issues: frostbite scenario is the feature's own scenario; the
-  serrated-edges run is the plan's declared full-test slot.
-- Scope: diff touches perk files, scenario JSON, Game.gd camera helper,
-  AgentHarness headless guard — within plan scope. Archived `.gen-r2-stale-pass/`
-  / `.gen-r3-check-timeout/` are declared workflow artifacts, not scope creep.
+- RESOLVED — scripts/game/Game.gd `as PackedScene` casts removed; new lines no
+  longer introduce type casts (remaining `as X` occurrences are pre-existing).
+- NEW QUALITY ISSUE — scripts/game/NatureDecoration.gd: newly added lines
+  introduce two type casts forbidden by coding rules:
+  `get_node_or_null(container_name) as Node3D` (get_container, ~line 246) and
+  `_model_cache.get(model_path) as PackedScene` plus `load(model_path) as
+  PackedScene` (_load_nature_model_path, ~lines 657–659). Advisory quality note
+  appended; does not demote criteria beyond what is already recorded.
+- tests/loading/test_map_loading_screen_driving.gd: typed-pair crash fixed and
+  watchdog added (good), but the deferred-add_child defect above means the test
+  still proves nothing; must be fixed and rerun to a written result.json.
 
 ## Blockers
 
-None for the checker. Remaining work: manual windowed test (manual-tester
-profile) to close the last Pending criterion.
+None infra-related; runner healthy throughout (probe, import gate, and all
+scenario runs returned promptly).
 
-## Unverified items
+## Required fixes before re-check
 
-- Manual UI feel (`ui_feels_broken`) — awaiting `.gen/manual-report.md`.
+1. Fix the add_child-inside-_ready failure: use `add_child.call_deferred(...)`
+   in tests/loading/test_map_loading_screen_driving.gd (screen add) AND in
+   scripts/MapLoadingScreen.gd `_build_world_phased` (game-scene add); rerun to
+   a written `.gen/loading_harness/result.json` with all checks passing.
+2. Bring cold-cache world-build phases under ~100 ms: make the vegetation
+   warm-model phase actually pre-parse the tree/dead-tree GLTFs before the
+   first slice (currently Trees 1/4 and Dead Trees 1/2 pay the whole parse),
+   and further amortize egg-castle load/warm/place (each 121–147 ms cold).
+3. Rerun map_build_phases to status=pass.
+4. Provide the required windowed PNG manual evidence of the loading screen
+   mid-world-build (bar advanced past the threaded-load portion).

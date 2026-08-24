@@ -1,35 +1,35 @@
 {
-  "run_id": "req-83-traps-frostbite-fangs-r4",
-  "feature": "traps-frostbite-fangs",
+  "run_id": "issue116-game-ready-blocks-map-load-r3",
+  "feature": "game-ready-blocks-map-load",
   "status": "running",
-  "started_at": "2026-08-24T14:32:49.252Z",
+  "started_at": "2026-08-24T14:01:34.415Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-83-traps-frostbite-fangs-r4/",
-  "heartbeat_at": "2026-08-24T14:33:31.810Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-24T14:33:31.810Z",
-  "process_id": 443591,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r3/",
+  "heartbeat_at": "2026-08-24T14:34:31.136Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-24T14:34:31.136Z",
+  "process_id": 432145,
   "host": "f1a4230ec90b",
-  "phase": "manual-tester",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T14:33:36.354101+00:00",
-    "last_success_at": "2026-08-24T14:33:36.353147+00:00",
+    "last_attempt_at": "2026-08-24T14:34:31.138123+00:00",
+    "last_success_at": "2026-08-24T14:10:57.862860+00:00",
     "last_error": null
   },
   "metrics": {
     "invocations": [
       {
-        "task_id": "manual-testing-gate",
+        "task_id": "plan",
         "cluster_id": null,
-        "role": "team-leader",
+        "role": "plan",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 37418,
-        "output_tokens": 522
+        "input_tokens": 49616,
+        "output_tokens": 3623
       }
     ]
   }
