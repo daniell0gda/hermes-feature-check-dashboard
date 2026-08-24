@@ -1,22 +1,20 @@
 {
   "run_id": "req-85-tooltip-center-r3",
-  "feature": "shop-preview-card-center-on-tower",
-  "status": "failed",
-  "started_at": "2026-08-24T15:53:05.683Z",
-  "ended_at": "2026-08-24T16:08:54.136Z",
-  "error": "code worker returned no reply (empty model or exhausted API retries)",
+  "feature": "issue-85-tooltip-center-r3",
+  "status": "running",
+  "started_at": "2026-08-24T18:18:46.777Z",
+  "ended_at": null,
+  "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/req-85-tooltip-center-r3/",
-  "heartbeat_at": "2026-08-24T16:08:54.136Z",
-  "last_node": "code",
+  "heartbeat_at": "2026-08-24T18:18:46.777Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-24T16:08:49.251Z",
-  "process_id": 460838,
+  "last_event_at": null,
+  "process_id": 465917,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-24T16:08:54.136124+00:00",
-    "last_success_at": "2026-08-24T16:08:54.134543+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-24T18:18:46.777333+00:00"
   },
   "metrics": {}
 }
