@@ -1,42 +1,55 @@
-# Request
+# Request: Continue issue #90 — Progression: Corrosive Soak perk (Floodgate)
 
-- request_id: req-124-cave-carved-path-torches-r5
-- issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
-- project runner key: `godot-td`
-- workspace: `poke-defense-godot/issue-cave-carved-path-torches`
-- branch: `issue/cave-carved-path-torches` @ `f161e1d` (extend; do not reset)
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/90
+Workspace: /workspace/git-workspaces/poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat
+Branch: issue/progression-corrosive-soak-perk-floodgat (rebased onto origin/master @ 9976db7; existing uncommitted perk source kept)
+Runner: project `godot-td`, workspace `poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat`. Do NOT invent other runner/workspace names.
 
-## Problem (Daniel, 2026-08-24)
+Request id: corrosive-soak-90-r3
 
-Coverage/lighting works, but some torches (he thinks maybe every 2nd) sit **in the corridor, not on the wall**. Screenshots: mid-path sticks floating in front of the wall while neighbors are wall-mounted.
+## Continuation (do not start from scratch)
 
-Also set **`TORCH_SPACING = 4`**.
+r1 (`corrosive-soak-90-r1`) planned, then the code worker died (~2026-08-23T18:32Z) before check.
+r2 (`corrosive-soak-90-r2`) re-planned (07:18Z) then the code worker failed (~07:38Z) with `missing coder-reports/ or changes.md` — no check. Historical r1/r2 artifacts are context only.
 
-## Likely cause
+Already on the worktree (keep and finish; do not rewrite from scratch):
+- Perk `floodgate_corrosive_soak` Unique 3 levels 25/45/70% in `scripts/progression/floodgate_tower.json`
+- `FloodgateTowerProgressionManager.gd` apply/reset/config + `ProgressionManager.get_floodgate_corrosive_soak_config()`
+- Corroded status on Enemy / EnemyStatusController; rust tint via `WaterSubmersionSystem.set_enemy_corroded`
+- Amplification in `EnemyHealthController._apply_corrosive_soak_if_needed` excluding `tower_type_id == floodgate`
+- Floodgate discharge marks via `_mark_corroded_if_needed`
+- Harness helpers + `tests/scenarios/floodgate_corrosive_soak.json`
 
-`TorchPlacer._best_wall_torch_for` (coverage repair) returns
-`wall_offset = Vector3(WALL_OFFSET * 0.5, 0, WALL_OFFSET * 0.5)` — diagonal into the walkway, not a real wall face.
-Spacing-pass torches use a single cardinal wall offset; repair-pass torches do not.
+Preserve master behaviors already on this rebased tree (HUD textures merge and later). Do not revert unrelated files.
 
-## Required
+## r1 harness failure (must fix)
 
-- Every placed torch must mount on a **real adjacent solid wall** (cardinal wall offset from `_wall_cells`). No mid-corridor / in-front-of-wall sticks.
-- `TORCH_SPACING = 4` (unique corridor-cell stride, not raw wall-face list).
-- Keep live-grid torch budget (no hardcoded MAX_TORCHES). Keep curves lit via coverage repair, but repair must also pick a real wall mount.
-- **Do not change torch light intensity** (`Torch.gd` energy/radius/color/omni unchanged).
+`.gen/harness/floodgate_corrosive_soak/result.json` status=timeout:
+- Perk apply and Corroded mark worked (`corroded_count==1`, `amplification==0.25`, `corroded_marked:true`)
+- Then `armor_hit` (balista, armor_damage 40) followed by `enemies.Alien.armor == 950.0` saw **actual 0.0**
+- Likely observation of an unarmored spawn instead of the staged Alien (index-0 vs max-armor-by-id). `HarnessValues._enemy_report` now takes max armor per id — assert via `enemies.Alien.armor` (report) not `enemy.armor` (index 0). Stage armor immediately before the hit and wait 2–3 poll ticks after.
+- Expected L1 math: staged 1000 − 40×1.25 = 950. Floodgate follow-up must match unowned control. HP unchanged.
 
-## Done when
+Treat old harness results as stale. Re-run the focused harness fresh after any harness/scenario fix. Write `coder-reports/<cluster-id>.md` and `.gen/changes.md` this run so the leader can proceed to check.
 
-- No torch stands in the walkway; all hug a wall
-- Spacing is 4
-- Curves/side-to-side carved path still covered
-- Windowed underground screenshots show wall-mounted torches (not floating mid-path)
-- `ui_feels_broken: no` on those shots
+## Feature
 
-## Manual testing
+New Unique progression perk `corrosive_soak` for Floodgate Tower only, 3 levels:
+- Enemies hit by Floodgate's discharge gain a "Corroded" status.
+- While Corroded, armor-damage taken from **all other towers'** hits is increased by +25% / +45% / +70% by level.
+- Floodgate's own hits are unaffected by its own Corroded status (setup effect, not self-buff).
+- Implemented in `FloodgateTowerProgressionManager.gd` alongside `floodgate_saltwater_purge`.
+- Visual: extend wet/soak shader (`WaterSubmersionSystem`) with a distinct rust tint — no new VFX class.
 
-required. Windowed, no `--headless`. Underground, side-to-side carve with a curve, camera at `camera_target`.
+## Acceptance criteria
+1. Perk defined with 3 levels and correct amplification values (25/45/70%), Floodgate-only, type Unique.
+2. Corroded status applied on Floodgate discharge hits; amplifies armor-dmg from all towers EXCEPT Floodgate itself.
+3. Editor gate passes (`godot --headless --path . --editor --quit-after 300`).
+4. Focused headless gameplay harness proves: enemy hit by Floodgate → subsequent armor-dmg hit from another tower is amplified per level; Floodgate-own follow-up is not amplified.
+5. Manual testing: required (rust tint is player-facing). Windowed screenshots/GIF via runner, never --headless for manual evidence. Include `ui_feels_broken: yes|no`.
 
-## Runner
-
-`godot-td` / `poke-defense-godot/issue-cave-carved-path-torches`. Write a real non-empty `.gen/plan.md`.
+## Notes
+- Use exact scene argument before user args in harness commands.
+- Inspect raw Godot stdout for Parse Error / Failed loading resource, not just harness status=pass.
+- Do not commit/push/close.
+- Do not revert unrelated master files. Ignore `.glb` LFS noise; do not commit models.
