@@ -1,54 +1,42 @@
-# Request: Continue issue #90 — Progression: Corrosive Soak perk (Floodgate)
+# Request: Exposed Plating perk (issue #89) — continuation r2
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/90
-Workspace: /workspace/git-workspaces/poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat
-Branch: issue/progression-corrosive-soak-perk-floodgat (reset to origin/master @ e7910d0; prior r1 source restored and 3-way merged)
-Runner: project `godot-td`, workspace `poke-defense-godot/issue-progression-corrosive-soak-perk-floodgat`. Do NOT invent other runner/workspace names.
-
-Request id: corrosive-soak-90-r2
-
-## Continuation (do not start from scratch)
-
-r1 (`corrosive-soak-90-r1`) planned, then the code worker died (~2026-08-23T18:32Z) before check. Source was left uncommitted. Historical r1 artifacts (plan, clusters, harness timeout) are context only — re-verify on this tree.
-
-Already on the worktree (keep and finish; do not rewrite from scratch):
-- Perk `floodgate_corrosive_soak` Unique 3 levels 25/45/70% in `scripts/progression/floodgate_tower.json`
-- `FloodgateTowerProgressionManager.gd` apply/reset/config + `ProgressionManager.get_floodgate_corrosive_soak_config()`
-- Corroded status on Enemy / EnemyStatusController; rust tint via `WaterSubmersionSystem.set_enemy_corroded`
-- Amplification in `EnemyHealthController._apply_corrosive_soak_if_needed` excluding `tower_type_id == floodgate`
-- Floodgate discharge marks via `_mark_corroded_if_needed`
-- Harness helpers + `tests/scenarios/floodgate_corrosive_soak.json`
-
-Master moved 14 commits; `ProgressionManager.gd`, `HarnessActions.gd`, `HarnessValues.gd` were 3-way merged with undermining + press_button + reward_popups. Preserve those master behaviors.
-
-## r1 harness failure (must fix)
-
-`.gen/harness/floodgate_corrosive_soak/result.json` status=timeout:
-- Perk apply and Corroded mark worked (`corroded_count==1`, `amplification==0.25`, `corroded_marked:true`)
-- Then `armor_hit` (balista, armor_damage 40) followed by `enemies.Alien.armor == 950.0` saw **actual 0.0**
-- Likely observation of an unarmored spawn instead of the staged Alien (index-0 vs max-armor-by-id). `HarnessValues._enemy_report` now takes max armor per id — assert via `enemies.Alien.armor` (report) not `enemy.armor` (index 0). Stage armor immediately before the hit and wait 2–3 poll ticks after.
-- Expected L1 math: staged 1000 − 40×1.25 = 950. Floodgate follow-up must match unowned control. HP unchanged.
-
-Treat r1 result as stale. Re-run the focused harness fresh after any harness/scenario fix.
+- **Repo:** daniell0gda/poke-defense-godot
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/89
+project: godot-td
+workspace: poke-defense-godot/issue-exposed-plating
+- **Workspace:** poke-defense-godot/issue-exposed-plating
+- **Branch:** issue/exposed-plating (rebased onto origin/master @ e7910d0 on 2026-08-24; implementation is uncommitted WIP, preserve it)
+- **Request ID:** req-89-exposed-plating-r4 (r2 check passed; r2/r3 team-leader workers failed to write `.gen/manual_testing.md`. Gate file is now present with `manual_testing: required`. Resume at manual-tester only — do not re-plan or rewrite the perk.)
+- **Runner key:** `godot-td` — workers MUST use `project=godot-td`, `workspace=poke-defense-godot/issue-exposed-plating`. Never invent workspace names. Never use `project=poke-defense-godot`.
 
 ## Feature
 
-New Unique progression perk `corrosive_soak` for Floodgate Tower only, 3 levels:
-- Enemies hit by Floodgate's discharge gain a "Corroded" status.
-- While Corroded, armor-damage taken from **all other towers'** hits is increased by +25% / +45% / +70% by level.
-- Floodgate's own hits are unaffected by its own Corroded status (setup effect, not self-buff).
-- Implemented in `FloodgateTowerProgressionManager.gd` alongside `floodgate_saltwater_purge`.
-- Visual: extend wet/soak shader (`WaterSubmersionSystem`) with a distinct rust tint — no new VFX class.
+New progression perk `exposed_plating` (Common, global, 3 levels). When an enemy's armor transitions from >0 to 0 (same site as `_consume_armor()`), it gains an "Exposed" status:
+
+- L1: +15% damage taken, 0.5s
+- L2: +25% damage taken, 1s
+- L3: +35% damage taken, 1.5s
+
+## Historical run (context only, not evidence)
+
+Run `issue-89-exposed-plating` (2026-08-23) implemented the perk and passed headless harnesses, then ended `classification: fixable` / dashboard `failed` because the checker treated missing windowed VFX screenshots as a code-check failure. That skipped the manual-tester gate. Re-verify everything after the rebase. Do not assume old `.gen/harness` results are still valid.
 
 ## Acceptance criteria
-1. Perk defined with 3 levels and correct amplification values (25/45/70%), Floodgate-only, type Unique.
-2. Corroded status applied on Floodgate discharge hits; amplifies armor-dmg from all towers EXCEPT Floodgate itself.
-3. Editor gate passes (`godot --headless --path . --editor --quit-after 300`).
-4. Focused headless gameplay harness proves: enemy hit by Floodgate → subsequent armor-dmg hit from another tower is amplified per level; Floodgate-own follow-up is not amplified.
-5. Manual testing: required (rust tint is player-facing). Windowed screenshots/GIF via runner, never --headless for manual evidence. Include `ui_feels_broken: yes|no`.
 
-## Notes
-- Use exact scene argument before user args in harness commands.
-- Inspect raw Godot stdout for Parse Error / Failed loading resource, not just harness status=pass.
-- Do not commit/push/close.
-- Do not revert unrelated master files. Ignore `.glb` LFS noise; do not commit models.
+1. Perk definition registered like other progression perks; purchasable at 3 levels.
+2. Trigger fires exactly once per shield instance: only on the >0 → 0 transition. Hits while armor is already 0 do NOT re-trigger; re-trigger requires the enemy regaining armor first.
+3. Damage-taken multiplier applies for the debuff duration, per level values above, then expires cleanly.
+4. New VFX: `ExposedStatus`/`ExposedVFX` following the existing `BurnStatus`/`BurnVFX` pattern — cracked-shield emissive overlay for the duration, lazily instantiated by `EffectsManager` like `BurnVFX`/`OilVFX`.
+5. Debug logging: `[EXPOSED]` prefix lines on trigger and expiry, gated by `OS.is_debug_build()`.
+
+## Verification requirements
+
+- Fresh focused headless harness after the rebase: `tests/scenarios/exposed_plating_once_per_shield.json` and `tests/scenarios/exposed_plating_vfx.json` via `run_project_cmd` (`godot-td`).
+- If headless criteria 1–3 and 5 are green, checker must write `classification: pass` so the leader can dispatch manual-tester. Missing windowed PNGs/GIFs are a manual-tester job, not a code-check `fixable`.
+- Manual testing: REQUIRED (player-facing VFX). Windowed screenshots plus a real 30fps GIF from harness `record_frames` of the Exposed VFX on a real enemy. No headless-only closeout. End with `ui_feels_broken: yes|no`.
+- Windowed Godot args when Vulkan fails: `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy`.
+- Native Godot through `run_project_cmd`; explicit scene argument before user args.
+
+## Preserve
+
+Keep the existing uncommitted source diff and new files (`ExposedVFX.gd`, `ExposedStatus.gd`, both scenarios). Re-plan only unmet work (windowed evidence + any rebase breakage). Do not wipe the implementation.

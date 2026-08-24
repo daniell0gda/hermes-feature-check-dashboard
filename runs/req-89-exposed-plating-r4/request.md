@@ -2,6 +2,8 @@
 
 - **Repo:** daniell0gda/poke-defense-godot
 - **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/89
+project: godot-td
+workspace: poke-defense-godot/issue-exposed-plating
 - **Workspace:** poke-defense-godot/issue-exposed-plating
 - **Branch:** issue/exposed-plating (rebased onto origin/master @ e7910d0 on 2026-08-24; implementation is uncommitted WIP, preserve it)
 - **Request ID:** req-89-exposed-plating-r4 (r2 check passed; r2/r3 team-leader workers failed to write `.gen/manual_testing.md`. Gate file is now present with `manual_testing: required`. Resume at manual-tester only — do not re-plan or rewrite the perk.)
