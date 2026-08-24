@@ -1,43 +1,42 @@
-# Request
+# Request: #116 game-ready-blocks-map-load (r5)
 
-- request_id: req-124-cave-carved-path-torches-r6
-- issue: https://github.com/daniell0gda/poke-defense-godot/issues/124
-- project runner key: `godot-td`
-- workspace: `poke-defense-godot/issue-cave-carved-path-torches`
-- branch: `issue/cave-carved-path-torches` @ `ecef2a1` (extend; do not reset)
+## Project
+- Workspace: `/workspace/git-workspaces/poke-defense-godot/issue-game-ready-blocks-map-load`
+- Branch: `issue/game-ready-blocks-map-load` (pushed at 66ab8e7)
+- Runner key: `godot-td`
+- Runner workspace name: `poke-defense-godot/issue-game-ready-blocks-map-load` only.
+- If runner 422/no docker: host Godot is allowed: `PATH=/opt/data/profiles/code/home/bin`. Do not classify host-ok as `blocked`.
 
-## Problem (Daniel, 2026-08-24)
+## Issue
+https://github.com/daniell0gda/poke-defense-godot/issues/116
 
-Torch position is now good (wall-mounted), but **`TORCH_SPACING` has no visible effect** — changing the number does not change how dense the torches are.
+## Why this re-run
+All prior "pass" verdicts ran headless against a **de-contented tree**: every `.glb` was a
+132-byte Git-LFS pointer stub (no `git lfs pull` had been run). That is why check kept saying
+pass while Daniel saw the project not building. The LFS content has now been pulled — all 109
+`.glb` models are real binaries (12–19 MB) and the import gate runs clean with no
+`Failed loading resource`.
 
-## Root cause (verified by parent)
+Re-verify the whole acceptance set now that real content is present, and produce fresh windowed
+manual evidence against the real build.
 
-`TorchPlacer.calculate_torch_positions`:
-1. `_spacing_torch_cells` strides unique corridor cells by `TORCH_SPACING` (now 4) — this part obeys the constant.
-2. But `_repair_coverage` then adds torches until every "required" cell is within `Torch.LIGHT_RADIUS * 0.5` (≈ 1 cell) of a torch. With a half-radius coverage, repair re-densifies the corridor to roughly every 2 cells **regardless of TORCH_SPACING**, so the constant is effectively overridden and the density never changes visually.
+## What to do
+1. Confirm the tree actually builds with real content: fresh `--import` gate, scan raw output
+   for `Parse Error` / `SCRIPT ERROR` / `Failed loading resource` / `Failed to load`. Only
+   pre-existing invalid-UID `HudTheme.tres`/`UI.tscn` warnings are acceptable.
+2. Re-run the loading-screen acceptance criteria fresh against the real-content build:
+   - `MapLoadingScreen` bar advances during world build, not jumping over it.
+   - Caption changes at least once during world build.
+   - Missing/unparseable map id falls back to `map_1` before world-build phases.
+   - No single post-boot driven-load frame stalls > ~100ms.
+   - Direct `Main.tscn` boot and `setup_as_menu_backdrop` still complete the full build.
+3. Produce fresh windowed PNG (or 30fps GIF) of the loading screen mid-world-build showing the
+   bar past the threaded-load portion. Manual testing is required.
 
-The coverage radius is also wrong in kind: `Torch.LIGHT_RADIUS` is 1.0 world unit, but the repair only lights cells within 0.5 (half) of a torch, which is why it packs so tight.
-
-## Required
-
-- Make `TORCH_SPACING` **actually drive torch density** end to end. Changing it (e.g. 4 → 6 → 8) must produce visibly sparser torches.
-- The coverage-repair pass must not silently undo spacing. It should only fill genuine gaps (bends/corners) left by spacing, using a coverage radius consistent with the real light reach (`Torch.LIGHT_RADIUS`), not a halved radius that forces near-full packing.
-- Keep wall-mounting correct (every torch on a real cardinal wall face, no mid-corridor sticks).
-- Keep live-grid torch budget (no hardcoded MAX_TORCHES).
-- **Do not change torch light intensity** (`Torch.gd` energy/radius/color/omni unchanged). If the coverage radius needs to reflect light reach, derive it from `Torch.LIGHT_RADIUS` — do not edit Torch.gd.
-
-## Done when
-
-- Changing `TORCH_SPACING` to a larger value visibly reduces the number of torches along a straight corridor
-- Curves/bends still stay lit (repair fills only real gaps)
-- Torches remain wall-mounted
-- Windowed underground screenshots: sparse vs dense difference is visible
-- `ui_feels_broken: no`
-
-## Manual testing
-
-required. Windowed, no `--headless`. Underground side-to-side carve with a curve, camera at `camera_target`. Show that spacing visibly changes density.
-
-## Runner
-
-`godot-td` / `poke-defense-godot/issue-cave-carved-path-torches`. Write a real non-empty `.gen/plan.md`.
+## Runner notes
+- Only `run_project_cmd`; no shell operators; Godot `--log-file .gen/<name>.log`.
+- Windowed: `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
+- Harness: `godot [--headless] --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/map_build_phases.json`
+- Driving test: `godot --headless --path . res://tests/loading/test_map_loading_screen_driving.tscn`
+- Stale `.gen/status.md` / `check.md` from earlier runs are historical. Write fresh ones.
+- Note in check.md whether `Failed loading resource` is now absent, as evidence the LFS fix holds.
