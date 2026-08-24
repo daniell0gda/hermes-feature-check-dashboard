@@ -1,34 +1,59 @@
-# Request: traps_frostbite_fangs (r3 — camera/visual proof)
+# Request
 
-- request_id: req-83-traps-frostbite-fangs-r3
-project: godot-td
-workspace: poke-defense-godot/issue-traps-frostbite-fangs
-issue: https://github.com/daniell0gda/poke-defense-godot/issues/83
-- branch: issue/traps-frostbite-fangs
-- intent: continuation — keep perk code; fix unreadable frost shots
+- request_id: req-85-tooltip-polish-r2
+- issue: https://github.com/daniell0gda/poke-defense-godot/issues/85
+- project runner key: `godot-td`
+- git workspace: `poke-defense-godot/issue-update-tower-descriptions-with-special-c`
+- branch: `issue/update-tower-descriptions-with-special-c`
+- worktree: `/workspace/git-workspaces/poke-defense-godot/issue-update-tower-descriptions-with-special-c`
+- base: already rebased onto `origin/master` (42e05d6) before this run; do not reset the branch
+- prior pass: `.gen-r1-pass-20260823/` — description **text** is done; Daniel rejected the **look**
 
-## History (do not treat as evidence)
+## Feature
 
-- req-83 claimed pass. Human review FAILED: wide underground shot, enemy is a speck; zoom PNG is empty floor.
-- req-83-r2 plan/code workers returned empty. Stale `check.md` still said `classification: pass`, so the leader skipped revision and reused yesterday's shots. Archived to `.gen-r2-stale-pass/`. Those files are not current evidence.
+The special-characteristic lines already exist and work. Daniel: **"it works but it looks ugly, make it look professional and integrated with the app."**
 
-## Feature (already implemented — do not revert)
+Replace the Godot default `tooltip_text` popup (plain black box, default font, dumped newlines, covers the shop bar) with a custom shop preview card that matches the existing wood HUD — same family as the right-side tower details (`UpgPanel`: `TitledPanel` + `SidePanel` frame + `ModalWell` + `ModalTitle` + HUD theme fonts).
 
-Unique `traps_frostbite_fangs` L1-3. Trap hits call `EffectsManager.apply_frozen`. Magnitude/duration scale. Existing frost VFX.
+## What is already in the tree (keep)
 
-## Required this run
+- `data/towers.xml` `description=` on all 12 combat towers (Porter explicitly teleports / no damage).
+- `TowersConfig.get_description()`.
+- `UI._build_tower_tooltip` currently just appends that string into default tooltip text — that presentation is the bug.
 
-1. Keep the perk implementation.
-2. Change `tests/scenarios/traps_frostbite_fangs_progression.json` so the windowed shot is close and top-down on the trap + live enemy. `_update_camera_for_layer` resets to the default far camera — after that call, set `Camera3D.position` close above the trap (small height, tiny z offset) and `look_at` the trap. Enemy body must fill enough of the frame to see frost vs green.
-3. Keep explicit `screenshot` + 30fps `record_frames` GIF. Copy fresh PNGs/GIF to `.gen/screenshots/`.
-4. Checker must write a NEW `.gen/check.md`. If shots are still a distant speck or a crop of empty floor: `classification: fixable`. Headless tags alone do not pass the visual criterion.
-5. `ui_feels_broken: yes` fails the manual test.
-6. Runner only: `run_project_cmd` project=`godot-td` workspace=`poke-defense-godot/issue-traps-frostbite-fangs`. Never `project=poke-defense-godot`.
+Historical r1 reports/screenshots painted a fake black overlay because default tooltips do not render without a real mouse. Those shots are **not** the target look. Do not reuse annotated overlays.
 
-## Manual testing
+## Required look
 
-`manual_testing: required`. Windowed only. No `--headless`.
+Build a real Control (not `tooltip_text`, not a debug ColorRect):
 
-## Lifecycle
+1. Wood HUD card, not a black slab. Reuse existing theme variations: `SidePanel` or `WidePanel` / `WoodPanel`, inner `ModalWell`, title `ModalTitle`. Same fonts/colors as tower details and the Towers bar. No new art style.
+2. Structure, not a text dump:
+   - Tower name as the title
+   - Special-characteristic description as a wrapping body line (readable contrast; not tiny default gold-on-black)
+   - Cost / Range / Damage (and other live stats) as HUD stat rows or cost badges — same language as `TowerStatRow` / `CostBadge`, not `"Cost: 20 | Range: 6.5"` jammed on one line
+3. Placement: sit **above the hovered shop slot** (or a compact card that does not swallow the Towers bar). Must not cover the whole shop strip. Must not collide with the right-side tower details when both could show.
+4. Deduplicate Porter/Floodgate: one teleport/flood explanation, not the XML line plus the old hardcoded extra lines.
+5. Hide Godot's default tooltip on shop slots (`tooltip_text = ""` once the card owns the copy). Other buttons may keep default tooltips.
+6. Trigger on shop-slot hover (`mouse_entered` / `mouse_exited`) **and** expose a public method the harness can call, e.g. `UI.show_tower_shop_preview(tower_id)` / `hide_tower_shop_preview()`, because the harness cannot drive OS hover. Windowed screenshots must show the **real** card with readable description text in the pixels.
 
-Do not commit, push, merge, or close.
+## Acceptance criteria
+
+- All 12 combat-tower special descriptions remain (Porter still says it teleports enemies and deals no damage).
+- Hovering a shop slot shows the new wood card; leaving hides it.
+- Card looks like part of this game (wood frame, HUD type, wrapping body, stat rows). `ui_feels_broken: yes` fails the run even if strings match.
+- Windowed shots of Generic, Fire, Ice, and Porter with the **real** card visible and the special line readable. No painted overlays. No headless for manual tester.
+- Existing tooltip string consumers (`_build_tower_tooltip` used by perk scenarios) still expose the same facts (Porter teleport, cost/range/damage, perk lines). Prefer one content builder the card and any harness string-read share.
+- Editor/import gate clean on changed scenes. Focused shop-preview harness pass.
+
+## Verification notes
+
+- Runner: `godot-td` + workspace `poke-defense-godot/issue-update-tower-descriptions-with-special-c` only. Never invent `godot-td/issue-85`.
+- `manual_testing: required`. Windowed only. Vision-read the PNGs: if the card is missing, the shot fails.
+- Do not close, merge, push, or commit unless asked.
+
+## Out of scope
+
+- Rewriting description copy except to drop duplicate Porter/Floodgate lines.
+- Changing tower combat behavior.
+- Restyling Options / Manage Towers / ProgressionModal.
