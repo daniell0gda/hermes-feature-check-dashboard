@@ -1,36 +1,28 @@
-# Request: water-conductive-flood-wet-splash (issue #45)
+# Request: traps-pit-of-spikes-first-hit-stuns-turn
 
-Project: godot-td
-Git workspace: godot-td/issue-water-conductive-flood-wet-splash (/workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash)
-Branch: issue/water-conductive-flood-wet-splash (cut from origin/master @ b5d75ae)
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/45
-Runner: project key `godot-td`, workspace `godot-td/issue-water-conductive-flood-wet-splash` (do NOT invent workspace names).
+- **Project:** poke-defense-godot
+- **Git workspace:** poke-defense-godot/issue-traps-pit-of-spikes-first-hit-stuns-turn
+- **Branch:** issue/traps-pit-of-spikes-first-hit-stuns-turn (cut from origin/master @ 0ba60e1)
+- **Issue:** https://github.com/daniell0gda/poke-defense-godot/issues/42 (claimed 2026-08-25T08:28:26Z)
+- **Request ID:** traps-pit-of-spikes-42-r1
 
 ## Feature
 
-New Unique progression perk `water_conductive_flood` (Water tower): Water splash hits apply
-Wet status in a small radius around the hit target, not only to the direct target. Reuse the
-small-radius AoE-application pattern proven in `IceTower._apply_cone_effects`. The hit's existing
-splash effect should visibly cover that radius (same small-radius visual approach IceTower uses),
-not just silently flag enemies. Wet renders per-enemy via `scripts/ui/EnemyHealthBar.gd` status
-icons — no new asset needed.
+New Unique perk `traps_pit_of_spikes` ("Pit of Spikes"): the first trap hit against a given enemy
+also applies a brief Stun (~0.4s) via the existing `EffectsManager.apply_stun` path. The stun icon
+already renders via `scripts/ui/EnemyHealthBar.gd` (`icon_stun`, driven off `stun_time_left`) — no
+new VFX needed; just confirm the icon triggers when the source is a trap.
 
-## Acceptance criteria
+## Done when
 
-1. A perk definition `water_conductive_flood` exists and is obtainable like other Water Uniques.
-2. With the perk, a Water projectile hit applies Wet to enemies within a small radius of the hit
-   target (multiple enemies verified Wet, not just the direct target).
-3. Without the perk, behavior is unchanged (single-target Wet only) — no regression.
-4. The splash effect visually covers the radius on hit.
-5. Editor import gate passes; focused headless harness proves multi-enemy Wet application;
-   windowed screenshot evidence shows the splash radius covering nearby enemies.
+- First trap hit on an enemy applies ~0.4s stun through `apply_stun`.
+- Subsequent hits on the same enemy do NOT re-stun (only the first hit per enemy).
+- Stun status icon shows on the enemy health bar after a trap hit.
+- Focused headless harness proves the behavior; windowed screenshot evidence for the stun icon.
 
-## Manual testing
+## Runner notes
 
-manual_testing: required — visible player-facing perk with an AoE splash moment. Include overall
-UI-sanity pass (`ui_feels_broken: yes|no`) on every final screenshot.
-
-## Notes
-
-- Fresh worktree; `.gen/` starts clean this run.
-- Follow `/opt/data/coding_rules.md` and project context files.
+- Runner key: `godot-td`; workspace: `poke-defense-godot/issue-traps-pit-of-spikes-first-hit-stuns-turn`.
+- Use exact workspace names; invented ones give HTTP 422 chdir.
+- Windowed evidence: add `--rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy` if Vulkan fails.
+- Manual testing: required (visible player-facing stun icon) with UI-sanity pass criterion.
