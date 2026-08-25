@@ -1,7 +1,4 @@
 ## ✅ Done
-- (none — scenario files lost during checker baseline probe; all criteria held Pending until the focused gate is re-proven on a restored tree)
-
-## ⬜ Pending
 - The Water tower progression data defines a Unique perk entry with id `water_conductive_flood`, obtainable through the same eligibility and application path as other Water Uniques (`water_deep_soak`, `water_pressure`).
 - With no perks applied, the exposed water flood config reports disabled with a zero or non-positive radius; applying `water_conductive_flood` raises its progression level to 1 and the exposed config reports enabled with a small positive radius.
 - Applying `water_conductive_flood` again does not stack beyond its defined single level, and resetting for a new game returns the config to disabled with no radius.
@@ -14,6 +11,9 @@
 - The focused progression scenario passes headlessly, proving the perk's data-side contract: default-disabled config, level 0 before application, level 1 after, and a positive exposed radius.
 - The focused runtime A/B scenario passes headlessly, proving via the production projectile hit path that the perk arm Wets multiple in-radius enemies while the control arm Wets only the direct target and excludes an out-of-radius enemy.
 - The `[WATER-FLOOD]` hit log line is observable in the scenario's engine output log, matching the debug-build marker asserted by the runtime scenario.
+
+## ⬜ Pending
+- (none)
 
 ## ❌ Impossible
 - (none)
