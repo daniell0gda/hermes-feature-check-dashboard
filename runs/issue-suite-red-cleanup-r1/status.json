@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-suite-red-cleanup-r1/",
   "heartbeat_at": "2026-08-25T18:15:47.817Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": "2026-08-25T18:15:47.817Z",
   "process_id": 760918,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T18:15:47.818448+00:00",
-    "last_success_at": "2026-08-25T18:08:16.993305+00:00",
+    "last_attempt_at": "2026-08-25T18:15:53.150148+00:00",
+    "last_success_at": "2026-08-25T18:15:53.148625+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 154725,
         "output_tokens": 25868
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 115007,
+        "output_tokens": 6622
       }
     ]
   }
