@@ -1,22 +1,20 @@
 {
-  "run_id": "r82-porter-broad-sweep",
-  "feature": "porter-broad-sweep",
+  "run_id": "r1-traps-grave-robber",
+  "feature": "traps-grave-robber",
   "status": "running",
-  "started_at": "2026-08-25T14:00:48.831Z",
+  "started_at": "2026-08-25T14:09:03.070Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r82-porter-broad-sweep/",
-  "heartbeat_at": "2026-08-25T14:00:48.831Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r1-traps-grave-robber/",
+  "heartbeat_at": "2026-08-25T14:09:03.070Z",
   "last_node": null,
-  "active_node": "code",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 669475,
+  "process_id": 671428,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T14:00:54.239420+00:00",
-    "last_success_at": "2026-08-25T14:00:53.797834+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T14:09:03.070841+00:00"
   },
   "metrics": {}
 }
