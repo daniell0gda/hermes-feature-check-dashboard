@@ -1,4 +1,4 @@
-# Coder report: porter-broad-sweep-perk\n\n# Coder report: porter-broad-sweep-perk
+# Coder report: porter-broad-sweep-perk
 
 ## Changed files
 - `scripts/progression/porter_tower.json` — mod: added `porter_broad_sweep` Common perk (maxLevels 3, label "Broad Sweep", porter compatibility, `"needs": ["porter_mass_transit"]`, level values 0.5/0.8/1.0 = absolute bonus ratio over base sweep radius).
@@ -21,4 +21,3 @@ All 9 cluster criteria — Done (verified via focused harness).
 - Broad Sweep never touches `_range_multiplier`; scenario asserts `get_porter_range(6.5)==6.5` after every application.
 - `needs` gating is enforced by ProgressionManager's generic eligibility/draw logic (no manager-side change needed for criteria 3–4); verified by is_eligible/draw assertions both directions.
 - Gotcha for tester: short headless runs quit before godot.log flushes, so log-source assertions on the `[PORTER_BROAD_SWEEP]` print resolve empty — the debug print is asserted via stdout capture instead (visible in the focused-run output above).
-\n

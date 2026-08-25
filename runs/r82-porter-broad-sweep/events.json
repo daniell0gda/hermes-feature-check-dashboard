@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-25T10:36:12.134Z",
+    "node": "check",
+    "status": "failed",
+    "duration_ms": 3913301,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'check', '-z', 'You are the check worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep.\\\\nThe durable evidence \u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'check', '-z', 'You are the check worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep.\\\\nThe durable evidence \u2026"
+  }
+]

@@ -1,11 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-25T10:27:38.248Z",
-    "node": "code",
-    "status": "completed",
-    "duration_ms": 1671377,
-    "summary": "Summary \u2014 code worker, cluster: implementation (Water Tower Riptide)\n\nState found: a prior worker attempt timed out after the implementation was already committed (`0362ebe feat: Water Riptide applies light 20% Slow alongside Wet`), with co\u2026",
-    "error": null
+    "timestamp": "2026-08-25T10:36:12.134Z",
+    "node": "check",
+    "status": "failed",
+    "duration_ms": 3913301,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'check', '-z', 'You are the check worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep.\\\\nThe durable evidence \u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'check', '-z', 'You are the check worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep.\\\\nThe durable evidence \u2026"
   }
 ]
