@@ -1,19 +1,36 @@
-# Request: traps_grave_robber economy perk (issue #80)
+# Request: water-conductive-flood-wet-splash (issue #45)
 
-- Project: godot-td
-- Git workspace: /workspace/git-workspaces/godot-td/issue-traps-grave-robber (branch issue/traps-grave-robber, cut fresh from origin/master @ b5d75ae)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/80
-- Runner: use project `godot-td`, workspace key `poke-defense-godot/issue-traps-grave-robber` (exact names — do not invent workspace names).
+Project: godot-td
+Git workspace: godot-td/issue-water-conductive-flood-wet-splash (/workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash)
+Branch: issue/water-conductive-flood-wet-splash (cut from origin/master @ b5d75ae)
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/45
+Runner: project key `godot-td`, workspace `godot-td/issue-water-conductive-flood-wet-splash` (do NOT invent workspace names).
 
 ## Feature
-New Unique progression perk `traps_grave_robber` (L1-3): +10%/+15%/+25% bonus gold when a trap lands the killing blow on an underground enemy.
 
-## Acceptance criteria (from the issue)
-1. New Unique `traps_grave_robber` with 3 levels granting +10%/+15%/+25% bonus gold when a trap lands the killing blow on an underground enemy.
-2. Hook the existing bounty/economy path (`ProgressionManager.get_bounty_config()` / `EconomyProgressionManager`) rather than inventing a new gold path.
-3. `Trap.gd` flags the kill source (trap-sourced killing blow) so the economy layer can apply the bonus conditionally; bonus must only fire on kills that are BOTH underground AND trap-killed.
-4. No new visual required; follow the precedent of an existing gold-on-kill perk.
+New Unique progression perk `water_conductive_flood` (Water tower): Water splash hits apply
+Wet status in a small radius around the hit target, not only to the direct target. Reuse the
+small-radius AoE-application pattern proven in `IceTower._apply_cone_effects`. The hit's existing
+splash effect should visibly cover that radius (same small-radius visual approach IceTower uses),
+not just silently flag enemies. Wet renders per-enemy via `scripts/ui/EnemyHealthBar.gd` status
+icons — no new asset needed.
 
-## Verification notes for workers
-- Editor/import gate + focused headless harness proving the bonus applies on underground trap kills and NOT on surface trap kills or non-trap underground kills (exact gold deltas).
-- Visible UI? Pure economy modifier; manual testing likely not required unless planner finds a captureable user story — but per policy, if any player-visible HUD gold change is testable windowed, prefer required.
+## Acceptance criteria
+
+1. A perk definition `water_conductive_flood` exists and is obtainable like other Water Uniques.
+2. With the perk, a Water projectile hit applies Wet to enemies within a small radius of the hit
+   target (multiple enemies verified Wet, not just the direct target).
+3. Without the perk, behavior is unchanged (single-target Wet only) — no regression.
+4. The splash effect visually covers the radius on hit.
+5. Editor import gate passes; focused headless harness proves multi-enemy Wet application;
+   windowed screenshot evidence shows the splash radius covering nearby enemies.
+
+## Manual testing
+
+manual_testing: required — visible player-facing perk with an AoE splash moment. Include overall
+UI-sanity pass (`ui_feels_broken: yes|no`) on every final screenshot.
+
+## Notes
+
+- Fresh worktree; `.gen/` starts clean this run.
+- Follow `/opt/data/coding_rules.md` and project context files.
