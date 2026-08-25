@@ -1,36 +1,42 @@
-# Request: water-conductive-flood-wet-splash (issue #45)
+# Request: porter-broad-sweep (issue #82)
 
-Project: godot-td
-Git workspace: godot-td/issue-water-conductive-flood-wet-splash (/workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash)
-Branch: issue/water-conductive-flood-wet-splash (cut from origin/master @ b5d75ae)
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/45
-Runner: project key `godot-td`, workspace `godot-td/issue-water-conductive-flood-wet-splash` (do NOT invent workspace names).
+Project: poke-defense-godot
+Git workspace: /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep
+Branch: issue/porter-broad-sweep
+Request ID: r82-porter-broad-sweep
 
 ## Feature
 
-New Unique progression perk `water_conductive_flood` (Water tower): Water splash hits apply
-Wet status in a small radius around the hit target, not only to the direct target. Reuse the
-small-radius AoE-application pattern proven in `IceTower._apply_cone_effects`. The hit's existing
-splash effect should visibly cover that radius (same small-radius visual approach IceTower uses),
-not just silently flag enemies. Wet renders per-enemy via `scripts/ui/EnemyHealthBar.gd` status
-icons — no new asset needed.
+Add a new Common perk `porter_broad_sweep` ("Broad Sweep"), levels L1–3, that requires
+the `porter_mass_transit` perk ("Mass Transit", Unique porter mode) and increases Mass
+Transit's sweep radius by +50% / +80% / +100% at levels 1/2/3.
 
-## Acceptance criteria
+Key constraint: this scales ONLY the sweep radius introduced with porter-mass-transit —
+not Porter's normal targeting `range`. Pure stat modifier; no new visuals required.
 
-1. A perk definition `water_conductive_flood` exists and is obtainable like other Water Uniques.
-2. With the perk, a Water projectile hit applies Wet to enemies within a small radius of the hit
-   target (multiple enemies verified Wet, not just the direct target).
-3. Without the perk, behavior is unchanged (single-target Wet only) — no regression.
-4. The splash effect visually covers the radius on hit.
-5. Editor import gate passes; focused headless harness proves multi-enemy Wet application;
-   windowed screenshot evidence shows the splash radius covering nearby enemies.
+Issue URL: https://github.com/daniell0gda/poke-defense-godot/issues/82
+
+## Acceptance criteria (from "Done when")
+
+1. New Common perk `porter_broad_sweep` exists with 3 levels (L1/L2/L3).
+2. Its `needs` list contains `["porter_mass_transit"]`.
+3. At L1/L2/L3 it multiplies Mass Transit's sweep radius by +50%/+80%/+100%
+   (i.e. ×1.5 / ×1.8 / ×2.0 of the base sweep radius).
+4. It does NOT change Porter's normal targeting range.
+5. Follows existing perk registration patterns (see how porter_mass_transit and other
+   follow-on perks like siege-breaker/static-breach are defined and offered).
+
+## Runner notes (redo notes for workers)
+
+- Use the project runner via `run_project_cmd`: project key `godot-td`,
+  workspace `poke-defense-godot/issue-porter-broad-sweep`. Do NOT invent workspace names.
+- Godot editor gate: `godot --headless --path . --editor --quit-after 300`
+- Harness commands must pass the scene argument explicitly before user args.
 
 ## Manual testing
 
-manual_testing: required — visible player-facing perk with an AoE splash moment. Include overall
-UI-sanity pass (`ui_feels_broken: yes|no`) on every final screenshot.
-
-## Notes
-
-- Fresh worktree; `.gen/` starts clean this run.
-- Follow `/opt/data/coding_rules.md` and project context files.
+Manual testing: required if any player-facing surface changes (perk picker card,
+perk description text). The sweep radius itself is invisible; teleport feedback is
+already covered by Mass Transit. If only data/stat plumbing changed with no visible
+UI beyond the existing perk picker listing, planner may set `manual_testing: none`
+— but if the perk card appears in the picker UI, capture it.
