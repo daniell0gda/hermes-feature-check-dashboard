@@ -2,21 +2,19 @@
   "run_id": "r82-porter-broad-sweep",
   "feature": "porter-broad-sweep",
   "status": "running",
-  "started_at": "2026-08-25T13:59:32.911Z",
+  "started_at": "2026-08-25T14:00:48.831Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r82-porter-broad-sweep/",
-  "heartbeat_at": "2026-08-25T13:59:32.911Z",
+  "heartbeat_at": "2026-08-25T14:00:48.831Z",
   "last_node": null,
-  "active_node": "code",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 668957,
+  "process_id": 669475,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T13:59:38.031304+00:00",
-    "last_success_at": "2026-08-25T13:59:37.401408+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T14:00:48.831217+00:00"
   },
   "metrics": {}
 }
