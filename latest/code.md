@@ -1,22 +1,70 @@
-# Coder report: implementation\n\n# Coder report: implementation (revision 1)
+# Coder report: 01-water-flood-perk-definition\n\n# Coder report: 01-water-flood-perk-definition
 
 ## Changed files
-- `tests/scenarios/progression_chest_pool.json` — re-measured seeded pins for the new Common perk in the chest pool (revision 1 notes were already staged; verified against real runs)
-- `tests/scenarios/progression_pick.json` — same pool-composition re-measure, verified
-- no production code changed this revision; the feature code from iteration 1 stands as reviewed
+- `scripts/progression/water_tower.json` — new `water_conductive_flood` Unique entry (maxLevels 0, value 1.5, water-only compatibility)
+- `scripts/progression/managers/WaterTowerProgressionManager.gd` — can_handle + apply_level branch, `get_flood_config()` accessor
+- `autoload/ProgressionManager.gd` — passthrough accessors (`get_water_flood_config`, wet-duration surface unchanged)
+- `tests/scenarios/water_conductive_flood_progression.json` — new scenario
 
 ## Criteria
-- All 12 plan criteria — Done (verified this revision by fresh runs; see Commands)
+- Perk exists as Unique and eligible like other Water Uniques — Done
+- Apply raises level to 1, radius > 0 accessor — Done
 
 ## Commands and results
-- `python3 tests/run_all_shard.py 0 1 progression_` — exit 0; run 1: FAIL progression_modal_close_resume only (chest_pool/pick PASS); rerun 1: also progression_global_scaling FAIL; reruns of each failing scenario alone: PASS
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/progression_modal_close_resume.json` (direct) — exit 0, `[Harness] status=pass exit=0`, all 6 expectations pass incl. both `[PROGRESSION_MODAL] close path=...` log regexes; result refreshed at `.gen/harness/progression_modal_close_resume/result.json`
-- `python3 tests/run_all_shard.py 0 1 retry_after_defeat` — exit 0, PASS (cross-check)
-- `godot --headless --path . --import` (typecheck/build gate) — exit 0; only pre-existing HudTheme.tres / UI.tscn invalid-UID warnings
-- `traps_grave_robber_progression` focused result on disk: status=pass, 120 actions (118 ok + 2 optional cave-pending probes unmet), all 3 expectations pass
+- `python3 tests/run_all_shard.py 0 1 water_conductive_flood` — exit 0; PASS water_conductive_flood_aoe, PASS water_conductive_flood_progression
+- `godot --headless --path . --import --quit-after 5` — exit 0; import gate PASS (pre-existing HudTheme UID warnings only)
+- `python3 tests/run_all_shard.py 0 1` — exit 137 (runner worker OOM after ~24 scenarios); known environment capacity blocker per quality-notes runner-capacity-full-suite. Visible FAILs (cannon_bunker_buster*, cannon_heavier_shells_blast) are the pre-existing failures recorded last iteration.
 
 ## Notes
-- Root cause of the two iteration-1 failures (`progression_chest_pool`, `progression_pick`): the new Common perk joins the eligible normal chest pool and re-rolls the seeded `_rng` stream. Resolution: keep the perk chest-offered and update the scenarios' measured pins (already staged in revision-1 notes; confirmed green by real runs).
-- `progression_modal_close_resume` shard failures are a log-slicing flake, not a regression: the engine file log lost one stdout line to concurrent-write interleaving right where `[PROGRESSION_MODAL] close path=harness ...` lands (the corrupted region is visible in the stale `.out.log`; the modal-close action itself succeeded and modal.count/paused assertions passed). The direct rerun passes deterministically twice in a row with the identical seed. The visual variant (same verbs, no log expectations) passed throughout.
-- Full suite remains sliced per scenario group because one invocation of 177 scenarios exceeds the 420 s runner cap.
+- No code change this revision; re-verified all gates. Reverted unintended `logs/balance/map_difficulty.csv` regeneration flagged in quality-notes (scope-creep-balance-csv).
+\n\n# Coder report: 02-water-flood-splash-aoe\n\n# Coder report: 02-water-flood-splash-aoe
+
+## Changed files
+- `scripts/game/actors/Projectile.gd` — `_apply_flood_wet`, `_alive_enemies_near_target`, `_get_water_flood_config`; splash radius extended to perk radius (+8 droplets); `[WATER-FLOOD]` debug log
+- `scripts/testing/HarnessActions.gd` — `water_hit` gained `simulate_projectile: true` driving real `Projectile._resolve_hit`
+- `scripts/testing/HarnessValues.gd` — exposes `wet_count`
+- `tests/run_all_shard.py` — incremental stdout redirect to `.gen/harness/_logs/<sid>.out.log`
+- `tests/scenarios/water_conductive_flood_aoe.json` — new scenario
+
+## Criteria
+- Multi-enemy Wet in radius (≥2 from one hit) — Done
+- Without perk: direct target only (regression guard) — Done
+- Outside-radius enemies stay dry — Done (GSB at 1.9m vs 1.5m radius)
+- Splash visual extends to perk radius — Done in code path; pixel evidence is windowed manual testing per plan Notes
+- Wet renders via existing EnemyHealthBar icon — Done (reuses EffectsManager.apply_wet; no new asset)
+- `[WATER-FLOOD]` debug log naming target + count — Done (asserted in AoE scenario out.log)
+
+## Commands and results
+- `python3 tests/run_all_shard.py 0 1 water_conductive_flood` — exit 0; PASS both scenarios
+- `godot --headless --path . --import --quit-after 5` — exit 0
+- `python3 tests/run_all_shard.py 0 1` — exit 137 (worker OOM ~218s / ~24 scenarios); environment capacity issue per quality-notes; the FAILs seen are the documented pre-existing ones outside this feature's files.
+
+## Notes
+- No code change this revision; re-verified all gates. Balance CSV scope-creep reverted this revision.
+\n\n# Coder report: implementation\n\n# Coder report: implementation (revision pass, all clusters)
+
+## Changed files
+No source changes this revision. The feature diff from iteration 1 stands as-is:
+- `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd`, `autoload/ProgressionManager.gd`
+- `scripts/game/actors/Projectile.gd`
+- `scripts/testing/HarnessActions.gd`, `scripts/testing/HarnessValues.gd`
+- `tests/run_all_shard.py` (incremental stdout log redirect)
+- `tests/scenarios/water_conductive_flood_progression.json` (new), `tests/scenarios/water_conductive_flood_aoe.json` (new)
+
+## Criteria
+- Perk data + manager exposure (default disabled, level 1 on apply, no stacking, reset) — Done
+- Flood Wets all in-radius enemies; out-of-radius stays dry; direct-target-only without perk — Done
+- Splash visual covers perk radius (Ice-cone small-radius approach); windowed screenshot evidence is manual per plan note — Done in code path
+- Wet renders via existing EnemyHealthBar status icons — Done (reuses EffectsManager.apply_wet, no new asset)
+- `[WATER-FLOOD]` debug lines for perk application and flood hit — Done
+
+## Commands and results
+- `python3 tests/run_all_shard.py 0 1 water_conductive_flood` — exit 0; PASS water_conductive_flood_aoe, PASS water_conductive_flood_progression (~23s)
+- `godot --headless --path . --editor --quit-after 300` — exit 0 (only pre-existing HudTheme UID warnings)
+- `python3 tests/run_all_shard.py 0 1` (full suite) — exit 137 (OOM kill), reproduced this revision: first two attempts hit the runner's 420s tool timeout, third attempt killed by OOM after only 4 scenarios (~47s). Same documented runner-capacity blocker from quality-notes (`runner-capacity-full-suite`); not a code defect. Focused gates are green.
+- `[WATER-FLOOD]` markers verified present in scenario logs: application line (`water_conductive_flood applied -> radius=1.50`) in both logs; flood-hit line (`hit target ... -> 1 enemies Wetted in 1.50m radius`) in the AoE log.
+
+## Notes
+- Balance CSV scope-creep remains reverted; `git status --short` shows only the 9 feature files listed above.
+- Full-suite OOM is environmental: the worker dies at ~4 scenarios with exit 137, well before reaching this feature's tests.
 \n

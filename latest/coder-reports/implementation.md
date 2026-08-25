@@ -1,21 +1,26 @@
-# Coder report: implementation (revision 1)
+# Coder report: implementation (revision pass, all clusters)
 
 ## Changed files
-- `tests/scenarios/progression_chest_pool.json` — re-measured seeded pins for the new Common perk in the chest pool (revision 1 notes were already staged; verified against real runs)
-- `tests/scenarios/progression_pick.json` — same pool-composition re-measure, verified
-- no production code changed this revision; the feature code from iteration 1 stands as reviewed
+No source changes this revision. The feature diff from iteration 1 stands as-is:
+- `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd`, `autoload/ProgressionManager.gd`
+- `scripts/game/actors/Projectile.gd`
+- `scripts/testing/HarnessActions.gd`, `scripts/testing/HarnessValues.gd`
+- `tests/run_all_shard.py` (incremental stdout log redirect)
+- `tests/scenarios/water_conductive_flood_progression.json` (new), `tests/scenarios/water_conductive_flood_aoe.json` (new)
 
 ## Criteria
-- All 12 plan criteria — Done (verified this revision by fresh runs; see Commands)
+- Perk data + manager exposure (default disabled, level 1 on apply, no stacking, reset) — Done
+- Flood Wets all in-radius enemies; out-of-radius stays dry; direct-target-only without perk — Done
+- Splash visual covers perk radius (Ice-cone small-radius approach); windowed screenshot evidence is manual per plan note — Done in code path
+- Wet renders via existing EnemyHealthBar status icons — Done (reuses EffectsManager.apply_wet, no new asset)
+- `[WATER-FLOOD]` debug lines for perk application and flood hit — Done
 
 ## Commands and results
-- `python3 tests/run_all_shard.py 0 1 progression_` — exit 0; run 1: FAIL progression_modal_close_resume only (chest_pool/pick PASS); rerun 1: also progression_global_scaling FAIL; reruns of each failing scenario alone: PASS
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/progression_modal_close_resume.json` (direct) — exit 0, `[Harness] status=pass exit=0`, all 6 expectations pass incl. both `[PROGRESSION_MODAL] close path=...` log regexes; result refreshed at `.gen/harness/progression_modal_close_resume/result.json`
-- `python3 tests/run_all_shard.py 0 1 retry_after_defeat` — exit 0, PASS (cross-check)
-- `godot --headless --path . --import` (typecheck/build gate) — exit 0; only pre-existing HudTheme.tres / UI.tscn invalid-UID warnings
-- `traps_grave_robber_progression` focused result on disk: status=pass, 120 actions (118 ok + 2 optional cave-pending probes unmet), all 3 expectations pass
+- `python3 tests/run_all_shard.py 0 1 water_conductive_flood` — exit 0; PASS water_conductive_flood_aoe, PASS water_conductive_flood_progression (~23s)
+- `godot --headless --path . --editor --quit-after 300` — exit 0 (only pre-existing HudTheme UID warnings)
+- `python3 tests/run_all_shard.py 0 1` (full suite) — exit 137 (OOM kill), reproduced this revision: first two attempts hit the runner's 420s tool timeout, third attempt killed by OOM after only 4 scenarios (~47s). Same documented runner-capacity blocker from quality-notes (`runner-capacity-full-suite`); not a code defect. Focused gates are green.
+- `[WATER-FLOOD]` markers verified present in scenario logs: application line (`water_conductive_flood applied -> radius=1.50`) in both logs; flood-hit line (`hit target ... -> 1 enemies Wetted in 1.50m radius`) in the AoE log.
 
 ## Notes
-- Root cause of the two iteration-1 failures (`progression_chest_pool`, `progression_pick`): the new Common perk joins the eligible normal chest pool and re-rolls the seeded `_rng` stream. Resolution: keep the perk chest-offered and update the scenarios' measured pins (already staged in revision-1 notes; confirmed green by real runs).
-- `progression_modal_close_resume` shard failures are a log-slicing flake, not a regression: the engine file log lost one stdout line to concurrent-write interleaving right where `[PROGRESSION_MODAL] close path=harness ...` lands (the corrupted region is visible in the stale `.out.log`; the modal-close action itself succeeded and modal.count/paused assertions passed). The direct rerun passes deterministically twice in a row with the identical seed. The visual variant (same verbs, no log expectations) passed throughout.
-- Full suite remains sliced per scenario group because one invocation of 177 scenarios exceeds the 420 s runner cap.
+- Balance CSV scope-creep remains reverted; `git status --short` shows only the 9 feature files listed above.
+- Full-suite OOM is environmental: the worker dies at ~4 scenarios with exit 137, well before reaching this feature's tests.

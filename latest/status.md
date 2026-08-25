@@ -1,40 +1,19 @@
 ## ✅ Done
-- With no perk owned, `ProgressionManager.get_bounty_config()` is unchanged from today's shape and carries no grave-robber bonus.
-- Owning `traps_grave_robber` at L1/L2/L3 exposes a bonus-gold configuration through the existing bounty path (`get_bounty_config()`) equivalent to +10%/+15%/+25% of the enemy's base reward on qualifying kills.
-- Re-applying a level or replaying levels 1..N of `traps_grave_robber` (save/load) sets the bonus to that level's exact percentage rather than compounding or collapsing.
-- Resetting progression (new run / `reset`) clears the grave-robber bonus so no bonus applies afterwards.
-- Debug-build `[EconomyProgression]` log line per grave-robber level change naming the perk name, new level, and resulting bonus percentage.
-- When an enemy dies to a trap-sourced killing blow while underground and `traps_grave_robber` L1 is owned, the gold awarded for that kill equals base reward plus 10% of base reward (exact integer gold delta asserted).
-- At L2 and L3 the same setup awards exactly +15% and +25% of base reward respectively over the base reward.
-- A trap killing blow on an above-ground (surface) enemy awards exactly the base reward — no bonus.
-- An underground enemy killed by a non-trap source (tower/projectile) while the perk is owned awards exactly what the existing bounty rules give — no grave-robber bonus.
-- The bonus rides the existing bounty/economy payout path: with the perk owned, an ordinary qualifying kill's total gold still reflects any concurrently-owned `gold_on_kill`/`curse_blood_money` amounts unchanged (no cross-perk interference either direction).
-- Debug-build `[GRAVE_ROBBER]` log line per qualifying bonus payout naming the enemy id and the bonus gold amount.
-- Focused harness scenario `traps_grave_robber_progression.json` runs headless to `[Harness] status=pass` with exit code 0, asserting inline (wait_for_condition) each of: L1/L2/L3 bonus config values, exact gold delta on underground trap kill, zero delta on surface trap kill, and zero delta on non-trap underground kill.
+- (none — full test suite gate not green; all criteria held Pending per build/test gate)
 
 ## ⬜ Pending
-(none)
-
-## ⬜ Pending
-- With no perk owned, `ProgressionManager.get_bounty_config()` is unchanged from today's shape and carries no grave-robber bonus.
-- Owning `traps_grave_robber` at L1/L2/L3 exposes a bonus-gold configuration through the existing bounty path (`get_bounty_config()`) equivalent to +10%/+15%/+25% of the enemy's base reward on qualifying kills.
-- Re-applying a level or replaying levels 1..N of `traps_grave_robber` (save/load) sets the bonus to that level's exact percentage rather than compounding or collapsing.
-- Resetting progression (new run / `reset`) clears the grave-robber bonus so no bonus applies afterwards.
-- Debug-build `[EconomyProgression]` log line per grave-robber level change naming the perk name, new level, and resulting bonus percentage.
-- When an enemy dies to a trap-sourced killing blow while underground and `traps_grave_robber` L1 is owned, the gold awarded for that kill equals base reward plus 10% of base reward (exact integer gold delta asserted).
-- At L2 and L3 the same setup awards exactly +15% and +25% of base reward respectively over the base reward.
-- A trap killing blow on an above-ground (surface) enemy awards exactly the base reward — no bonus.
-- An underground enemy killed by a non-trap source (tower/projectile) while the perk is owned awards exactly what the existing bounty rules give — no grave-robber bonus.
-- The bonus rides the existing bounty/economy payout path: with the perk owned, an ordinary qualifying kill's total gold still reflects any concurrently-owned `gold_on_kill`/`curse_blood_money` amounts unchanged (no cross-perk interference either direction).
-- Debug-build `[GRAVE_ROBBER]` log line per qualifying bonus payout naming the enemy id and the bonus gold amount.
-- Focused harness scenario `traps_grave_robber_progression.json` runs headless to `[Harness] status=pass` with exit code 0, asserting inline (wait_for_condition) each of: L1/L2/L3 bonus config values, exact gold delta on underground trap kill, zero delta on surface trap kill, and zero delta on non-trap underground kill.
-
-Revision-1 note: the two iteration-1 blockers were resolved this revision —
-`progression_chest_pool` / `progression_pick` re-measured for the new Common
-perk in the chest pool and now pass; `progression_modal_close_resume`'s shard
-FAIL was an out.log line-loss flake (passes direct with all expectations);
-build gate `--import` exit 0. Full suite run in name-filtered slices within
-the runner cap.
+- The Water tower progression data defines a Unique perk entry with id `water_conductive_flood`, obtainable through the same eligibility and application path as other Water Uniques (`water_deep_soak`, `water_pressure`).
+- With no perks applied, the exposed water flood config reports disabled with a zero or non-positive radius; applying `water_conductive_flood` raises its progression level to 1 and the exposed config reports enabled with a small positive radius.
+- Applying `water_conductive_flood` again does not stack beyond its defined single level, and resetting for a new game returns the config to disabled with no radius.
+- With `water_conductive_flood` enabled, a Water projectile hit applies Wet to every enemy within the perk's small radius of the hit target, not only the direct target (at least two enemies Wet from one hit).
+- With `water_conductive_flood` enabled, an enemy outside the perk's small radius of the hit target is not Wetted by that hit.
+- Without `water_conductive_flood`, a Water projectile hit applies Wet only to the direct target and leaves nearby enemies un-Wetted (unchanged pre-perk behavior).
+- When `water_conductive_flood` is enabled, the hit's existing splash effect visually covers at least the perk's small radius on impact, using the same small-radius splash visual approach the Ice tower cone effects use; the effect reads clearly at normal game speed.
+- Wet applied by the flood renders per-enemy through the existing EnemyHealthBar status icons, so each affected enemy visibly shows its Wet status without any new asset.
+- Debug-build `[WATER-FLOOD]` log lines exist for both key events: perk application recording the configured radius, and a flood hit recording the hit target, the number of enemies Wetted, and the radius used.
+- The focused progression scenario passes headlessly, proving the perk's data-side contract: default-disabled config, level 0 before application, level 1 after, and a positive exposed radius.
+- The focused runtime A/B scenario passes headlessly, proving via the production projectile hit path that the perk arm Wets multiple in-radius enemies while the control arm Wets only the direct target and excludes an out-of-radius enemy.
+- The `[WATER-FLOOD]` hit log line is observable in the scenario's engine output log, matching the debug-build marker asserted by the runtime scenario.
 
 ## ❌ Impossible
-(none)
+- (none)
