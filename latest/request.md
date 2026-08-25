@@ -1,33 +1,25 @@
-# Request: porter_mass_transit bulk sweep mode (issue #81)
+# Request: Water Tower: Riptide — light Slow alongside Wet (issue #47)
 
-- Project: poke-defense-godot
-- Git workspace: /workspace/git-workspaces/poke-defense-godot/issue-porter-mass-transit
-- Branch: issue/porter-mass-transit (cut from origin/master @ b5d75ae)
-- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/81
-- Runner: project `godot-td`, workspace `poke-defense-godot/issue-porter-mass-transit` (verified via run_project_cmd git status)
+Issue: https://github.com/daniell0gda/poke-defense-godot/issues/47
+Project: poke-defense-godot
+Workspace: poke-defense-godot/issue-water-tower-riptide-light-slow-alongside
+Branch: issue/water-tower-riptide-light-slow-alongside (cut fresh from origin/master @ b5d75ae)
+Request ID: r47-1
 
 ## Summary
+Add new Unique perk `water_riptide`: Water tower hits also apply a 20% Slow for 1.5s,
+via the existing EffectsManager / apply_slow-style API.
 
-Porter currently charges and teleports only its one locked surface enemy. Add a new
-Unique perk `porter_mass_transit` (single toggle, no levels — same flat shape as
-`venom_neurotoxin` / `electric_grounding_rods`). When Porter's charge on its locked
-target completes (`_update_porter_target`, `charge_time >= charge_required`), also sweep
-every OTHER surface enemy within a tight radius (~path width) of that target's position.
+## Done when
+- New Unique `water_riptide` exists and is grantable through the normal progression flow.
+- Water hits apply a 20% Slow for 1.5s on enemies.
+- Must respect the existing slow-owner-refresh convention in
+  `EnemyStatusController.apply_slow` so it does not fight Ice's own slow application.
+- Visual: reuse the existing IceSlowFX snowflake particles + ice-tint overlay driven from
+  `scripts/game/actors/enemy/parts/EnemyStatusController.gd` — no new VFX asset; confirm the
+  cue fires when Water is the trigger instead of Ice.
 
-## Acceptance criteria
-
-1. New Unique `porter_mass_transit`, single toggle, no levels.
-2. On charge completion, every other surface enemy within a tight (~path-width) radius of
-   the locked target's position is swept by the teleport.
-3. Each swept enemy gets its own `ug_system.compute_underground_route` validity check;
-   enemies without a valid route are skipped (same as the existing single-target path).
-4. Every additional swept enemy gets the same per-enemy feedback as the locked target:
-   `_create_porter_rings`, `_spawn_porter_teleport_burst`,
-   `TeleportDissolveEffect.apply_to_enemy` in `PorterTower.gd`. No silent teleports.
-
-## Notes
-
-- Related follow-up perk: porter-broad-sweep (out of scope here).
-- Visible player-facing feature: manual_testing must be required with windowed screenshots
-  (UI-sanity pass: judge ui_feels_broken yes|no per final screenshot).
-- Workers must use runner key `godot-td` + workspace `poke-defense-godot/issue-porter-mass-transit`.
+## Runner notes (redo pins)
+- Runner key + workspace MUST be exactly `godot-td` / `poke-defense-godot/issue-water-tower-riptide-light-slow-alongside`.
+- Use explicit scene argument before user args in gameplay harness commands.
+- Visible player-facing work → manual_testing: required; windowed screenshots/GIF only (no --headless for the manual test).

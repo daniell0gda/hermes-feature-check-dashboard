@@ -1,20 +1,22 @@
 {
-  "run_id": "porter-mass-transit-r1",
-  "feature": "porter-mass-transit",
+  "run_id": "r47-2",
+  "feature": "Water Tower Riptide - light Slow alongside Wet",
   "status": "running",
-  "started_at": "2026-08-25T01:07:54.003Z",
+  "started_at": "2026-08-24T23:37:31.928Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/porter-mass-transit-r1/",
-  "heartbeat_at": "2026-08-25T01:07:54.003Z",
-  "last_node": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
+  "heartbeat_at": "2026-08-25T01:09:17.943Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": null,
-  "process_id": 536040,
+  "last_event_at": "2026-08-25T01:09:17.943Z",
+  "process_id": 518950,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T01:07:54.004021+00:00"
+    "last_attempt_at": "2026-08-25T01:09:17.946421+00:00",
+    "last_success_at": "2026-08-24T23:39:11.599704+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
