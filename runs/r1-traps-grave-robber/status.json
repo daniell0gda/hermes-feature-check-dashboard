@@ -1,21 +1,21 @@
 {
   "run_id": "r1-traps-grave-robber",
   "feature": "traps-grave-robber",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-25T11:00:19.693Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-25T13:47:12.073Z",
+  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'check', '-z', 'You are the check worker in a team-work run.\\nWork in /workspace/git-workspaces/godot-td/issue-traps-grave-robber.\\nThe durable evidence directory is \u2026",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r1-traps-grave-robber/",
-  "heartbeat_at": "2026-08-25T13:47:07.245Z",
+  "heartbeat_at": "2026-08-25T13:47:12.073Z",
   "last_node": "check",
   "active_node": null,
   "last_event_at": "2026-08-25T13:47:07.245Z",
   "process_id": 643193,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T13:47:07.246346+00:00",
-    "last_success_at": "2026-08-25T12:17:00.878463+00:00",
+    "last_attempt_at": "2026-08-25T13:47:12.073175+00:00",
+    "last_success_at": "2026-08-25T13:47:12.071340+00:00",
     "last_error": null
   },
   "metrics": {
