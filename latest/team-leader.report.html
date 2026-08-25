@@ -1,106 +1,12 @@
 <!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Feature-check report</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:16px/1.6 system-ui}article{max-width:860px;margin:36px auto;padding:28px;background:#fff;border:1px solid #e4e7ec;border-radius:16px;box-shadow:0 12px 32px rgba(16,24,40,.08)}h1,h2{letter-spacing:-.03em}a{color:#2563eb}pre{background:#f8fafc;padding:14px;border-radius:10px}img{display:block;max-width:100%;height:auto;margin:16px 0;border:1px solid #e4e7ec;border-radius:10px}</style><article><h1>Team-leader report</h1>
 <ul>
 <li>**Result:** failed</li>
-<li>**Classification:** fixable</li>
-<li>**Feature:** porter-broad-sweep</li>
-<li>**Run:** r82-porter-broad-sweep</li>
+<li>**Classification:** unknown</li>
+<li>**Feature:** water-conductive-flood-wet-splash</li>
+<li>**Run:** issue45-water-flood-r1</li>
 <li>**Lifecycle:** dashboard publish only; project commit/push/close not implied</li>
 </ul>
 <h2>Status</h2>
-<h2>✅ Done</h2>
-<ul>
-<li>A porter perk definition named `porter_broad_sweep` labeled &quot;Broad Sweep&quot; of type Common exists with exactly three levels L1/L2/L3 and follows the existing porter perk registration pattern in `porter_tower.json`.</li>
-<li>The `porter_broad_sweep` definition declares `&quot;needs&quot;: [&quot;porter_mass_transit&quot;]`.</li>
-<li>While `porter_mass_transit` is not owned, `porter_broad_sweep` is not eligible (`is_eligible` false) and does not appear in the chest reward draw pool for a Porter-coverage loadout.</li>
-<li>Once `porter_mass_transit` is owned, `porter_broad_sweep` becomes eligible and appears in the chest reward draw pool for a Porter-coverage loadout, and applying it succeeds at each of L1, L2, and L3.</li>
-<li>With only `porter_mass_transit` owned (no Broad Sweep), Mass Transit&#x27;s sweep radius equals its base value.</li>
-<li>Applying `porter_broad_sweep` at L1/L2/L3 multiplies Mass Transit&#x27;s live sweep radius by 1.5/1.8/2.0 respectively, measured relative to the base sweep radius with no other modifiers active.</li>
-<li>Applying `porter_broad_sweep` at any level does not change Porter&#x27;s normal targeting range (the range reported by the progression range accessor is unchanged from its pre-application value).</li>
-<li>Resetting progression clears any Broad Sweep level and returns the Mass Transit sweep radius to its base value.</li>
-<li>Debug-build `[PORTER_BROAD_SWEEP]` log line per perk-level application event, including the applied level and the resulting sweep-radius multiplier.</li>
-</ul>
-<h2>⬜ Pending</h2>
-<h2>❌ Impossible</h2>
+<p>(status.md missing)</p>
 <h2>Check</h2>
-<h1>Check report: porter-broad-sweep (issue #82)</h1>
-<p>classification: fixable</p>
-<h2>Verdict</h2>
-<p>All 9 acceptance criteria verified Done against fresh runner execution. Focused</p>
-<p>harness passes cleanly with log-level evidence for every criterion. Editor/typecheck</p>
-<p>gate passes (exit 0; only pre-existing HudTheme/UI.tres invalid-UID warnings).</p>
-<p>Full suite could NOT be completed end-to-end inside the runner&#x27;s 420s tool window:</p>
-<p>a quarter-shard (`python3 tests/run_all_shard.py 0 4`, 45 scenarios) was killed with</p>
-<p>exit 137 (OOM) partway; 3 of the 15 completed scenarios FAIL consistently even when</p>
-<p>re-run individually — but all three were proven PRE-EXISTING by stashing the entire</p>
-<p>feature diff and reproducing identical timeouts/failures on the baseline.</p>
-<p>Classification is fixable only because the full-suite gate remains red for reasons</p>
-<p>outside this feature&#x27;s diff; the feature work itself needs no revision.</p>
-<h2>Verification commands (all via run_project_cmd, project=poke-defense-godot,</h2>
-<p>workspace=poke-defense-godot/issue-porter-broad-sweep)</p>
-<ul>
-<li>`git status --short` — exit 0 (probe)</li>
-<li>`godot --headless --path . --editor --quit-after 300` — exit 0, ~13s, parse/import clean</li>
-<li>`godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/porter_broad_sweep.json`</li>
-<p>  — exit 0, `[Harness] status=pass`; result `.gen/harness/porter_broad_sweep/result.json`;</p>
-<p>  rerun again after stash-pop to confirm restoration — still pass</p>
-<li>`python3 tests/run_all_shard.py 0 1 cannon_bunker_buster` — FAIL (timeout, individually reproducible)</li>
-<li>`python3 tests/run_all_shard.py 0 1 cave_discovery_pending_placement` — PASS</li>
-<li>`python3 tests/run_all_shard.py 0 1 fire_flashover_spread` — FAIL (timeout)</li>
-<li>`python3 tests/run_all_shard.py 0 1 fire_wildfire_spread_runtime` — FAIL (timeout)</li>
-<li>`python3 tests/run_all_shard.py 0 4` — exit 137 (killed/OOM) after 15 results;</li>
-<p>  FAILs: cannon_bunker_buster, cave_discovery_pending_placement (passes alone),</p>
-<p>  fire_flashover_spread, fire_wildfire_spread_runtime</p>
-<li>Baseline (feature stashed): direct harness runs of cannon_bunker_buster /</li>
-<p>  fire_flashover_spread / fire_wildfire_spread_runtime — identical timeout failures</p>
-<p>  → pre-existing, not regressions</p>
-</ul>
-<h2>Acceptance criteria evidence (all Done)</h2>
-<p>1. Perk definition exists, Common, 3 levels L1/L2/L3, porter pattern —</p>
-<p>   `scripts/progression/porter_tower.json` diff; harness asserts</p>
-<p>   `progression.porter_broad_sweep.type == Common`.</p>
-<p>2. `&quot;needs&quot;: [&quot;porter_mass_transit&quot;]` — present in JSON; enforced by generic</p>
-<p>   ProgressionManager eligibility/draw gating (no manager-side change needed).</p>
-<p>3. Ineligible &amp; absent from chest pool before Mass Transit owned — harness</p>
-<p>   wait_for_condition is_eligible==false, draw !contains; log shows pool 35 without it</p>
-<p>   and `skip incompatible chest reward: porter_mass_transit`.</p>
-<p>4. After Mass Transit owned: eligible, in pool, applies at L1/L2/L3 — pool 35→36→35,</p>
-<p>   `[PORTER_MASS_TRANSIT] owned`, apply calls return success, levels reach 1/2/3.</p>
-<p>5. Base sweep radius with Mass Transit only — multiplier asserted == 1.0 pre-application.</p>
-<p>6. Multipliers ×1.5 / ×1.8 / ×2.0 — `get_porter_sweep_radius_multiplier()` asserted</p>
-<p>   1.5/1.8/2.0 after each level; absolute-ratio design makes replay idempotent.</p>
-<p>7. Targeting range unchanged — `get_porter_range(6.5) == 6.5` asserted after every</p>
-<p>   application; `_range_multiplier` untouched by `_apply_broad_sweep`.</p>
-<p>8. Reset clears Broad Sweep and returns multiplier to base — `reset_for_new_game`,</p>
-<p>   then level==0 and multiplier==1.0 asserted.</p>
-<p>9. Debug-build `[PORTER_BROAD_SWEEP]` log per application with level and multiplier —</p>
-<p>   stdout captured live: `[PORTER_BROAD_SWEEP] apply L1 sweep_radius_multiplier=x1.50`,</p>
-<p>   `L2 x1.80`, `L3 x2.00`.</p>
-<h2>Changed-file quality findings</h2>
-<ul>
-<li>Diff is surgical (4 modified files + 1 new scenario); follows existing</li>
-<p>  porter_wide_gate/mass_transit patterns; no casts-as-strings, no speculative code.</p>
-<li>New scenario asserts inline with deterministic draw counts (100 &gt; pool size); no</li>
-<p>  overlap found with any existing scenario covering porter perks.</p>
-<li>Minor style observation (advisory, not a violation): `PorterTower.gd`</li>
-<p>  `_mass_transit_sweep_radius()` reaches ProgressionManager via</p>
-<p>  `tree.get_root().get_node_or_null(&quot;ProgressionManager&quot;)` while `_mass_transit_owned()`</p>
-<p>  nearby uses a different lookup path — consistent enough with file-local conventions.</p>
-</ul>
-<h2>Blockers / limitations</h2>
-<ul>
-<li>Full 179-scenario shard cannot finish inside the 420s runner tool window; quarter</li>
-<p>  shards OOM (exit 137). Full-suite green therefore remains unproven end-to-end;</p>
-<p>  remaining ~130 scenarios unverified this iteration (infrastructure limitation,</p>
-<p>  not a feature defect). Pre-existing failures needing separate fixes:</p>
-<p>  cannon_bunker_buster, fire_flashover_spread, fire_wildfire_spread_runtime.</p>
-</ul>
-<h2>Unverified items</h2>
-<ul>
-<li>~130 of 179 full-suite scenarios not executed in this iteration due to runner</li>
-<p>  time/memory limits; no porter-related scenario among them is expected to regress</p>
-<p>  (porter_broad_sweep, porter_wide_gate_progression, progression_pick, porter paths</p>
-<p>  all pass or unaffected).</p>
-</ul>
-<p>manual_testing: optional (per plan) — perk card appears in picker UI; no visual capture</p>
-<p>taken this iteration; sweep radius itself is invisible and teleport feedback is covered</p>
-<p>by Mass Transit.</p></article>
+<p>(check.md missing)</p></article>

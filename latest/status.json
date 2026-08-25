@@ -1,22 +1,47 @@
 {
-  "run_id": "r82-porter-broad-sweep",
-  "feature": "porter broad sweep follow-on perk (#82)",
-  "status": "failed",
-  "started_at": "2026-08-25T15:44:11.875Z",
-  "ended_at": "2026-08-25T17:14:32.366Z",
-  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep.\\nThe durable evidence direc\u2026",
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r82-porter-broad-sweep/",
-  "heartbeat_at": "2026-08-25T17:14:32.366Z",
+  "run_id": "issue45-water-flood-r1",
+  "feature": "Water Tower: Conductive Flood (Wet splash radius)",
+  "status": "running",
+  "started_at": "2026-08-25T16:10:08.483Z",
+  "ended_at": null,
+  "error": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
+  "heartbeat_at": "2026-08-25T17:17:07.225Z",
   "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-25T17:14:27.659Z",
-  "process_id": 697671,
+  "last_event_at": "2026-08-25T17:17:07.225Z",
+  "process_id": 714601,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T17:14:32.366470+00:00",
-    "last_success_at": "2026-08-25T17:14:32.365329+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T17:17:07.226177+00:00",
+    "last_success_at": "2026-08-25T16:27:52.311989+00:00",
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 137745,
+        "output_tokens": 5757
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 68516,
+        "output_tokens": 7992
+      }
+    ]
+  }
 }

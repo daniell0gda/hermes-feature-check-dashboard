@@ -1,11 +1,29 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-25T17:14:27.659Z",
+    "timestamp": "2026-08-25T16:27:42.792Z",
     "node": "code",
-    "status": "failed",
-    "duration_ms": 5410629,
-    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep.\\\\nThe durable evidence di\u2026",
-    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep.\\\\nThe durable evidence di\u2026"
+    "status": "completed",
+    "duration_ms": 1049434,
+    "summary": "Summary for task revision-code-1 (cluster: implementation):\n\n**Work done**\n1. **Full-suite gate completed** \u2014 previously impossible in one runner invocation (OOM exit 137 / 420s cap). Built a resumable per-scenario sharding script (.gen/run\u2026",
+    "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-25T17:11:24.082Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 2616546,
+    "summary": "Check complete. Artifacts written:\n\n- /workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash/.gen/check.md\n- /workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash/.gen/status.md\n\nSummary: All project\u2026",
+    "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-25T17:17:07.225Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 341370,
+    "summary": "`release_project_worker` isn't exposed in this session's toolset (only `run_project_cmd` is); the worker is a disposable per-invocation container, so no explicit release is possible here.\n\nSummary:\n\n- Recreated the two scenario JSONs delete\u2026",
+    "error": null
   }
 ]

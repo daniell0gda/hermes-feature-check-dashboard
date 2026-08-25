@@ -6,17 +6,17 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
-  "heartbeat_at": "2026-08-25T17:11:24.082Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-25T17:11:24.082Z",
+  "heartbeat_at": "2026-08-25T17:17:07.225Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-25T17:17:07.225Z",
   "process_id": 714601,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T17:11:25.855419+00:00",
+    "last_attempt_at": "2026-08-25T17:17:07.226177+00:00",
     "last_success_at": "2026-08-25T16:27:52.311989+00:00",
-    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'fetch', '--depth', '1', 'origin', 'gh-pages']' returned non-zero exit status 128."
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
   "metrics": {
     "invocations": [
