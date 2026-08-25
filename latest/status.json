@@ -1,46 +1,35 @@
 {
-  "run_id": "traps-pit-of-spikes-42-r1",
-  "feature": "traps-pit-of-spikes-first-hit-stuns-turn",
-  "status": "failed",
-  "started_at": "2026-08-25T08:31:25.328Z",
-  "ended_at": "2026-08-25T10:12:41.122Z",
-  "error": "check worker returned no reply (empty model or exhausted API retries)",
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/traps-pit-of-spikes-42-r1/",
-  "heartbeat_at": "2026-08-25T10:12:41.122Z",
+  "run_id": "issue45-water-flood-r1",
+  "feature": "water-conductive-flood-wet-splash",
+  "status": "running",
+  "started_at": "2026-08-25T08:50:51.619Z",
+  "ended_at": null,
+  "error": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
+  "heartbeat_at": "2026-08-25T10:13:15.643Z",
   "last_node": "check",
   "active_node": null,
-  "last_event_at": "2026-08-25T10:12:36.601Z",
-  "process_id": 614333,
+  "last_event_at": "2026-08-25T10:13:15.643Z",
+  "process_id": 617489,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T10:12:41.122813+00:00",
-    "last_success_at": "2026-08-25T10:12:41.121301+00:00",
+    "last_attempt_at": "2026-08-25T10:13:15.644414+00:00",
+    "last_success_at": "2026-08-25T09:57:35.323136+00:00",
     "last_error": null
   },
   "metrics": {
     "invocations": [
       {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 44632,
-        "output_tokens": 3898
-      },
-      {
-        "task_id": "code",
+        "task_id": "revision-code-1",
         "cluster_id": "implementation",
         "role": "code",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 103738,
-        "output_tokens": 12187
+        "input_tokens": 47510,
+        "output_tokens": 3337
       }
     ]
   }
