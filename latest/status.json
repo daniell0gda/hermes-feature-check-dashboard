@@ -8,13 +8,15 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
   "heartbeat_at": "2026-08-25T06:32:15.686Z",
   "last_node": null,
-  "active_node": null,
+  "active_node": "code",
   "last_event_at": null,
   "process_id": 583405,
   "host": "f1a4230ec90b",
-  "phase": "starting",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T06:32:15.686249+00:00"
+    "last_attempt_at": "2026-08-25T06:32:20.879381+00:00",
+    "last_success_at": "2026-08-25T06:32:20.313936+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
