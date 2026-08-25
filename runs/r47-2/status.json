@@ -2,35 +2,24 @@
   "run_id": "r47-2",
   "feature": "Water Tower Riptide - light Slow alongside Wet",
   "status": "completed",
-  "started_at": "2026-08-25T14:37:21.881Z",
-  "ended_at": "2026-08-25T17:00:08.151Z",
+  "started_at": "2026-08-25T15:37:29.194Z",
+  "ended_at": "2026-08-25T17:11:29.770Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
-  "heartbeat_at": "2026-08-25T17:00:08.151Z",
+  "heartbeat_at": "2026-08-25T17:11:29.770Z",
   "last_node": "manual-tester",
   "active_node": null,
-  "last_event_at": "2026-08-25T17:00:01.171Z",
-  "process_id": 678463,
+  "last_event_at": "2026-08-25T17:11:23.448Z",
+  "process_id": 694779,
   "host": "f1a4230ec90b",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T17:00:08.151756+00:00",
-    "last_success_at": "2026-08-25T17:00:08.148968+00:00",
+    "last_attempt_at": "2026-08-25T17:11:29.770354+00:00",
+    "last_success_at": "2026-08-25T17:11:29.767446+00:00",
     "last_error": null
   },
   "metrics": {
     "invocations": [
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 150900,
-        "output_tokens": 7615
-      },
       {
         "task_id": "revision-code-1",
         "cluster_id": "implementation",
@@ -39,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 115528,
-        "output_tokens": 5004
+        "input_tokens": 16200,
+        "output_tokens": 2010
       },
       {
         "task_id": "revision-check-1",
@@ -50,8 +39,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 55733,
-        "output_tokens": 3645
+        "input_tokens": 65427,
+        "output_tokens": 5937
       },
       {
         "task_id": "manual-testing-gate",
@@ -61,8 +50,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 26123,
-        "output_tokens": 501
+        "input_tokens": 5404,
+        "output_tokens": 509
       },
       {
         "task_id": "manual-tester",
@@ -72,8 +61,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 51219,
-        "output_tokens": 7458
+        "input_tokens": 59302,
+        "output_tokens": 9302
       }
     ]
   }

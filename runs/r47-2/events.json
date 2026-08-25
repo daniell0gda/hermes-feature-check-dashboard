@@ -1,47 +1,38 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-25T14:56:39.611Z",
-    "node": "check",
+    "timestamp": "2026-08-25T15:42:14.958Z",
+    "node": "code",
     "status": "completed",
-    "duration_ms": 1151996,
-    "summary": "Check complete. Artifacts written to .gen/check.md and .gen/status.md in the worktree.\n\nVerified done: 8. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: appen\u2026",
+    "duration_ms": 280757,
+    "summary": "Summary (revision-code-1, cluster: implementation):\n\nThe feature was already fully implemented and committed in prior iterations \u2014 commit 0362ebe (Water Riptide perk + hit-path slow) and 515049a (brittle chest-draw scenario fix). This revis\u2026",
     "error": null
   },
   {
     "sequence": 2,
-    "timestamp": "2026-08-25T16:09:03.133Z",
-    "node": "code",
+    "timestamp": "2026-08-25T16:51:07.632Z",
+    "node": "check",
     "status": "completed",
-    "duration_ms": 4339107,
-    "summary": "Revision pass complete. Summary:\n\nState found: all 8 acceptance criteria were already implemented and committed at HEAD (0362ebe feat + 515049a test); the check's \"fixable\" classification came only from working-tree hygiene. This revision a\u2026",
+    "duration_ms": 4128125,
+    "summary": "Check complete. Artifacts written to .gen/check.md, .gen/status.md, and .gen/quality-notes.md.\n\nVerified done: 8. Pending: 0. Impossible: 0. Quality notes: appended (2 resolutions for iteration-1 entries: chest-draw brittleness fixed by com\u2026",
     "error": null
   },
   {
     "sequence": 3,
-    "timestamp": "2026-08-25T16:48:14.130Z",
-    "node": "check",
+    "timestamp": "2026-08-25T16:52:04.642Z",
+    "node": "team-leader",
     "status": "completed",
-    "duration_ms": 2346281,
-    "summary": "Verified done: 8. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes (both prior entries resolved by commit ed2c29f / artifact restore; verified clean \u2026",
+    "duration_ms": 52302,
+    "summary": "Manual testing gate complete.\n\n- Check passed (iteration 2, classification: pass) with all 8 acceptance criteria verified by fresh automated evidence.\n- Decision: manual_testing: required \u2014 the feature adds a new player-visible story: the e\u2026",
     "error": null
   },
   {
     "sequence": 4,
-    "timestamp": "2026-08-25T16:49:08.181Z",
-    "node": "team-leader",
-    "status": "completed",
-    "duration_ms": 49418,
-    "summary": "Manual-testing gate complete.\n\n- Check was pass (all 8 criteria verified at HEAD ed2c29f); plan hints manual_testing: required.\n- Decision: required \u2014 the feature adds a new player-visible story: with `water_riptide` owned, a Water hit show\u2026",
-    "error": null
-  },
-  {
-    "sequence": 5,
-    "timestamp": "2026-08-25T17:00:01.171Z",
+    "timestamp": "2026-08-25T17:11:23.448Z",
     "node": "manual-tester",
     "status": "completed",
-    "duration_ms": 648258,
-    "summary": "Manual-test result: PASSED. Scenario: .gen/ui_scenario.md (water_riptide Chilled cue).\nReport: .gen/manual-report.md. Escalation: no.\n\nSummary of what was done:\n\n- Ran the story windowed (gl_compatibility + Dummy audio, never headless) on m\u2026",
+    "duration_ms": 1154045,
+    "summary": "Done. Summary:\n\nManual-test result: PASSED. Scenario: .gen/ui_scenario.md (water_riptide Chilled cue, issue #47). Report: /workspace/git-workspaces/poke-defense-godot/issue-water-tower-riptide-light-slow-alongside/.gen/manual-report.md. Esc\u2026",
     "error": null
   }
 ]

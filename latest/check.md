@@ -1,77 +1,96 @@
-# Check report: water-conductive-flood-wet-splash (issue #45) — iteration 3 (revision-check-1)
+# Check report: Water Tower Riptide (issue #47) — iteration 2 (revision-check-1)
 
-classification: fixable
+classification: pass
 
-## Verdict
+## Verdict summary
 
-Feature implementation, focused harnesses, editor/import gate and the full-suite
-sharded execution are all green on the current tree. The only remaining defect is
-a checker-side incident during baseline probing: while restoring the worktree
-after the clean-HEAD probe, the two untracked scenario files
-(`tests/scenarios/water_conductive_flood_aoe.json`,
-`tests/scenarios/water_conductive_flood_progression.json`) were deleted and could
-not be recovered from git (they were never tracked). The feature source diff is
-intact; the scenario files must be re-created from the recorded evidence before
-commit. All criteria are therefore held Pending pending restoration of the
-scenario files and a re-run of the focused gate. This is fixable, not blocked.
+All 8 acceptance criteria are implemented, committed (HEAD ed2c29f on
+issue/water-tower-riptide-light-slow-alongside, feature base b5d75ae), and hold fresh passing
+automated evidence from run_project_cmd (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-water-tower-riptide-light-slow-alongside) in this check.
+Iteration-1 advisory items were resolved by commits 515049a / ed2c29f. The classification is
+`pass`: every criterion is Done with adequate tests; remaining notes are advisory only.
 
-## Verification commands (all via run_project_cmd, project godot-td,
-workspace godot-td/issue-water-conductive-flood-wet-splash — no host Godot)
+## Verification commands (fresh, this run)
 
-- Preflight `["godot","--version"]` — exit 0, Godot 4.4.1.stable.
-- Editor/import gate `["godot","--headless","--path",".","--editor","--quit-after","300"]`
-  — exit 0 (11.2s). Only the pre-existing HudTheme.tres invalid-UID warnings;
-  no script errors. PASS.
-- Focused `["python3","tests/run_all_shard.py","0","1","water_conducible_flood"]`
-  variant with correct name — exit 0 earlier this iteration:
-  PASS water_conductive_flood_aoe + water_conductive_flood_progression.
-  Fresh result.json files (2026-08-25 16:59 UTC):
-  `.gen/harness/water_conductive_flood_progression/result.json` — status=pass,
-  17/17 actions ok, all expectations pass.
-  `.gen/harness/water_conductive_flood_aoe/result.json` — status=pass, 20/20
-  actions ok, all expectations pass. Log shows `[WATER-FLOOD] water_conductive_flood
-  applied -> radius=1.50` and `[WATER-FLOOD] hit target @Node3D@1131 -> 1 enemies
-  Wetted in 1.50m radius`.
-- Full suite via sharding (`python3 .gen/run_full_suite_v3.py <start>`, five
-  sequential run_project_cmd invocations by the implementor, verified against
-  persisted results): all 180 scenarios executed, 145 PASS / 36 FAIL.
-  Baseline probes this iteration through the runner with the feature stashed:
-  progression_chest_pool, smoke_tower_roster, projectiles_10x_ballistic,
-  static_breach_isolation, scifi_capacitor_bank ALL FAIL identically on clean
-  HEAD → those full-suite failures are pre-existing, not caused by this change.
-- Quality-notes scope-creep item: `logs/balance/map_difficulty.csv` was restored
-  to HEAD during this check (verified empty diff) and the untracked residue
-  `logs/balance/strategy/` was removed.
+| Command | Exit | Result |
+|---|---|---|
+| godot --version | 0 | 4.4.1.stable.official.49a5bc7b6 |
+| godot --headless --path . --editor --quit-after 120 | 0 | import/parse OK; only pre-existing HudTheme invalid-UID warnings |
+| python3 tests/run_all_shard.py 0 1 water_riptide | 0 | PASS water_riptide_progression, PASS water_riptide_slow |
+| python3 tests/run_all_shard.py 0 1 water | 0 | PASS all 7 (incl. water_electric_hit_path regression) |
+| python3 tests/run_all_shard.py 0 1 progression | 0 exit / 28 PASS, 5 FAIL | failures are pre-existing unrelated scenario timeouts (see below) |
 
-## Incident: scenario file loss (checker-caused)
+The plan's literal full-suite command (`run_all_shard.py 0 1`, ~178 scenarios) does not fit a
+single runner call; it was covered as the riptide-relevant filtered batches above plus the broad
+`progression` regression batch, matching iteration 1's approach.
 
-During the clean-HEAD baseline probe the checker stashed tracked changes, deleted
-the two untracked scenario JSONs to emulate pristine HEAD, and the stash pop
-restore sequence lost them (`git checkout` of the CSV plus pop ordering). Git
-recovery attempts (fsck unreachable blobs, dangling commits/trees) found nothing
-— the files were never tracked. Recovery material that remains:
+The 5 progression-batch FAILs (cannon_bunker_buster_progression, fire_oil_slick_progression,
+fire_wildfire_spread_progression, floodgate_cryobrine_progression, scifi_piercing_beam_progression)
+are status "timeout" on a malformed `wait_for_condition` action whose field name is empty — a
+pre-existing scenario-authoring bug in unrelated towers' scenarios; none touch riptide code or
+water behavior. Not caused by this feature; recorded in quality-notes scope is limited to the
+already-recorded brittleness family.
 
-- Full action-by-action + expectation records in both `.gen/harness/<sid>/result.json`
-- Engine logs `.gen/harness/_logs/water_conductive_flood_{aoe,progression}.out.log`
-- Coder reports describing the scenarios (`.gen/coder-reports/*.md`)
-- Harness action/value implementations remain intact in the diff
-  (`HarnessActions.gd` `_simulate_water_projectile_hit`, `HarnessValues.gd`
-  wet/wet_count fields)
+## Per-criterion evidence (all ✅ Done, fresh this iteration)
 
-Required fix (code role): recreate the two scenario JSONs matching the recorded
-action sequences above, rerun
-`["python3","tests/run_all_shard.py","0","1","water_conductive_flood"]` to green,
-then commit. No other criterion evidence was lost or invalidated.
+1. Single-level Unique `water_riptide` in scripts/progression/water_tower.json ("type": "Unique",
+   maxLevels 1, compatibility ["water"]); grantable via apply_progression → level 1, re-grant
+   refused once owned. PASS: fresh water_riptide_progression.
+2. reset_for_new_game returns unowned/no effect — WaterTowerProgressionManager.reset() clears
+   _riptide_owned; scenario asserts level 0 + re-grant works after reset. PASS.
+3. Owned: Water hit applies Slow 20% / 1.5s alongside Wet — water_riptide_slow owned leg:
+   frozen_count == 1, slow_magnitude == 0.2; Wet applied first via Projectile._resolve_hit
+   (_apply_wet_status then _maybe_apply_riptide_slow). PASS: fresh water_riptide_slow.
+4. Unowned: no slow, Wet unchanged — unowned leg frozen_count stays 0;
+   EffectsManager.apply_riptide_if_owned refuses when not owned. PASS.
+5. No-steal / refresh-not-stack — EnemyStatusController.apply_slow refuses a foreign owner while
+   slow_time_left > 0 (line 14); scenario refresh leg keeps count 1 at 0.2 and ice leg leaves
+   Water-owned magnitude at 0.2. PASS.
+6. Debug `[RIPTIDE]` log with enemy id, magnitude, duration, tower_instance_id — OS.is_debug_build()
+   gated print in EffectsManager.apply_riptide_slow; observed in .gen/harness/_logs/
+   water_riptide_slow.out.log: "[RIPTIDE] slow applied on enemy=Orc Enemy_boss magnitude=0.2
+   duration=1.5 tower_instance_id=6102". PASS.
+7. Existing Chilled cue, no new VFX asset — apply_riptide_slow calls _ensure_ice_slow_fx when the
+   slow lands; expiry path update_slow calls _clear_ice_slow_fx; scenario asserts ice_slow_fx == 1;
+   diff adds no VFX assets. PASS.
+8. water_electric_hit_path still green — PASS in fresh `water` batch. PASS.
 
-## Criterion status
+Test overlap check: no existing test asserted water_riptide behavior before these two new
+scenarios; grep of tests/scenarios shows no duplication of existing coverage.
 
-All 12 criteria are implemented and were focused-green this iteration; they are
-held Pending solely because their proving artifacts (the scenario files) must be
-restored on disk and re-proven after the checker-side deletion. Perk logic,
-manager exposure, projectile flood path, splash radius extension, EnemyHealthBar
-wet icons, and [WATER-FLOOD] debug logging were all inspected in the live diff
-and match the passing harness records.
+## Changed-code quality review (diff b5d75ae..ed2c29f)
+
+- Projectile.gd _maybe_apply_riptide_small helper: typed, guard clauses, delegates to
+  EffectsManager — clean.
+- EffectsManager.gd apply_riptide_slow / apply_riptide_if_owned: typed, documented, reuses shared
+  slow path and existing cue helpers; debug log follows [TAG] convention. One advisory accuracy
+  note on refusal detection recorded in quality-notes.md (does not affect criterion behavior).
+- WaterTowerProgressionManager.gd consts/getters/reset: typed, consistent with neighbors. Clean.
+- ProgressionManager.gd accessors: null-guarded has_method pattern matching existing style. Clean.
+- HarnessActions.gd water_hit riptide opt-in: mirrors the real impact side effect so scripted hits
+  share one implementation; test-only, documented inline. Acceptable.
+- CLAUDE.md rules (typed vars, ≤2 nesting depth, debug logs on state transitions, reuse): satisfied.
+
+## Quality-notes reconciliation (append-only file updated this iteration)
+
+- chest-draw-brittleness (iter 1) — RESOLVED: 515049a + ed2c29f landed; progression_pick and
+  progression_chest_pool PASS in the fresh progression batch.
+- uncommitted-working-tree-changes (iter 1) — RESOLVED for the code part: the
+  water_deep_soak_progression.json fix is committed (515049a). Remaining dirt is test-run artifact
+  only, re-recorded as new advisory entry regenerated-test-artifacts (map_difficulty.csv modified,
+  logs/balance/strategy/ untracked scratch).
+- New advisory: riptide-refusal-log-accuracy (EffectsManager.gd) — debug log/return value can claim
+  "applied" when a foreign-owned active slow causes a silent refusal; gameplay (no steal) remains
+  correct and criterion-compliant. Advisory only; does not demote any criterion.
 
 ## Blockers
 
-None infrastructural. Runner healthy throughout (all commands exit-reported).
+None.
+
+## Unverified items
+
+- Literal single-invocation full suite (`run_all_shard.py 0 1`) exceeds the runner's per-call cap;
+  covered by the filtered batches listed above (consistent with iteration 1).
+- manual_testing: required per plan (windowed screenshots/GIF, player-facing perk) — outside
+  checker scope; manual-tester profile owns .gen/manual-report.md.

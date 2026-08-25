@@ -1,22 +1,22 @@
 {
-  "run_id": "issue45-water-flood-r1",
-  "feature": "Water Tower: Conductive Flood (Wet splash radius)",
-  "status": "running",
-  "started_at": "2026-08-25T16:10:08.483Z",
-  "ended_at": null,
+  "run_id": "r47-2",
+  "feature": "Water Tower Riptide - light Slow alongside Wet",
+  "status": "completed",
+  "started_at": "2026-08-25T15:37:29.194Z",
+  "ended_at": "2026-08-25T17:11:29.770Z",
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
-  "heartbeat_at": "2026-08-25T17:11:24.082Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-25T17:11:24.082Z",
-  "process_id": 714601,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
+  "heartbeat_at": "2026-08-25T17:11:29.770Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-25T17:11:23.448Z",
+  "process_id": 694779,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T17:11:25.855419+00:00",
-    "last_success_at": "2026-08-25T16:27:52.311989+00:00",
-    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'fetch', '--depth', '1', 'origin', 'gh-pages']' returned non-zero exit status 128."
+    "last_attempt_at": "2026-08-25T17:11:29.770354+00:00",
+    "last_success_at": "2026-08-25T17:11:29.767446+00:00",
+    "last_error": null
   },
   "metrics": {
     "invocations": [
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 137745,
-        "output_tokens": 5757
+        "input_tokens": 16200,
+        "output_tokens": 2010
       },
       {
         "task_id": "revision-check-1",
@@ -39,8 +39,30 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 68516,
-        "output_tokens": 7992
+        "input_tokens": 65427,
+        "output_tokens": 5937
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 5404,
+        "output_tokens": 509
+      },
+      {
+        "task_id": "manual-tester",
+        "cluster_id": null,
+        "role": "manual-tester",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 59302,
+        "output_tokens": 9302
       }
     ]
   }
