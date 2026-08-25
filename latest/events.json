@@ -25,5 +25,14 @@
     "duration_ms": 594059,
     "summary": "Summary of revision-code-1:\n\nScope: The only open item was the quality-note advisory porter-burst-emission-tween (all 10 criteria were already Done). Fixed `scripts/game/actors/towers/PorterTower.gd` \u2014 `_spawn_porter_teleport_burst` now set\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-25T04:41:37.272Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 603090,
+    "summary": "Check complete for revision-check-1 (iteration 2).\n\nVerified done: 10. Pending: 0. Impossible: 0. Quality notes: no new entries; the open `porter-burst-emission-tween` note was confirmed RESOLVED by fresh evidence (the coder's 2-line `emiss\u2026",
+    "error": null
   }
 ]

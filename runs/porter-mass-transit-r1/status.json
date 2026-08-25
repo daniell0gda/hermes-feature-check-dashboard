@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/porter-mass-transit-r1/",
-  "heartbeat_at": "2026-08-25T04:31:29.292Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-25T04:31:29.292Z",
+  "heartbeat_at": "2026-08-25T04:41:37.272Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-25T04:41:37.272Z",
   "process_id": 555571,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T04:31:34.181986+00:00",
-    "last_success_at": "2026-08-25T04:31:34.180689+00:00",
+    "last_attempt_at": "2026-08-25T04:41:37.272584+00:00",
+    "last_success_at": "2026-08-25T04:31:38.625992+00:00",
     "last_error": null
   },
   "metrics": {
