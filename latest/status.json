@@ -1,69 +1,22 @@
 {
-  "run_id": "r47-2",
-  "feature": "Water Tower Riptide - light Slow alongside Wet",
-  "status": "completed",
-  "started_at": "2026-08-25T15:37:29.194Z",
-  "ended_at": "2026-08-25T17:11:29.770Z",
+  "run_id": "r82-porter-broad-sweep",
+  "feature": "porter broad sweep follow-on perk (#82)",
+  "status": "running",
+  "started_at": "2026-08-25T15:44:11.875Z",
+  "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
-  "heartbeat_at": "2026-08-25T17:11:29.770Z",
-  "last_node": "manual-tester",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r82-porter-broad-sweep/",
+  "heartbeat_at": "2026-08-25T17:14:27.659Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-25T17:11:23.448Z",
-  "process_id": 694779,
+  "last_event_at": "2026-08-25T17:14:27.659Z",
+  "process_id": 697671,
   "host": "f1a4230ec90b",
-  "phase": "manual-tester",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T17:11:29.770354+00:00",
-    "last_success_at": "2026-08-25T17:11:29.767446+00:00",
+    "last_attempt_at": "2026-08-25T17:14:27.662061+00:00",
+    "last_success_at": "2026-08-25T15:44:21.344001+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 16200,
-        "output_tokens": 2010
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 65427,
-        "output_tokens": 5937
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 5404,
-        "output_tokens": 509
-      },
-      {
-        "task_id": "manual-tester",
-        "cluster_id": null,
-        "role": "manual-tester",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 59302,
-        "output_tokens": 9302
-      }
-    ]
-  }
+  "metrics": {}
 }

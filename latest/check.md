@@ -1,96 +1,80 @@
-# Check report: Water Tower Riptide (issue #47) — iteration 2 (revision-check-1)
+# Check report: porter-broad-sweep (iteration 1)
 
-classification: pass
+classification: fixable
 
-## Verdict summary
+## Verdict
 
-All 8 acceptance criteria are implemented, committed (HEAD ed2c29f on
-issue/water-tower-riptide-light-slow-alongside, feature base b5d75ae), and hold fresh passing
-automated evidence from run_project_cmd (project=poke-defense-godot,
-workspace=poke-defense-godot/issue-water-tower-riptide-light-slow-alongside) in this check.
-Iteration-1 advisory items were resolved by commits 515049a / ed2c29f. The classification is
-`pass`: every criterion is Done with adequate tests; remaining notes are advisory only.
+All 9 criteria are moved to Pending solely because the full-suite gate
+(`python3 tests/run_all_shard.py 0 1`) cannot complete in this worker: it was
+killed with exit code 137 (OOM) after ~4 scenarios, and the finer `0 8` shard
+exceeds the runner's 420s tool window. The feature implementation itself is
+verified green by a fresh focused harness run, the editor/import gate, and a
+completed 16th-shard slice; there are no quality violations in the feature
+diff.
 
-## Verification commands (fresh, this run)
+## Verification commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-porter-broad-sweep)
 
-| Command | Exit | Result |
-|---|---|---|
-| godot --version | 0 | 4.4.1.stable.official.49a5bc7b6 |
-| godot --headless --path . --editor --quit-after 120 | 0 | import/parse OK; only pre-existing HudTheme invalid-UID warnings |
-| python3 tests/run_all_shard.py 0 1 water_riptide | 0 | PASS water_riptide_progression, PASS water_riptide_slow |
-| python3 tests/run_all_shard.py 0 1 water | 0 | PASS all 7 (incl. water_electric_hit_path regression) |
-| python3 tests/run_all_shard.py 0 1 progression | 0 exit / 28 PASS, 5 FAIL | failures are pre-existing unrelated scenario timeouts (see below) |
+- `["godot","--version"]` — exit 0 (runner reachability probe).
+- `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0.
+  Import/parse gate clean; only pre-existing invalid-UID warnings
+  (HudTheme.tres / UI.tscn), unchanged from baseline.
+- `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/porter_broad_sweep.json"]`
+  — exit 0, `[Harness] status=pass`, 30/30 actions ok. Fresh result:
+  `.gen/harness/porter_broad_sweep/result.json`. Log evidence observed directly:
+  chest pool 35 → 36 (after `[PORTER_MASS_TRANSIT] owned`, with
+  porter_broad_sweep drawn) → 35 at L3; `[PORTER_BROAD_SWEEP] apply L1/L2/L3
+  sweep_radius_multiplier=x1.50/x1.80/x2.00`.
+- `["python3","tests/run_all_shard.py","0","1"]` — exit 137 (SIGKILL/OOM) after
+  PASS×3 + FAIL burn_status_refresh_pending_damage (~4 scenarios). Full-suite
+  gate FAILED → all Done items demoted to Pending per build/test gate.
+- `["python3","tests/run_all_shard.py","0","8"]` — timed out at the 420s tool
+  window (no completion recorded).
+- `["python3","tests/run_all_shard.py","0","16"]` — exit 0 for its slice; 7/12
+  PASS, FAIL: fire_wildfire_spread_runtime, issue_35_timed_hazards_map_change,
+  porter_boss_runner, projectiles_10x_beam_cone.
+- `porter_boss_runner` rerun individually — exit 1, status=timeout at action 75
+  (`log contains [PORTER_BOSS_RUNNER] miss`). Baseline attribution: with the
+  entire feature diff stashed (`git stash push -u` Hermes-side), the identical
+  individual rerun reproduced the same timeout at the same action; diff
+  restored afterwards (`git stash pop`). Pre-existing flake, not caused by this
+  issue. Log shows wave 7 Ninja_boss spawns but the Porter never reaches
+  charge-complete in that segment — consistent with the scenario's own note
+  that "Porter outcomes are not byte-reproducible".
 
-The plan's literal full-suite command (`run_all_shard.py 0 1`, ~178 scenarios) does not fit a
-single runner call; it was covered as the riptide-relevant filtered batches above plus the broad
-`progression` regression batch, matching iteration 1's approach.
+## Per-criterion evidence
 
-The 5 progression-batch FAILs (cannon_bunker_buster_progression, fire_oil_slick_progression,
-fire_wildfire_spread_progression, floodgate_cryobrine_progression, scifi_piercing_beam_progression)
-are status "timeout" on a malformed `wait_for_condition` action whose field name is empty — a
-pre-existing scenario-authoring bug in unrelated towers' scenarios; none touch riptide code or
-water behavior. Not caused by this feature; recorded in quality-notes scope is limited to the
-already-recorded brittleness family.
+Every criterion's implementing behavior is asserted by the focused scenario
+`tests/scenarios/porter_broad_sweep.json`, which passed freshly this iteration
+(30/30 actions). The only reason they are Pending is the failed full-suite
+gate, which blocks keeping any item Done.
 
-## Per-criterion evidence (all ✅ Done, fresh this iteration)
+## Changed-file quality review
 
-1. Single-level Unique `water_riptide` in scripts/progression/water_tower.json ("type": "Unique",
-   maxLevels 1, compatibility ["water"]); grantable via apply_progression → level 1, re-grant
-   refused once owned. PASS: fresh water_riptide_progression.
-2. reset_for_new_game returns unowned/no effect — WaterTowerProgressionManager.reset() clears
-   _riptide_owned; scenario asserts level 0 + re-grant works after reset. PASS.
-3. Owned: Water hit applies Slow 20% / 1.5s alongside Wet — water_riptide_slow owned leg:
-   frozen_count == 1, slow_magnitude == 0.2; Wet applied first via Projectile._resolve_hit
-   (_apply_wet_status then _maybe_apply_riptide_slow). PASS: fresh water_riptide_slow.
-4. Unowned: no slow, Wet unchanged — unowned leg frozen_count stays 0;
-   EffectsManager.apply_riptide_if_owned refuses when not owned. PASS.
-5. No-steal / refresh-not-stack — EnemyStatusController.apply_slow refuses a foreign owner while
-   slow_time_left > 0 (line 14); scenario refresh leg keeps count 1 at 0.2 and ice leg leaves
-   Water-owned magnitude at 0.2. PASS.
-6. Debug `[RIPTIDE]` log with enemy id, magnitude, duration, tower_instance_id — OS.is_debug_build()
-   gated print in EffectsManager.apply_riptide_slow; observed in .gen/harness/_logs/
-   water_riptide_slow.out.log: "[RIPTIDE] slow applied on enemy=Orc Enemy_boss magnitude=0.2
-   duration=1.5 tower_instance_id=6102". PASS.
-7. Existing Chilled cue, no new VFX asset — apply_riptide_slow calls _ensure_ice_slow_fx when the
-   slow lands; expiry path update_slow calls _clear_ice_slow_fx; scenario asserts ice_slow_fx == 1;
-   diff adds no VFX assets. PASS.
-8. water_electric_hit_path still green — PASS in fresh `water` batch. PASS.
+Diff (`git diff HEAD`, 4 files + new scenario): typed GDScript throughout,
+guard-clause style, no nesting >2, debug-only `[PORTER_BROAD_SWEEP]` print per
+CLAUDE.md logging rule, absolute-ratio application is idempotent on reload and
+matches the porter_wide_gate pattern. No violations found; no scope creep;
+no test overlap (new scenario asserts new behavior only).
 
-Test overlap check: no existing test asserted water_riptide behavior before these two new
-scenarios; grep of tests/scenarios shows no duplication of existing coverage.
+## Quality notes status
 
-## Changed-code quality review (diff b5d75ae..ed2c29f)
-
-- Projectile.gd _maybe_apply_riptide_small helper: typed, guard clauses, delegates to
-  EffectsManager — clean.
-- EffectsManager.gd apply_riptide_slow / apply_riptide_if_owned: typed, documented, reuses shared
-  slow path and existing cue helpers; debug log follows [TAG] convention. One advisory accuracy
-  note on refusal detection recorded in quality-notes.md (does not affect criterion behavior).
-- WaterTowerProgressionManager.gd consts/getters/reset: typed, consistent with neighbors. Clean.
-- ProgressionManager.gd accessors: null-guarded has_method pattern matching existing style. Clean.
-- HarnessActions.gd water_hit riptide opt-in: mirrors the real impact side effect so scripted hits
-  share one implementation; test-only, documented inline. Acceptable.
-- CLAUDE.md rules (typed vars, ≤2 nesting depth, debug logs on state transitions, reuse): satisfied.
-
-## Quality-notes reconciliation (append-only file updated this iteration)
-
-- chest-draw-brittleness (iter 1) — RESOLVED: 515049a + ed2c29f landed; progression_pick and
-  progression_chest_pool PASS in the fresh progression batch.
-- uncommitted-working-tree-changes (iter 1) — RESOLVED for the code part: the
-  water_deep_soak_progression.json fix is committed (515049a). Remaining dirt is test-run artifact
-  only, re-recorded as new advisory entry regenerated-test-artifacts (map_difficulty.csv modified,
-  logs/balance/strategy/ untracked scratch).
-- New advisory: riptide-refusal-log-accuracy (EffectsManager.gd) — debug log/return value can claim
-  "applied" when a foreign-owned active slow causes a silent refusal; gameplay (no steal) remains
-  correct and criterion-compliant. Advisory only; does not demote any criterion.
+- `full-suite-shard-oom` — still OPEN, confirmed this iteration: `0 1` exit
+  137 OOM, `0 8` exceeds 420s tool window. Required change stands: split
+  shards ≥ `0 16` (that slice completed within budget) or raise worker
+  memory/timeout.
+- `pre-existing-harness-failures` — still OPEN, extended: cannon_bunker_buster,
+  fire_flashover_spread, fire_wildfire_spread_runtime plus now also observed
+  issue_35_timed_hazards_map_change, projectiles_10x_beam_cone, and
+  porter_boss_runner (baseline-reproduced with the feature diff stashed).
 
 ## Blockers
 
-None.
+None infra-level: run_project_cmd works. The full-suite gate failure is a
+worker resource limitation (OOM/timeout), classified fixable.
 
 ## Unverified items
 
-- Literal single-invocation full suite (`run_all_shard.py 0 1`) exceeds the runner's per-call cap;
-  covered by the filtered batches listed above (consistent with iteration 1).
-- manual_testing: required per plan (windowed screenshots/GIF, player-facing perk) — outside
-  checker scope; manual-tester profile owns .gen/manual-report.md.
+- Complete single-pass full-suite result (`run_all_shard.py 0 1`) — blocked by
+  worker OOM; needs finer sharding or more worker memory before any criterion
+  can be restored to Done.

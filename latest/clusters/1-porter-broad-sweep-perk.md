@@ -1,6 +1,11 @@
-## ✅ Done
+# Cluster 1: porter-broad-sweep-perk
 
-## ⬜ Pending
+- Files: `scripts/progression/porter_tower.json`, `scripts/progression/managers/PorterTowerProgressionManager.gd`, `autoload/ProgressionManager.gd`, `scripts/game/actors/towers/PorterTower.gd`, `tests/scenarios/porter_broad_sweep.json`
+- Dependencies: none (prerequisite outside the plan: merge `issue/porter-mass-transit` first — `porter_mass_transit` does not exist on this workspace's branch yet)
+- Parallel: false
+
+## Acceptance criteria
+
 - A porter perk definition named `porter_broad_sweep` labeled "Broad Sweep" of type Common exists with exactly three levels L1/L2/L3 and follows the existing porter perk registration pattern in `porter_tower.json`.
 - The `porter_broad_sweep` definition declares `"needs": ["porter_mass_transit"]`.
 - While `porter_mass_transit` is not owned, `porter_broad_sweep` is not eligible (`is_eligible` false) and does not appear in the chest reward draw pool for a Porter-coverage loadout.
@@ -11,4 +16,8 @@
 - Resetting progression clears any Broad Sweep level and returns the Mass Transit sweep radius to its base value.
 - Debug-build `[PORTER_BROAD_SWEEP]` log line per perk-level application event, including the applied level and the resulting sweep-radius multiplier.
 
-## ❌ Impossible
+## Verification commands
+
+- Focused: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/porter_broad_sweep.json"]`
+- Full: `["python3", "tests/run_all_shard.py", "0", "1"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
