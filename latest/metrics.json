@@ -1,15 +1,15 @@
 {
   "invocations": [
     {
-      "task_id": "manual-tester",
+      "task_id": "plan",
       "cluster_id": null,
-      "role": "manual-tester",
+      "role": "plan",
       "model": "stealth/ox-alpha",
       "model_tier": null,
       "cost_usd": 0.0,
       "cost_status": "unknown",
-      "input_tokens": 43799,
-      "output_tokens": 5714
+      "input_tokens": 38680,
+      "output_tokens": 3196
     }
   ]
 }
