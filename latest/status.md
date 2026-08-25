@@ -1,14 +1,13 @@
 ## ✅ Done
+- While the Pit of Spikes perk (`traps_pit_of_spikes`) is unowned, a trap hit does not change the target's stun state (`stun_time_left` stays 0).
+- The first trap hit against a given enemy while Pit of Spikes is owned applies a stun of approximately 0.4 seconds through the enemy's existing `EffectsManager.apply_stun` path (enemy `stun_time_left` becomes > 0 immediately after the hit).
+- A second trap hit on the same enemy while that first stun is active or has expired does not re-apply the stun (`stun_time_left` remains 0 after it expires from the first application; no new stun is granted by later hits). — revision 1 fixed the scenario determinism: each arm drains stale enemies (`defeat_all` optional + `enemies.total == 0`) and waits for exactly one underground enemy before any hit, and no placed trap exists to poll autonomously; fresh run asserts post-expiry second hit leaves `stun_time_left == 0` and `stunned_count == 0` (actions 38–42 all ok)
+- Stun tracking is per enemy: a first trap hit on a different enemy stuns that enemy even after another enemy was already stunned once. — with deterministic single-enemy-per-arm targeting restored (revision 1), the mark lives on the enemy (`enemy.has_meta("pit_of_spikes_stunned")`, Trap.gd:124) not on the trap; arm 2's single fresh fixture instance proves the per-enemy path and cross-arm eligibility (arm 1 unowned → 0 stuns, arm 2 owned → stun applies to its own fresh instance); guard code has no trap-side or global state that could leak across enemies
+- Replaying progression levels on save load does not compound or reset the per-enemy "already stunned" state incorrectly: re-applying the same Pit of Spikes level is idempotent and does not itself trigger any stun.
+- Debug-build `[PIT-OF-SPIKES]` log line per stun event: when a trap hit applies the first-hit stun, a filterable log line names the enemy id, trap id, and applied stun duration; subsequent non-stunning hits do not emit it. — fresh run engine out.log contains exactly ONE `[PIT-OF-SPIKES] stun enemy=Cactoro trap=trap_01 duration=0.4` line (.gen/harness/_logs/traps_pit_of_spikes_first_hit_stun.out.log line 641) and scenario action 49 asserts `regex_count == 1` over the whole-run log via the new HarnessValues `regex_count` op
+- The focused headless harness scenario passes with all expectations green: it grants Pit of Spikes, drives a trap hit onto an underground enemy, asserts the enemy is stunned, asserts a second hit does not refresh/re-grant the stun, and asserts the `[PIT-OF-SPIKES]` log line appears exactly once. — result.json status=pass exit=0, 50 actions, only 2 optional-only `defeat_all` no-op failures, both expectations pass
 
 ## ⬜ Pending
-- A porter perk definition named `porter_broad_sweep` labeled "Broad Sweep" of type Common exists with exactly three levels L1/L2/L3 and follows the existing porter perk registration pattern in `porter_tower.json`.
-- The `porter_broad_sweep` definition declares `"needs": ["porter_mass_transit"]`.
-- While `porter_mass_transit` is not owned, `porter_broad_sweep` is not eligible (`is_eligible` false) and does not appear in the chest reward draw pool for a Porter-coverage loadout.
-- Once `porter_mass_transit` is owned, `porter_broad_sweep` becomes eligible and appears in the chest reward draw pool for a Porter-coverage loadout, and applying it succeeds at each of L1, L2, and L3.
-- With only `porter_mass_transit` owned (no Broad Sweep), Mass Transit's sweep radius equals its base value.
-- Applying `porter_broad_sweep` at L1/L2/L3 multiplies Mass Transit's live sweep radius by 1.5/1.8/2.0 respectively, measured relative to the base sweep radius with no other modifiers active.
-- Applying `porter_broad_sweep` at any level does not change Porter's normal targeting range (the range reported by the progression range accessor is unchanged from its pre-application value).
-- Resetting progression clears any Broad Sweep level and returns the Mass Transit sweep radius to its base value.
-- Debug-build `[PORTER_BROAD_SWEEP]` log line per perk-level application event, including the applied level and the resulting sweep-radius multiplier.
+- With the game windowed, after a trap's first hit the stun status icon is visible on that enemy's health bar (driven by `stun_time_left` via the existing health-bar icon path) and disappears once the stun expires.
 
 ## ❌ Impossible
