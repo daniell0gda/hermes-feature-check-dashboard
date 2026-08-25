@@ -1,35 +1,35 @@
 {
-  "run_id": "issue45-water-flood-r2",
-  "feature": "water-conductive-flood-wet-splash",
-  "status": "failed",
-  "started_at": "2026-08-25T10:00:31.932Z",
-  "ended_at": "2026-08-25T11:37:10.188Z",
-  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash.\\nThe durable evidence \u2026",
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r2/",
-  "heartbeat_at": "2026-08-25T11:37:10.188Z",
-  "last_node": "code",
+  "run_id": "r47-2",
+  "feature": "water-tower-riptide-light-slow-alongside",
+  "status": "running",
+  "started_at": "2026-08-25T09:59:41.632Z",
+  "ended_at": null,
+  "error": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
+  "heartbeat_at": "2026-08-25T11:57:54.111Z",
+  "last_node": "check",
   "active_node": null,
-  "last_event_at": "2026-08-25T11:37:05.525Z",
-  "process_id": 633649,
+  "last_event_at": "2026-08-25T11:57:54.111Z",
+  "process_id": 633024,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T11:37:10.188470+00:00",
-    "last_success_at": "2026-08-25T11:37:10.187301+00:00",
+    "last_attempt_at": "2026-08-25T11:57:54.113117+00:00",
+    "last_success_at": "2026-08-25T10:27:47.764333+00:00",
     "last_error": null
   },
   "metrics": {
     "invocations": [
       {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 41705,
-        "output_tokens": 5118
+        "input_tokens": 98215,
+        "output_tokens": 7000
       }
     ]
   }

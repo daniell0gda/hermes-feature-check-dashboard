@@ -2,8 +2,8 @@
 
 - **Result:** failed
 - **Classification:** unknown
-- **Feature:** water-conductive-flood-wet-splash
-- **Run:** issue45-water-flood-r1
+- **Feature:** Water Tower Riptide - light Slow alongside Wet
+- **Run:** r47-1
 - **Lifecycle:** dashboard publish only; project commit/push/close not implied
 
 ## Status
