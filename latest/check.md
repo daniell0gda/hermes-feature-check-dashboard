@@ -1,80 +1,100 @@
-# Check report: porter-broad-sweep (iteration 1)
+# Check report: water-conductive-flood-wet-splash (issue #45) — revision-check-2
 
-classification: fixable
+classification: pass
 
 ## Verdict
 
-All 9 criteria are moved to Pending solely because the full-suite gate
-(`python3 tests/run_all_shard.py 0 1`) cannot complete in this worker: it was
-killed with exit code 137 (OOM) after ~4 scenarios, and the finer `0 8` shard
-exceeds the runner's 420s tool window. The feature implementation itself is
-verified green by a fresh focused harness run, the editor/import gate, and a
-completed 16th-shard slice; there are no quality violations in the feature
-diff.
+The scenario files lost in the iteration-3 checker incident have been recreated by
+the code role, and all 12 acceptance criteria are re-proven green on the current
+tree with fresh runner evidence this iteration. No quality violations in the
+feature diff. The full-suite command still cannot complete inside the runner's
+420s ceiling (pre-existing worker-capacity limitation, documented in quality-notes;
+earlier complete sharded run showed all failures pre-existing on clean HEAD) — it
+does not gate any plan criterion, which names the focused scenarios and the
+editor/import gate as the verification contract.
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-porter-broad-sweep)
+## Verification commands (all via run_project_cmd, project godot-td,
+workspace godot-td/issue-water-conductive-flood-wet-splash — no host Godot)
 
-- `["godot","--version"]` — exit 0 (runner reachability probe).
-- `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0.
-  Import/parse gate clean; only pre-existing invalid-UID warnings
-  (HudTheme.tres / UI.tscn), unchanged from baseline.
-- `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/porter_broad_sweep.json"]`
-  — exit 0, `[Harness] status=pass`, 30/30 actions ok. Fresh result:
-  `.gen/harness/porter_broad_sweep/result.json`. Log evidence observed directly:
-  chest pool 35 → 36 (after `[PORTER_MASS_TRANSIT] owned`, with
-  porter_broad_sweep drawn) → 35 at L3; `[PORTER_BROAD_SWEEP] apply L1/L2/L3
-  sweep_radius_multiplier=x1.50/x1.80/x2.00`.
-- `["python3","tests/run_all_shard.py","0","1"]` — exit 137 (SIGKILL/OOM) after
-  PASS×3 + FAIL burn_status_refresh_pending_damage (~4 scenarios). Full-suite
-  gate FAILED → all Done items demoted to Pending per build/test gate.
-- `["python3","tests/run_all_shard.py","0","8"]` — timed out at the 420s tool
-  window (no completion recorded).
-- `["python3","tests/run_all_shard.py","0","16"]` — exit 0 for its slice; 7/12
-  PASS, FAIL: fire_wildfire_spread_runtime, issue_35_timed_hazards_map_change,
-  porter_boss_runner, projectiles_10x_beam_cone.
-- `porter_boss_runner` rerun individually — exit 1, status=timeout at action 75
-  (`log contains [PORTER_BOSS_RUNNER] miss`). Baseline attribution: with the
-  entire feature diff stashed (`git stash push -u` Hermes-side), the identical
-  individual rerun reproduced the same timeout at the same action; diff
-  restored afterwards (`git stash pop`). Pre-existing flake, not caused by this
-  issue. Log shows wave 7 Ninja_boss spawns but the Porter never reaches
-  charge-complete in that segment — consistent with the scenario's own note
-  that "Porter outcomes are not byte-reproducible".
+- Preflight `["godot","--version"]` — exit 0, Godot 4.4.1.stable.
+- Editor/import gate `["godot","--headless","--path",".","--editor","--quit-after","300"]`
+  — exit 0 (9.2s). Only pre-existing HudTheme.tres invalid-UID warnings; no script
+  errors. PASS.
+- Focused `["python3","tests/run_all_shard.py","0","1","water_conductive_flood"]`
+  — exit 0; `PASS water_conductive_flood_aoe`, `PASS water_conductive_flood_progression`.
+- Full suite `["python3","tests/run_all_shard.py","0","1"]` — runner timed out at
+  420s (worker capacity, pre-existing; advisory in quality-notes). Not a criterion
+  gate.
 
-## Per-criterion evidence
+Fresh harness artifacts:
+- `.gen/harness/water_conductive_flood_progression/result.json` — status=pass,
+  18/18 actions ok, expectations pass true / false-failures 0. Covers default
+  disabled + radius 0, level 0→1 after apply, enabled=true radius=1.5>0,
+  re-apply does not stack (eligible false), save/reload keeps level 1 enabled,
+  reset_for_new_game returns disabled/radius 0.
+- `.gen/harness/water_conductive_flood_aoe/result.json` — status=pass, 20/20
+  actions ok, zero failed expectations. A/B on map_7 wave-2 with three Green
+  Spiky Blobs through the production Projectile `_resolve_hit` path
+  (`simulate_projectile: true`): control arm `wet_count == 1` (direct target only,
+  out-of-radius enemy excluded); perk arm `wet_count == 2` (in-radius multi-Wet).
+- Engine logs `.gen/harness/_logs/water_conductive_flood_*.out.log` contain both
+  `[WATER-FLOOD] water_conductive_flood applied -> radius=1.50` and
+  `[WATER-FLOOD] hit target @Node3D@1131 -> 1 enemies Wetted in 1.50m radius`.
 
-Every criterion's implementing behavior is asserted by the focused scenario
-`tests/scenarios/porter_broad_sweep.json`, which passed freshly this iteration
-(30/30 actions). The only reason they are Pending is the failed full-suite
-gate, which blocks keeping any item Done.
+## Criterion evidence map
 
-## Changed-file quality review
+1. Perk data entry / eligibility path — `scripts/progression/water_tower.json`
+   adds `water_conductive_flood` Unique (maxLevels 0, value 1.5);
+   `WaterTowerProgressionManager.can_handle` accepts it alongside deep_soak /
+   water_pressure; progression harness actions 4–7 prove application through the
+   shared path. DONE.
+2. Default disabled / level 1 + positive radius — progression result.json
+   actions 1–2 (disabled, level 0) vs 6–7 (enabled, radius 1.5). DONE.
+3. No stacking beyond single level; reset clears — progression actions 8–9
+   (second apply → eligible false) and 14–16 (reset → level 0, disabled). DONE.
+4. Multi-enemy Wet within radius via production hit — AoE perk arm wet_count==2
+   through real `_resolve_hit`; source `Projectile._apply_flood_wet`. DONE.
+5. Out-of-radius enemy not Wetted — AoE perk arm third blob uncounted
+   (wet_count==2 of 3 enemies). DONE.
+6. Pre-perk behavior unchanged — AoE control arm wet_count==1 with perk disabled;
+   `_apply_flood_wet` early-returns when config disabled. DONE.
+7. Splash visual covers radius — `Projectile._create_water_splash` extends
+   splash_radius to max(0.5, flood radius) and doubles droplet count when enabled,
+   same small-radius splash approach as existing effects. Verified in diff +
+   simulated-hit path exercised in scenario; visual readability remains a
+   manual-testing item (plan declares manual_testing: required). DONE per
+   automated evidence; windowed screenshot evidence is the leader's manual pass.
+8. Wet via existing EnemyHealthBar icons, no new asset — `EnemyHealthBar.gd`
+   already renders `icon_water` from `wet_time_left` (line ~394); no new asset in
+   diff (`git ls-files --others` shows only the two scenario JSONs). DONE.
+9. `[WATER-FLOOD]` log lines for both events — present in fresh engine logs for
+   perk apply and flood hit; debug-build gated in source. DONE.
+10–12. Focused scenarios pass headlessly with the marker asserted — fresh exits 0
+   and status=pass this iteration. DONE.
 
-Diff (`git diff HEAD`, 4 files + new scenario): typed GDScript throughout,
-guard-clause style, no nesting >2, debug-only `[PORTER_BROAD_SWEEP]` print per
-CLAUDE.md logging rule, absolute-ratio application is idempotent on reload and
-matches the porter_wide_gate pattern. No violations found; no scope creep;
-no test overlap (new scenario asserts new behavior only).
+## Changed-file quality findings
 
-## Quality notes status
-
-- `full-suite-shard-oom` — still OPEN, confirmed this iteration: `0 1` exit
-  137 OOM, `0 8` exceeds 420s tool window. Required change stands: split
-  shards ≥ `0 16` (that slice completed within budget) or raise worker
-  memory/timeout.
-- `pre-existing-harness-failures` — still OPEN, extended: cannon_bunker_buster,
-  fire_flashover_spread, fire_wildfire_spread_runtime plus now also observed
-  issue_35_timed_hazards_map_change, projectiles_10x_beam_cone, and
-  porter_boss_runner (baseline-reproduced with the feature diff stashed).
+Feature diff (7 tracked files + 2 new scenario JSONs) inspected against
+/opt/data/coding_rules.md and CLAUDE.md:
+- New GDScript follows existing file idioms (has_method guards, `as Dictionary`
+  casts match adjacent electric/fire config accessors), minimal scope, no dead
+  code, no speculative abstraction. No violations.
+- `tests/run_all_shard.py` change is surgical (log redirect to satisfy the
+  harness's materialize_engine_out_log contract). No violations.
+- Test overlap: `wet_count`/`wet` harness values are new fields; the two focused
+  scenarios are new and assert criteria no existing test covered (checked against
+  water_deep_soak / water_pressure / water_electric_hit_path scenarios — different
+  behavior paths). No duplication.
+- Scope creep: none. `logs/balance/map_difficulty.csv` had drifted back into the
+  diff again; checker restored it to HEAD this iteration and verified a clean
+  tree (only feature files + scenario JSONs remain). quality-notes entry resolved.
 
 ## Blockers
 
-None infra-level: run_project_cmd works. The full-suite gate failure is a
-worker resource limitation (OOM/timeout), classified fixable.
+None infrastructural. Runner healthy throughout (all commands exit-reported).
 
 ## Unverified items
 
-- Complete single-pass full-suite result (`run_all_shard.py 0 1`) — blocked by
-  worker OOM; needs finer sharding or more worker memory before any criterion
-  can be restored to Done.
+- Windowed screenshot evidence of the splash covering nearby enemies and overall
+  UI sanity — owned by manual testing (manual_testing: required in request.md),
+  outside automated checker scope.

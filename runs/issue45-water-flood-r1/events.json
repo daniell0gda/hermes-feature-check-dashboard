@@ -43,5 +43,14 @@
     "duration_ms": 43134,
     "summary": "Manual testing gate complete.\n\n- check.md verdict: pass (fresh harness evidence this iteration; only unverified item is windowed screenshot evidence, explicitly owned by manual testing).\n- Story is player-visible and still-capturable: with \u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-25T19:01:14.615Z",
+    "node": "manual-tester",
+    "status": "failed",
+    "duration_ms": 5410754,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'manual-tester', '-z', 'You are the manual-tester worker in a team-work run.\\\\nWork in /workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash.\\\\n\u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'manual-tester', '-z', 'You are the manual-tester worker in a team-work run.\\\\nWork in /workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash.\\\\n\u2026"
   }
 ]
