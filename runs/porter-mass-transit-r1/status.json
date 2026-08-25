@@ -1,21 +1,21 @@
 {
   "run_id": "porter-mass-transit-r1",
   "feature": "porter-mass-transit",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-25T01:07:54.003Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-25T02:55:03.183Z",
+  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-porter-mass-transit.\\nThe durable evidence dire\u2026",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/porter-mass-transit-r1/",
-  "heartbeat_at": "2026-08-25T02:54:58.421Z",
+  "heartbeat_at": "2026-08-25T02:55:03.183Z",
   "last_node": "code",
   "active_node": null,
   "last_event_at": "2026-08-25T02:54:58.421Z",
   "process_id": 536040,
   "host": "f1a4230ec90b",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T02:54:58.424051+00:00",
-    "last_success_at": "2026-08-25T01:24:52.050372+00:00",
+    "last_attempt_at": "2026-08-25T02:55:03.183806+00:00",
+    "last_success_at": "2026-08-25T02:55:03.181960+00:00",
     "last_error": null
   },
   "metrics": {
