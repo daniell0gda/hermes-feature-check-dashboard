@@ -1,69 +1,85 @@
-# Feature check: traps_grave_robber economy perk (issue #80) — revision-check-1
+# Check report — issue-130 middle-mouse pan flip (revision-check-2)
 
-classification: pass
+classification: fixable
 
 ## Verdict
 
-All 12 acceptance criteria are verified Done with fresh evidence produced by
-this check through `run_project_cmd`. The build/import gate passes, the
-focused harness passes with inline assertions covering every criterion, and
-the full-suite regression gate is green in every slice adjacent to the changed
-systems. The six remaining `fire_*` failures were independently reproduced on
-a clean tree (feature scripts stashed Hermes-side, rerun via the runner,
-identical failure) and are pre-existing baseline failures unrelated to this
-feature.
+All 11 acceptance criteria remain implemented and pass fresh, non-vacuous
+verification via `run_project_cmd` (project `godot-td`, workspace
+`poke-defense-godot/issue-130`). Typecheck/build gate passes. The
+`carve_camera_drag_spin` scenario now drives the real `rotate_camera` harness
+action type with genuinely changing camera probes — the previously open
+quality note (`carve-drag-spin-vacuous-rotate-shortcut`) is confirmed FIXED.
+The sole remaining gap is unchanged from r4/r5: the required windowed 30fps
+GIF under Xvfb :77 (carve arm → small middle-drag, path L unrotated) does not
+exist — `.gen/screenshots/` holds only the Aug 22 PNGs, no `.gen/**/*.gif`.
+That artifact belongs to the manual-tester profile (`manual_testing:
+required`), so the issue cannot be declared done → `fixable`.
 
-## Commands run (all via run_project_cmd, project=godot-td,
-workspace=godot-td/issue-traps-grave-robber)
+## Verification commands (fresh, this run, all via run_project_cmd)
 
 | Command | Exit | Result |
 |---|---|---|
-| `git status --short` (runner probe) | 0 | runner reachable |
-| `godot --headless --path . --import` (typecheck/build gate) | 0 | pass; only pre-existing HudTheme.tres invalid-UID warnings |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/traps_grave_robber_progression.json` | 0 | `[Harness] status=pass exit=0`; fresh `.gen/harness/traps_grave_robber_progression/result.json`, 120 actions, all hard assertions ok |
-| `python3 tests/run_all_shard.py 0 1 progression_` | 0 | PASS chest_pool, global_scaling, modal_close_resume, modal_close_resume_visual, pick, reset_ice_venom (both iteration-1 regressions remain fixed) |
-| `python3 tests/run_all_shard.py 0 1 traps_` | 0 | all 7 PASS incl. traps_grave_robber_progression and venom_barbs_trap_poison_visual |
-| `python3 tests/run_all_shard.py 0 1 chest_` | 0 | all 3 PASS |
-| `python3 tests/run_all_shard.py 0 1 curse_` | 0 | all 8 PASS |
-| `python3 tests/run_all_shard.py 0 1 fire_` | 0 script / 6 FAIL | flashover_spread, oil_slick, oil_slick_progression, wildfire_spread_progression, wildfire_spread_runtime, wildfire_spread_visual fail |
-| isolation probe: feature scripts stashed, then `godot --headless ... --harness=res://tests/scenarios/fire_wildfire_spread_runtime.json` on the clean tree via runner | 1 | identical timeout at action 8 (`enemies.Mushnub.count == 3.0`, actual None); proves the fire failures are pre-existing, not caused by this feature. Stash popped, diff restored intact |
+| `["godot","--version"]` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner reachable |
+| Typecheck `["godot","--headless","--path",".","--editor","--quit-after","3"]` | 0 | clean editor import/parse |
+| Focused `carve_pan_no_flip.json` harness | 0 | result.json status=pass; expectations `carve_pan_translated_only==true`, `carve_pan_yaw_delta 0.0 < 0.01`; log shows `[CARVE_CAMERA] top-down applied (pre yaw=0.000000 pitch=0.588003)` then `[CARVE_CAMERA] pan complete (pre yaw=0.000000 post yaw=0.000000)` ×9 through real `_input` middle press/motion/release, then real cancel restore |
+| Focused `carve_camera_drag_spin.json` harness | 0 | result.json status=pass; expectation `carve_drag_spin_no_flip==true`; non-vacuous: scenario now uses `{"type":"rotate_camera"}` actions (dx/dy), no String→Object conversion errors; HarnessValues asserts genuine rotation (>0.01 pitch change), pitch inside ~0.05–1.55 clamp, yaw stable on vertical drag, pitch kept on horizontal drag |
+| Focused `carve_camera_topdown.json` harness | 0 | status=pass; all 8 expectations pass including basis restored after plain cancel, player angle kept after rotation cancel, dig-hole top-down |
 
-## Acceptance criteria evidence
+Full suite not re-run: `bash` is off the runner allowlist; r4 ran the python3
+port (legacy-domain reds) which request.md redo notes r4/r5 item 2 declare
+known pre-existing and non-blocking. No camera-domain scenario is red.
 
-Cluster 1 — perk data + EconomyProgressionManager:
-- No-perk config unchanged / no bonus: scenario actions 5–12 assert `progression_call.enabled == false`, `add_per_kill == 0.0`, and `grave_robber_ratio == 0.1` only after applying L1; `get_bounty_config()` returns `{"enabled": false}` when both bounty and ratio are zero.
-- L1/L2/L3 = +10%/+15%/+25%: actions 12/19/22 assert `grave_robber_ratio == 0.1/0.15/0.25`; engine log shows `[EconomyProgression] traps_grave_robber L1 -> +10% … L2 -> +15% … L3 -> +25%`.
-- Re-apply/save-load sets exact percentage (no compounding/collapse): actions 24–27 save, reload (`_load_state_and_apply`), and assert level 3 → ratio exactly 0.25.
-- Reset clears bonus: action 84 `reset_for_new_game` then L1 re-applied; final payout asserts exact L1 delta (700→711), so ratio returned to exactly 0.1.
-- `[EconomyProgression]` debug line per level change: present in engine out.log and asserted (action 118 regex).
+## Criterion evidence
 
-Cluster 2 — trap-kill bonus application (all asserted as exact integer money deltas):
-- Underground trap kill at L1 pays base +10%: money wait `gamestate.money == 711.0` after `_set_money(700)` and a trap kill of base reward 10 (`[GRAVE_ROBBER] bonus enemy=Alien base=10 bonus=1`).
-- L2/L3 exact +15%/+25%: money wait `== 310.0` at L3 (base 8 → +2, `[GRAVE_ROBBER] bonus enemy=Mushnub base=8 bonus=2`); L2 ratio pinned at 0.15 via progression_call and exercised in the ladder before reset.
-- Surface trap kill awards base only: `== 408.0` after `_set_money(400)` with trap kill above ground — no bonus.
-- Non-trap underground kill awards base only: `== 210.0` after `_set_money(200)` with tower-sourced underground kill while perk owned.
-- Rides existing bounty path, no cross-perk interference: bonus is additive inside `_compute_kill_reward` (`adjusted + add_per_kill + _grave_robber_bonus(base_reward)`); `gold_on_kill`/`curse_blood_money` amounts untouched; curse_ slice (8 scenarios incl. blood_money) fully green.
-- `[GRAVE_ROBBER]` debug line per payout naming enemy id and bonus gold: present, gated on `OS.is_debug_build()`, asserted (action 119 contains-check).
+1–4 (pan stability small/large/non-armed-topdown/zoom): `carve_pan_no_flip`
+passes with basis-based probes (`carve_pan_yaw_delta` from camera `basis.x`
+heading, not position atan2); pan/zoom paths skip degenerate `look_at(...,UP)`
+when carve-armed or near-vertical (Game.gd guards).
+5–6 (right-drag orbit + clamp, right-click cancel): `carve_camera_drag_spin`
+non-vacuously exercises real `_rotate_camera`; vertical drag rotates within
+clamp band without yaw change; `carve_camera_topdown` covers plain-cancel
+restore vs keep-player-angle.
+7 ([CARVE_CAMERA] pan log): observed live nine times in the fresh pan run.
+8 (basis-derived harness value): HarnessValues.gd computes yaw delta from
+camera basis; asserted `< 0.01`.
+9 (real `_input` middle-drag): mouse press/motion/release driven through
+viewport input in the scenario; translation-only confirmed.
+10 (drag_spin non-vacuous): scenario switched to `rotate_camera` action type;
+fresh probes show genuine rotation; no conversion errors in log.
+11 (topdown lifecycle unchanged): fresh pass, all 8 expectations green.
 
-Cluster 3 — focused harness: headless `[Harness] status=pass exit=0`; the only non-ok actions are two explicitly optional cave-pending waits.
+Test overlap: the three scenarios assert distinct behaviors on shared camera
+code; no duplicate coverage found.
 
-## Changed-file quality review
+## Changed-file quality
 
-- `EconomyProgressionManager.gd`: typed vars, absolute per-level value (matches blood-money precedent), reset clears state, small guard-style branches — compliant with CLAUDE.md and coding rules.
-- `EnemyHealthController.gd`: `_grave_robber_bonus` re-resolves ProgressionManager although `_compute_kill_reward` holds the same lookup — minor duplication consistent with existing pattern (recorded iteration 1, not demoting).
-- `autoload/ProgressionManager.gd`: thin delegating accessor matching the file's established pattern.
-- `AgentHarness.gd`: always-reslice fix for mid-run log expectations — justified test-infra change, removes a real false-pass window.
-- `tests/scenarios/traps_grave_robber_progression.json`: new scenario, no overlap with any existing test (first Grave Robber coverage).
-- `progression_chest_pool.json` / `progression_pick.json`: seeded-pin re-measure for the new pool member; both pass fresh.
+Diff vs HEAD: `scripts/testing/HarnessValues.gd`,
+`tests/scenarios/carve_camera_drag_spin.json`. New code is surgical, typed,
+with clear comments explaining clamp-band semantics; no coding-rules
+violations. `logs/balance/map_difficulty.csv` churn is test-run artifact,
+kept uncommitted per request.md.
 
-## Quality notes
+## Quality notes re-check
 
-Open entry `scratch-artifacts-in-tree` remains open: `logs/balance/map_difficulty.csv` is regenerated by harness runs and still differs from master (keep-or-revert decision before commit belongs to the reviewer). `logs/grave_focus.log` and `logs/balance/strategy/` from iteration 1 are gone.
+Open entry `carve-drag-spin-vacuous-rotate-shortcut` was already marked FIXED
+(revision-code-3); this run's fresh non-vacuous drag_spin execution confirms
+it — no new entry appended. No new cross-cutting issues introduced by the
+feature diff.
 
-## Blockers
+## Known pre-existing full-suite red (not blocking)
 
-None for this issue. Pre-existing, unrelated `fire_*` scenario failures (6) should be triaged as a separate issue; they reproduce identically without the feature.
+Legacy-domain failures/timeouts plus headless-failing screenshot scenarios are
+recorded as pre-existing in quality-notes and declared non-blocking by
+request.md r4/r5.
 
-## Unverified items
+## Blockers / unverified
 
-- The literal unfiltered full command `python3 tests/run_all_shard.py 0 1` (177 sequential scenarios) does not fit one runner invocation within the cap; coverage was completed via name-filtered slices totalling ~120 scenarios including every slice adjacent to the changed systems. This is an honest tooling-cap limitation, not a hidden failure.
+- Required windowed 30fps GIF under Xvfb :77 (directly, not xvfb-run),
+  screenshot key `name`: carve arm → small middle-drag, path L screen
+  orientation unchanged — owned by the manual-tester profile. Sole reason the
+  verdict is not `pass`.
+- If the tester answers `ui_feels_broken: yes`, manual testing fails regardless
+  of automated results.
+- Stale `check.md.stale-blocked-aug22` / `status.md.stale-blocked-aug22` kept
+  for provenance only; ignored as evidence per request.md.

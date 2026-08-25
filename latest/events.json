@@ -1,29 +1,20 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-25T14:33:17.808Z",
-    "node": "code",
+    "timestamp": "2026-08-25T14:38:02.453Z",
+    "node": "plan",
     "status": "completed",
-    "duration_ms": 1446105,
-    "summary": "The `release_project_worker` tool referenced by the project-runner skill isn't exposed by the installed plugin (it only registers `run_project_cmd`), so I can't explicitly release the worker; the disposable worker is managed by the runner i\u2026",
+    "duration_ms": 413284,
+    "summary": "All three verification commands are runnable against the repo (the focused run reproduces the current `status=timeout` red on a clean tree, confirming the plan targets the right scenario). Artifacts written:\n\n- /workspace/poke-defense-godot\u2026",
     "error": null
   },
   {
     "sequence": 2,
-    "timestamp": "2026-08-25T15:53:10.980Z",
-    "node": "check",
-    "status": "completed",
-    "duration_ms": 4788378,
-    "summary": "Release isn't exposed through this tool schema, so worker lifecycle release is left to the leader.\n\nRevision-check-1 complete. Artifacts written:\n- /workspace/git-workspaces/godot-td/issue-traps-grave-robber/.gen/check.md\n- /workspace/git-w\u2026",
-    "error": null
-  },
-  {
-    "sequence": 3,
-    "timestamp": "2026-08-25T15:54:02.007Z",
-    "node": "team-leader",
-    "status": "completed",
-    "duration_ms": 46398,
-    "summary": "Manual testing gate complete.\n\n- check.md: classification pass \u2014 all 12 criteria verified with fresh headless harness evidence (exact gold deltas, config values, debug log assertions).\n- Decision: `manual_testing: none`. This is a pure econ\u2026",
-    "error": null
+    "timestamp": "2026-08-25T16:08:19.962Z",
+    "node": "code",
+    "status": "failed",
+    "duration_ms": 5411408,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/poke-defense-godot.\\\\nThe durable evidence directory is /workspace/poke-defense-godot\u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/poke-defense-godot.\\\\nThe durable evidence directory is /workspace/poke-defense-godot\u2026"
   }
 ]
