@@ -1,36 +1,22 @@
 {
-  "run_id": "r82-porter-broad-sweep",
-  "feature": "porter-broad-sweep",
+  "run_id": "issue116-game-ready-blocks-map-load-r6",
+  "feature": "game-ready-blocks-map-load",
   "status": "running",
-  "started_at": "2026-08-25T06:39:53.735Z",
+  "started_at": "2026-08-25T06:45:24.094Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r82-porter-broad-sweep/",
-  "heartbeat_at": "2026-08-25T06:46:39.685Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-25T06:46:39.685Z",
-  "process_id": 587393,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r6/",
+  "heartbeat_at": "2026-08-25T06:59:51.859Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-25T06:59:51.859Z",
+  "process_id": 589503,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T06:46:44.638083+00:00",
-    "last_success_at": "2026-08-25T06:46:44.637274+00:00",
+    "last_attempt_at": "2026-08-25T06:59:51.861958+00:00",
+    "last_success_at": "2026-08-25T06:45:34.176958+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 39078,
-        "output_tokens": 5067
-      }
-    ]
-  }
+  "metrics": {}
 }
