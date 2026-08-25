@@ -1,21 +1,21 @@
 {
   "run_id": "issue-suite-red-cleanup-r1",
   "feature": "fix suite red scenarios",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-25T14:29:31.522Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-25T16:08:25.640Z",
+  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/poke-defense-godot.\\nThe durable evidence directory is /workspace/poke-defense-godot/.g\u2026",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-suite-red-cleanup-r1/",
-  "heartbeat_at": "2026-08-25T16:08:19.962Z",
+  "heartbeat_at": "2026-08-25T16:08:25.640Z",
   "last_node": "code",
   "active_node": null,
   "last_event_at": "2026-08-25T16:08:19.962Z",
   "process_id": 675670,
   "host": "f1a4230ec90b",
-  "phase": "plan",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T16:08:19.967708+00:00",
-    "last_success_at": "2026-08-25T14:38:13.604639+00:00",
+    "last_attempt_at": "2026-08-25T16:08:25.640554+00:00",
+    "last_success_at": "2026-08-25T16:08:25.639501+00:00",
     "last_error": null
   },
   "metrics": {
