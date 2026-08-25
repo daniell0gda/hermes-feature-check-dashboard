@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-suite-red-cleanup-r1/",
-  "heartbeat_at": "2026-08-25T18:08:05.435Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-25T18:08:05.435Z",
+  "heartbeat_at": "2026-08-25T18:15:47.817Z",
+  "last_node": "check",
+  "active_node": null,
+  "last_event_at": "2026-08-25T18:15:47.817Z",
   "process_id": 760918,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T18:08:11.272827+00:00",
-    "last_success_at": "2026-08-25T18:08:11.271808+00:00",
+    "last_attempt_at": "2026-08-25T18:15:47.818448+00:00",
+    "last_success_at": "2026-08-25T18:08:16.993305+00:00",
     "last_error": null
   },
   "metrics": {
