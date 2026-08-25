@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
   "heartbeat_at": "2026-08-25T17:30:11.446Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "team-leader",
   "last_event_at": "2026-08-25T17:30:11.446Z",
   "process_id": 714601,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T17:30:11.447913+00:00",
-    "last_success_at": "2026-08-25T17:17:16.089163+00:00",
+    "last_attempt_at": "2026-08-25T17:30:16.328715+00:00",
+    "last_success_at": "2026-08-25T17:30:16.327788+00:00",
     "last_error": null
   },
   "metrics": {
@@ -52,6 +52,17 @@
         "cost_status": "unknown",
         "input_tokens": 134103,
         "output_tokens": 6434
+      },
+      {
+        "task_id": "revision-check-2",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 98596,
+        "output_tokens": 6893
       }
     ]
   }
