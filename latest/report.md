@@ -1,127 +1,115 @@
 # Team-leader report
 
 - **Result:** failed
-- **Classification:** blocked
-- **Feature:** underground-carve-topdown-camera-rotation
-- **Run:** issue130-underground-carve-topdown-camera-rotation
+- **Classification:** fixable
+- **Feature:** porter-broad-sweep
+- **Run:** r82-porter-broad-sweep
 - **Lifecycle:** dashboard publish only; project commit/push/close not implied
 
 ## Status
 
 ## ✅ Done
-- (none — all criteria moved to Pending)
+- A porter perk definition named `porter_broad_sweep` labeled "Broad Sweep" of type Common exists with exactly three levels L1/L2/L3 and follows the existing porter perk registration pattern in `porter_tower.json`.
+- The `porter_broad_sweep` definition declares `"needs": ["porter_mass_transit"]`.
+- While `porter_mass_transit` is not owned, `porter_broad_sweep` is not eligible (`is_eligible` false) and does not appear in the chest reward draw pool for a Porter-coverage loadout.
+- Once `porter_mass_transit` is owned, `porter_broad_sweep` becomes eligible and appears in the chest reward draw pool for a Porter-coverage loadout, and applying it succeeds at each of L1, L2, and L3.
+- With only `porter_mass_transit` owned (no Broad Sweep), Mass Transit's sweep radius equals its base value.
+- Applying `porter_broad_sweep` at L1/L2/L3 multiplies Mass Transit's live sweep radius by 1.5/1.8/2.0 respectively, measured relative to the base sweep radius with no other modifiers active.
+- Applying `porter_broad_sweep` at any level does not change Porter's normal targeting range (the range reported by the progression range accessor is unchanged from its pre-application value).
+- Resetting progression clears any Broad Sweep level and returns the Mass Transit sweep radius to its base value.
+- Debug-build `[PORTER_BROAD_SWEEP]` log line per perk-level application event, including the applied level and the resulting sweep-radius multiplier.
 
 ## ⬜ Pending
-- When carve mode is activated while on the underground layer, the active camera's rotation becomes a top-down bird's-eye view (camera forward pointing straight down at the underground board) without changing the camera's position or zoom.
-- Activating carve mode changes only the camera's rotation: the camera's position and its distance/zoom relative to the view target are exactly what they were immediately before activation.
-- Canceling carve mode (ESC, right-click cancel path, or any existing cancel route that ends carve mode) restores the camera rotation that was active immediately before carve mode was entered, when the player did not rotate the camera manually during carving.
-- If the player manually rotated the camera while carve mode was active, canceling carve mode leaves the camera at the player's current angle instead of restoring the pre-carve angle.
-- While carve mode is active on the underground layer, the player's normal camera rotation input (right-mouse drag or shift+left drag) still rotates the camera.
-- Entering dig-hole, place-exit, place-block, or tower-selection modes does not rotate the camera to the top-down angle; only carve mode triggers the rotation.
-- Debug-build `[CARVE_CAMERA]` log line per rotation event: one when the top-down angle is applied (with the pre-carve angles captured) and one when a cancel restores or deliberately skips restoring them (with which of the two happened).
-- A harness value source exposes the active camera's rotation basis (and position/zoom-equivalent) so scenarios can compare camera orientation before, during, and after carve mode.
-- The focused scenario asserts, under the harness: top-down orientation after entering carve mode on the underground layer, unchanged position/zoom across the transition, exact restoration after plain cancel, and retained player angle after a scripted manual rotation followed by cancel.
 
 ## ❌ Impossible
-- (none)
 
 ## Check
 
-# Check report — underground-carve-topdown-camera-rotation (iteration 1)
+# Check report: porter-broad-sweep (issue #82)
 
-classification: blocked
+classification: fixable
 
 ## Verdict
 
-Blocked by runner infrastructure, not by the project alone. `run_project_cmd` was
-used (never the host shell) for every attempted verification command, and every
-invocation failed at container start:
+All 9 acceptance criteria verified Done against fresh runner execution. Focused
+harness passes cleanly with log-level evidence for every criterion. Editor/typecheck
+gate passes (exit 0; only pre-existing HudTheme/UI.tres invalid-UID warnings).
+Full suite could NOT be completed end-to-end inside the runner's 420s tool window:
+a quarter-shard (`python3 tests/run_all_shard.py 0 4`, 45 scenarios) was killed with
+exit 137 (OOM) partway; 3 of the 15 completed scenarios FAIL consistently even when
+re-run individually — but all three were proven PRE-EXISTING by stashing the entire
+feature diff and reproducing identical timeouts/failures on the baseline.
+Classification is fixable only because the full-suite gate remains red for reasons
+outside this feature's diff; the feature work itself needs no revision.
 
-- `{"project":"godot-td","workspace":"godot-td/issue-underground-carve-topdown-camera-rotation","cmd":["git","status","--short"]}` → HTTP 422, exit 126:
-  `OCI runtime exec failed: exec failed: unable to start container process: chdir to cwd ("/workspaces/godot-td/issue-underground-carve-topdown-camera-rotation") set in config.json failed: no such file or directory`
-- `godot --version` @ `godot-td/issue-130` → same 422 chdir failure.
-- `git status --short` @ `poke-defense-godot/check` → same 422 chdir failure.
-- Host: `/workspaces` does not exist; `docker ps` → `Cannot connect to the Docker daemon at unix:///var/run/docker.sock`.
+## Verification commands (all via run_project_cmd, project=poke-defense-godot,
+workspace=poke-defense-godot/issue-porter-broad-sweep)
 
-The runner's pre-provisioned workspace directory is missing and Hermes has no
-Docker socket access to create it; the project-runner skill prohibits
-bootstrapping the workspace through the host shell. Therefore the typecheck/build
-gate and the full test gate could not be executed and are treated as failed.
+- `git status --short` — exit 0 (probe)
+- `godot --headless --path . --editor --quit-after 300` — exit 0, ~13s, parse/import clean
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/porter_broad_sweep.json`
+  — exit 0, `[Harness] status=pass`; result `.gen/harness/porter_broad_sweep/result.json`;
+  rerun again after stash-pop to confirm restoration — still pass
+- `python3 tests/run_all_shard.py 0 1 cannon_bunker_buster` — FAIL (timeout, individually reproducible)
+- `python3 tests/run_all_shard.py 0 1 cave_discovery_pending_placement` — PASS
+- `python3 tests/run_all_shard.py 0 1 fire_flashover_spread` — FAIL (timeout)
+- `python3 tests/run_all_shard.py 0 1 fire_wildfire_spread_runtime` — FAIL (timeout)
+- `python3 tests/run_all_shard.py 0 4` — exit 137 (killed/OOM) after 15 results;
+  FAILs: cannon_bunker_buster, cave_discovery_pending_placement (passes alone),
+  fire_flashover_spread, fire_wildfire_spread_runtime
+- Baseline (feature stashed): direct harness runs of cannon_bunker_buster /
+  fire_flashover_spread / fire_wildfire_spread_runtime — identical timeout failures
+  → pre-existing, not regressions
 
-## Gate results
+## Acceptance criteria evidence (all Done)
 
-| Gate | Command | Result |
-|---|---|---|
-| Typecheck/build | `["godot","--headless","--editor","--path",".","--quit-after","3"]` | NOT RUN — runner 422 chdir failure (infra) |
-| Focused test | `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/carve_camera_topdown.json"]` | NOT RUN this session — runner 422 chdir failure (infra) |
-| Full test loop | plan.md full-test command | NOT RUN — runner 422 chdir failure (infra) |
+1. Perk definition exists, Common, 3 levels L1/L2/L3, porter pattern —
+   `scripts/progression/porter_tower.json` diff; harness asserts
+   `progression.porter_broad_sweep.type == Common`.
+2. `"needs": ["porter_mass_transit"]` — present in JSON; enforced by generic
+   ProgressionManager eligibility/draw gating (no manager-side change needed).
+3. Ineligible & absent from chest pool before Mass Transit owned — harness
+   wait_for_condition is_eligible==false, draw !contains; log shows pool 35 without it
+   and `skip incompatible chest reward: porter_mass_transit`.
+4. After Mass Transit owned: eligible, in pool, applies at L1/L2/L3 — pool 35→36→35,
+   `[PORTER_MASS_TRANSIT] owned`, apply calls return success, levels reach 1/2/3.
+5. Base sweep radius with Mass Transit only — multiplier asserted == 1.0 pre-application.
+6. Multipliers ×1.5 / ×1.8 / ×2.0 — `get_porter_sweep_radius_multiplier()` asserted
+   1.5/1.8/2.0 after each level; absolute-ratio design makes replay idempotent.
+7. Targeting range unchanged — `get_porter_range(6.5) == 6.5` asserted after every
+   application; `_range_multiplier` untouched by `_apply_broad_sweep`.
+8. Reset clears Broad Sweep and returns multiplier to base — `reset_for_new_game`,
+   then level==0 and multiplier==1.0 asserted.
+9. Debug-build `[PORTER_BROAD_SWEEP]` log per application with level and multiplier —
+   stdout captured live: `[PORTER_BROAD_SWEEP] apply L1 sweep_radius_multiplier=x1.50`,
+   `L2 x1.80`, `L3 x2.00`.
 
-## Evidence from the implementor's own stored run
+## Changed-file quality findings
 
-`.gen/harness/carve_camera_topdown/result.json` (written 2026-08-22T12:18:12,
-before the runner broke) records `"status": "fail"`:
+- Diff is surgical (4 modified files + 1 new scenario); follows existing
+  porter_wide_gate/mass_transit patterns; no casts-as-strings, no speculative code.
+- New scenario asserts inline with deterministic draw counts (100 > pool size); no
+  overlap found with any existing scenario covering porter perks.
+- Minor style observation (advisory, not a violation): `PorterTower.gd`
+  `_mass_transit_sweep_radius()` reaches ProgressionManager via
+  `tree.get_root().get_node_or_null("ProgressionManager")` while `_mass_transit_owned()`
+  nearby uses a different lookup path — consistent enough with file-local conventions.
 
-- 6 timeline actions failed with `ui has no method '_on_dig_hole'`,
-  `_clear_dig_mode`, `_on_carve` (×2), `clear_carve_mode` (×2).
-- Expectation `dig_hole_camera_top_down` FAILED (actual true, expected false —
-  the dig-hole probe was taken without dig mode ever being entered, so the check
-  is both failing and vacuous).
-- The three `carve_camera_*` expectations "passed" only vacuously: every probe
-  captured the identical untouched camera basis because carve mode was never
-  actually entered. They assert nothing about the feature.
-- All three `[CARVE_CAMERA]` log regex expectations failed (`actual: ""`).
+## Blockers / limitations
 
-## Source inspection of the diff (`git diff HEAD`, 6 files, +184)
+- Full 179-scenario shard cannot finish inside the 420s runner tool window; quarter
+  shards OOM (exit 137). Full-suite green therefore remains unproven end-to-end;
+  remaining ~130 scenarios unverified this iteration (infrastructure limitation,
+  not a feature defect). Pre-existing failures needing separate fixes:
+  cannon_bunker_buster, fire_flashover_spread, fire_wildfire_spread_runtime.
 
-- `scripts/ui/UI.gd`: `carving_active` setter now calls
-  `game.on_carve_camera_mode(armed)` — **no such method exists anywhere**
-  (`grep -rn on_carve_camera_mode scripts/` matches only the call site). At
-  runtime this is guarded by `has_method`, so it silently does nothing.
-- `scripts/game/Game.gd`: contains NO carve-camera logic and NO `[CARVE_CAMERA]`
-  logging. The only addition is `debug_look_down_underground()` (orthogonal
-  camera teleport for screenshots) which implements none of the acceptance
-  criteria and looks like manual-test scaffolding, possibly scope creep.
-- No code anywhere rotates the camera to top-down on carve arm, restores it on
-  cancel, or tracks manual rotation during carve.
-- `scripts/testing/HarnessValues.gd` / `HarnessActions.gd` / `AgentHarness.gd`:
-  camera_probe / rotate_camera / camera value source are implemented and look
-  reasonable, but they test a feature that does not exist.
-- `tests/scenarios/carve_camera_topdown.json` references four UI methods that do
-  not exist (`_on_dig_hole`, `_clear_dig_mode`, `_on_carve`, `clear_carve_mode`);
-  grep finds none of them in `scripts/ui/UI.gd`.
+## Unverified items
 
-## Acceptance criteria status (all unmet)
+- ~130 of 179 full-suite scenarios not executed in this iteration due to runner
+  time/memory limits; no porter-related scenario among them is expected to regress
+  (porter_broad_sweep, porter_wide_gate_progression, progression_pick, porter paths
+  all pass or unaffected).
 
-Every criterion below is Pending: the implementing logic is absent from the diff
-and/or its scenario actions fail against real UI methods.
-
-1. Carve on underground rotates camera top-down, position/zoom unchanged — Pending (no implementation; during_carve probe identical to before).
-2. Only rotation changes across arm — Pending (vacuous pass only).
-3. Plain cancel restores pre-carve rotation — Pending (no implementation).
-4. Manual rotation during carve survives cancel — Pending (no implementation).
-5. Camera rotation input still works while carving — Pending (untested; rotate_camera action ran outside carve mode).
-6. Dig-hole/place-exit/place-block/tower-selection do not trigger rotation — Pending (scenario calls nonexistent UI methods; expectation fails).
-7. `[CARVE_CAMERA]` debug log lines — Pending (absent from source; log assertions fail).
-8. Harness value source exposes camera orientation/placement — implemented (camera source + probes present in HarnessValues/HarnessActions) but unverifiable this session; kept Pending pending a runnable gate.
-9. Focused scenario asserts top-down / position-unchanged / restore / kept-player-angle — Pending (scenario currently fails: 4 bad action targets, 3 failed log checks, 1 failed expectation).
-
-## Manual testing
-
-Required by plan (`manual_testing: required`) and request notes. No windowed
-screenshot evidence found under `.gen/harness/carve_camera_topdown`
-(`"screenshots": []`). Not performed.
-
-## Blockers
-
-1. Runner infrastructure unavailable: `run_project_cmd` 422 chdir failures for
-   every workspace slug; `/workspaces` missing; Docker socket unreachable from
-   Hermes. Re-provision the runner workspace (host/root side) and re-run check.
-2. Implementation incomplete: `Game.on_carve_camera_mode` and all
-   `[CARVE_CAMERA]` logging missing; scenario targets four nonexistent UI
-   methods. Coder must implement cluster 1 and fix the scenario action names.
-
-## Quality notes
-
-See `.gen/quality-notes.md` (appended: silent no-op notification pattern;
-vacuous harness passes masking a missing feature; suspected scope creep in
-`debug_look_down_underground`). Advisory only.
+manual_testing: optional (per plan) — perk card appears in picker UI; no visual capture
+taken this iteration; sweep radius itself is invisible and teleport feedback is covered
+by Mass Transit.

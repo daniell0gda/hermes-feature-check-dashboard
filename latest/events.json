@@ -1,20 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-25T18:08:05.435Z",
+    "timestamp": "2026-08-25T18:33:53.482Z",
     "node": "code",
-    "status": "completed",
-    "duration_ms": 1577405,
-    "summary": "Work done. Summary:\n\n## What I did\nSpent this cycle on evidence-gathering across all 32 plan scenarios (fresh focused rerun of `cannon_bunker_buster` plus a full audit of every `.gen/harness/<name>/result.json`). No product code was changed\u2026",
-    "error": null
-  },
-  {
-    "sequence": 2,
-    "timestamp": "2026-08-25T18:15:47.817Z",
-    "node": "check",
-    "status": "completed",
-    "duration_ms": 456545,
-    "summary": "Check complete. Artifacts written:\n\n- /workspace/poke-defense-godot/.gen/check.md\n- /workspace/poke-defense-godot/.gen/status.md\n\nVerified done: 3. Pending: 25 \u2014 0 due to build/test failures, 22 due to missing evidence (scenarios still red/\u2026",
-    "error": null
+    "status": "failed",
+    "duration_ms": 5410918,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep.\\\\nThe durable evidence di\u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep.\\\\nThe durable evidence di\u2026"
   }
 ]

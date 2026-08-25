@@ -1,51 +1,42 @@
-# Request: Fix the 25 genuinely failing harness scenarios (pre-existing reds)
+# Request: porter-broad-sweep (issue #82)
 
-## Goal
-Bring the full AgentHarness suite green. Fresh one-at-a-time rerun (420s timeout each) of the
-previously-red set shows 25 scenarios still failing. All fail on a clean tree too (verified for
-hud_controls_state via git stash) — pre-existing regressions, NOT caused by the cave-scenario
-determinism fix already pushed (d223fb4). The cave/carve/underground suites are all green now.
+Project: poke-defense-godot
+Git workspace: /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep
+Branch: issue/porter-broad-sweep
+Request ID: r82-porter-broad-sweep
 
-## Failing scenarios (fresh evidence in .gen/harness/<name>/result.json)
-Timeouts (condition never becomes true):
-- cannon_bunker_buster — waits stats.damage_by_type.cannon > 0.0, stays 0
-- cannon_bunker_buster_progression, cannon_heavier_shells_blast
-- curse_overheat_cycle — balista damage never lands
-- fire_flashover_spread, fire_oil_slick (Mushnub_boss.materials_clean never goes false),
-  fire_oil_slick_progression, fire_wildfire_spread_progression/runtime/visual
-- floodgate_cryobrine_progression
-- hud_controls_state — after `call ui _on_carve`, `ui_call.get_armed_mode_buttons` never == "carve"
-- issue_35_timed_hazards_map_change, issue_86_victory_underground_clear
-- porter_boss_runner, scifi_capacitor_bank, scifi_overclock / scifi_overclock_progression
-  (progression value 1.5 vs expected 1.4), scifi_piercing_beam_progression,
-  static_breach_isolation, tower_targeting_armor_priority, water_deep_soak_progression
-Hard fails:
-- cave_discovery_long_carve — carved_tiles 961 < expected >= 1000 (just misses threshold;
-  check whether map/grid sizing change reduced carveable area, or expectation needs adjusting
-  with justification — do not silently weaken)
-- ice_burn_material_restore_stuck
-- progression_chest_pool, progression_pick
-- projectiles_10x_ballistic, projectiles_10x_beam_cone, projectiles_2x_roster,
-  projectiles_5x_roster — damage/score expectations miss huge thresholds
-- smoke_tower_roster, underground_diversion_baseline
+## Feature
 
-## Approach guidance
-1. Group by suspected root cause first (progression values off-by-tuning: scifi 1.5 vs 1.4;
-   cannon damage path dead; fire spread/burn material; UI armed-mode call path; projectile
-   damage thresholds). Fix game bugs in code where behavior is wrong; adjust scenario
-   expectations ONLY where the scenario encodes a stale tuning assumption, with notes[] justifying.
-2. Work on branch `fix/cave-scenario-determinism` is NOT this scope — cut a fresh branch from
-   current origin/master in a worktree for this cleanup.
-3. Do not touch the main checkout's uncommitted WIP (map_difficulty.csv, HarnessValues.gd,
-   carve_camera_drag_spin.json are dirty there).
+Add a new Common perk `porter_broad_sweep` ("Broad Sweep"), levels L1–3, that requires
+the `porter_mass_transit` perk ("Mass Transit", Unique porter mode) and increases Mass
+Transit's sweep radius by +50% / +80% / +100% at levels 1/2/3.
 
-## Verification per fixed group
-- Each fixed scenario fresh: godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json → status pass, exit 0
-- Re-run its neighboring scenarios in the same feature family to catch collateral changes.
-- No new parse/script errors in runner stdout/stderr.
+Key constraint: this scales ONLY the sweep radius introduced with porter-mass-transit —
+not Porter's normal targeting `range`. Pure stat modifier; no new visuals required.
 
-## Runner notes
-- Host-side Godot: PATH=/opt/data/profiles/code/home/bin:$PATH godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json
-- Results: .gen/harness/<scenario>/result.json ; logs .gen/harness/_logs/
+Issue URL: https://github.com/daniell0gda/poke-defense-godot/issues/82
 
-manual_testing: none
+## Acceptance criteria (from "Done when")
+
+1. New Common perk `porter_broad_sweep` exists with 3 levels (L1/L2/L3).
+2. Its `needs` list contains `["porter_mass_transit"]`.
+3. At L1/L2/L3 it multiplies Mass Transit's sweep radius by +50%/+80%/+100%
+   (i.e. ×1.5 / ×1.8 / ×2.0 of the base sweep radius).
+4. It does NOT change Porter's normal targeting range.
+5. Follows existing perk registration patterns (see how porter_mass_transit and other
+   follow-on perks like siege-breaker/static-breach are defined and offered).
+
+## Runner notes (redo notes for workers)
+
+- Use the project runner via `run_project_cmd`: project key `godot-td`,
+  workspace `poke-defense-godot/issue-porter-broad-sweep`. Do NOT invent workspace names.
+- Godot editor gate: `godot --headless --path . --editor --quit-after 300`
+- Harness commands must pass the scene argument explicitly before user args.
+
+## Manual testing
+
+Manual testing: required if any player-facing surface changes (perk picker card,
+perk description text). The sweep radius itself is invisible; teleport feedback is
+already covered by Mass Transit. If only data/stat plumbing changed with no visible
+UI beyond the existing perk picker listing, planner may set `manual_testing: none`
+— but if the perk card appears in the picker UI, capture it.

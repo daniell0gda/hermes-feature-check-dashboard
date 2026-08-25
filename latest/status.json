@@ -1,47 +1,22 @@
 {
-  "run_id": "issue-suite-red-cleanup-r1",
-  "feature": "fix suite red scenarios",
+  "run_id": "r82-porter-broad-sweep",
+  "feature": "porter broad sweep follow-on perk",
   "status": "running",
-  "started_at": "2026-08-25T17:41:42.273Z",
+  "started_at": "2026-08-25T17:03:37.175Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-suite-red-cleanup-r1/",
-  "heartbeat_at": "2026-08-25T18:15:47.817Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-25T18:15:47.817Z",
-  "process_id": 760918,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r82-porter-broad-sweep/",
+  "heartbeat_at": "2026-08-25T18:33:53.482Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-25T18:33:53.482Z",
+  "process_id": 746665,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T18:15:53.150148+00:00",
-    "last_success_at": "2026-08-25T18:15:53.148625+00:00",
+    "last_attempt_at": "2026-08-25T18:33:53.485970+00:00",
+    "last_success_at": "2026-08-25T17:03:47.150751+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 154725,
-        "output_tokens": 25868
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 115007,
-        "output_tokens": 6622
-      }
-    ]
-  }
+  "metrics": {}
 }
