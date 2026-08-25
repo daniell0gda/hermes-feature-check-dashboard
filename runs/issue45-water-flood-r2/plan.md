@@ -2,37 +2,44 @@
 
 ## Verification
 
+All project commands run through the approved runner (`run_project_cmd`, project `godot-td`,
+workspace `godot-td/issue-water-conductive-flood-wet-splash`), from the repository root.
+
 - Focused test: `["python3", "tests/run_all_shard.py", "0", "1", "water_conductive_flood"]`
 - Full test: `["python3", "tests/run_all_shard.py", "0", "1"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--import", "--quit-after", "5"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
 ## Clusters
 
-1. water-flood-perk-definition — files: `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd` — depends on: none
-- The perk definition `water_conductive_flood` exists in the Water tower progression data as a Unique and is reported eligible by progression lookup like other Water Uniques.
-- Applying the perk through progression raises its level to 1 and exposes its small-radius configuration (radius value greater than zero) via the Water progression manager's accessor surface.
-2. water-flood-splash-aoe — files: `scripts/game/actors/Projectile.gd`, `scripts/game/actors/effects/EffectsManager.gd` — depends on: 1
-- With `water_conductive_flood` applied, a Water projectile hit applies Wet to every alive enemy within the perk's configured radius of the hit target; a scenario proves at least two enemies Wet from one hit, not only the direct target.
-- Without the perk, a Water projectile hit applies Wet only to the direct target; nearby enemies within the would-be radius stay non-Wet (regression guard on existing behavior).
-- Enemies outside the configured radius are not made Wet by the hit even when the perk is applied.
-- On a Water hit with the perk applied, the spawned splash effect visually extends at least to the perk's configured radius so the covered area matches the Wet area (same small-radius visual approach the Ice cone uses).
-- Wet applied by the flood perk renders per-enemy through the existing EnemyHealthBar status icon for each affected enemy, with no new asset required.
-- Debug-build [WATER-FLOOD] log line per multi-enemy Wet application event, naming the hit target and the count of enemies Wetted in the radius.
+1. flood-perk-data-manager — files: `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd`, `autoload/ProgressionManager.gd` — depends on: none
+- The Water tower progression data defines a Unique perk entry with id `water_conductive_flood`, obtainable through the same eligibility and application path as other Water Uniques (`water_deep_soak`, `water_pressure`).
+- With no perks applied, the exposed water flood config reports disabled with a zero or non-positive radius; applying `water_conductive_flood` raises its progression level to 1 and the exposed config reports enabled with a small positive radius.
+- Applying `water_conductive_flood` again does not stack beyond its defined single level, and resetting for a new game returns the config to disabled with no radius.
+2. projectile-flood-wet-splash — files: `scripts/game/actors/Projectile.gd`, `scripts/game/actors/effects/EffectsManager.gd` — depends on: 1
+- With `water_conductive_flood` enabled, a Water projectile hit applies Wet to every enemy within the perk's small radius of the hit target, not only the direct target (at least two enemies Wet from one hit).
+- With `water_conductive_flood` enabled, an enemy outside the perk's small radius of the hit target is not Wetted by that hit.
+- Without `water_conductive_flood`, a Water projectile hit applies Wet only to the direct target and leaves nearby enemies un-Wetted (unchanged pre-perk behavior).
+- When `water_conductive_flood` is enabled, the hit's existing splash effect visually covers at least the perk's small radius on impact, using the same small-radius splash visual approach the Ice tower cone effects use; the effect reads clearly at normal game speed.
+- Wet applied by the flood renders per-enemy through the existing EnemyHealthBar status icons, so each affected enemy visibly shows its Wet status without any new asset.
+- Debug-build `[WATER-FLOOD]` log lines exist for both key events: perk application recording the configured radius, and a flood hit recording the hit target, the number of enemies Wetted, and the radius used.
+3. harness-scenarios — files: `tests/scenarios/water_conductive_flood_progression.json`, `tests/scenarios/water_conductive_flood_aoe.json`, `scripts/testing/HarnessActions.gd`, `scripts/testing/HarnessValues.gd` — depends on: 1, 2
+- The focused progression scenario passes headlessly, proving the perk's data-side contract: default-disabled config, level 0 before application, level 1 after, and a positive exposed radius.
+- The focused runtime A/B scenario passes headlessly, proving via the production projectile hit path that the perk arm Wets multiple in-radius enemies while the control arm Wets only the direct target and excludes an out-of-radius enemy.
+- The `[WATER-FLOOD]` hit log line is observable in the scenario's engine output log, matching the debug-build marker asserted by the runtime scenario.
 
 ## Criteria
 
-- The perk definition `water_conductive_flood` exists in the Water tower progression data as a Unique and is reported eligible by progression lookup like other Water Uniques.
-- Applying the perk through progression raises its level to 1 and exposes its small-radius configuration (radius value greater than zero) via the Water progression manager's accessor surface.
-- With `water_conductive_flood` applied, a Water projectile hit applies Wet to every alive enemy within the perk's configured radius of the hit target; a scenario proves at least two enemies Wet from one hit, not only the direct target.
-- Without the perk, a Water projectile hit applies Wet only to the direct target; nearby enemies within the would-be radius stay non-Wet (regression guard on existing behavior).
-- Enemies outside the configured radius are not made Wet by the hit even when the perk is applied.
-- On a Water hit with the perk applied, the spawned splash effect visually extends at least to the perk's configured radius so the covered area matches the Wet area (same small-radius visual approach the Ice cone uses).
-- Wet applied by the flood perk renders per-enemy through the existing EnemyHealthBar status icon for each affected enemy, with no new asset required.
-- Debug-build [WATER-FLOOD] log line per multi-enemy Wet application event, naming the hit target and the count of enemies Wetted in the radius.
+- The Water tower progression data defines a Unique perk entry with id `water_conductive_flood`, obtainable through the same eligibility and application path as other Water Uniques (`water_deep_soak`, `water_pressure`).
+- With no perks applied, the exposed water flood config reports disabled with a zero or non-positive radius; applying `water_conductive_flood` raises its progression level to 1 and the exposed config reports enabled with a small positive radius.
+- Applying `water_conductive_flood` again does not stack beyond its defined single level, and resetting for a new game returns the config to disabled with no radius.
+- With `water_conductive_flood` enabled, a Water projectile hit applies Wet to every enemy within the perk's small radius of the hit target, not only the direct target (at least two enemies Wet from one hit).
+- With `water_conductive_flood` enabled, an enemy outside the perk's small radius of the hit target is not Wetted by that hit.
+- Without `water_conductive_flood`, a Water projectile hit applies Wet only to the direct target and leaves nearby enemies un-Wetted (unchanged pre-perk behavior).
+- When `water_conductive_flood` is enabled, the hit's existing splash effect visually covers at least the perk's small radius on impact, using the same small-radius splash visual approach the Ice tower cone effects use; the effect reads clearly at normal game speed.
+- Wet applied by the flood renders per-enemy through the existing EnemyHealthBar status icons, so each affected enemy visibly shows its Wet status without any new asset.
+- Debug-build `[WATER-FLOOD]` log lines exist for both key events: perk application recording the configured radius, and a flood hit recording the hit target, the number of enemies Wetted, and the radius used.
+- The focused progression scenario passes headlessly, proving the perk's data-side contract: default-disabled config, level 0 before application, level 1 after, and a positive exposed radius.
+- The focused runtime A/B scenario passes headlessly, proving via the production projectile hit path that the perk arm Wets multiple in-radius enemies while the control arm Wets only the direct target and excludes an out-of-radius enemy.
+- The `[WATER-FLOOD]` hit log line is observable in the scenario's engine output log, matching the debug-build marker asserted by the runtime scenario.
 
 manual_testing: required
-
-## Notes
-
-- Focused command assumes new scenario files named with substring `water_conductive_flood` under `tests/scenarios/` (e.g. an AoE-application scenario and a no-perk regression scenario); if the implementor names them differently, adjust the filter substring accordingly.
-- Windowed screenshot evidence of the splash radius covering nearby enemies is captured by manual testing per `.gen/ui_scenario.md`; headless cannot capture pixels.
