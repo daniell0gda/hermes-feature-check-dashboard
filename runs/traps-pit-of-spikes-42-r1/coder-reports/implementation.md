@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation
+# Coder report: implementation
 
 ## Changed files
 - `scripts/progression/trap.json` — new `traps_pit_of_spikes` Unique perk (maxLevels 1, value 0.4)
@@ -31,4 +31,3 @@
 - The real bug found this iteration was test-infrastructure: `materialize_engine_out_log` treated "destination contains activation marker" as done, so the first mid-timeline `log` resolution wrote an early slice and every later `log` condition read that stale text. Now always re-slices while `user://logs/godot.log` is readable, falling back to the wrapper-written destination only when Godot's file log is unavailable. This affects any future multi-arm scenario asserting log lines across arms.
 - Gotcha for testers: Godot's file engine log flushes lazily (~1s granularity); the scenario's waits comfortably exceed it, but very tight log assertions right after a print may need one extra frame.
 - Pre-existing noise, unrelated: missing GLB/TGA resources and invalid UID warnings in headless runs appear on master too.
-\n
