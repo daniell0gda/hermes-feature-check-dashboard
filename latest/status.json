@@ -1,47 +1,20 @@
 {
-  "run_id": "r47-2",
-  "feature": "Water Tower Riptide - light Slow alongside Wet",
+  "run_id": "issue-suite-red-cleanup-r1",
+  "feature": "fix suite red scenarios",
   "status": "running",
-  "started_at": "2026-08-25T14:37:21.881Z",
+  "started_at": "2026-08-25T16:10:04.156Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
-  "heartbeat_at": "2026-08-25T16:09:03.133Z",
-  "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-25T16:09:03.133Z",
-  "process_id": 678463,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-suite-red-cleanup-r1/",
+  "heartbeat_at": "2026-08-25T16:10:04.156Z",
+  "last_node": null,
+  "active_node": null,
+  "last_event_at": null,
+  "process_id": 714523,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T16:09:07.849903+00:00",
-    "last_success_at": "2026-08-25T16:09:07.848937+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T16:10:04.156345+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 150900,
-        "output_tokens": 7615
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 115528,
-        "output_tokens": 5004
-      }
-    ]
-  }
+  "metrics": {}
 }
