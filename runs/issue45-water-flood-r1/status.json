@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
-  "heartbeat_at": "2026-08-25T01:37:53.541Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-25T01:37:53.541Z",
+  "heartbeat_at": "2026-08-25T03:08:08.859Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-25T03:08:08.859Z",
   "process_id": 516346,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T01:37:58.053385+00:00",
-    "last_success_at": "2026-08-25T01:37:58.051897+00:00",
+    "last_attempt_at": "2026-08-25T03:08:08.860973+00:00",
+    "last_success_at": "2026-08-25T01:38:02.519392+00:00",
     "last_error": null
   },
   "metrics": {
