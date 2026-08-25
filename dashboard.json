@@ -381,7 +381,7 @@
   },
   {
     "run_id": "issue-suite-red-cleanup-r1",
-    "status": "failed",
+    "status": "running",
     "url": "runs/issue-suite-red-cleanup-r1/"
   },
   {
