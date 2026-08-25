@@ -2,8 +2,8 @@
 
 - **Result:** failed
 - **Classification:** unknown
-- **Feature:** Water Tower Riptide - light Slow alongside Wet
-- **Run:** r47-1
+- **Feature:** traps-grave-robber
+- **Run:** r1-traps-grave-robber
 - **Lifecycle:** dashboard publish only; project commit/push/close not implied
 
 ## Status

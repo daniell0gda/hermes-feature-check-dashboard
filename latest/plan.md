@@ -1,34 +1,46 @@
-# Acceptance Plan: Water Tower: Riptide — light Slow alongside Wet (water_riptide)
-
-manual_testing: required
+# Acceptance Plan: traps_grave_robber economy perk (issue #80)
 
 ## Verification
 
-- Focused test: `["python3", "tests/run_all_shard.py", "0", "1", "water_riptide"]`
-- Full test: `["python3", "tests/run_all_shard.py", "0", "1"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "120"]`
+- Focused test: `run_project_cmd ["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/traps_grave_robber_progression.json"]`
+- Full test: `run_project_cmd ["python3", "tests/run_all_shard.py", "0", "1"]`
+- Typecheck/build: `run_project_cmd ["godot", "--headless", "--path", ".", "--import"]`
+
+manual_testing: optional
+
+Rationale: this is a pure numeric/economy perk (per project CLAUDE.md such perks need no new VFX). All behaviour is assertable headlessly through the harness (money deltas via `_set_money`/`GameState.money`, config via `progression_call`). A manual screenshot is optional proof only (HUD gold counter rising after an underground trap kill) — see `.gen/ui_scenario.md`.
 
 ## Clusters
 
-1. riptide-progression-definition — files: `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd` — depends on: none
-- The new Unique perk `water_riptide` is defined in the Water tower progression file as a single-level Unique compatible with the water tower, and is grantable through the normal progression flow (`apply_progression` raises its level from 0 to 1, and further grants are refused once owned).
-- After `reset_for_new_game`, `water_riptide` is unowned again and has no gameplay effect until re-granted.
-2. riptide-water-hit-slow — files: `scripts/game/actors/Projectile.gd`, `scripts/game/actors/effects/EffectsManager.gd`, `scripts/game/actors/enemy/parts/EnemyStatusController.gd` — depends on: 1
-- With `water_riptide` owned, a Water tower projectile hit on an enemy applies a Slow of 20% magnitude lasting 1.5 seconds, observable as reduced enemy movement speed for that window while the Wet status continues as before.
-- Without `water_riptide` owned, Water hits apply no slow; enemy movement speed and existing Wet behaviour are unchanged from before this feature.
-- While an enemy's slow is owned by another tower instance (e.g. Ice), a Water hit does not overwrite or steal the active slow; when Water itself owns the active slow, subsequent Water hits refresh it to 20% / 1.5s rather than stacking.
-- Debug-build `[RIPTIDE]` log line per water-triggered slow application, naming the enemy id, slow magnitude, duration, and owning tower instance id.
-3. riptide-cue-and-regressions — files: `scripts/game/actors/effects/EffectsManager.gd`, `scripts/game/actors/enemy/parts/EnemyStatusController.gd` — depends on: 2
-- When a Water hit triggers the Riptide slow, the enemy shows the existing Chilled visual cue (IceSlowFX snowflake particles plus ice-tint overlay) driven by the existing status-controller visuals, with no new VFX asset added; the cue clears when the slow expires.
-- The existing shared hit-path scenario (`water_electric_hit_path`) still passes: Water and Electric hits continue to land damage and apply their existing effects alongside the new optional slow.
+1. perk-data-and-economy-manager — files: `scripts/progression/global.json`, `scripts/progression/managers/EconomyProgressionManager.gd` — depends on: none
+- With no perk owned, `ProgressionManager.get_bounty_config()` is unchanged from today's shape and carries no grave-robber bonus.
+- Owning `traps_grave_robber` at L1/L2/L3 exposes a bonus-gold configuration through the existing bounty path (`get_bounty_config()`) equivalent to +10%/+15%/+25% of the enemy's base reward on qualifying kills.
+- Re-applying a level or replaying levels 1..N of `traps_grave_robber` (save/load) sets the bonus to that level's exact percentage rather than compounding or collapsing.
+- Resetting progression (new run / `reset`) clears the grave-robber bonus so no bonus applies afterwards.
+- Debug-build `[EconomyProgression]` log line per grave-robber level change naming the perk name, new level, and resulting bonus percentage.
+
+2. trap-kill-bonus-application — files: `scripts/game/actors/Trap.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — depends on: 1
+- When an enemy dies to a trap-sourced killing blow while underground and `traps_grave_robber` L1 is owned, the gold awarded for that kill equals base reward plus 10% of base reward (exact integer gold delta asserted).
+- At L2 and L3 the same setup awards exactly +15% and +25% of base reward respectively over the base reward.
+- A trap killing blow on an above-ground (surface) enemy awards exactly the base reward — no bonus.
+- An underground enemy killed by a non-trap source (tower/projectile) while the perk is owned awards exactly what the existing bounty rules give — no grave-robber bonus.
+- The bonus rides the existing bounty/economy payout path: with the perk owned, an ordinary qualifying kill's total gold still reflects any concurrently-owned `gold_on_kill`/`curse_blood_money` amounts unchanged (no cross-perk interference either direction).
+- Debug-build `[GRAVE_ROBBER]` log line per qualifying bonus payout naming the enemy id and the bonus gold amount.
+
+3. harness-scenario — files: `tests/scenarios/traps_grave_robber_progression.json` — depends on: 1, 2
+- Focused harness scenario `traps_grave_robber_progression.json` runs headless to `[Harness] status=pass` with exit code 0, asserting inline (wait_for_condition) each of: L1/L2/L3 bonus config values, exact gold delta on underground trap kill, zero delta on surface trap kill, and zero delta on non-trap underground kill.
 
 ## Criteria
 
-- The new Unique perk `water_riptide` is defined in the Water tower progression file as a single-level Unique compatible with the water tower, and is grantable through the normal progression flow (`apply_progression` raises its level from 0 to 1, and further grants are refused once owned).
-- After `reset_for_new_game`, `water_riptide` is unowned again and has no gameplay effect until re-granted.
-- With `water_riptide` owned, a Water tower projectile hit on an enemy applies a Slow of 20% magnitude lasting 1.5 seconds, observable as reduced enemy movement speed for that window while the Wet status continues as before.
-- Without `water_riptide` owned, Water hits apply no slow; enemy movement speed and existing Wet behaviour are unchanged from before this feature.
-- While an enemy's slow is owned by another tower instance (e.g. Ice), a Water hit does not overwrite or steal the active slow; when Water itself owns the active slow, subsequent Water hits refresh it to 20% / 1.5s rather than stacking.
-- Debug-build `[RIPTIDE]` log line per water-triggered slow application, naming the enemy id, slow magnitude, duration, and owning tower instance id.
-- When a Water hit triggers the Riptide slow, the enemy shows the existing Chilled visual cue (IceSlowFX snowflake particles plus ice-tint overlay) driven by the existing status-controller visuals, with no new VFX asset added; the cue clears when the slow expires.
-- The existing shared hit-path scenario (`water_electric_hit_path`) still passes: Water and Electric hits continue to land damage and apply their existing effects alongside the new optional slow.
+- With no perk owned, `ProgressionManager.get_bounty_config()` is unchanged from today's shape and carries no grave-robber bonus.
+- Owning `traps_grave_robber` at L1/L2/L3 exposes a bonus-gold configuration through the existing bounty path (`get_bounty_config()`) equivalent to +10%/+15%/+25% of the enemy's base reward on qualifying kills.
+- Re-applying a level or replaying levels 1..N of `traps_grave_robber` (save/load) sets the bonus to that level's exact percentage rather than compounding or collapsing.
+- Resetting progression (new run / `reset`) clears the grave-robber bonus so no bonus applies afterwards.
+- Debug-build `[EconomyProgression]` log line per grave-robber level change naming the perk name, new level, and resulting bonus percentage.
+- When an enemy dies to a trap-sourced killing blow while underground and `traps_grave_robber` L1 is owned, the gold awarded for that kill equals base reward plus 10% of base reward (exact integer gold delta asserted).
+- At L2 and L3 the same setup awards exactly +15% and +25% of base reward respectively over the base reward.
+- A trap killing blow on an above-ground (surface) enemy awards exactly the base reward — no bonus.
+- An underground enemy killed by a non-trap source (tower/projectile) while the perk is owned awards exactly what the existing bounty rules give — no grave-robber bonus.
+- The bonus rides the existing bounty/economy payout path: with the perk owned, an ordinary qualifying kill's total gold still reflects any concurrently-owned `gold_on_kill`/`curse_blood_money` amounts unchanged (no cross-perk interference either direction).
+- Debug-build `[GRAVE_ROBBER]` log line per qualifying bonus payout naming the enemy id and the bonus gold amount.
+- Focused harness scenario `traps_grave_robber_progression.json` runs headless to `[Harness] status=pass` with exit code 0, asserting inline (wait_for_condition) each of: L1/L2/L3 bonus config values, exact gold delta on underground trap kill, zero delta on surface trap kill, and zero delta on non-trap underground kill.

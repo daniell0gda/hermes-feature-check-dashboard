@@ -1,36 +1,22 @@
 {
-  "run_id": "r47-2",
-  "feature": "water-tower-riptide-light-slow-alongside",
-  "status": "failed",
-  "started_at": "2026-08-25T09:59:41.632Z",
-  "ended_at": "2026-08-25T11:57:59.085Z",
-  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'check', '-z', 'You are the check worker in a team-work run.\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-water-tower-riptide-light-slow-alongside.\\nTh\u2026",
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
-  "heartbeat_at": "2026-08-25T11:57:59.085Z",
-  "last_node": "check",
+  "run_id": "r1-traps-grave-robber",
+  "feature": "traps-grave-robber",
+  "status": "running",
+  "started_at": "2026-08-25T11:00:19.693Z",
+  "ended_at": null,
+  "error": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r1-traps-grave-robber/",
+  "heartbeat_at": "2026-08-25T12:16:51.440Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-25T11:57:54.111Z",
-  "process_id": 633024,
+  "last_event_at": "2026-08-25T12:16:51.440Z",
+  "process_id": 643193,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T11:57:59.085539+00:00",
-    "last_success_at": "2026-08-25T11:57:59.084327+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T12:16:51.441873+00:00",
+    "last_success_at": "2026-08-25T11:00:24.135521+00:00",
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'fetch', '--depth', '1', 'origin', 'gh-pages']' returned non-zero exit status 128."
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 98215,
-        "output_tokens": 7000
-      }
-    ]
-  }
+  "metrics": {}
 }
