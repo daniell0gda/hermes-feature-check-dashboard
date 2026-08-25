@@ -1,34 +1,34 @@
-# Acceptance Plan: Water Tower: Riptide — light Slow alongside Wet (water_riptide)
-
-manual_testing: required
+# Acceptance Plan: porter-broad-sweep
 
 ## Verification
 
-- Focused test: `["python3", "tests/run_all_shard.py", "0", "1", "water_riptide"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/porter_broad_sweep.json"]`
 - Full test: `["python3", "tests/run_all_shard.py", "0", "1"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "120"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "300"]`
 
 ## Clusters
 
-1. riptide-progression-definition — files: `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd` — depends on: none
-- The new Unique perk `water_riptide` is defined in the Water tower progression file as a single-level Unique compatible with the water tower, and is grantable through the normal progression flow (`apply_progression` raises its level from 0 to 1, and further grants are refused once owned).
-- After `reset_for_new_game`, `water_riptide` is unowned again and has no gameplay effect until re-granted.
-2. riptide-water-hit-slow — files: `scripts/game/actors/Projectile.gd`, `scripts/game/actors/effects/EffectsManager.gd`, `scripts/game/actors/enemy/parts/EnemyStatusController.gd` — depends on: 1
-- With `water_riptide` owned, a Water tower projectile hit on an enemy applies a Slow of 20% magnitude lasting 1.5 seconds, observable as reduced enemy movement speed for that window while the Wet status continues as before.
-- Without `water_riptide` owned, Water hits apply no slow; enemy movement speed and existing Wet behaviour are unchanged from before this feature.
-- While an enemy's slow is owned by another tower instance (e.g. Ice), a Water hit does not overwrite or steal the active slow; when Water itself owns the active slow, subsequent Water hits refresh it to 20% / 1.5s rather than stacking.
-- Debug-build `[RIPTIDE]` log line per water-triggered slow application, naming the enemy id, slow magnitude, duration, and owning tower instance id.
-3. riptide-cue-and-regressions — files: `scripts/game/actors/effects/EffectsManager.gd`, `scripts/game/actors/enemy/parts/EnemyStatusController.gd` — depends on: 2
-- When a Water hit triggers the Riptide slow, the enemy shows the existing Chilled visual cue (IceSlowFX snowflake particles plus ice-tint overlay) driven by the existing status-controller visuals, with no new VFX asset added; the cue clears when the slow expires.
-- The existing shared hit-path scenario (`water_electric_hit_path`) still passes: Water and Electric hits continue to land damage and apply their existing effects alongside the new optional slow.
+1. porter-broad-sweep-perk — files: `scripts/progression/porter_tower.json`, `scripts/progression/managers/PorterTowerProgressionManager.gd`, `autoload/ProgressionManager.gd`, `scripts/game/actors/towers/PorterTower.gd`, `tests/scenarios/porter_broad_sweep.json` — depends on: none (prerequisite: the `porter_mass_transit` perk from branch `issue/porter-mass-transit` must be merged into this workspace first)
+- A porter perk definition named `porter_broad_sweep` labeled "Broad Sweep" of type Common exists with exactly three levels L1/L2/L3 and follows the existing porter perk registration pattern in `porter_tower.json`.
+- The `porter_broad_sweep` definition declares `"needs": ["porter_mass_transit"]`.
+- While `porter_mass_transit` is not owned, `porter_broad_sweep` is not eligible (`is_eligible` false) and does not appear in the chest reward draw pool for a Porter-coverage loadout.
+- Once `porter_mass_transit` is owned, `porter_broad_sweep` becomes eligible and appears in the chest reward draw pool for a Porter-coverage loadout, and applying it succeeds at each of L1, L2, and L3.
+- With only `porter_mass_transit` owned (no Broad Sweep), Mass Transit's sweep radius equals its base value.
+- Applying `porter_broad_sweep` at L1/L2/L3 multiplies Mass Transit's live sweep radius by 1.5/1.8/2.0 respectively, measured relative to the base sweep radius with no other modifiers active.
+- Applying `porter_broad_sweep` at any level does not change Porter's normal targeting range (the range reported by the progression range accessor is unchanged from its pre-application value).
+- Resetting progression clears any Broad Sweep level and returns the Mass Transit sweep radius to its base value.
+- Debug-build `[PORTER_BROAD_SWEEP]` log line per perk-level application event, including the applied level and the resulting sweep-radius multiplier.
 
 ## Criteria
 
-- The new Unique perk `water_riptide` is defined in the Water tower progression file as a single-level Unique compatible with the water tower, and is grantable through the normal progression flow (`apply_progression` raises its level from 0 to 1, and further grants are refused once owned).
-- After `reset_for_new_game`, `water_riptide` is unowned again and has no gameplay effect until re-granted.
-- With `water_riptide` owned, a Water tower projectile hit on an enemy applies a Slow of 20% magnitude lasting 1.5 seconds, observable as reduced enemy movement speed for that window while the Wet status continues as before.
-- Without `water_riptide` owned, Water hits apply no slow; enemy movement speed and existing Wet behaviour are unchanged from before this feature.
-- While an enemy's slow is owned by another tower instance (e.g. Ice), a Water hit does not overwrite or steal the active slow; when Water itself owns the active slow, subsequent Water hits refresh it to 20% / 1.5s rather than stacking.
-- Debug-build `[RIPTIDE]` log line per water-triggered slow application, naming the enemy id, slow magnitude, duration, and owning tower instance id.
-- When a Water hit triggers the Riptide slow, the enemy shows the existing Chilled visual cue (IceSlowFX snowflake particles plus ice-tint overlay) driven by the existing status-controller visuals, with no new VFX asset added; the cue clears when the slow expires.
-- The existing shared hit-path scenario (`water_electric_hit_path`) still passes: Water and Electric hits continue to land damage and apply their existing effects alongside the new optional slow.
+- A porter perk definition named `porter_broad_sweep` labeled "Broad Sweep" of type Common exists with exactly three levels L1/L2/L3 and follows the existing porter perk registration pattern in `porter_tower.json`.
+- The `porter_broad_sweep` definition declares `"needs": ["porter_mass_transit"]`.
+- While `porter_mass_transit` is not owned, `porter_broad_sweep` is not eligible (`is_eligible` false) and does not appear in the chest reward draw pool for a Porter-coverage loadout.
+- Once `porter_mass_transit` is owned, `porter_broad_sweep` becomes eligible and appears in the chest reward draw pool for a Porter-coverage loadout, and applying it succeeds at each of L1, L2, and L3.
+- With only `porter_mass_transit` owned (no Broad Sweep), Mass Transit's sweep radius equals its base value.
+- Applying `porter_broad_sweep` at L1/L2/L3 multiplies Mass Transit's live sweep radius by 1.5/1.8/2.0 respectively, measured relative to the base sweep radius with no other modifiers active.
+- Applying `porter_broad_sweep` at any level does not change Porter's normal targeting range (the range reported by the progression range accessor is unchanged from its pre-application value).
+- Resetting progression clears any Broad Sweep level and returns the Mass Transit sweep radius to its base value.
+- Debug-build `[PORTER_BROAD_SWEEP]` log line per perk-level application event, including the applied level and the resulting sweep-radius multiplier.
+
+manual_testing: optional
