@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-25T05:02:18.335Z",
+    "node": "code",
+    "status": "failed",
+    "duration_ms": 5410970,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/git-workspaces/godot-td/issue-traps-grave-robber.\\\\nThe durable evidence directory is\u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/git-workspaces/godot-td/issue-traps-grave-robber.\\\\nThe durable evidence directory is\u2026"
+  }
+]
