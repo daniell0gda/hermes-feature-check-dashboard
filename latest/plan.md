@@ -1,38 +1,45 @@
-# Acceptance Plan: water-conductive-flood-wet-splash
+# Acceptance Plan: porter_mass_transit bulk sweep mode
 
 ## Verification
 
-- Focused test: `["python3", "tests/run_all_shard.py", "0", "1", "water_conductive_flood"]`
+- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/porter_mass_transit.json"]`
 - Full test: `["python3", "tests/run_all_shard.py", "0", "1"]`
-- Typecheck/build: `["godot", "--headless", "--path", ".", "--import", "--quit-after", "5"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--import"]`
 
 ## Clusters
 
-1. water-flood-perk-definition — files: `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd` — depends on: none
-- The perk definition `water_conductive_flood` exists in the Water tower progression data as a Unique and is reported eligible by progression lookup like other Water Uniques.
-- Applying the perk through progression raises its level to 1 and exposes its small-radius configuration (radius value greater than zero) via the Water progression manager's accessor surface.
-2. water-flood-splash-aoe — files: `scripts/game/actors/Projectile.gd`, `scripts/game/actors/effects/EffectsManager.gd` — depends on: 1
-- With `water_conductive_flood` applied, a Water projectile hit applies Wet to every alive enemy within the perk's configured radius of the hit target; a scenario proves at least two enemies Wet from one hit, not only the direct target.
-- Without the perk, a Water projectile hit applies Wet only to the direct target; nearby enemies within the would-be radius stay non-Wet (regression guard on existing behavior).
-- Enemies outside the configured radius are not made Wet by the hit even when the perk is applied.
-- On a Water hit with the perk applied, the spawned splash effect visually extends at least to the perk's configured radius so the covered area matches the Wet area (same small-radius visual approach the Ice cone uses).
-- Wet applied by the flood perk renders per-enemy through the existing EnemyHealthBar status icon for each affected enemy, with no new asset required.
-- Debug-build [WATER-FLOOD] log line per multi-enemy Wet application event, naming the hit target and the count of enemies Wetted in the radius.
+1. perk-definition-and-ownership — files: `scripts/progression/porter_tower.json`, `scripts/progression/managers/PorterTowerProgressionManager.gd`, `autoload/ProgressionManager.gd` — depends on: none
+- The progression catalog defines `porter_mass_transit` as a Unique entry for the porter tower only, with no levels (`maxLevels: 0`) so applying it is an idempotent single toggle.
+- With the perk not owned, the progression API reports it unowned, reports level 0, and marks it chest-eligible once a Porter covers its compatibility requirement.
+- After one `apply_progression` call for `porter_mass_transit`, the progression API reports it owned at level 1, repeat applications stay at level 1, and it drops out of the chest draw while owned.
+2. mass-sweep-teleport-behaviour — files: `scripts/game/actors/towers/PorterTower.gd`, `tests/scenarios/porter_mass_transit.json` — depends on: 1
+- Without `porter_mass_transit` owned, a fully charged Porter teleports only its locked target; other nearby surface enemies are untouched (existing single-target behaviour preserved).
+- With `porter_mass_transit` owned, when charge on the locked target completes, every OTHER surface enemy within a tight (~path-width) radius of the locked target's position begins the same teleport to underground as the locked target.
+- Enemies that are dead, already underground, or beyond the tight sweep radius at charge-completion time are never swept by the mass transit teleport.
+- Each candidate swept enemy gets its own underground-route validity check; candidates without a valid route are skipped and stay alive on the surface path while valid ones still teleport.
+- Every additional swept enemy receives the same per-enemy feedback as the locked target (porter rings visual, teleport burst effect, dissolve animation); no swept enemy teleports without visible feedback.
+- Debug-build [PORTER_MASS_TRANSIT] log line per mass-sweep event naming the locked target plus the count of additionally swept enemies.
+- A focused harness scenario `tests/scenarios/porter_mass_transit.json` proves perk-off vs perk-on sweep behaviour on map_6 path geometry and passes headless with status=pass.
 
 ## Criteria
 
-- The perk definition `water_conductive_flood` exists in the Water tower progression data as a Unique and is reported eligible by progression lookup like other Water Uniques.
-- Applying the perk through progression raises its level to 1 and exposes its small-radius configuration (radius value greater than zero) via the Water progression manager's accessor surface.
-- With `water_conductive_flood` applied, a Water projectile hit applies Wet to every alive enemy within the perk's configured radius of the hit target; a scenario proves at least two enemies Wet from one hit, not only the direct target.
-- Without the perk, a Water projectile hit applies Wet only to the direct target; nearby enemies within the would-be radius stay non-Wet (regression guard on existing behavior).
-- Enemies outside the configured radius are not made Wet by the hit even when the perk is applied.
-- On a Water hit with the perk applied, the spawned splash effect visually extends at least to the perk's configured radius so the covered area matches the Wet area (same small-radius visual approach the Ice cone uses).
-- Wet applied by the flood perk renders per-enemy through the existing EnemyHealthBar status icon for each affected enemy, with no new asset required.
-- Debug-build [WATER-FLOOD] log line per multi-enemy Wet application event, naming the hit target and the count of enemies Wetted in the radius.
+- The progression catalog defines `porter_mass_transit` as a Unique entry for the porter tower only, with no levels (`maxLevels: 0`) so applying it is an idempotent single toggle.
+- With the perk not owned, the progression API reports it unowned, reports level 0, and marks it chest-eligible once a Porter covers its compatibility requirement.
+- After one `apply_progression` call for `porter_mass_transit`, the progression API reports it owned at level 1, repeat applications stay at level 1, and it drops out of the chest draw while owned.
+- Without `porter_mass_transit` owned, a fully charged Porter teleports only its locked target; other nearby surface enemies are untouched (existing single-target behaviour preserved).
+- With `porter_mass_transit` owned, when charge on the locked target completes, every OTHER surface enemy within a tight (~path-width) radius of the locked target's position begins the same teleport to underground as the locked target.
+- Enemies that are dead, already underground, or beyond the tight sweep radius at charge-completion time are never swept by the mass transit teleport.
+- Each candidate swept enemy gets its own underground-route validity check; candidates without a valid route are skipped and stay alive on the surface path while valid ones still teleport.
+- Every additional swept enemy receives the same per-enemy feedback as the locked target (porter rings visual, teleport burst effect, dissolve animation); no swept enemy teleports without visible feedback.
+- Debug-build [PORTER_MASS_TRANSIT] log line per mass-sweep event naming the locked target plus the count of additionally swept enemies.
+- A focused harness scenario `tests/scenarios/porter_mass_transit.json` proves perk-off vs perk-on sweep behaviour on map_6 path geometry and passes headless with status=pass.
+
+## Manual testing
 
 manual_testing: required
+Windowed UI-sanity pass: place a Porter near path traffic with holes/exits set up, grant the perk, let a charge complete among a clumped group of enemies, capture windowed screenshots during and after the sweep (shots land under `.gen/harness/porter_mass_transit/shots/`). Judge ui_feels_broken yes|no per final screenshot.
 
 ## Notes
 
-- Focused command assumes new scenario files named with substring `water_conductive_flood` under `tests/scenarios/` (e.g. an AoE-application scenario and a no-perk regression scenario); if the implementor names them differently, adjust the filter substring accordingly.
-- Windowed screenshot evidence of the splash radius covering nearby enemies is captured by manual testing per `.gen/ui_scenario.md`; headless cannot capture pixels.
+- Runner key `godot-td`, workspace `poke-defense-godot/issue-porter-mass-transit`.
+- Follow-up perk porter-broad-sweep is out of scope.

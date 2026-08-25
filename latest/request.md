@@ -1,36 +1,33 @@
-# Request: water-conductive-flood-wet-splash (issue #45)
+# Request: porter_mass_transit bulk sweep mode (issue #81)
 
-Project: godot-td
-Git workspace: godot-td/issue-water-conductive-flood-wet-splash (/workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash)
-Branch: issue/water-conductive-flood-wet-splash (cut from origin/master @ b5d75ae)
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/45
-Runner: project key `godot-td`, workspace `godot-td/issue-water-conductive-flood-wet-splash` (do NOT invent workspace names).
+- Project: poke-defense-godot
+- Git workspace: /workspace/git-workspaces/poke-defense-godot/issue-porter-mass-transit
+- Branch: issue/porter-mass-transit (cut from origin/master @ b5d75ae)
+- Issue: https://github.com/daniell0gda/poke-defense-godot/issues/81
+- Runner: project `godot-td`, workspace `poke-defense-godot/issue-porter-mass-transit` (verified via run_project_cmd git status)
 
-## Feature
+## Summary
 
-New Unique progression perk `water_conductive_flood` (Water tower): Water splash hits apply
-Wet status in a small radius around the hit target, not only to the direct target. Reuse the
-small-radius AoE-application pattern proven in `IceTower._apply_cone_effects`. The hit's existing
-splash effect should visibly cover that radius (same small-radius visual approach IceTower uses),
-not just silently flag enemies. Wet renders per-enemy via `scripts/ui/EnemyHealthBar.gd` status
-icons — no new asset needed.
+Porter currently charges and teleports only its one locked surface enemy. Add a new
+Unique perk `porter_mass_transit` (single toggle, no levels — same flat shape as
+`venom_neurotoxin` / `electric_grounding_rods`). When Porter's charge on its locked
+target completes (`_update_porter_target`, `charge_time >= charge_required`), also sweep
+every OTHER surface enemy within a tight radius (~path width) of that target's position.
 
 ## Acceptance criteria
 
-1. A perk definition `water_conductive_flood` exists and is obtainable like other Water Uniques.
-2. With the perk, a Water projectile hit applies Wet to enemies within a small radius of the hit
-   target (multiple enemies verified Wet, not just the direct target).
-3. Without the perk, behavior is unchanged (single-target Wet only) — no regression.
-4. The splash effect visually covers the radius on hit.
-5. Editor import gate passes; focused headless harness proves multi-enemy Wet application;
-   windowed screenshot evidence shows the splash radius covering nearby enemies.
-
-## Manual testing
-
-manual_testing: required — visible player-facing perk with an AoE splash moment. Include overall
-UI-sanity pass (`ui_feels_broken: yes|no`) on every final screenshot.
+1. New Unique `porter_mass_transit`, single toggle, no levels.
+2. On charge completion, every other surface enemy within a tight (~path-width) radius of
+   the locked target's position is swept by the teleport.
+3. Each swept enemy gets its own `ug_system.compute_underground_route` validity check;
+   enemies without a valid route are skipped (same as the existing single-target path).
+4. Every additional swept enemy gets the same per-enemy feedback as the locked target:
+   `_create_porter_rings`, `_spawn_porter_teleport_burst`,
+   `TeleportDissolveEffect.apply_to_enemy` in `PorterTower.gd`. No silent teleports.
 
 ## Notes
 
-- Fresh worktree; `.gen/` starts clean this run.
-- Follow `/opt/data/coding_rules.md` and project context files.
+- Related follow-up perk: porter-broad-sweep (out of scope here).
+- Visible player-facing feature: manual_testing must be required with windowed screenshots
+  (UI-sanity pass: judge ui_feels_broken yes|no per final screenshot).
+- Workers must use runner key `godot-td` + workspace `poke-defense-godot/issue-porter-mass-transit`.
