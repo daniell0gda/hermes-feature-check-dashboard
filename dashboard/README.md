@@ -167,6 +167,46 @@ python3 clients/status_http.py --base http://truenas.lan:8080 --run-id my-run --
 `--dry-run` prints the run id, event count, every document with its size and
 every screenshot with its sha1, without contacting a server.
 
+## Repeat runs for one job
+
+The run id is the only key the dashboard has. It comes from the snapshot's
+`status.json` (or the `runs/<id>` directory name), and everything — timeline,
+documents, screenshots — hangs off it. So a second attempt at the same job has
+two possible shapes, and they behave very differently.
+
+**A new run id (the normal case).** The published history uses a counter suffix:
+`corrosive-soak-90-r1`, `…-r2`, `req-89-exposed-plating-r8`. Each is an
+independent run with its own verdict and timeline; all they share is the issue
+they name and the feature name. The dashboard deliberately does not group them —
+there is no *supersedes*, no *latest attempt* marker, and no list of sibling runs
+on a run page. Find the set from the outside instead:
+
+```sh
+# every attempt at one feature, newest first — the r1/r2 pair above shares
+# feature "corrosive-soak-perk", so an exact match collects both
+curl 'http://truenas.lan:8080/api/runs?feature=corrosive-soak-perk'
+```
+
+or type the shared part of the id into the list's search box (`q` matches run id,
+feature and project).
+
+Note that **revisions** on a run is a different thing entirely: extra passes
+through the coding stage *inside* one run, not a second run.
+
+**Reusing the run id (republishing an attempt).** `POST /api/runs` is an upsert,
+so this is the right thing to do while a run is still going, or to correct a
+snapshot. Events and documents are replaced wholesale and the derived columns are
+recomputed — but **screenshots are only ever added**. Artifacts are keyed on
+`(run_id, path)`, `sync_media` only uploads what the manifest is missing, and
+nothing prunes what the new snapshot no longer contains, so images from the
+earlier attempt stay in the gallery. If the second attempt is genuinely a
+different piece of work, delete first rather than publishing over it:
+
+```sh
+curl -X DELETE -H "X-API-Key: $HFCD_API_KEY" \
+    http://truenas.lan:8080/api/runs/corrosive-soak-90-r1
+```
+
 ## API
 
 Writes need `X-API-Key`; reads are open (CORS `*`).
@@ -179,7 +219,7 @@ Writes need `X-API-Key`; reads are open (CORS `*`).
 | POST | `/api/runs/<id>/status` | Patch `status`, `phase`, `active_node`, `last_node`, `error`; bumps the heartbeat. |
 | POST | `/api/runs/<id>/heartbeat` | Heartbeat only. |
 | DELETE | `/api/runs/<id>` | Remove a run, its timeline, documents and media files. |
-| GET | `/api/runs?status=&q=&page=&per_page=` | Run list, newest first. |
+| GET | `/api/runs?status=&feature=&project=&q=&page=&per_page=` | Run list, newest first. `status` also takes the derived `abandoned`, and `other` for everything outside running/completed/failed. |
 | GET | `/api/runs/<id>` | One run with timeline, stages, document index and media index. |
 | GET | `/api/summary` | Aggregate counters. |
 | GET | `/api/healthz` | Liveness probe. |
@@ -224,7 +264,9 @@ The worker does not report these; they are computed once at publish time.
   never disagree with each other.
 - **liveness** — a run still marked `running` shows as *possibly stale* after
   2 minutes without a heartbeat and *abandoned* after 10. Derived on read, so
-  there is no cron job to keep alive.
+  there is no cron job to keep alive. Abandoned is a filter of its own
+  (`?status=abandoned`) and is excluded from *Running now* and from the running
+  count, so a stuck run is never reported as live work.
 - **stage pipeline** — `graph.json` names stages as gerunds (`implementing`)
   while events use worker names (`code`); both fold onto one canonical stage so
   the graph's shape can be filled in with real event data.

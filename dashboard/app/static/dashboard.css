@@ -319,6 +319,7 @@ code, pre, .run-id, .mono { font-family: var(--mono); }
 }
 .metric dd time { font-weight: 550; font-size: 14.5px; }
 .metric.is-live dd { color: var(--info); }
+.metric.is-stuck dd { color: var(--err); }
 
 /* ---------- badges ---------- */
 

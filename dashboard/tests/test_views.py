@@ -3,7 +3,13 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from tests.conftest import animated_gif_bytes, live_payload, png_bytes, sample_payload
+from tests.conftest import (
+    abandoned_payload,
+    animated_gif_bytes,
+    live_payload,
+    png_bytes,
+    sample_payload,
+)
 
 RUN_ID = "demo-run-r1"
 
@@ -50,6 +56,47 @@ class TestRunsList:
         assert "Running now" in body
         assert 'class="pulse"' in body
         assert "Implement" in body
+
+    def test_abandoned_run_is_not_running_now(self, client: TestClient, auth: dict) -> None:
+        publish(client, auth, abandoned_payload())
+
+        body = client.get("/").text
+
+        # No live-run panel and no pulsing badge: it is listed as abandoned.
+        assert 'data-live="active"' not in body
+        assert 'class="pulse"' not in body
+        assert "abandoned" in body
+
+    def test_abandoned_run_is_left_out_of_the_running_count(
+        self, client: TestClient, auth: dict
+    ) -> None:
+        publish(client, auth, abandoned_payload())
+        publish(client, auth, live_payload())
+
+        assert "is-stuck" in client.get("/").text
+
+        summary = client.get("/api/summary").json()
+
+        assert summary["running"] == 1
+        assert summary["abandoned"] == 1
+
+    def test_abandoned_filter_selects_only_stuck_runs(self, client: TestClient, auth: dict) -> None:
+        publish(client, auth, abandoned_payload())
+        publish(client, auth, sample_payload(run_id="done-run"))
+
+        body = client.get("/", params={"status": "abandoned"}).text
+
+        assert "stuck-run" in body
+        assert "done-run" not in body
+
+    def test_running_filter_excludes_stuck_runs(self, client: TestClient, auth: dict) -> None:
+        publish(client, auth, abandoned_payload())
+        publish(client, auth, live_payload())
+
+        body = client.get("/", params={"status": "running"}).text
+
+        assert "live-run" in body
+        assert "stuck-run" not in body
 
     def test_status_filter_narrows_the_table(self, client: TestClient, auth: dict) -> None:
         publish(client, auth)
@@ -147,15 +194,7 @@ class TestRunDetail:
         assert "screenshots/absent.png" not in body
 
     def test_stale_running_run_is_flagged_abandoned(self, client: TestClient, auth: dict) -> None:
-        payload = sample_payload(run_id="stuck-run")
-        payload["status"].update(
-            {
-                "status": "running",
-                "ended_at": None,
-                "heartbeat_at": "2020-01-01T00:00:00.000Z",
-            }
-        )
-        publish(client, auth, payload)
+        publish(client, auth, abandoned_payload(run_id="stuck-run"))
 
         body = client.get("/run/stuck-run").text
 

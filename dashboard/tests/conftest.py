@@ -112,6 +112,22 @@ def live_payload(run_id: str = "live-run") -> dict:
     return payload
 
 
+def abandoned_payload(run_id: str = "stuck-run") -> dict:
+    """A running run whose heartbeat expired long ago, so it reads as abandoned."""
+    payload = sample_payload(run_id=run_id)
+    payload["status"].update(
+        {
+            "status": "running",
+            "ended_at": None,
+            "active_node": "code",
+            "phase": "code",
+            "heartbeat_at": "2020-01-01T00:00:00.000Z",
+        }
+    )
+
+    return payload
+
+
 def sample_payload(run_id: str = "demo-run-r1", **overrides) -> dict:
     payload = {
         "run_id": run_id,

@@ -7,7 +7,13 @@ from fastapi.testclient import TestClient
 
 from app.config import Settings
 from app.main import create_app
-from tests.conftest import animated_gif_bytes, png_bytes, sample_payload
+from tests.conftest import (
+    abandoned_payload,
+    animated_gif_bytes,
+    live_payload,
+    png_bytes,
+    sample_payload,
+)
 
 RUN_ID = "demo-run-r1"
 
@@ -92,13 +98,21 @@ class TestListing:
 
     def test_filters_by_status(self, client: TestClient, auth: dict) -> None:
         publish(client, auth, sample_payload(run_id="done-run"))
-        running = sample_payload(run_id="live-run")
-        running["status"].update({"status": "running", "ended_at": None})
-        publish(client, auth, running)
+        publish(client, auth, live_payload(run_id="live-run"))
 
         body = client.get("/api/runs", params={"status": "running"}).json()
 
         assert [run["run_id"] for run in body["runs"]] == ["live-run"]
+
+    def test_filters_by_the_derived_abandoned_status(self, client: TestClient, auth: dict) -> None:
+        publish(client, auth, live_payload(run_id="live-run"))
+        publish(client, auth, abandoned_payload(run_id="stuck-run"))
+
+        body = client.get("/api/runs", params={"status": "abandoned"}).json()
+
+        assert [run["run_id"] for run in body["runs"]] == ["stuck-run"]
+        assert body["runs"][0]["status"] == "running"
+        assert body["runs"][0]["display_status"] == "abandoned"
 
     def test_searches_run_id_and_feature(self, client: TestClient, auth: dict) -> None:
         publish(client, auth, sample_payload(run_id="alpha-run"))

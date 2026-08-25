@@ -11,6 +11,15 @@ from . import formatting
 
 RUN_STATUSES = ("running", "completed", "failed", "cancelled", "interrupted", "unknown")
 
+# Abandoned is derived from heartbeat age rather than stored, so it is a filter
+# value and never a status a worker may publish.
+STATUS_ABANDONED = "abandoned"
+
+# A run still stored as running whose heartbeat has expired. A run that never
+# sent one is not called abandoned, matching formatting.health.
+ABANDONED_SQL = "status = 'running' AND heartbeat_at IS NOT NULL AND heartbeat_at < ?"
+LIVE_SQL = "status = 'running' AND (heartbeat_at IS NULL OR heartbeat_at >= ?)"
+
 PER_PAGE_MAX = 200
 PER_PAGE_DEFAULT = 50
 
@@ -46,6 +55,21 @@ RUN_COLUMNS = frozenset(
 
 def _rows(cursor: sqlite3.Cursor) -> list[dict[str, Any]]:
     return [dict(row) for row in cursor.fetchall()]
+
+
+def _status_condition(status: str) -> tuple[str, list[Any]] | None:
+    """SQL for a status filter, or None when the filter is not recognised."""
+    if status == STATUS_ABANDONED:
+        return ABANDONED_SQL, [formatting.abandoned_cutoff()]
+    # Running means still alive: an expired run answers to 'abandoned' instead.
+    if status == "running":
+        return LIVE_SQL, [formatting.abandoned_cutoff()]
+    if status in RUN_STATUSES:
+        return "status = ?", [status]
+    if status == "other":
+        return "status NOT IN ('running', 'completed', 'failed')", []
+
+    return None
 
 
 class Repository:
@@ -139,11 +163,10 @@ class Repository:
         clauses: list[str] = []
         params: list[Any] = []
 
-        if status in RUN_STATUSES:
-            clauses.append("status = ?")
-            params.append(status)
-        elif status == "other":
-            clauses.append("status NOT IN ('running', 'completed', 'failed')")
+        condition = _status_condition(status)
+        if condition is not None:
+            clauses.append(f"({condition[0]})")
+            params.extend(condition[1])
 
         if feature:
             clauses.append("feature = ?")
@@ -192,19 +215,22 @@ class Repository:
         ]
 
     def active_runs(self, limit: int = 10) -> list[dict[str, Any]]:
+        """Live runs only, so an abandoned one stops claiming to be running now."""
         return _rows(
             self._connection.execute(
-                "SELECT * FROM runs WHERE status = 'running' "
+                f"SELECT * FROM runs WHERE {LIVE_SQL} "
                 "ORDER BY COALESCE(started_at, updated_at) DESC LIMIT ?",
-                (limit,),
+                (formatting.abandoned_cutoff(), limit),
             )
         )
 
     def summary(self) -> dict[str, Any]:
+        cutoff = formatting.abandoned_cutoff()
         row = self._connection.execute(
-            """
+            f"""
             SELECT COUNT(*)                          AS total,
-                   SUM(status = 'running')           AS running,
+                   SUM({LIVE_SQL})                   AS running,
+                   SUM({ABANDONED_SQL})              AS abandoned,
                    SUM(status = 'completed')         AS completed,
                    SUM(status = 'failed')            AS failed,
                    SUM(classification = 'pass')      AS passed,
@@ -215,7 +241,8 @@ class Repository:
                    SUM(input_tokens)                 AS input_tokens,
                    SUM(output_tokens)                AS output_tokens
             FROM runs
-            """
+            """,
+            (cutoff, cutoff),
         ).fetchone()
 
         def integer(key: str) -> int:
@@ -227,6 +254,7 @@ class Repository:
         return {
             "total": integer("total"),
             "running": integer("running"),
+            "abandoned": integer("abandoned"),
             "completed": integer("completed"),
             "failed": integer("failed"),
             "passed": integer("passed"),

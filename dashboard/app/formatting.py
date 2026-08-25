@@ -6,7 +6,7 @@ everything stored is UTC.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any, Mapping
 
 DASH = "—"
@@ -24,6 +24,15 @@ def utc_now() -> datetime:
 
 def now_text() -> str:
     return utc_now().strftime(STORAGE_FORMAT)
+
+
+def abandoned_cutoff() -> str:
+    """A heartbeat older than this marks a run abandoned.
+
+    Storage format, so a query can compare it against ``heartbeat_at`` as text
+    and reach the same verdict as :func:`health` does on read.
+    """
+    return (utc_now() - timedelta(seconds=ABANDONED_AFTER_SECONDS)).strftime(STORAGE_FORMAT)
 
 
 def to_storage(value: Any) -> str | None:
