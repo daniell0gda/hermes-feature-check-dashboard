@@ -1,11 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-25T08:36:57.861Z",
-    "node": "plan",
-    "status": "completed",
-    "duration_ms": 235983,
-    "summary": "Plan written: /workspace/git-workspaces/poke-defense-godot/issue-traps-pit-of-spikes-first-hit-stuns-turn/.gen/plan.md\n",
-    "error": null
+    "timestamp": "2026-08-25T08:47:29.689Z",
+    "node": "code",
+    "status": "failed",
+    "duration_ms": 5410838,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash.\\\\nThe durable eviden\u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash.\\\\nThe durable eviden\u2026"
   }
 ]
