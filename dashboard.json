@@ -291,7 +291,7 @@
   },
   {
     "run_id": "issue45-water-flood-r1",
-    "status": "running",
+    "status": "failed",
     "url": "runs/issue45-water-flood-r1/"
   },
   {
