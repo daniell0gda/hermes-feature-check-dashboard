@@ -300,6 +300,11 @@
     "url": "runs/issue45-water-flood-r1/"
   },
   {
+    "run_id": "issue141-20260825a",
+    "status": "running",
+    "url": "runs/issue141-20260825a/"
+  },
+  {
     "run_id": "issue138-norocktree-1787411442",
     "status": "completed",
     "url": "runs/issue138-norocktree-1787411442/"
