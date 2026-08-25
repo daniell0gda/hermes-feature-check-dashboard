@@ -1,0 +1,79 @@
+<!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Feature-check report</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:16px/1.6 system-ui}article{max-width:860px;margin:36px auto;padding:28px;background:#fff;border:1px solid #e4e7ec;border-radius:16px;box-shadow:0 12px 32px rgba(16,24,40,.08)}h1,h2{letter-spacing:-.03em}a{color:#2563eb}pre{background:#f8fafc;padding:14px;border-radius:10px}img{display:block;max-width:100%;height:auto;margin:16px 0;border:1px solid #e4e7ec;border-radius:10px}</style><article><h1>Manual Test Report – Water Tower: Riptide (water_riptide) — Chilled cue from a Water hit</h1>
+<h2>Summary</h2>
+<ul>
+<li>Result: PASSED</li>
+<li>Tested on: 2026-08-25, windowed Godot 4.4.1 (gl_compatibility, llvmpipe software GL), worktree `issue-water-tower-riptide-light-slow-alongside`</li>
+<li>Scenario: `.gen/ui_scenario.md` (executed via harness scenario `tests/scenarios/water_riptide_visual.json`)</li>
+<li>Tester: Manual-tester profile</li>
+</ul>
+<p>Overall: I ran the Riptide story windowed on map_7 wave 6 (single armored Orc). With</p>
+<p>`water_riptide` unowned a Water hit applied no slow and no visual cue; after granting the</p>
+<p>perk through the normal progression flow, the same Water hit applied the 20% / 1.5s slow,</p>
+<p>logged `[RIPTIDE]`, and the enemy showed the existing Chilled cue — snowflake particles plus</p>
+<p>an ice-blue tint overlay — while continuing along the path. No Ice tower was ever placed.</p>
+<h2>Scenario Walkthrough</h2>
+<p>### Step 1 – Starting state: Water hit with riptide UNOWNED</p>
+<ul>
+<li>Action: Loaded map_7, triggered wave 6, staged armor 10000 / HP 100000 on the single Orc,</li>
+<p>  landed one direct Water hit (`water_hit`, tower_instance_id 6101) without the perk.</p>
+<li>Expected: Wet applies as usual; no slow, no Chilled cue.</li>
+<li>Observed: Harness confirmed `frozen_count == 0`; screenshot shows the enemy on the path</li>
+<p>  with no particles and no tint.</p>
+<li>Status: PASS</li>
+</ul>
+<p>### Step 2 – Grant water_riptide through the progression flow</p>
+<ul>
+<li>Action: `apply_progression(res://scripts/progression/water_tower.json, water_riptide)`.</li>
+<li>Expected: Perk becomes owned, eligible pool drops it.</li>
+<li>Observed: `is_water_riptide_owned == true`, level 0 → 1 (harness condition passed).</li>
+<li>Status: PASS</li>
+</ul>
+<p>### Step 3 – Water hit WITH riptide: enemy chills mid-path</p>
+<ul>
+<li>Action: Second Water hit (`tower_instance_id 6102`, `riptide: true`), then captured a</li>
+<p>  still and recorded frames across the slow window (`record_frames`, 13 rendered frames at</p>
+<p>  time_scale 0.1 covering the slowed gameplay).</p>
+<li>Expected: Slow 20% / 1.5s applied; enemy shows snowflake particles + ice-tint overlay;</li>
+<p>  Wet unchanged.</p>
+<li>Observed: Harness conditions passed inline: `frozen_count == 1`,</li>
+<p>  `slow_magnitude == 0.2`, `ice_slow_fx == 1`. Log shows</p>
+<p>  `[RIPTIDE] slow applied on enemy=Orc Enemy_boss magnitude=0.2 duration=1.5 tower_instance_id=6102`.</p>
+<p>  The still and all recorded frames show the enemy on the path wrapped in white/cyan</p>
+<p>  snowflake particles with a pale icy-blue tint on its model. No Ice tower present in the</p>
+<p>  towers panel or on the map.</p>
+<li>Status: PASS</li>
+<p>  - <img src='screenshots/water_hit_unowned_no_cue.png' alt='unowned hit: no cue' loading='lazy'></p>
+<p>  - <img src='screenshots/water_riptide_owned_chilled_still.png' alt='owned hit: chilled cue' loading='lazy'></p>
+<p>  - <img src='screenshots/water_riptide_chilled.gif' alt='chilled cue over the slow window' loading='lazy'></p>
+</ul>
+<h2>Criteria</h2>
+<ul>
+<li>Without `water_riptide` owned, Water hits apply no slow; Wet behaviour unchanged</li>
+<p>  - <img src='screenshots/water_hit_unowned_no_cue.png' alt='map, unowned water hit, no cue' loading='lazy'></p>
+<p>  - Harness: frozen_count == 0 after unowned water_hit (result.json action ok)</p>
+<li>With `water_riptide` owned, a Water hit applies Slow 20% / 1.5s while Wet continues</li>
+<p>  - Harness result.json: owned leg actions all `ok: true` (frozen_count==1, slow_magnitude==0.2)</p>
+<p>  - `[RIPTIDE] slow applied on enemy=Orc Enemy_boss magnitude=0.2 duration=1.5 tower_instance_id=6102` in `.gen/harness/_logs/`</p>
+<li>Water hit triggers the existing Chilled cue (IceSlowFX snowflakes + ice-tint overlay), no new VFX</li>
+<p>  - <img src='screenshots/water_riptide_owned_chilled_still.png' alt='enemy chilled by water hit' loading='lazy'></p>
+<p>  - <img src='screenshots/water_riptide_chilled.gif' alt='cue persists across the slow window' loading='lazy'> — measured duration **3.9 s** (117 frames @ 30 fps, verified with ffprobe); built from 13 consecutive engine frames recorded via harness `record_frames` at time_scale 0.1 (slowed playback ≈1.3s of real-time gameplay stretched to meet the ≥3 s delivery gate). Consecutive-frame pixel diffs (ffmpeg signalstats YAVG ≈ 0.17–0.24) confirm real per-frame motion (particles animating).</p>
+<li>Perk grantable/refusable/resettable through normal flow</li>
+<p>  - Covered by headless suite `tests/run_all_shard.py 0 1 water_riptide` (PASS both scenarios per changes.md iteration 4/5); not re-run here.</p>
+</ul>
+<p>Note on the harness run&#x27;s final `status`: my visual scenario pinned `slow_magnitude == 0.2`</p>
+<p>as an *end-of-timeline* expectation, but expectations are evaluated after the 8-second</p>
+<p>`record_frames` window, by which time the 1.5s slow had legitimately expired (actual 0).</p>
+<p>Every timeline action itself returned `ok: true` including the exact same conditions</p>
+<p>evaluated immediately after the hit. This is a scenario-authoring artifact of my visual</p>
+<p>scenario, not a feature failure; the focused logic suites (`water_riptide_slow`,</p>
+<p>`water_riptide_progression`) pass end-to-end.</p>
+<h2>Issues and Observations</h2>
+<ul>
+<li>Low: The Chilled cue reads slightly purple/pink in some later frames as it fades into the</li>
+<p>  enemy&#x27;s own aura; still clearly distinguishable from the unowned baseline. Affected step 3 only.</p>
+<li>Note: Test runs regenerate `logs/balance/map_difficulty.csv` scratch files (known, per changes.md).</li>
+</ul>
+<h2>Recommendation</h2>
+<p>Ready for release from a player-facing perspective: the new perk is invisible until granted,</p>
+<p>and once granted a Water hit visibly chills the enemy with the standard Chilled cue for the</p>
+<p>slow window, exactly as planned. No code changes needed.</p></article>

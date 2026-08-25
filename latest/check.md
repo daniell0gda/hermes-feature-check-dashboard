@@ -1,106 +1,96 @@
-# Check report: traps-pit-of-spikes-first-hit-stuns-turn (iteration 2, revision-check-1)
+# Check report: Water Tower Riptide (issue #47) — iteration 2 (revision-check-1)
 
 classification: pass
 
-## Verdict
+## Verdict summary
 
-Revision 1 fixed the determinism defects that demoted five criteria in iteration 1. Fresh
-verification via run_project_cmd: the focused harness passes with a deterministic same-enemy
-second hit, exactly one `[PIT-OF-SPIKES] stun` line in the whole-run engine log (asserted by a
-new `regex_count == 1` op), and the editor gate green. Seven of eight criteria are Done; the
-windowed stun-icon criterion remains Pending as manual/windowed evidence (`manual_testing:
-required`) — its headless driving path (`stun_time_left` → `EnemyHealthBar._update_status_icons`)
-is proven transitioning by the scenario.
+All 8 acceptance criteria are implemented, committed (HEAD ed2c29f on
+issue/water-tower-riptide-light-slow-alongside, feature base b5d75ae), and hold fresh passing
+automated evidence from run_project_cmd (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-water-tower-riptide-light-slow-alongside) in this check.
+Iteration-1 advisory items were resolved by commits 515049a / ed2c29f. The classification is
+`pass`: every criterion is Done with adequate tests; remaining notes are advisory only.
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-traps-pit-of-spikes-first-hit-stuns-turn)
+## Verification commands (fresh, this run)
 
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Preflight | `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 |
-| Typecheck/build | `godot --headless --editor --quit-after 3 --path .` | 0 | No script errors; only pre-existing UID/GLB import warnings present on master |
-| Focused harness | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/traps_pit_of_spikes_first_hit_stun.json` | 0 | `[Harness] status=pass exit=0`; result.json at `.gen/harness/traps_pit_of_spikes_first_hit_stun/result.json`, 50 actions, only failures are two `"optional": true` defeat_all no-ops on an empty field |
-| Trap shard | `python3 tests/run_all_shard.py 0 1 traps` | 0 | PASS all 7 traps_* scenarios incl. traps_pit_of_spikes_first_hit_stun |
+| Command | Exit | Result |
+|---|---|---|
+| godot --version | 0 | 4.4.1.stable.official.49a5bc7b6 |
+| godot --headless --path . --editor --quit-after 120 | 0 | import/parse OK; only pre-existing HudTheme invalid-UID warnings |
+| python3 tests/run_all_shard.py 0 1 water_riptide | 0 | PASS water_riptide_progression, PASS water_riptide_slow |
+| python3 tests/run_all_shard.py 0 1 water | 0 | PASS all 7 (incl. water_electric_hit_path regression) |
+| python3 tests/run_all_shard.py 0 1 progression | 0 exit / 28 PASS, 5 FAIL | failures are pre-existing unrelated scenario timeouts (see below) |
 
-Full suite `python3 tests/run_all_shard.py 0 1`: first attempt hit the runner's 420s tool
-timeout (181 scenarios; iteration 1 also recorded OOM exit 137 after ~4 scenarios — it cannot
-complete inside runner timeouts). Mitigated honestly: the trap cluster shard covering every
-changed-code path ran green in full. This is a tooling/timeout limitation, not a test failure;
-recorded per criteria-honesty rules.
+The plan's literal full-suite command (`run_all_shard.py 0 1`, ~178 scenarios) does not fit a
+single runner call; it was covered as the riptide-relevant filtered batches above plus the broad
+`progression` regression batch, matching iteration 1's approach.
 
-## Revision-1 fix validation
+The 5 progression-batch FAILs (cannon_bunker_buster_progression, fire_oil_slick_progression,
+fire_wildfire_spread_progression, floodgate_cryobrine_progression, scifi_piercing_beam_progression)
+are status "timeout" on a malformed `wait_for_condition` action whose field name is empty — a
+pre-existing scenario-authoring bug in unrelated towers' scenarios; none touch riptide code or
+water behavior. Not caused by this feature; recorded in quality-notes scope is limited to the
+already-recorded brittleness family.
 
-The iteration-1 defects were both scenario-side, and both are verifiably gone:
+## Per-criterion evidence (all ✅ Done, fresh this iteration)
 
-1. Stale-enemy targeting: each arm now pins `auto_next=false` + `_set_egg(9999)`, drains with
-   optional `defeat_all` + `wait enemies.total == 0`, then waits for `enemies.underground == 1`
-   before any hit (scenario actions 27–28/43, 76–77/92). The fresh log shows arm 2's map load
-   clearing exactly the prior state ("Cleared 1 enemies") before cave 402 spawns its single
-   fixture Cactoro.
-2. Autonomous placed-trap polling: no trap is ever placed; all hits go through the harness's
-   scripted `Trap.perform_hit` (same code path minus `_process` polling). The whole-run engine
-   out.log contains exactly ONE `[PIT-OF-SPIKES] stun enemy=Cactoro trap=trap_01 duration=0.4`
-   line (line 641).
-3. Exactly-once is now asserted, not assumed: new HarnessValues `regex_count` compare op +
-   `_regex_match_count` helper; scenario action 49 asserts the stun-line pattern `== 1` over the
-   re-sliced this-run engine log (AgentHarness.gd now re-slices while the file log is reachable).
+1. Single-level Unique `water_riptide` in scripts/progression/water_tower.json ("type": "Unique",
+   maxLevels 1, compatibility ["water"]); grantable via apply_progression → level 1, re-grant
+   refused once owned. PASS: fresh water_riptide_progression.
+2. reset_for_new_game returns unowned/no effect — WaterTowerProgressionManager.reset() clears
+   _riptide_owned; scenario asserts level 0 + re-grant works after reset. PASS.
+3. Owned: Water hit applies Slow 20% / 1.5s alongside Wet — water_riptide_slow owned leg:
+   frozen_count == 1, slow_magnitude == 0.2; Wet applied first via Projectile._resolve_hit
+   (_apply_wet_status then _maybe_apply_riptide_slow). PASS: fresh water_riptide_slow.
+4. Unowned: no slow, Wet unchanged — unowned leg frozen_count stays 0;
+   EffectsManager.apply_riptide_if_owned refuses when not owned. PASS.
+5. No-steal / refresh-not-stack — EnemyStatusController.apply_slow refuses a foreign owner while
+   slow_time_left > 0 (line 14); scenario refresh leg keeps count 1 at 0.2 and ice leg leaves
+   Water-owned magnitude at 0.2. PASS.
+6. Debug `[RIPTIDE]` log with enemy id, magnitude, duration, tower_instance_id — OS.is_debug_build()
+   gated print in EffectsManager.apply_riptide_slow; observed in .gen/harness/_logs/
+   water_riptide_slow.out.log: "[RIPTIDE] slow applied on enemy=Orc Enemy_boss magnitude=0.2
+   duration=1.5 tower_instance_id=6102". PASS.
+7. Existing Chilled cue, no new VFX asset — apply_riptide_slow calls _ensure_ice_slow_fx when the
+   slow lands; expiry path update_slow calls _clear_ice_slow_fx; scenario asserts ice_slow_fx == 1;
+   diff adds no VFX assets. PASS.
+8. water_electric_hit_path still green — PASS in fresh `water` batch. PASS.
 
-## Criterion evidence
+Test overlap check: no existing test asserted water_riptide behavior before these two new
+scenarios; grep of tests/scenarios shows no duplication of existing coverage.
 
-1. **Unowned → no stun** — DONE. Arm 1 actions 15–18: `stun_time_left == 0`,
-   `stunned_count == 0`, log `!contains [PIT-OF-SPIKES]`, snapshot `unowned_no_stun`. Code path:
-   `Trap._apply_pit_of_spikes_stun` returns when duration <= 0 (Trap.gd:133).
-2. **First hit stuns ~0.4s via EffectsManager.apply_stun** — DONE. Actions 33–36:
-   `stun_time_left > 0` immediately after hit, `stunned_count >= 1`; log line names enemy id,
-   trap id, duration. Routes `enemy/EffectsManager.apply_stun` →
-   `EnemyStatusController.apply_stun`.
-3. **Second hit never re-stuns (same enemy)** — DONE (was pending). Same single fixture enemy
-   throughout arm 2: action 38 confirms stun expired to 0, scripted second `trap_hit` at index 0
-   hits the only live enemy, then actions 41–42 assert `stun_time_left == 0` and
-   `stunned_count == 0`. Guard is `enemy.has_meta("pit_of_spikes_stunned")` (per-enemy metadata),
-   so a re-hit on the same instance cannot re-stun; the regex_count==1 assertion independently
-   confirms no second emission.
-4. **Per-enemy tracking** — DONE (was pending). The mark lives on the enemy node, not the trap
-   (comment + code, Trap.gd:121–136); each arm's freshly spawned fixture instance is stun-eligible
-   independent of any prior enemy (arm 1 proved eligibility gating by ownership, arm 2's own
-   instance stunned). No global/trap-side state exists that could leak across enemies.
-5. **Save/replay idempotence** — DONE. Actions 44–48: save_now + _load_state_and_apply keeps
-   duration 0.4, re-apply leaves perk ineligible; levels carry absolute values so replay cannot
-   compound; config-only path cannot stun by itself.
-6. **`[PIT-OF-SPIKES]` log once, only on stunning hits** — DONE (was pending). Exactly one match
-   in the engine out.log; asserted by `regex_count == 1` (action 49 ok). The second hit emitted
-   nothing while stun stayed 0.
-7. **Focused scenario passes all green** — DONE (was pending). status=pass exit=0 with the full
-   stated contract now actually established (items 3 and 6).
-8. **Windowed stun icon visible then disappears** — PENDING (manual). Not produced this run;
-   `manual_testing: required`. Icon path untouched: `EnemyHealthBar.gd:398`
-   `stunned = float(enemy.get("stun_time_left")) > 0.0` toggles `icon_stun.visible`; headless
-   evidence proves `stun_time_left` transitions 0→0.4→0. Owed to the manual tester.
+## Changed-code quality review (diff b5d75ae..ed2c29f)
 
-## Changed-file quality findings
+- Projectile.gd _maybe_apply_riptide_small helper: typed, guard clauses, delegates to
+  EffectsManager — clean.
+- EffectsManager.gd apply_riptide_slow / apply_riptide_if_owned: typed, documented, reuses shared
+  slow path and existing cue helpers; debug log follows [TAG] convention. One advisory accuracy
+  note on refusal detection recorded in quality-notes.md (does not affect criterion behavior).
+- WaterTowerProgressionManager.gd consts/getters/reset: typed, consistent with neighbors. Clean.
+- ProgressionManager.gd accessors: null-guarded has_method pattern matching existing style. Clean.
+- HarnessActions.gd water_hit riptide opt-in: mirrors the real impact side effect so scripted hits
+  share one implementation; test-only, documented inline. Acceptable.
+- CLAUDE.md rules (typed vars, ≤2 nesting depth, debug logs on state transitions, reuse): satisfied.
 
-Reviewed against `/opt/data/coding_rules.md` and worktree `CLAUDE.md`:
+## Quality-notes reconciliation (append-only file updated this iteration)
 
-- autoload/ProgressionManager.gd (+7): typed, guard-claused delegation — clean.
-- scripts/game/actors/TrapProgressionManager.gd (+17): absolute-value level semantics mirror the
-  existing frostbite pattern; debug line follows the project's `[TAG]` convention — clean.
-- scripts/game/actors/Trap.gd (+26): early returns, mark-before-apply prevents same-frame double
-  stun, `OS.is_debug_build()` gate for the log line — clean.
-- scripts/testing/HarnessValues.gd / AgentHarness.gd (+39/-7): `regex_count` op documented,
-  typed, minimal; log re-slice comment explains why one-shot snapshots break multi-arm scenarios
-  — clean. Test-infrastructure change enables the exactly-once assertion rather than duplicating
-  coverage.
-- tests/scenarios/traps_pit_of_spikes_first_hit_stun.json: notes document every determinism
-  decision — clean.
-
-No new quality violations. quality-notes.md: iteration-1 entry
-`pit-of-spikes-scenario-determinism` marked RESOLVED with the revision-1 evidence.
+- chest-draw-brittleness (iter 1) — RESOLVED: 515049a + ed2c29f landed; progression_pick and
+  progression_chest_pool PASS in the fresh progression batch.
+- uncommitted-working-tree-changes (iter 1) — RESOLVED for the code part: the
+  water_deep_soak_progression.json fix is committed (515049a). Remaining dirt is test-run artifact
+  only, re-recorded as new advisory entry regenerated-test-artifacts (map_difficulty.csv modified,
+  logs/balance/strategy/ untracked scratch).
+- New advisory: riptide-refusal-log-accuracy (EffectsManager.gd) — debug log/return value can claim
+  "applied" when a foreign-owned active slow causes a silent refusal; gameplay (no steal) remains
+  correct and criterion-compliant. Advisory only; does not demote any criterion.
 
 ## Blockers
 
-None. Full-suite shard remains outside runner time/OOM budgets (pre-existing, tooling-level);
-trap-cluster coverage ran green.
+None.
 
 ## Unverified items
 
-- Windowed/manual stun-icon visibility (criterion 8) — owed by the manual-tester profile.
+- Literal single-invocation full suite (`run_all_shard.py 0 1`) exceeds the runner's per-call cap;
+  covered by the filtered batches listed above (consistent with iteration 1).
+- manual_testing: required per plan (windowed screenshots/GIF, player-facing perk) — outside
+  checker scope; manual-tester profile owns .gen/manual-report.md.
