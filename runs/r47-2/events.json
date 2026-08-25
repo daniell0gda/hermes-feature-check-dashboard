@@ -16,5 +16,14 @@
     "duration_ms": 4339107,
     "summary": "Revision pass complete. Summary:\n\nState found: all 8 acceptance criteria were already implemented and committed at HEAD (0362ebe feat + 515049a test); the check's \"fixable\" classification came only from working-tree hygiene. This revision a\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-25T16:48:14.130Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 2346281,
+    "summary": "Verified done: 8. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: no changes (both prior entries resolved by commit ed2c29f / artifact restore; verified clean \u2026",
+    "error": null
   }
 ]

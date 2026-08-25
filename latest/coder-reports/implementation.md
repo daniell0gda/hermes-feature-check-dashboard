@@ -1,60 +1,25 @@
-# Coder report: implementation (revision 1, task revision-code-1)
+# Coder report: implementation (revision-code-1, revision 1)
 
 ## Changed files
-No source changes this revision. The feature diff stands as-is (9 files):
-- `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd`, `autoload/ProgressionManager.gd`
-- `scripts/game/actors/Projectile.gd`
-- `scripts/testing/HarnessActions.gd`, `scripts/testing/HarnessValues.gd`
-- `tests/run_all_shard.py` (incremental stdout log redirect)
-- `tests/scenarios/water_conductive_flood_progression.json` (new), `tests/scenarios/water_conductive_flood_aoe.json` (new)
-
-## Work this revision
-1. **Full-suite gate completed via sharding.** Prior revisions could not finish
-   `tests/run_all_shard.py 0 1` inside the runner (420s cap / worker OOM exit 137).
-   This revision ran the full suite incrementally: a bounded runner script
-   (`.gen/run_full_suite_v3.py`, derived from the existing `.gen/run_full_suite_v2.py`)
-   executes scenarios one at a time with per-scenario timeout, appends PASS/FAIL to
-   `.gen/harness/_fullsuite_v2_results.txt`, and prints RESUME_AT for continuation.
-   Five sequential run_project_cmd invocations covered the remaining 45 scenarios;
-   combined with prior persisted results, **all 180 scenarios have now executed**:
-   144 PASS, 36 FAIL (list below). No OOM kill occurred; each invocation stayed well
-   under the command cap (~80–145s).
-2. **Scope creep actually reverted this time** (quality-notes scope-creep-balance-csv):
-   - `git checkout -- logs/balance/map_difficulty.csv` — restored; diff vs HEAD is empty.
-   - Removed regenerated test residue directory `logs/balance/strategy/`
-     (untracked artifact of strategy_record_gate scenario runs).
-   Final tree contains only the 9 feature files (`git status --short` verified).
-
-## Commands and results
-- `python3 .gen/run_full_suite_v3.py 0|8|17|26|35` — all exit 0; 45 scenarios,
-  41 PASS / 4 FAIL (tower_targeting_armor_priority timeout, underground_diversion_baseline
-  fail egg_hp 15≠25, undermining_vfx_manual timeout armor 2≠0, water_deep_soak_progression
-  timeout on progression_call).
-- Full-suite aggregate across persisted result files: 180/180 scenarios run, 144 PASS,
-  36 FAIL. All FAILs are outside this feature's owned files and none involve water flood
-  behavior. Checker previously confirmed fire_oil_slick* fail identically on clean HEAD;
-  the newly observed failures (tower targeting/underground/undermining/deep_soak) touch no
-  file this feature modifies and are unrelated by inspection of their failing assertions.
-- `python3 tests/run_all_shard.py 0 1 water_conductive_flood` — exit 0;
-  PASS water_conductive_flood_aoe + water_conductive_flood_progression (23.5s), re-run on
-  the cleaned tree after the CSV revert.
-- `godot --headless --path . --editor --quit-after 300` — exit 0 (12.3s); only the
-  pre-existing HudTheme.tres invalid-UID warnings.
+- `tests/scenarios/progression_chest_pool.json` — committed (re-measured seeded draws after water_riptide joined the eligible pool; expanded JSON formatting)
+- `tests/scenarios/progression_pick.json` — committed (same re-measure)
+- `tests/scenarios/scifi_overclock.json` — committed (stale 1.4 pins corrected to 1.5, matching scifi_tower.json overclock value 0.5 + base 1.0)
+- `tests/scenarios/scifi_overclock_progression.json` — committed (same pin fix)
+- `logs/balance/map_difficulty.csv` — restored to HEAD (test-regenerated artifact)
+- `logs/balance/strategy/` — removed (untracked scratch)
+- No production-code changes; feature commits 0362ebe + 515049a stand unchanged.
 
 ## Criteria
-All 12 plan criteria remain implemented and focused-gate-green:
-perk data/manager exposure (default disabled, level 0→1, radius 1.5>0, no stacking,
-reset), flood Wets in-radius enemies via production Projectile hit path, out-of-radius
-stays dry, direct-target-only without perk, splash covers perk radius (windowed pixel
-evidence = manual testing per plan note), Wet renders via existing EnemyHealthBar icons,
-[WATER-FLOOD] debug lines for both events (verified present in
-`.gen/harness/_logs/water_conductive_flood_aoe.out.log`: "applied -> radius=1.50" and
-"hit target @Node3D@1131 -> 1 enemies Wetted in 1.50m radius").
+All 8 acceptance criteria were already implemented and green at HEAD; this revision pass addressed the check report's advisory working-tree hygiene items only. All criteria remain Done.
+
+## Commands and results (all via run_project_cmd, project=poke-defense-godot, workspace=poke-defense-godot/issue-water-tower-riptide-light-slow-alongside)
+- `python3 --version` — exit 0 (preflight)
+- `python3 tests/run_all_shard.py 0 1 water_riptide` — exit 0; PASS water_riptide_progression, PASS water_riptide_slow
+- `python3 tests/run_all_shard.py 0 1 water` — exit 0; PASS all 7 incl. water_electric_hit_path
+- `python3 tests/run_all_shard.py 0 1 progression` — exit 0; 29/33 PASS including progression_pick, progression_chest_pool, scifi_overclock_progression (the previously failing brittle scenarios now pass with the committed re-measures). 5 FAILs are pre-existing environmental timeouts in this worktree: cannon_bunker_buster_progression, fire_oil_slick_progression, fire_wildfire_spread_progression, floodgate_cryobrine_progression, scifi_piercing_beam_progression (missing GLB imports / slow visual scenarios; no water_riptide involvement).
+- `godot --headless --path . --editor --quit-after 120` — exit 0; pre-existing HudTheme UID warnings only.
 
 ## Notes
-- Remaining full-suite FAILs are pre-existing/unrelated; none are in feature-owned files
-  or exercise water-flood code paths beyond water_deep_soak_progression, which fails on a
-  progression_call value mismatch in Deep Soak data untouched by this diff (its failure
-  mode predates this issue per earlier checker probes of sibling scenarios).
-- Whether the build-and-test gate now counts as satisfied (full suite executed to
-  completion, with a documented pre-existing-failure set) is the Checker's call.
+- The scifi_overclock scenario pins were stale even before this issue (json says bonus 0.5 → multiplier 1.5, scenarios pinned 1.4); they surfaced now because the pool-shift forced a re-measure.
+- Test runs regenerate logs/balance/map_difficulty.csv and logs/balance/strategy/ scratch — expect them to reappear on any future run.
+- Working tree is clean at HEAD ed2c29f after this pass.

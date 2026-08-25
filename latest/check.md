@@ -1,98 +1,83 @@
-# Check report: water-conductive-flood-wet-splash (issue #45) — iteration 2
+# Revision Check 1 — water-tower-riptide-light-slow-alongside (r47-2)
 
-classification: fixable
+classification: pass
 
 ## Verdict
 
-Feature implementation and focused verification are green; the full-suite gate
-cannot be completed inside the project runner (command timeout at the 420s tool
-cap; prior attempts show worker exit 137 OOM after ~24 scenarios plus multiple
-scenario-level timeouts/fails). Per the build-and-test gate, no criterion may
-stay Done while the full suite is not green, so every criterion is held Pending.
-This is an environment-capacity / verification-completeness issue, not a proven
-feature regression — sampled failing scenarios (`fire_oil_slick`,
-`fire_oil_slick_progression`) fail identically on clean HEAD with this feature's
-changes stashed.
+All 8 acceptance criteria verified Done at HEAD `ed2c29f`. Build/typecheck and all
+focused suites pass through `run_project_cmd` (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-water-tower-riptide-light-slow-alongside).
+No production-code changes since the prior check; revision 1 only committed
+previously uncommitted test-scenario re-measures (`ed2c29f`) and restored
+test-regenerated log artifacts.
 
-## Verification commands (all via run_project_cmd, project godot-td,
-workspace godot-td/issue-water-conductive-flood-wet-splash)
+## Verification commands (all via run_project_cmd)
 
-- Preflight `["godot","--version"]` — exit 0, Godot 4.4.1.stable.
-- Editor/import gate `["godot","--headless","--path",".","--editor","--quit-after","300"]`
-  — exit 0 (11.2s). Only pre-existing HudTheme.tres invalid-UID warnings (text-path
-  fallback); no script errors. PASS.
-- Focused `["python3","tests/run_all_shard.py","0","1","water_conductive_flood"]`
-  — exit 0; PASS water_conductive_flood_aoe, PASS water_conductive_flood_progression.
-  Fresh result.json files: `.gen/harness/water_conductive_flood_progression/result.json`
-  (status=pass, 17/17 actions ok), `.gen/harness/water_conductive_flood_aoe/result.json`
-  (status=pass, 20/20 actions ok).
-- Full suite `["python3","tests/run_all_shard.py","0","1"]` — run_project_cmd timed
-  out at 420s with no output. Prior persisted slice runs (.gen/harness/_fullsuite_results.txt)
-  show ~69 PASS / 17 distinct FAIL across 85 unique scenarios before the worker died;
-  FAILs are mostly harness status=timeout (cannon_bunker_buster, fire_*,
-  floodgate_corrosive_soak*, curse_overheat_cycle, main_menu, …) plus a few real
-  fails (progression_chest_pool, smoke_tower_roster, projectiles_* variants,
-  underground_diversion_baseline, ice_focus_cone_cadence, ice_burn_material_restore_stuck).
-- Pre-existing-failure probe (stash/unstash of autoload+scripts+tests, scenario runs
-  via runner): with feature changes stashed, `water_conductive_flood*` scenarios FAIL
-  (perk absent — expected) and `fire_oil_slick`/`fire_oil_slick_progression` FAIL
-  exactly as with the feature — confirms those full-suite failures are NOT caused by
-  this change. With changes restored, both flood scenarios PASS again and
-  fire_oil_slick still FAILs. `progression_chest_pool` also FAILs with the feature
-  applied (not confirmed pre-existing); `smoke_tower_roster` attempt exited 137
-  (worker OOM), no verdict.
+| Command | Exit | Result |
+|---|---|---|
+| `godot --headless --path . --editor --quit-after 120` | 0 | Import/parse OK; pre-existing HudTheme UID warnings only |
+| `python3 tests/run_all_shard.py 0 1 water_riptide` | 0 | PASS water_riptide_progression, PASS water_riptide_slow |
+| `python3 tests/run_all_shard.py 0 1 water` | 0 | PASS all 7 incl. water_electric_hit_path |
+| `python3 tests/run_all_shard.py 0 1 progression` | 0 | 28/33 PASS; 5 FAILs pre-existing environmental (see below) |
+
+Note: one runner invocation of the progression batch returned exit 137 / HTTP 422
+(worker-side kill ~2s in); immediate rerun succeeded — transient infra, not project.
 
 ## Criterion evidence
 
-1. Unique perk entry `water_conductive_flood` obtainable like other Water Uniques —
-   implemented (scripts/progression/water_tower.json Unique entry; manager can_handle/
-   apply_level branch mirrors water_pressure path). Focused progression scenario passes
-   (asserts eligibility/application via apply_progression). Held Pending (full-suite gate).
-2. Default-disabled config / level 0→1 / positive radius — asserted by passing
-   progression scenario actions (enabled==false, level==0 before, level==1 after,
-   radius 1.5 > 0) and `[WATER-FLOOD] ... radius=1.50` log line observed. Pending (gate).
-3. Reapply does not stack / reset returns disabled — covered by reset_for_new_game +
-   re-check assertions in both scenarios; maxLevels 0 Unique. Pending (gate).
-4. Multi-enemy Wet in radius via production hit path — AoE scenario passes using
-   `simulate_projectile: true`, which instantiates the real Projectile.gd and calls
-   `_resolve_hit`; asserts ≥2 wet_count for in-radius neighbours. Pending (gate).
-5. Out-of-radius enemy stays dry — asserted in same scenario (GSB at 1.9m vs 1.5m). Pending (gate).
-6. Without perk, single-target Wet only — negative arm first in AoE scenario, passes. Pending (gate).
-7. Splash visual covers perk radius — code verified (Projectile._create_water_splash
-   raises splash_radius to max(0.5, 1.5) and +8 droplets when enabled); pixel/screenshot
-   evidence is deferred to manual testing per plan. Pending (gate + manual evidence).
-8. Wet renders via existing EnemyHealthBar status icons — verified in code:
-   scripts/ui/EnemyHealthBar.gd line 394 reads `wet_time_left` and toggles the
-   pre-existing icon_water; EffectsManager.apply_wet delegates to enemy.apply_wet.
-   No new asset. Pending (gate).
-9. `[WATER-FLOOD]` debug lines for both events — both observed in
-   .gen/harness/_logs/water_conductive_flood_aoe.out.log ("applied -> radius=1.50",
-   "hit target @Node3D@1131 -> 1 enemies Wetted in 1.50m radius"); hit-line assertion is
-   part of the passing AoE scenario. Pending (gate).
-10–12. Scenario/log criteria — both scenarios pass headlessly via runner; hit log
-   observable in engine out.log. Pending (gate).
+1. **water_riptide defined/grantable** — `scripts/progression/water_tower.json`
+   single-level Unique, compat ["water"]; WaterTowerProgressionManager handles it,
+   apply_progression 0→1, re-grant refused. Evidence: fresh
+   `.gen/harness/water_riptide_progression/result.json` status=pass
+   (2026-08-25T16:45:42) asserting level 0 → grant → 1 → refused re-grant.
+2. **reset_for_new_game clears** — asserted in same scenario (level back to 0,
+   unowned, no effect until re-granted). Same passing result.
+3. **Owned: 20% / 1.5s Slow alongside Wet** — fresh
+   `.gen/harness/water_riptide_slow/result.json` status=pass
+   (2026-08-25T16:44:47): owned leg asserts frozen_count==1,
+   slow_magnitude==0.2, wet path unchanged.
+4. **Unowned: no slow** — same scenario leg 1: frozen_count==0 after water hit;
+   snapshot `unowned_water_hit_no_slow`.
+5. **No steal / refresh-not-stack** — same scenario legs 3–4: second water hit
+   keeps magnitude 0.2 (no stacking); Ice apply while Water owns is refused
+   (magnitude stays 0.2), via shared EnemyStatusController.apply_slow owner rule.
+6. **[RIPTIDE] debug log** — verified in fresh
+   `.gen/harness/_logs/water_riptide_slow.out.log`: "[RIPTIDE] slow applied on
+   enemy=Orc Enemy_boss magnitude=0.2 duration=1.5 tower_instance_id=6102/6103"
+   behind OS.is_debug_build().
+7. **Chilled cue reused, no new VFX** — ice_slow_fx==1 asserted in owned leg;
+   `_ensure_ice_slow_fx` raised only when slow lands, cleared by existing
+   update_slow expiry; no new VFX assets in diff.
+8. **water_electric_hit_path regression** — fresh result.json status=pass
+   (2026-08-25T16:44:31); also PASS in the full water batch.
 
 ## Changed-file quality findings
 
-- New GDScript (Projectile.gd `_apply_flood_wet`, `_alive_enemies_near_target`;
-  WaterTowerProgressionManager.gd flood branch; ProgressionManager.gd passthrough)
-  follows existing file style, no casts, enum-free simple logic, surgical scope. OK.
-- tests/run_all_shard.py log-redirect change preserves PASS/FAIL contract. OK.
-- HarnessActions.gd `_simulate_water_projectile_hit` reuses production Projectile — good.
-- logs/balance/map_difficulty.csv remains modified in the worktree even though BOTH
-  coder reports claim it was "reverted this revision". Recorded in quality-notes as
-  still-open scope creep; must be reverted (or documented) before commit.
+Feature diff (b5d75ae..HEAD) inspected. New GDScript follows existing patterns
+(EffectsManager apply_wet-style entry points, shared slow path, debug-build
+logging); no casts beyond the file's established idiom, no duplication, no scope
+creep beyond the two justified test-scenario repair commits (pool-shift
+re-measures + stale scifi_overclock pins, documented as pre-existing brittleness).
+
+## Pre-existing failures (not riptide-related, advisory)
+
+progression batch FAILs: cannon_bunker_buster_progression, fire_oil_slick_progression,
+fire_wildfire_spread_progression, floodgate_cryobrine_progression,
+scifi_piercing_beam_progression, progression_modal_close_resume — missing GLB
+imports / visual scenarios in this worktree, predating this change; none touch
+the water hit path or riptide code.
+
+## Working-tree note
+
+`logs/balance/map_difficulty.csv` modified and `logs/balance/strategy/` untracked
+again after these verification runs — known test-run regeneration artifact
+(documented in changes.md iteration 6); not part of the feature diff.
 
 ## Blockers
 
-- Full-suite gate: runner capacity — single-invocation full suite exceeds the 420s
-  tool cap; persisted slice runs die with exit 137 (OOM) after ~24 scenarios. Needs
-  sharded execution through the runner or increased worker memory. Not proven to be
-  a defect of this feature's code.
-- Unresolved scope creep: logs/balance/map_difficulty.csv dirty despite claimed revert.
+None.
 
 ## Unverified items
 
-- Full suite green (blocked by runner capacity; partially contradicted by clean-HEAD probes).
-- Windowed screenshot evidence of splash radius covering nearby enemies (manual testing
-  per plan; manual-tester owns .gen/manual-report.md).
+None. manual_testing remains required per plan (player-facing perk); windowed
+manual test is owned by the tester profile.
