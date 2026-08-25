@@ -2,34 +2,34 @@
   "run_id": "r47-2",
   "feature": "Water Tower Riptide - light Slow alongside Wet",
   "status": "running",
-  "started_at": "2026-08-25T15:37:29.194Z",
+  "started_at": "2026-08-25T14:37:21.881Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
-  "heartbeat_at": "2026-08-25T15:42:14.958Z",
+  "heartbeat_at": "2026-08-25T16:09:03.133Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-25T15:42:14.958Z",
-  "process_id": 694779,
+  "active_node": null,
+  "last_event_at": "2026-08-25T16:09:03.133Z",
+  "process_id": 678463,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T15:42:19.507417+00:00",
-    "last_success_at": "2026-08-25T15:42:19.506486+00:00",
+    "last_attempt_at": "2026-08-25T16:09:03.134724+00:00",
+    "last_success_at": "2026-08-25T14:56:48.408322+00:00",
     "last_error": null
   },
   "metrics": {
     "invocations": [
       {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 16200,
-        "output_tokens": 2010
+        "input_tokens": 150900,
+        "output_tokens": 7615
       }
     ]
   }

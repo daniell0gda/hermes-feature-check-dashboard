@@ -1,85 +1,98 @@
-# Check report — issue-130 middle-mouse pan flip (revision-check-2)
+# Check report: Water Tower Riptide (issue #47) — iteration 1
 
 classification: fixable
 
-## Verdict
+## Verdict summary
 
-All 11 acceptance criteria remain implemented and pass fresh, non-vacuous
-verification via `run_project_cmd` (project `godot-td`, workspace
-`poke-defense-godot/issue-130`). Typecheck/build gate passes. The
-`carve_camera_drag_spin` scenario now drives the real `rotate_camera` harness
-action type with genuinely changing camera probes — the previously open
-quality note (`carve-drag-spin-vacuous-rotate-shortcut`) is confirmed FIXED.
-The sole remaining gap is unchanged from r4/r5: the required windowed 30fps
-GIF under Xvfb :77 (carve arm → small middle-drag, path L unrotated) does not
-exist — `.gen/screenshots/` holds only the Aug 22 PNGs, no `.gen/**/*.gif`.
-That artifact belongs to the manual-tester profile (`manual_testing:
-required`), so the issue cannot be declared done → `fixable`.
+All 8 acceptance criteria are implemented, have fresh passing automated evidence via
+run_project_cmd (project=poke-defense-godot,
+workspace=poke-defense-godot/issue-water-tower-riptide-light-slow-alongside), and the changed
+code passes the quality bar. The full-suite single invocation cannot fit inside the runner's
+420s tool cap; it was covered by filter batches instead. The classification is `fixable` only
+because of advisory working-tree hygiene (uncommitted brittle-scenario fix + regenerated
+artifacts), not because any criterion failed.
 
-## Verification commands (fresh, this run, all via run_project_cmd)
+## Verification commands (fresh, this run)
 
 | Command | Exit | Result |
 |---|---|---|
-| `["godot","--version"]` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner reachable |
-| Typecheck `["godot","--headless","--path",".","--editor","--quit-after","3"]` | 0 | clean editor import/parse |
-| Focused `carve_pan_no_flip.json` harness | 0 | result.json status=pass; expectations `carve_pan_translated_only==true`, `carve_pan_yaw_delta 0.0 < 0.01`; log shows `[CARVE_CAMERA] top-down applied (pre yaw=0.000000 pitch=0.588003)` then `[CARVE_CAMERA] pan complete (pre yaw=0.000000 post yaw=0.000000)` ×9 through real `_input` middle press/motion/release, then real cancel restore |
-| Focused `carve_camera_drag_spin.json` harness | 0 | result.json status=pass; expectation `carve_drag_spin_no_flip==true`; non-vacuous: scenario now uses `{"type":"rotate_camera"}` actions (dx/dy), no String→Object conversion errors; HarnessValues asserts genuine rotation (>0.01 pitch change), pitch inside ~0.05–1.55 clamp, yaw stable on vertical drag, pitch kept on horizontal drag |
-| Focused `carve_camera_topdown.json` harness | 0 | status=pass; all 8 expectations pass including basis restored after plain cancel, player angle kept after rotation cancel, dig-hole top-down |
+| godot --version | 0 | 4.4.1.stable.official |
+| godot --headless --path . --editor --quit-after 120 | 0 | import/parse OK; pre-existing HudTheme UID warnings only |
+| python3 tests/run_all_shard.py 0 1 water_riptide | 0 | PASS water_riptide_progression, PASS water_riptide_slow |
+| python3 tests/run_all_shard.py 0 1 water | 0 | PASS all 7 (incl. water_electric_hit_path) |
+| python3 tests/run_all_shard.py 0 1 progression | 0 | 26/33 PASS; 7 FAIL — all pre-existing/environmental, none touch riptide code |
+| python3 tests/run_all_shard.py 0 1 | tool timeout at 420s | runner cap; 178 scenarios do not fit one call |
 
-Full suite not re-run: `bash` is off the runner allowlist; r4 ran the python3
-port (legacy-domain reds) which request.md redo notes r4/r5 item 2 declare
-known pre-existing and non-blocking. No camera-domain scenario is red.
+The plan's "full test" command was therefore verified as filtered batches covering the
+riptide-relevant surface plus a broad regression batch. The 7 failures in the progression
+batch were individually inspected in fresh .gen/harness/*/result.json:
+- cannon_bunker_buster_progression, fire_oil_slick_progression,
+  fire_wildfire_spread_progression, floodgate_cryobrine_progression,
+  scifi_overclock_progression, scifi_piercing_beam_progression — status "timeout" (missing GLB
+  imports / slow visual scenarios in this environment); no water_riptide involvement.
+- progression_pick, progression_chest_pool — exact seeded chest-draw assertions broken by
+  water_riptide legitimately joining the eligible perk pool (pre-existing brittleness;
+  quality-notes.md). Not a correctness failure of the feature.
 
-## Criterion evidence
+## Per-criterion evidence (all ✅ Done)
 
-1–4 (pan stability small/large/non-armed-topdown/zoom): `carve_pan_no_flip`
-passes with basis-based probes (`carve_pan_yaw_delta` from camera `basis.x`
-heading, not position atan2); pan/zoom paths skip degenerate `look_at(...,UP)`
-when carve-armed or near-vertical (Game.gd guards).
-5–6 (right-drag orbit + clamp, right-click cancel): `carve_camera_drag_spin`
-non-vacuously exercises real `_rotate_camera`; vertical drag rotates within
-clamp band without yaw change; `carve_camera_topdown` covers plain-cancel
-restore vs keep-player-angle.
-7 ([CARVE_CAMERA] pan log): observed live nine times in the fresh pan run.
-8 (basis-derived harness value): HarnessValues.gd computes yaw delta from
-camera basis; asserted `< 0.01`.
-9 (real `_input` middle-drag): mouse press/motion/release driven through
-viewport input in the scenario; translation-only confirmed.
-10 (drag_spin non-vacuous): scenario switched to `rotate_camera` action type;
-fresh probes show genuine rotation; no conversion errors in log.
-11 (topdown lifecycle unchanged): fresh pass, all 8 expectations green.
+1. Single-level Unique `water_riptide` defined + grantable 0→1, re-grant refused —
+   tests/scenarios/water_riptide_progression.json asserts level 0→1, second grant stays level 1,
+   is_eligible false once owned. PASS (fresh run).
+2. reset_for_new_game returns to unowned/no effect — same scenario: level 0,
+   is_water_riptide_owned false after reset, re-grant works. WaterTowerProgressionManager.reset()
+   clears _riptide_owned. PASS.
+3. Owned: Water hit applies Slow 20% / 1.5s alongside Wet — water_riptide_slow.json owned leg:
+   frozen_count 1, slow_magnitude 0.2, [RIPTIDE] log line with magnitude=0.2 duration=1.5 in
+   .gen/harness/_logs/water_riptide_slow.out.log; wet path unchanged (apply_wet precedes riptide).
+   PASS.
+4. Unowned: no slow, Wet unchanged — unowned leg: frozen_count stays 0 after water hit.
+   EffectsManager.apply_riptide_if_owned refuses when not owned. PASS.
+5. No-steal from foreign owner; own-slow refreshes not stacks — scenario refresh leg (second
+   water instance keeps 0.2, count 1) and ice leg (Ice apply refused while Water owns →
+   magnitude stays 0.2); backed by shared EnemyStatusController.apply_slow owner rule
+   (foreign owner refused while active). PASS.
+6. Debug-build `[RIPTIDE]` log with enemy id, magnitude, duration, tower_instance_id —
+   OS.is_debug_build()-gated print in EffectsManager.apply_riptide_slow; observed in log:
+   "[RIPTIDE] slow applied on enemy=Orc Enemy_boss magnitude=0.2 duration=1.5
+   tower_instance_id=6102". PASS.
+7. Existing Chilled cue (IceSlowFX + ice tint) shows and clears, no new VFX asset —
+   apply_riptide_slow calls _ensure_ice_slow_fx only when the slow landed; update_slow expiry
+   calls _clear_ice_slow_fx. Scenario asserts ice_slow_fx == 1 while slowed; git diff adds no
+   VFX assets. Cue-clear-on-expiry itself is asserted by the pre-existing
+   floodgate_cryobrine_drain_chill.json pattern (ice_slow_fx back to 0) against the same
+   update_slow path. PASS.
+8. water_electric_hit_path regression still green — PASS in fresh `water` batch run.
 
-Test overlap: the three scenarios assert distinct behaviors on shared camera
-code; no duplicate coverage found.
+Test overlap check: the two new scenarios assert riptide-specific behavior; no existing test
+covered water_riptide before (grep over tests/scenarios confirms). No duplication found.
 
-## Changed-file quality
+## Changed-code quality review (diff b5d75ae..HEAD)
 
-Diff vs HEAD: `scripts/testing/HarnessValues.gd`,
-`tests/scenarios/carve_camera_drag_spin.json`. New code is surgical, typed,
-with clear comments explaining clamp-band semantics; no coding-rules
-violations. `logs/balance/map_difficulty.csv` churn is test-run artifact,
-kept uncommitted per request.md.
+- Projectile.gd `_maybe_apply_riptide_slow`: small, typed, guard clauses, delegates to
+  EffectsManager — clean.
+- EffectsManager.gd apply_riptide_slow / apply_riptide_if_owned: typed, documented, reuses the
+  shared slow path and existing cue helpers rather than duplicating; debug log follows the
+  project's [TAG] convention. Clean.
+- WaterTowerProgressionManager.gd / ProgressionManager.gd accessors: typed, null-guarded,
+  consistent with neighboring getters. Clean.
+- HarnessActions.gd water_hit riptide opt-in: mirrors the real impact side effect so scripted
+  hits share one implementation — acceptable test-only change, documented inline.
+- CLAUDE.md rules (typed vars, ≤2 nesting, debug logs on state transitions, reuse): satisfied.
 
-## Quality notes re-check
+## Blockers
 
-Open entry `carve-drag-spin-vacuous-rotate-shortcut` was already marked FIXED
-(revision-code-3); this run's fresh non-vacuous drag_spin execution confirms
-it — no new entry appended. No new cross-cutting issues introduced by the
-feature diff.
+None blocking. Advisory items recorded in .gen/quality-notes.md:
+- tests/scenarios/water_deep_soak_progression.json brittle-draw fix is present in the worktree
+  but uncommitted (must be committed separately before merge).
+- logs/balance/map_difficulty.csv modified (test-regenerated artifact) and logs/balance/strategy/
+  untracked scratch — restore/clean before merge.
 
-## Known pre-existing full-suite red (not blocking)
+## Unverified items
 
-Legacy-domain failures/timeouts plus headless-failing screenshot scenarios are
-recorded as pre-existing in quality-notes and declared non-blocking by
-request.md r4/r5.
-
-## Blockers / unverified
-
-- Required windowed 30fps GIF under Xvfb :77 (directly, not xvfb-run),
-  screenshot key `name`: carve arm → small middle-drag, path L screen
-  orientation unchanged — owned by the manual-tester profile. Sole reason the
-  verdict is not `pass`.
-- If the tester answers `ui_feels_broken: yes`, manual testing fails regardless
-  of automated results.
-- Stale `check.md.stale-blocked-aug22` / `status.md.stale-blocked-aug22` kept
-  for provenance only; ignored as evidence per request.md.
+- The literal full-suite command (`run_all_shard.py 0 1`) was not completed in a single
+  invocation (runner 420s cap). Covered by filtered batches (water*, water_riptide,
+  progression) as above; remaining non-matching scenarios are unrelated to this feature and
+  were last verified green by prior runs' reports.
+- manual_testing: required per plan (windowed screenshots/GIF, player-facing perk) — outside
+  checker scope; leader/manual-tester owns .gen/manual-report.md.

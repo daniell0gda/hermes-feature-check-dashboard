@@ -1,85 +1,34 @@
-# Acceptance Plan: fix-preexisting-harness-reds
+# Acceptance Plan: Water Tower: Riptide — light Slow alongside Wet (water_riptide)
+
+manual_testing: required
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/cannon_bunker_buster.json"]`
-- Full test: `["bash", ".gen/run_full_suite.sh"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "3"]`
+- Focused test: `["python3", "tests/run_all_shard.py", "0", "1", "water_riptide"]`
+- Full test: `["python3", "tests/run_all_shard.py", "0", "1"]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "120"]`
 
 ## Clusters
 
-1. cannon-ballista-damage-path — files: `scripts/game` (tower attack/damage scripts), `tests/scenarios/cannon_bunker_buster.json`, `tests/scenarios/cannon_bunker_buster_progression.json`, `tests/scenarios/cannon_heavier_shells_blast.json`, `tests/scenarios/curse_overheat_cycle.json` — depends on: none
-- A fresh run of `cannon_bunker_buster` reaches `stats.damage_by_type.cannon > 0` within the scenario timeout and reports status pass with exit code 0.
-- A fresh run of `cannon_bunker_buster_progression` observes its expected cannon damage progression value and reports status pass with exit code 0.
-- A fresh run of `cannon_heavier_shells_blast` observes its expected blast behaviour and reports status pass with exit code 0.
-- A fresh run of `curse_overheat_cycle` observes balista damage landing on enemies within the scenario timeout and reports status pass with exit code 0.
-2. burn-material-state — files: `scripts/game/actors/effects` (status/material restore scripts), `tests/scenarios/fire_oil_slick.json`, `tests/scenarios/fire_oil_slick_progression.json`, `tests/scenarios/ice_burn_material_restore_stuck.json` — depends on: none
-- After the `fire_oil_slick` scenario's burn application, `Mushnub_boss.materials_clean` becomes false within the scenario timeout, and the scenario reports status pass with exit code 0.
-- A fresh run of `fire_oil_slick_progression` reports status pass with exit code 0.
-- In `ice_burn_material_restore_stuck`, after the frozen enemy's effect expires, the enemy's original materials are restored (material state returns to clean) within the scenario timeout, and the scenario reports status pass with exit code 0.
-3. fire-spread-family — files: `scripts/game` (fire spread/hazard scripts), `tests/scenarios/fire_flashover_spread.json`, `tests/scenarios/fire_wildfire_spread_progression.json`, `tests/scenarios/fire_wildfire_spread_runtime.json`, `tests/scenarios/fire_wildfire_spread_visual.json` — depends on: none
-- A fresh run of `fire_flashover_spread` observes fire spreading beyond the ignition tile within the scenario timeout and reports status pass with exit code 0.
-- Fresh runs of `fire_wildfire_spread_progression`, `fire_wildfire_spread_runtime`, and `fire_wildfire_spread_visual` each report status pass with exit code 0.
-4. elemental-progression-tuning — files: `autoload/ProgressionManager.gd` or perk config data, `tests/scenarios/scifi_overclock.json`, `tests/scenarios/scifi_overclock_progression.json`, `tests/scenarios/scifi_capacitor_bank.json`, `tests/scenarios/scifi_piercing_beam_progression.json`, `tests/scenarios/water_deep_soak_progression.json`, `tests/scenarios/floodgate_cryobrine_progression.json` — depends on: none
-- A fresh run of `scifi_overclock` reports its overclock effect within the scenario timeout and exits with status pass, code 0.
-- The `scifi_overclock_progression` scenario's observed progression value matches the scenario's expected value exactly (currently 1.5 vs expected 1.4); whichever side is stale, game code or scenario notes[] record which value is correct and why.
-- Fresh runs of `scifi_capacitor_bank`, `scifi_piercing_beam_progression`, `water_deep_soak_progression`, and `floodgate_cryobrine_progression` each report status pass with exit code 0.
-5. hud-armed-mode-call-path — files: `scripts/ui` (armed-mode button handling), `tests/scenarios/hud_controls_state.json` — depends on: none
-- After the `hud_controls_state` scenario issues `call ui _on_carve`, `ui_call.get_armed_mode_buttons` reports `"carve"` within the scenario timeout, and the scenario reports status pass with exit code 0.
-6. timed-hazards-and-victory — files: `scripts/game` (hazard timer / victory-clear scripts), `tests/scenarios/issue_35_timed_hazards_map_change.json`, `tests/scenarios/issue_86_victory_underground_clear.json` — depends on: none
-- A fresh run of `issue_35_timed_hazards_map_change` observes its timed hazard surviving/behaving across a map change within the scenario timeout and reports status pass with exit code 0.
-- A fresh run of `issue_86_victory_underground_clear` reaches its victory condition after the underground clear within the scenario timeout and reports status pass with exit code 0.
-7. boss-targeting-isolation — files: `scripts/game` (boss/porter, static breach, targeting scripts), `tests/scenarios/porter_boss_runner.json`, `tests/scenarios/static_breach_isolation.json`, `tests/scenarios/tower_targeting_armor_priority.json` — depends on: none
-- A fresh run of `porter_boss_runner` completes its runner timeline within the scenario timeout and reports status pass with exit code 0.
-- A fresh run of `static_breach_isolation` observes breach isolation within the scenario timeout and reports status pass with exit code 0.
-- A fresh run of `tower_targeting_armor_priority` observes armored enemies prioritized per the targeting contract within the scenario timeout and reports status pass with exit code 0.
-8. long-carve-tile-budget — files: `scripts/game/CaveSystem.gd` or underground grid sizing, `tests/scenarios/cave_discovery_long_carve.json` — depends on: none
-- A fresh run of `cave_discovery_long_carve` yields at least 1000 carved tiles, either because the carveable area was restored or because the threshold was adjusted with an explicit justification recorded in the scenario's `notes[]`; no silent weakening of the assertion.
-9. progression-economy — files: `autoload/ProgressionManager.gd` or chest/pick reward scripts, `tests/scenarios/progression_chest_pool.json`, `tests/scenarios/progression_pick.json` — depends on: none
-- A fresh run of `progression_chest_pool` observes the expected chest reward pool contents and reports status pass with exit code 0.
-- A fresh run of `progression_pick` observes the expected pick rewards and reports status pass with exit code 0.
-10. projectile-damage-thresholds — files: `scripts/game` (projectile damage/scoring scripts), `tests/scenarios/projectiles_10x_ballistic.json`, `tests/scenarios/projectiles_10x_beam_cone.json`, `tests/scenarios/projectiles_2x_roster.json`, `tests/scenarios/projectiles_5x_roster.json` — depends on: none
-- A fresh run of `projectiles_10x_ballistic` reaches its cumulative damage/score thresholds within the scenario timeout and reports status pass with exit code 0.
-- A fresh run of `projectiles_10x_beam_cone` reaches its cumulative damage/score thresholds within the scenario timeout and reports status pass with exit code 0.
-- Fresh runs of `projectiles_2x_roster` and `projectiles_5x_roster` reach their roster damage/score thresholds and each report status pass with exit code 0.
-11. roster-and-diversion-baseline — files: `scripts/game` (tower roster/placement, diversion scripts), `tests/scenarios/smoke_tower_roster.json`, `tests/scenarios/underground_diversion_baseline.json` — depends on: none
-- A fresh run of `smoke_tower_roster` places every expected roster tower without errors and reports status pass with exit code 0.
-- A fresh run of `underground_diversion_baseline` establishes its baseline diversion measurements within the scenario timeout and reports status pass with exit code 0.
-12. suite-regression-guard — files: none — depends on: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-- Every previously-green neighboring scenario in each touched feature family (same-name family suites listed in `.gen/full_suite.txt`) still reports status pass on a rerun after the fixes.
-- Any scenario whose JSON expectation was adjusted rather than game code changed carries a `notes[]` entry justifying the change as a stale tuning assumption; no failing expectation is weakened silently.
-- A fresh focused-run runner stdout/stderr contains no new Godot parse/script errors compared to the pre-existing baseline noise (known pre-existing HudTheme texture-load noise excluded).
+1. riptide-progression-definition — files: `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd` — depends on: none
+- The new Unique perk `water_riptide` is defined in the Water tower progression file as a single-level Unique compatible with the water tower, and is grantable through the normal progression flow (`apply_progression` raises its level from 0 to 1, and further grants are refused once owned).
+- After `reset_for_new_game`, `water_riptide` is unowned again and has no gameplay effect until re-granted.
+2. riptide-water-hit-slow — files: `scripts/game/actors/Projectile.gd`, `scripts/game/actors/effects/EffectsManager.gd`, `scripts/game/actors/enemy/parts/EnemyStatusController.gd` — depends on: 1
+- With `water_riptide` owned, a Water tower projectile hit on an enemy applies a Slow of 20% magnitude lasting 1.5 seconds, observable as reduced enemy movement speed for that window while the Wet status continues as before.
+- Without `water_riptide` owned, Water hits apply no slow; enemy movement speed and existing Wet behaviour are unchanged from before this feature.
+- While an enemy's slow is owned by another tower instance (e.g. Ice), a Water hit does not overwrite or steal the active slow; when Water itself owns the active slow, subsequent Water hits refresh it to 20% / 1.5s rather than stacking.
+- Debug-build `[RIPTIDE]` log line per water-triggered slow application, naming the enemy id, slow magnitude, duration, and owning tower instance id.
+3. riptide-cue-and-regressions — files: `scripts/game/actors/effects/EffectsManager.gd`, `scripts/game/actors/enemy/parts/EnemyStatusController.gd` — depends on: 2
+- When a Water hit triggers the Riptide slow, the enemy shows the existing Chilled visual cue (IceSlowFX snowflake particles plus ice-tint overlay) driven by the existing status-controller visuals, with no new VFX asset added; the cue clears when the slow expires.
+- The existing shared hit-path scenario (`water_electric_hit_path`) still passes: Water and Electric hits continue to land damage and apply their existing effects alongside the new optional slow.
 
 ## Criteria
 
-- A fresh run of `cannon_bunker_buster` reaches `stats.damage_by_type.cannon > 0` within the scenario timeout and reports status pass with exit code 0.
-- A fresh run of `cannon_bunker_buster_progression` observes its expected cannon damage progression value and reports status pass with exit code 0.
-- A fresh run of `cannon_heavier_shells_blast` observes its expected blast behaviour and reports status pass with exit code 0.
-- A fresh run of `curse_overheat_cycle` observes balista damage landing on enemies within the scenario timeout and reports status pass with exit code 0.
-- After the `fire_oil_slick` scenario's burn application, `Mushnub_boss.materials_clean` becomes false within the scenario timeout, and the scenario reports status pass with exit code 0.
-- A fresh run of `fire_oil_slick_progression` reports status pass with exit code 0.
-- In `ice_burn_material_restore_stuck`, after the frozen enemy's effect expires, the enemy's original materials are restored (material state returns to clean) within the scenario timeout, and the scenario reports status pass with exit code 0.
-- A fresh run of `fire_flashover_spread` observes fire spreading beyond the ignition tile within the scenario timeout and reports status pass with exit code 0.
-- Fresh runs of `fire_wildfire_spread_progression`, `fire_wildfire_spread_runtime`, and `fire_wildfire_spread_visual` each report status pass with exit code 0.
-- A fresh run of `scifi_overclock` reports its overclock effect within the scenario timeout and exits with status pass, code 0.
-- The `scifi_overclock_progression` scenario's observed progression value matches the scenario's expected value exactly (currently 1.5 vs expected 1.4); whichever side is stale, game code or scenario notes[] record which value is correct and why.
-- Fresh runs of `scifi_capacitor_bank`, `scifi_piercing_beam_progression`, `water_deep_soak_progression`, and `floodgate_cryobrine_progression` each report status pass with exit code 0.
-- After the `hud_controls_state` scenario issues `call ui _on_carve`, `ui_call.get_armed_mode_buttons` reports `"carve"` within the scenario timeout, and the scenario reports status pass with exit code 0.
-- A fresh run of `issue_35_timed_hazards_map_change` observes its timed hazard surviving/behaving across a map change within the scenario timeout and reports status pass with exit code 0.
-- A fresh run of `issue_86_victory_underground_clear` reaches its victory condition after the underground clear within the scenario timeout and reports status pass with exit code 0.
-- A fresh run of `porter_boss_runner` completes its runner timeline within the scenario timeout and reports status pass with exit code 0.
-- A fresh run of `static_breach_isolation` observes breach isolation within the scenario timeout and reports status pass with exit code 0.
-- A fresh run of `tower_targeting_armor_priority` observes armored enemies prioritized per the targeting contract within the scenario timeout and reports status pass with exit code 0.
-- A fresh run of `cave_discovery_long_carve` yields at least 1000 carved tiles, either because the carveable area was restored or because the threshold was adjusted with an explicit justification recorded in the scenario's `notes[]`; no silent weakening of the assertion.
-- A fresh run of `progression_chest_pool` observes the expected chest reward pool contents and reports status pass with exit code 0.
-- A fresh run of `progression_pick` observes the expected pick rewards and reports status pass with exit code 0.
-- A fresh run of `projectiles_10x_ballistic` reaches its cumulative damage/score thresholds within the scenario timeout and reports status pass with exit code 0.
-- A fresh run of `projectiles_10x_beam_cone` reaches its cumulative damage/score thresholds within the scenario timeout and reports status pass with exit code 0.
-- Fresh runs of `projectiles_2x_roster` and `projectiles_5x_roster` reach their roster damage/score thresholds and each report status pass with exit code 0.
-- A fresh run of `smoke_tower_roster` places every expected roster tower without errors and reports status pass with exit code 0.
-- A fresh run of `underground_diversion_baseline` establishes its baseline diversion measurements within the scenario timeout and reports status pass with exit code 0.
-- Every previously-green neighboring scenario in each touched feature family (same-name family suites listed in `.gen/full_suite.txt`) still reports status pass on a rerun after the fixes.
-- Any scenario whose JSON expectation was adjusted rather than game code changed carries a `notes[]` entry justifying the change as a stale tuning assumption; no failing expectation is weakened silently.
-- A fresh focused-run runner stdout/stderr contains no new Godot parse/script errors compared to the pre-existing baseline noise (known pre-existing HudTheme texture-load noise excluded).
-
-manual_testing: none
+- The new Unique perk `water_riptide` is defined in the Water tower progression file as a single-level Unique compatible with the water tower, and is grantable through the normal progression flow (`apply_progression` raises its level from 0 to 1, and further grants are refused once owned).
+- After `reset_for_new_game`, `water_riptide` is unowned again and has no gameplay effect until re-granted.
+- With `water_riptide` owned, a Water tower projectile hit on an enemy applies a Slow of 20% magnitude lasting 1.5 seconds, observable as reduced enemy movement speed for that window while the Wet status continues as before.
+- Without `water_riptide` owned, Water hits apply no slow; enemy movement speed and existing Wet behaviour are unchanged from before this feature.
+- While an enemy's slow is owned by another tower instance (e.g. Ice), a Water hit does not overwrite or steal the active slow; when Water itself owns the active slow, subsequent Water hits refresh it to 20% / 1.5s rather than stacking.
+- Debug-build `[RIPTIDE]` log line per water-triggered slow application, naming the enemy id, slow magnitude, duration, and owning tower instance id.
+- When a Water hit triggers the Riptide slow, the enemy shows the existing Chilled visual cue (IceSlowFX snowflake particles plus ice-tint overlay) driven by the existing status-controller visuals, with no new VFX asset added; the cue clears when the slow expires.
+- The existing shared hit-path scenario (`water_electric_hit_path`) still passes: Water and Electric hits continue to land damage and apply their existing effects alongside the new optional slow.
