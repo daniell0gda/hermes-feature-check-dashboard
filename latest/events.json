@@ -1,11 +1,47 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-25T14:38:02.453Z",
-    "node": "plan",
+    "timestamp": "2026-08-25T12:48:38.796Z",
+    "node": "check",
     "status": "completed",
-    "duration_ms": 413284,
-    "summary": "All three verification commands are runnable against the repo (the focused run reproduces the current `status=timeout` red on a clean tree, confirming the plan targets the right scenario). Artifacts written:\n\n- /workspace/poke-defense-godot\u2026",
+    "duration_ms": 1239070,
+    "summary": "Check complete. Worktree confirmed restored to the implementor's exact state (temporary diagnostic instrumentation fully reverted; diff matches pre-check baseline).\n\nVerified done: 3. Pending: 5 \u2014 0 due to build/test failures, 4 due to miss\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-25T13:11:17.662Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 1354294,
+    "summary": "The release_project_worker tool isn't exposed in this session (only `run_project_cmd` from the runner plugin), so the worker stays up for the checker.\n\nSummary (revision 1, implementation cluster):\n\n- Root cause of the demoted criteria was \u2026",
+    "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-25T13:24:54.385Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 812012,
+    "summary": "Verification complete. All commands ran through `run_project_cmd` (project=poke-defense-godot).\n\n- Preflight `godot --version`: exit 0 (4.4.1 stable)\n- Editor/typecheck gate: exit 0, no script errors\n- Focused harness: exit 0, result.json `\u2026",
+    "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-25T13:25:36.235Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 37468,
+    "summary": "Gate decision complete.\n\n- Read request.md, plan.md, check.md, status.md and the manual-testing-gate skill.\n- Check is `pass` with one pending criterion: windowed stun-icon visibility (criterion 8). That is a new player-visible story (stun \u2026",
+    "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-25T14:55:51.890Z",
+    "node": "manual-tester",
+    "status": "failed",
+    "duration_ms": 5410788,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'manual-tester', '-z', 'You are the manual-tester worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-traps-pit-of-spikes-first-h\u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'manual-tester', '-z', 'You are the manual-tester worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-traps-pit-of-spikes-first-h\u2026"
   }
 ]

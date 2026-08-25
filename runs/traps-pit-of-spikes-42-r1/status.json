@@ -6,16 +6,16 @@
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/traps-pit-of-spikes-42-r1/",
-  "heartbeat_at": "2026-08-25T13:25:36.235Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-25T13:25:36.235Z",
+  "heartbeat_at": "2026-08-25T14:55:51.890Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-25T14:55:51.890Z",
   "process_id": 654623,
   "host": "f1a4230ec90b",
-  "phase": "manual-tester",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T13:25:41.102759+00:00",
-    "last_success_at": "2026-08-25T13:25:41.101142+00:00",
+    "last_attempt_at": "2026-08-25T14:55:51.893258+00:00",
+    "last_success_at": "2026-08-25T13:25:45.533058+00:00",
     "last_error": null
   },
   "metrics": {

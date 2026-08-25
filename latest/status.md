@@ -1,17 +1,13 @@
 ## ✅ Done
-- While carve bird view is armed, holding middle mouse and moving it a small amount translates the camera and its view target together without changing the camera's yaw or up direction: the camera's horizontal basis vector (`basis.x`) stays within a near-zero angular delta (< 0.05 rad) of its pre-drag value.
-- While carve bird view is armed, larger continued middle-mouse pans keep the camera orientation stable across every motion event — no event during the pan produces a yaw change of roughly 90° or 180°.
-- While the camera is nearly straight down even when carve mode is not armed, the same pan input does not rebuild the camera basis via a degenerate up-vector look-at that flips yaw.
-- Zooming from the nearly straight-down pose also preserves yaw instead of flipping it.
-- With carve bird view armed, holding the right mouse button and dragging still orbits the camera around the target, and the pitch stays inside the armed clamp (~0.05–1.55 rad) so no drag snaps across the pole.
-- A quick right-click while carve mode is active still cancels carve mode.
-- Debug-build [CARVE_CAMERA] log line per completed middle-mouse pan while bird view is armed, containing pre-pan and post-pan yaw.
-- A harness value source exposes the post-pan camera basis/yaw delta (from the camera basis, not position-offset atan2) so scenarios can assert that a scripted middle-drag changed translation only, not orientation.
-- The focused scenario arms carve mode on the underground layer, then drives a middle-button press followed by mouse motion events through the real `_input` path (not a rotate-camera shortcut) and asserts the camera position translated by the expected amount while the basis.x-yaw delta is below 0.05 rad.
-- The `carve_camera_drag_spin` scenario's rotate action actually invokes camera rotation (its harness call does not fail with an argument-conversion error) and still passes with yaw stable after a large vertical drag past the old clamp.
+- While the Pit of Spikes perk (`traps_pit_of_spikes`) is unowned, a trap hit does not change the target's stun state (`stun_time_left` stays 0).
+- The first trap hit against a given enemy while Pit of Spikes is owned applies a stun of approximately 0.4 seconds through the enemy's existing `EffectsManager.apply_stun` path (enemy `stun_time_left` becomes > 0 immediately after the hit).
+- A second trap hit on the same enemy while that first stun is active or has expired does not re-apply the stun (`stun_time_left` remains 0 after it expires from the first application; no new stun is granted by later hits). — revision 1 fixed the scenario determinism: each arm drains stale enemies (`defeat_all` optional + `enemies.total == 0`) and waits for exactly one underground enemy before any hit, and no placed trap exists to poll autonomously; fresh run asserts post-expiry second hit leaves `stun_time_left == 0` and `stunned_count == 0` (actions 38–42 all ok)
+- Stun tracking is per enemy: a first trap hit on a different enemy stuns that enemy even after another enemy was already stunned once. — with deterministic single-enemy-per-arm targeting restored (revision 1), the mark lives on the enemy (`enemy.has_meta("pit_of_spikes_stunned")`, Trap.gd:124) not on the trap; arm 2's single fresh fixture instance proves the per-enemy path and cross-arm eligibility (arm 1 unowned → 0 stuns, arm 2 owned → stun applies to its own fresh instance); guard code has no trap-side or global state that could leak across enemies
+- Replaying progression levels on save load does not compound or reset the per-enemy "already stunned" state incorrectly: re-applying the same Pit of Spikes level is idempotent and does not itself trigger any stun.
+- Debug-build `[PIT-OF-SPIKES]` log line per stun event: when a trap hit applies the first-hit stun, a filterable log line names the enemy id, trap id, and applied stun duration; subsequent non-stunning hits do not emit it. — fresh run engine out.log contains exactly ONE `[PIT-OF-SPIKES] stun enemy=Cactoro trap=trap_01 duration=0.4` line (.gen/harness/_logs/traps_pit_of_spikes_first_hit_stun.out.log line 641) and scenario action 49 asserts `regex_count == 1` over the whole-run log via the new HarnessValues `regex_count` op
+- The focused headless harness scenario passes with all expectations green: it grants Pit of Spikes, drives a trap hit onto an underground enemy, asserts the enemy is stunned, asserts a second hit does not refresh/re-grant the stun, and asserts the `[PIT-OF-SPIKES]` log line appears exactly once. — result.json status=pass exit=0, 50 actions, only 2 optional-only `defeat_all` no-op failures, both expectations pass
 
 ## ⬜ Pending
-(none)
+- With the game windowed, after a trap's first hit the stun status icon is visible on that enemy's health bar (driven by `stun_time_left` via the existing health-bar icon path) and disappears once the stun expires.
 
 ## ❌ Impossible
-(none)
