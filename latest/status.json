@@ -1,21 +1,21 @@
 {
-  "run_id": "porter-mass-transit-r1",
-  "feature": "porter-mass-transit",
+  "run_id": "r1-traps-grave-robber",
+  "feature": "traps-grave-robber",
   "status": "running",
-  "started_at": "2026-08-25T01:07:54.003Z",
+  "started_at": "2026-08-24T23:55:40.300Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/porter-mass-transit-r1/",
-  "heartbeat_at": "2026-08-25T01:24:42.773Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-25T01:24:42.773Z",
-  "process_id": 536040,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r1-traps-grave-robber/",
+  "heartbeat_at": "2026-08-25T01:36:19.448Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-25T01:36:19.448Z",
+  "process_id": 520852,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "plan",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T01:24:47.601460+00:00",
-    "last_success_at": "2026-08-25T01:24:47.070309+00:00",
+    "last_attempt_at": "2026-08-25T01:36:19.449662+00:00",
+    "last_success_at": "2026-08-25T00:06:13.098643+00:00",
     "last_error": null
   },
   "metrics": {
@@ -28,8 +28,8 @@
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 67102,
-        "output_tokens": 4321
+        "input_tokens": 111538,
+        "output_tokens": 7219
       }
     ]
   }
