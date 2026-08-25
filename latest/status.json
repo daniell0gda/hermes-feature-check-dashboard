@@ -1,22 +1,36 @@
 {
-  "run_id": "issue45-water-flood-r1",
-  "feature": "water-conductive-flood-wet-splash",
-  "status": "failed",
-  "started_at": "2026-08-25T06:34:54.663Z",
-  "ended_at": "2026-08-25T07:14:53.499Z",
-  "error": "code worker returned no reply (empty model or exhausted API retries)",
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
-  "heartbeat_at": "2026-08-25T07:14:53.499Z",
-  "last_node": "code",
+  "run_id": "issue116-game-ready-blocks-map-load-r6",
+  "feature": "game-ready-blocks-map-load",
+  "status": "running",
+  "started_at": "2026-08-25T06:45:24.094Z",
+  "ended_at": null,
+  "error": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r6/",
+  "heartbeat_at": "2026-08-25T07:16:28.485Z",
+  "last_node": "check",
   "active_node": null,
-  "last_event_at": "2026-08-25T07:14:48.856Z",
-  "process_id": 584915,
+  "last_event_at": "2026-08-25T07:16:28.485Z",
+  "process_id": 589503,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T07:14:53.499954+00:00",
-    "last_success_at": "2026-08-25T07:14:53.498825+00:00",
+    "last_attempt_at": "2026-08-25T07:16:28.486668+00:00",
+    "last_success_at": "2026-08-25T07:00:01.394077+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 166010,
+        "output_tokens": 19134
+      }
+    ]
+  }
 }
