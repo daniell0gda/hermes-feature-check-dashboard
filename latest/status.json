@@ -1,22 +1,47 @@
 {
-  "run_id": "r82-porter-broad-sweep",
-  "feature": "porter-broad-sweep",
-  "status": "failed",
-  "started_at": "2026-08-25T09:30:53.584Z",
-  "ended_at": "2026-08-25T10:36:16.577Z",
-  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'check', '-z', 'You are the check worker in a team-work run.\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep.\\nThe durable evidence dir\u2026",
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r82-porter-broad-sweep/",
-  "heartbeat_at": "2026-08-25T10:36:16.577Z",
-  "last_node": "check",
+  "run_id": "r1-traps-grave-robber",
+  "feature": "traps-grave-robber",
+  "status": "running",
+  "started_at": "2026-08-25T07:35:36.084Z",
+  "ended_at": null,
+  "error": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r1-traps-grave-robber/",
+  "heartbeat_at": "2026-08-25T10:44:27.295Z",
+  "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-25T10:36:12.134Z",
-  "process_id": 625484,
+  "last_event_at": "2026-08-25T10:44:27.295Z",
+  "process_id": 603674,
   "host": "f1a4230ec90b",
   "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T10:36:16.577510+00:00",
-    "last_success_at": "2026-08-25T10:36:16.575864+00:00",
+    "last_attempt_at": "2026-08-25T10:44:27.297090+00:00",
+    "last_success_at": "2026-08-25T09:14:20.942142+00:00",
     "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 64075,
+        "output_tokens": 5053
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 64089,
+        "output_tokens": 8294
+      }
+    ]
+  }
 }
