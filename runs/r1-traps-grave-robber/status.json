@@ -2,21 +2,19 @@
   "run_id": "r1-traps-grave-robber",
   "feature": "traps-grave-robber",
   "status": "running",
-  "started_at": "2026-08-25T05:32:58.507Z",
+  "started_at": "2026-08-25T05:58:15.465Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r1-traps-grave-robber/",
-  "heartbeat_at": "2026-08-25T05:32:58.507Z",
+  "heartbeat_at": "2026-08-25T05:58:15.465Z",
   "last_node": null,
-  "active_node": "code",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 575299,
+  "process_id": 578871,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T05:33:04.906521+00:00",
-    "last_success_at": "2026-08-25T05:33:03.580367+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T05:58:15.465688+00:00"
   },
   "metrics": {}
 }
