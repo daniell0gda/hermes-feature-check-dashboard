@@ -1,22 +1,20 @@
 {
-  "run_id": "r1-traps-grave-robber",
-  "feature": "traps-grave-robber",
+  "run_id": "r47-2",
+  "feature": "Water Tower Riptide - light Slow alongside Wet",
   "status": "running",
-  "started_at": "2026-08-25T05:58:15.465Z",
+  "started_at": "2026-08-25T06:32:15.686Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r1-traps-grave-robber/",
-  "heartbeat_at": "2026-08-25T05:58:15.465Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
+  "heartbeat_at": "2026-08-25T06:32:15.686Z",
   "last_node": null,
-  "active_node": "code",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 578871,
+  "process_id": 583405,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T05:58:20.294162+00:00",
-    "last_success_at": "2026-08-25T05:58:19.739152+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T06:32:15.686249+00:00"
   },
   "metrics": {}
 }
