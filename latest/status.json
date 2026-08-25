@@ -1,21 +1,21 @@
 {
   "run_id": "issue45-water-flood-r1",
   "feature": "Water Tower: Conductive Flood (Wet splash radius)",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-25T16:10:08.483Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-25T19:01:19.342Z",
+  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'manual-tester', '-z', 'You are the manual-tester worker in a team-work run.\\nWork in /workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash.\\nThe\u2026",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
-  "heartbeat_at": "2026-08-25T19:01:14.615Z",
+  "heartbeat_at": "2026-08-25T19:01:19.342Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-25T19:01:14.615Z",
   "process_id": 714601,
   "host": "f1a4230ec90b",
-  "phase": "team-leader",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T19:01:14.615804+00:00",
-    "last_success_at": "2026-08-25T17:31:08.293296+00:00",
+    "last_attempt_at": "2026-08-25T19:01:19.342939+00:00",
+    "last_success_at": "2026-08-25T19:01:19.341626+00:00",
     "last_error": null
   },
   "metrics": {
