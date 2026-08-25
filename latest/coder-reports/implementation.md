@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation (traps_grave_robber, issue #80)
+# Coder report: implementation (traps_grave_robber, issue #80)
 
 ## Changed files
 - `scripts/progression/global.json` — new Common perk `traps_grave_robber` (Grave Robber), 3 levels with absolute values 0.1 / 0.15 / 0.25 and per-level descriptions.
@@ -33,4 +33,3 @@
 - Scenario gotcha: a hole teleports an enemy underground only when `compute_underground_route` finds a carved route to an EXIT — carve a corridor plus hole AND exit before any teleport, else the teleport silently no-ops.
 - Surface trap kills cannot happen via Trap auto-trigger (it only fires on underground enemies), so the surface arm stages the kill with `apply_effect trap_hit` driving `Trap.perform_hit`.
 - `logs/balance/map_difficulty.csv` diff is harness-generated side-effect output, not feature logic; reviewer may keep or revert it per project convention (previous issues' CSVs are committed on master).
-\n

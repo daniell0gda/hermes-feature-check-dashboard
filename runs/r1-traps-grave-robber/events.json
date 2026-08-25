@@ -7,5 +7,14 @@
     "duration_ms": 2926272,
     "summary": "Implementation complete. Summary:\n\nImplemented the `traps_grave_robber` (Grave Robber) Common perk per plan:\n- `scripts/progression/global.json`: 3-level perk with absolute values 0.1/0.15/0.25.\n- `EconomyProgressionManager.gd`: handles the\u2026",
     "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-25T09:14:11.283Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 2978794,
+    "summary": "Check complete. Wrote /workspace/git-workspaces/godot-td/issue-traps-grave-robber/.gen/check.md, .gen/status.md, and .gen/quality-notes.md.\n\nVerified done: 0. Pending: 12 \u2014 12 due to build/test failures (full suite not green), 0 due to miss\u2026",
+    "error": null
   }
 ]
