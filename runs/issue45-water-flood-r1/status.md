@@ -1,5 +1,5 @@
 ## ✅ Done
-- (none — full test suite gate not green; all criteria held Pending per build/test gate)
+- (none — scenario files lost during checker baseline probe; all criteria held Pending until the focused gate is re-proven on a restored tree)
 
 ## ⬜ Pending
 - The Water tower progression data defines a Unique perk entry with id `water_conductive_flood`, obtainable through the same eligibility and application path as other Water Uniques (`water_deep_soak`, `water_pressure`).

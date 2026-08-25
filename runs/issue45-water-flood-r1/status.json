@@ -1,22 +1,47 @@
 {
   "run_id": "issue45-water-flood-r1",
-  "feature": "water-conductive-flood-wet-splash",
-  "status": "failed",
-  "started_at": "2026-08-25T15:06:50.799Z",
-  "ended_at": "2026-08-25T16:37:12.496Z",
-  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash.\\nThe durable evidence \u2026",
+  "feature": "Water Tower: Conductive Flood (Wet splash radius)",
+  "status": "running",
+  "started_at": "2026-08-25T16:10:08.483Z",
+  "ended_at": null,
+  "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
-  "heartbeat_at": "2026-08-25T16:37:12.496Z",
-  "last_node": "code",
-  "active_node": null,
-  "last_event_at": "2026-08-25T16:37:07.082Z",
-  "process_id": 685515,
+  "heartbeat_at": "2026-08-25T17:11:24.082Z",
+  "last_node": "check",
+  "active_node": "code",
+  "last_event_at": "2026-08-25T17:11:24.082Z",
+  "process_id": 714601,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T16:37:12.496975+00:00",
-    "last_success_at": "2026-08-25T16:37:12.495753+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T17:11:25.855419+00:00",
+    "last_success_at": "2026-08-25T16:27:52.311989+00:00",
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'fetch', '--depth', '1', 'origin', 'gh-pages']' returned non-zero exit status 128."
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 137745,
+        "output_tokens": 5757
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 68516,
+        "output_tokens": 7992
+      }
+    ]
+  }
 }
