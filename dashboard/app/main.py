@@ -55,8 +55,12 @@ def _url_path_builder(root_path: str):
 def _list_url_builder(root_path: str):
     """Build a filtered run-list URL, omitting empty and default parameters."""
 
-    def list_url(status: str = "", q: str = "", pg: int = 1) -> str:
-        params = {name: value for name, value in (("status", status), ("q", q)) if value}
+    def list_url(status: str = "", q: str = "", project: str = "", pg: int = 1) -> str:
+        params = {
+            name: value
+            for name, value in (("status", status), ("q", q), ("project", project))
+            if value
+        }
         if pg and int(pg) > 1:
             params["pg"] = str(pg)
         query = urlencode(params)

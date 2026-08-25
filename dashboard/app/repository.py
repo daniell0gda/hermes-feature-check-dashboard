@@ -39,6 +39,7 @@ RUN_COLUMNS = frozenset(
         "metrics",
         "issue_url",
         "issue_number",
+        "project",
     }
 )
 
@@ -130,6 +131,7 @@ class Repository:
         search: str = "",
         page: int = 1,
         per_page: int = PER_PAGE_DEFAULT,
+        project: str = "",
     ) -> dict[str, Any]:
         per_page = min(PER_PAGE_MAX, max(1, int(per_page)))
         page = max(1, int(page))
@@ -147,10 +149,14 @@ class Repository:
             clauses.append("feature = ?")
             params.append(feature)
 
+        if project:
+            clauses.append("project = ?")
+            params.append(project)
+
         if search.strip():
             like = f"%{search.strip()}%"
-            clauses.append("(run_id LIKE ? OR feature LIKE ?)")
-            params.extend([like, like])
+            clauses.append("(run_id LIKE ? OR feature LIKE ? OR project LIKE ?)")
+            params.extend([like, like, like])
 
         where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
 
@@ -174,6 +180,16 @@ class Repository:
             "per_page": per_page,
             "pages": max(1, -(-total // per_page)),
         }
+
+    def projects(self) -> list[str]:
+        """Distinct projects that have runs, for filtering."""
+        return [
+            row["project"]
+            for row in self._connection.execute(
+                "SELECT project FROM runs WHERE project IS NOT NULL AND project != '' "
+                "GROUP BY project ORDER BY COUNT(*) DESC, project ASC"
+            ).fetchall()
+        ]
 
     def active_runs(self, limit: int = 10) -> list[dict[str, Any]]:
         return _rows(

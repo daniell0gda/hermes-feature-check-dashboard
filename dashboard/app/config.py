@@ -7,8 +7,9 @@ persistent is ever written outside it, so a container reinstall loses nothing.
 
 from __future__ import annotations
 
+import json
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Mapping
 
@@ -25,6 +26,30 @@ class ConfigError(RuntimeError):
 
 
 ISSUE_NUMBER_PLACEHOLDER = "{number}"
+ISSUE_PROJECT_PLACEHOLDER = "{project}"
+
+
+@dataclass(frozen=True)
+class IssueLinking:
+    """How to turn a bare issue number into a URL.
+
+    Only consulted for runs that state a number without a full URL; a run whose
+    documents carry a real issue URL is linked from that directly and needs no
+    configuration, whichever project it belongs to.
+    """
+
+    default_template: str | None = None
+    per_project: Mapping[str, str] = field(default_factory=dict)
+
+    def template_for(self, project: str | None) -> str | None:
+        if project and project in self.per_project:
+            return self.per_project[project]
+
+        return self.default_template
+
+    @property
+    def configured(self) -> bool:
+        return bool(self.default_template or self.per_project)
 
 
 @dataclass(frozen=True)
@@ -35,7 +60,7 @@ class Settings:
     host: str
     port: int
     root_path: str
-    issue_url_template: str | None = None
+    issue_linking: IssueLinking = field(default_factory=IssueLinking)
 
     @property
     def database_path(self) -> Path:
@@ -71,15 +96,20 @@ def load_settings(environ: Mapping[str, str] | None = None) -> Settings:
         host=(env.get("HFCD_HOST") or "0.0.0.0").strip(),
         port=int(port_text),
         root_path=root_path,
-        issue_url_template=_issue_url_template(env.get("HFCD_ISSUE_URL_TEMPLATE")),
+        issue_linking=IssueLinking(
+            default_template=_issue_template(
+                env.get("HFCD_ISSUE_URL_TEMPLATE"), "HFCD_ISSUE_URL_TEMPLATE"
+            ),
+            per_project=_per_project_templates(env.get("HFCD_ISSUE_URL_TEMPLATES")),
+        ),
     )
 
 
-def _issue_url_template(value: str | None) -> str | None:
-    """Only used when a run states an issue number but no full URL.
+def _issue_template(value: str | None, source: str) -> str | None:
+    """Validate one template.
 
-    Rejected outright when malformed: a template without the placeholder would
-    silently produce the same wrong link on every run.
+    Rejected outright when malformed: a template without the number placeholder
+    would silently produce the same wrong link on every run.
     """
     template = (value or "").strip()
     if not template:
@@ -87,15 +117,40 @@ def _issue_url_template(value: str | None) -> str | None:
 
     if ISSUE_NUMBER_PLACEHOLDER not in template:
         raise ConfigError(
-            f"HFCD_ISSUE_URL_TEMPLATE must contain {ISSUE_NUMBER_PLACEHOLDER}, got {template!r}. "
+            f"{source} must contain {ISSUE_NUMBER_PLACEHOLDER}, got {template!r}. "
             f"Example: https://github.com/owner/repo/issues/{ISSUE_NUMBER_PLACEHOLDER}"
         )
-    if not template.startswith(("http://", "https://")):
-        raise ConfigError(
-            f"HFCD_ISSUE_URL_TEMPLATE must be an http(s) URL, got {template!r}"
-        )
+    if not template.lower().startswith(("http://", "https://")):
+        raise ConfigError(f"{source} must be an http(s) URL, got {template!r}")
 
     return template
+
+
+def _per_project_templates(value: str | None) -> dict[str, str]:
+    """Parse a JSON object of project name -> issue URL template.
+
+    For projects on different hosts or owners, where one templated URL cannot
+    cover them all.
+    """
+    raw = (value or "").strip()
+    if not raw:
+        return {}
+
+    try:
+        parsed = json.loads(raw)
+    except ValueError as error:
+        raise ConfigError(
+            f"HFCD_ISSUE_URL_TEMPLATES must be a JSON object, e.g. "
+            f'{{"my-repo": "https://github.com/owner/my-repo/issues/{ISSUE_NUMBER_PLACEHOLDER}"}}: {error}'
+        ) from error
+
+    if not isinstance(parsed, dict):
+        raise ConfigError(f"HFCD_ISSUE_URL_TEMPLATES must be a JSON object, got {type(parsed).__name__}")
+
+    return {
+        str(project): _issue_template(template, f"HFCD_ISSUE_URL_TEMPLATES[{project!r}]") or ""
+        for project, template in parsed.items()
+    }
 
 
 def prepare_data_dir(settings: Settings) -> None:

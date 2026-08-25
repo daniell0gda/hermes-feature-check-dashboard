@@ -65,6 +65,7 @@
     <h2>All runs</h2>
     <form class="search" method="get" action="{{ url_path('/') }}" role="search">
       {% if filters.status %}<input type="hidden" name="status" value="{{ filters.status }}">{% endif %}
+      {% if filters.project %}<input type="hidden" name="project" value="{{ filters.project }}">{% endif %}
       <input type="search" name="q" value="{{ filters.q }}"
              placeholder="Filter by run id or feature" aria-label="Filter runs">
       <button type="submit">Search</button>
@@ -75,15 +76,27 @@
     {% for value, text in status_filters %}
     <a class="chip {{ 'is-current' if filters.status == value }}"
        {% if filters.status == value %}aria-current="page"{% endif %}
-       href="{{ list_url(status=value, q=filters.q) }}">{{ text }}</a>
+       href="{{ list_url(status=value, q=filters.q, project=filters.project) }}">{{ text }}</a>
     {% endfor %}
   </div>
+
+  {% if projects | length > 1 %}
+  <div class="chips chips-project" aria-label="Filter by project">
+    <a class="chip {{ 'is-current' if not filters.project }}"
+       href="{{ list_url(status=filters.status, q=filters.q) }}">All projects</a>
+    {% for name in projects %}
+    <a class="chip {{ 'is-current' if filters.project == name }}"
+       {% if filters.project == name %}aria-current="page"{% endif %}
+       href="{{ list_url(status=filters.status, q=filters.q, project=name) }}">{{ name }}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
 
   <div data-live="runs">
     {% if not result.rows %}
     <p class="empty">
       No runs match this view.
-      {% if filters.q or filters.status %}
+      {% if filters.q or filters.status or filters.project %}
       <a href="{{ url_path('/') }}">Clear filters</a>
       {% endif %}
     </p>
@@ -93,6 +106,7 @@
         <thead>
           <tr>
             <th scope="col">Run</th>
+            {% if projects | length > 1 %}<th scope="col">Project</th>{% endif %}
             <th scope="col">Status</th>
             <th scope="col">Verdict</th>
             <th scope="col">Phase</th>
@@ -112,6 +126,7 @@
               <span class="tag" title="Extra passes through the coding stage">{{ run.revisions }} rev</span>
               {% endif %}
             </td>
+            {% if projects | length > 1 %}<td class="dim">{{ run.project or dash }}</td>{% endif %}
             <td>{{ ui.status_badge(run) }}</td>
             <td>{{ ui.verdict_badge(run.classification) }}</td>
             <td>{{ (run.last_node or run.phase) | label }}</td>
@@ -127,7 +142,7 @@
     {% if result.pages > 1 %}
     <nav class="pager" aria-label="Pagination">
       {% if result.page > 1 %}
-      <a href="{{ list_url(status=filters.status, q=filters.q, pg=result.page - 1) }}">Newer</a>
+      <a href="{{ list_url(status=filters.status, q=filters.q, project=filters.project, pg=result.page - 1) }}">Newer</a>
       {% else %}
       <span class="disabled">Newer</span>
       {% endif %}
@@ -135,7 +150,7 @@
         Page {{ result.page }} of {{ result.pages }} · {{ result.total | count }} runs
       </span>
       {% if result.page < result.pages %}
-      <a href="{{ list_url(status=filters.status, q=filters.q, pg=result.page + 1) }}">Older</a>
+      <a href="{{ list_url(status=filters.status, q=filters.q, project=filters.project, pg=result.page + 1) }}">Older</a>
       {% else %}
       <span class="disabled">Older</span>
       {% endif %}

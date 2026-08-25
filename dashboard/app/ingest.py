@@ -13,6 +13,7 @@ import re
 from typing import Any, Mapping, Sequence
 
 from . import formatting
+from .config import ISSUE_NUMBER_PLACEHOLDER, ISSUE_PROJECT_PLACEHOLDER, IssueLinking
 from .repository import RUN_STATUSES, Repository
 
 MAX_RUN_ID_LENGTH = 128
@@ -50,9 +51,11 @@ _TEAM_LEADER_VERDICT = re.compile(
 )
 _CHECK_VERDICT = re.compile(r"^\s*classification:\s*([A-Za-z_-]+)", re.MULTILINE | re.IGNORECASE)
 
-# Any forge's issue URL: GitHub and Gitea use /issues/<n>, GitLab /-/issues/<n>,
-# and both end the same way.
-_ISSUE_URL = re.compile(r"https?://[^\s)\]<>\"'`]+?/issues/(\d+)\b", re.IGNORECASE)
+# Any forge's issue URL: GitHub and Gitea use <repo>/issues/<n>, GitLab
+# <repo>/-/issues/<n>. Group 1 is the repository, group 2 the issue number.
+_ISSUE_URL = re.compile(
+    r"https?://[^\s)\]<>\"'`]+?/([A-Za-z0-9._-]+)/(?:-/)?issues/(\d+)\b", re.IGNORECASE
+)
 
 # The request document opens with e.g. "# Request: #116 game-ready-blocks (r6)"
 # or "# Request: issue #110 — ...".
@@ -93,7 +96,7 @@ def publish(
     repository: Repository,
     run_id: str,
     payload: Mapping[str, Any],
-    issue_url_template: str | None = None,
+    issue_linking: IssueLinking | None = None,
 ) -> dict[str, Any]:
     status = payload.get("status") if isinstance(payload.get("status"), dict) else {}
     raw_events = payload.get("events") if isinstance(payload.get("events"), list) else []
@@ -110,7 +113,7 @@ def publish(
     documents = _document_rows(raw_documents)
 
     fields = _run_fields(status, events, documents, metrics, payload)
-    fields.update(_issue(payload, documents, issue_url_template))
+    fields.update(_issue(payload, documents, issue_linking or IssueLinking()))
 
     repository.save_run(run_id, fields)
     repository.replace_events(run_id, events)
@@ -270,45 +273,82 @@ def _last_event_node(events: Sequence[Mapping[str, Any]]) -> str | None:
 def _issue(
     payload: Mapping[str, Any],
     documents: Sequence[Mapping[str, Any]],
-    template: str | None,
+    linking: IssueLinking,
 ) -> dict[str, Any]:
-    """Resolve the issue this run came from, best evidence first.
+    """Resolve the issue this run came from, and the project it belongs to.
+
+    Best evidence first:
 
     1. What the worker states outright in the payload.
     2. A real issue URL inside the run's own documents - the request document
-       carries one on most runs, and it is authoritative.
-    3. The number stated in the request heading, turned into a URL only when an
-       issue URL template is configured. Without one the number is still shown,
-       unlinked, rather than guessed at.
+       carries one on most runs. This is authoritative and needs no
+       configuration, whichever project the run belongs to, because the URL
+       names its own repository.
+    3. The number stated in the request heading, turned into a URL only from a
+       configured template. Without one the number is still shown, unlinked,
+       rather than guessed at.
 
-    A number is never inferred from the run id: run ids also embed timestamps
-    and revision counters, so that would risk pointing at the wrong issue.
+    Never inferred: the issue number from the run id (ids also embed timestamps
+    and revision counters), and the project from workspace paths (those name
+    the local runner workspace, which is measurably not the repository - runs
+    saying `godot-td` belong to the `poke-defense-godot` repo).
     """
     bodies = {document["slug"]: document["body"] or "" for document in documents}
+    stated_project = _project_key(payload.get("project"))
     stated_number = _integer(payload.get("issue_number"))
 
-    explicit = _safe_url(payload.get("issue_url"))
-    if explicit:
-        match = _ISSUE_URL.search(explicit)
-        return {
-            "issue_url": explicit,
-            "issue_number": stated_number or (int(match.group(1)) if match else None),
-        }
+    url = _safe_url(payload.get("issue_url"))
+    if not url:
+        request_first = ["request", *(slug for slug in bodies if slug != "request")]
+        for slug in request_first:
+            match = _ISSUE_URL.search(bodies.get(slug, ""))
+            if match:
+                url = match.group(0)[:MAX_ISSUE_URL_LENGTH]
+                break
 
-    request_first = ["request", *(slug for slug in bodies if slug != "request")]
-    for slug in request_first:
-        match = _ISSUE_URL.search(bodies.get(slug, ""))
-        if match:
-            return {"issue_url": match.group(0)[:MAX_ISSUE_URL_LENGTH], "issue_number": int(match.group(1))}
+    if url:
+        match = _ISSUE_URL.search(url)
+        return {
+            "issue_url": url,
+            "issue_number": stated_number or (int(match.group(2)) if match else None),
+            "project": stated_project or (_project_key(match.group(1)) if match else None),
+        }
 
     heading = _REQUEST_ISSUE_NUMBER.search(bodies.get("request", ""))
     number = stated_number or (int(heading.group(1)) if heading else None)
     if number is None:
-        return {"issue_url": None, "issue_number": None}
+        return {"issue_url": None, "issue_number": None, "project": stated_project}
 
-    built = template.replace("{number}", str(number)) if template else None
+    return {
+        "issue_url": _build_issue_url(linking.template_for(stated_project), stated_project, number),
+        "issue_number": number,
+        "project": stated_project,
+    }
 
-    return {"issue_url": _safe_url(built), "issue_number": number}
+
+def _build_issue_url(template: str | None, project: str | None, number: int) -> str | None:
+    """Fill a template. A {project} placeholder with no known project yields no
+    link at all, which beats linking to the wrong repository."""
+    if not template:
+        return None
+
+    if ISSUE_PROJECT_PLACEHOLDER in template:
+        if not project:
+            return None
+        template = template.replace(ISSUE_PROJECT_PLACEHOLDER, project)
+
+    return _safe_url(template.replace(ISSUE_NUMBER_PLACEHOLDER, str(number)))
+
+
+def _project_key(value: Any) -> str | None:
+    """A repository name, tolerating a stray trailing dot or slash."""
+    text = _text(value, 100)
+    if not text:
+        return None
+
+    cleaned = _UNSAFE_ID.sub("", text.strip("./ ").split("/")[-1]).strip(".")
+
+    return cleaned or None
 
 
 def _safe_url(value: Any) -> str | None:

@@ -10,7 +10,7 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 _SCHEMA_V1 = """
 CREATE TABLE runs (
@@ -92,8 +92,14 @@ ALTER TABLE runs ADD COLUMN issue_url TEXT;
 ALTER TABLE runs ADD COLUMN issue_number INTEGER;
 """
 
+# Which project (repository) the run belongs to.
+_SCHEMA_V3 = """
+ALTER TABLE runs ADD COLUMN project TEXT;
+CREATE INDEX idx_runs_project ON runs(project);
+"""
+
 # Index i brings the database from version i to version i + 1.
-_MIGRATIONS: tuple[str, ...] = (_SCHEMA_V1, _SCHEMA_V2)
+_MIGRATIONS: tuple[str, ...] = (_SCHEMA_V1, _SCHEMA_V2, _SCHEMA_V3)
 
 
 def connect(database_path: Path) -> sqlite3.Connection:

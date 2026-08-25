@@ -6,20 +6,26 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app import db, ingest
-from app.config import ConfigError, Settings, load_settings
+from app.config import ConfigError, IssueLinking, Settings, load_settings
 from app.main import create_app
 from app.repository import Repository
 from tests.conftest import sample_payload
 
 RUN_ID = "demo-run-r1"
 TEMPLATE = "https://github.com/daniell0gda/poke-defense-godot/issues/{number}"
+OWNER_TEMPLATE = "https://github.com/daniell0gda/{project}/issues/{number}"
 ISSUE_URL = "https://github.com/daniell0gda/poke-defense-godot/issues/110"
+OTHER_ISSUE_URL = "https://github.com/daniell0gda/piwotworki/issues/7"
 
 
-def publish(repository: Repository, payload: dict, template: str | None = None) -> dict:
+def publish(
+    repository: Repository,
+    payload: dict,
+    linking: IssueLinking | None = None,
+) -> dict:
     run_id = ingest.sanitize_run_id(payload["run_id"])
     with repository.transaction():
-        ingest.publish(repository, run_id, payload, template)
+        ingest.publish(repository, run_id, payload, linking)
 
     return repository.find_run(run_id)
 
@@ -33,10 +39,14 @@ def with_documents(*documents: dict) -> dict:
 
 class TestTemplateConfiguration:
     def test_absent_by_default(self) -> None:
-        assert load_settings({}).issue_url_template is None
+        linking = load_settings({}).issue_linking
+
+        assert linking.default_template is None
+        assert linking.per_project == {}
+        assert linking.configured is False
 
     def test_valid_template_is_kept(self) -> None:
-        assert load_settings({"HFCD_ISSUE_URL_TEMPLATE": TEMPLATE}).issue_url_template == TEMPLATE
+        assert load_settings({"HFCD_ISSUE_URL_TEMPLATE": TEMPLATE}).issue_linking.default_template == TEMPLATE
 
     def test_template_without_placeholder_is_refused(self) -> None:
         """Otherwise every run would silently link to the same wrong issue."""
@@ -46,6 +56,35 @@ class TestTemplateConfiguration:
     def test_non_http_template_is_refused(self) -> None:
         with pytest.raises(ConfigError, match="http"):
             load_settings({"HFCD_ISSUE_URL_TEMPLATE": "javascript:alert({number})"})
+
+    def test_per_project_map_is_parsed(self) -> None:
+        raw = (
+            '{"poke-defense-godot": "https://github.com/daniell0gda/poke-defense-godot/issues/{number}",'
+            ' "piwotworki": "https://gitea.lan/dan/piwotworki/issues/{number}"}'
+        )
+        linking = load_settings({"HFCD_ISSUE_URL_TEMPLATES": raw}).issue_linking
+
+        assert set(linking.per_project) == {"poke-defense-godot", "piwotworki"}
+        assert linking.template_for("piwotworki").startswith("https://gitea.lan/")
+
+    def test_per_project_entry_is_validated(self) -> None:
+        with pytest.raises(ConfigError, match="piwotworki"):
+            load_settings({"HFCD_ISSUE_URL_TEMPLATES": '{"piwotworki": "https://x/issues/1"}'})
+
+    def test_malformed_json_is_refused(self) -> None:
+        with pytest.raises(ConfigError, match="JSON object"):
+            load_settings({"HFCD_ISSUE_URL_TEMPLATES": "not json"})
+
+    def test_json_array_is_refused(self) -> None:
+        with pytest.raises(ConfigError, match="JSON object"):
+            load_settings({"HFCD_ISSUE_URL_TEMPLATES": "[1, 2]"})
+
+    def test_per_project_wins_over_the_default(self) -> None:
+        linking = IssueLinking(default_template=TEMPLATE, per_project={"piwotworki": OTHER_ISSUE_URL})
+
+        assert linking.template_for("piwotworki") == OTHER_ISSUE_URL
+        assert linking.template_for("something-else") == TEMPLATE
+        assert linking.template_for(None) == TEMPLATE
 
 
 class TestResolutionOrder:
@@ -92,7 +131,7 @@ class TestResolutionOrder:
         run = publish(
             repository,
             with_documents({"slug": "request", "kind": "primary", "body": "# Request: #116 game-ready (r6)\n"}),
-            TEMPLATE,
+            IssueLinking(default_template=TEMPLATE),
         )
 
         assert run["issue_number"] == 116
@@ -112,7 +151,7 @@ class TestResolutionOrder:
         run = publish(
             repository,
             with_documents({"slug": "request", "kind": "primary", "body": "# Request: grass tweak\n"}),
-            TEMPLATE,
+            IssueLinking(default_template=TEMPLATE),
         )
 
         assert (run["issue_number"], run["issue_url"]) == (None, None)
@@ -122,7 +161,7 @@ class TestResolutionOrder:
         payload = with_documents({"slug": "request", "kind": "primary", "body": "no issue here\n"})
         payload["run_id"] = "heart-hud-beat-139-1787422828"
 
-        run = publish(repository, payload, TEMPLATE)
+        run = publish(repository, payload, IssueLinking(default_template=TEMPLATE))
 
         assert run["issue_number"] is None
 
@@ -233,7 +272,9 @@ class TestExposure:
         assert "issue-link" not in client.get(f"/run/{RUN_ID}").text
 
     def test_template_applies_end_to_end(self, settings: Settings, auth: dict) -> None:
-        configured = dataclasses.replace(settings, issue_url_template=TEMPLATE)
+        configured = dataclasses.replace(
+            settings, issue_linking=IssueLinking(default_template=TEMPLATE)
+        )
         payload = with_documents(
             {"slug": "request", "kind": "primary", "body": "# Request: #116 blocks (r6)\n"}
         )

@@ -35,6 +35,7 @@ def _shape_run(run: dict[str, Any]) -> dict[str, Any]:
         "display_status": formatting.display_status(run),
         "health": formatting.health(run),
         "classification": run["classification"],
+        "project": run["project"],
         "issue_url": run["issue_url"],
         "issue_number": run["issue_number"],
         "phase": run["phase"],
@@ -95,7 +96,7 @@ def publish_run(
     run_id = _run_id(payload.get("run_id") or (payload.get("status") or {}).get("run_id", ""))
 
     with repository.transaction():
-        result = ingest.publish(repository, run_id, payload, settings.issue_url_template)
+        result = ingest.publish(repository, run_id, payload, settings.issue_linking)
 
     return {"ok": True, **result}
 
@@ -182,13 +183,16 @@ def list_runs(
     response: Response,
     status: str = "",
     feature: str = "",
+    project: str = "",
     q: str = "",
     page: int = 1,
     per_page: int = PER_PAGE_DEFAULT,
     repository: Repository = Depends(get_repository),
 ) -> dict[str, Any]:
     response.headers["Access-Control-Allow-Origin"] = "*"
-    result = repository.query_runs(status=status, feature=feature, search=q, page=page, per_page=per_page)
+    result = repository.query_runs(
+        status=status, feature=feature, project=project, search=q, page=page, per_page=per_page
+    )
 
     return {
         "runs": [_shape_run(run) for run in result["rows"]],

@@ -101,8 +101,37 @@ repository is public, so pulling then needs credentials:
 | `HFCD_SITE_NAME` | `Hermes` | Name shown in the header. |
 | `HFCD_PORT` / `HFCD_HOST` | `8080` / `0.0.0.0` | Listen address. |
 | `HFCD_ROOT_PATH` | *(empty)* | Set only when served under a reverse-proxy subpath, e.g. `/dashboard`. |
-| `HFCD_ISSUE_URL_TEMPLATE` | *(unset)* | Last-resort pattern for linking an issue, e.g. `https://github.com/owner/repo/issues/{number}`. Only used when a run states a bare issue number instead of a URL. Must contain `{number}`; a malformed value is rejected at startup. |
+| `HFCD_ISSUE_URL_TEMPLATE` | *(unset)* | Fallback pattern for linking an issue, e.g. `https://github.com/owner/{project}/issues/{number}`. Only used when a run states a bare issue number instead of a URL. Must contain `{number}`; `{project}` is optional. Malformed values are rejected at startup. |
+| `HFCD_ISSUE_URL_TEMPLATES` | *(unset)* | JSON object of project → template, for projects on different hosts or owners. Wins over `HFCD_ISSUE_URL_TEMPLATE` for the projects it names. |
 | `TZ` | UTC | Timezone for displayed times. Storage is always UTC. |
+
+### Runs from several projects
+
+Nothing needs configuring. A run whose request document carries a real issue
+URL is linked from that URL directly, and the repository name in it becomes the
+run's project — so `poke-defense-godot` and `piwotworki` runs each link to their
+own tracker, and the dashboard grows a project column and project filter chips
+the moment a second project appears.
+
+The templates below matter only for runs that state a bare `#116` with no URL.
+Pick whichever fits:
+
+```yaml
+# One owner, many repositories - {project} is filled per run:
+HFCD_ISSUE_URL_TEMPLATE: "https://github.com/daniell0gda/{project}/issues/{number}"
+```
+
+```yaml
+# Projects on different hosts or owners:
+HFCD_ISSUE_URL_TEMPLATES: >
+  {"poke-defense-godot": "https://github.com/daniell0gda/poke-defense-godot/issues/{number}",
+   "piwotworki":         "https://gitea.lan/dan/piwotworki/issues/{number}"}
+```
+
+Both may be set: the map wins for the projects it names, and the template covers
+the rest. If a `{project}` template is configured but the run's project is
+unknown, no link is produced — an unlinked `#116` beats a link to the wrong
+repository.
 
 ### Access model
 
@@ -171,19 +200,28 @@ The worker does not report these; they are computed once at publish time.
   dashboard ignored (it reported "Unavailable"). Cost stays blank while every
   invocation reports `cost_status: unknown`, because the `0.0` in that case is a
   placeholder, not a real $0.00.
-- **the originating issue**, resolved best-evidence-first:
-  1. an `issue_url` / `issue_number` stated outright in the publish payload;
+- **the originating issue and its project**, resolved best-evidence-first:
+  1. `issue_url` / `issue_number` / `project` stated outright in the publish
+     payload;
   2. a real issue URL inside the run's own documents — the request document
-     carries one on **147 of the 182** published runs, and it is authoritative
-     (GitHub, Gitea and GitLab URL shapes are all recognised);
+     carries one on **147 of the 182** published runs. This is authoritative and
+     needs **no configuration for any number of projects**, because the URL names
+     its own repository. GitHub, Gitea and GitLab (`/-/issues/`) shapes are all
+     recognised, including inside markdown links and angle brackets;
   3. the number in the request heading (`# Request: #116 …`), turned into a link
-     only when `HFCD_ISSUE_URL_TEMPLATE` is set. Without the template the number
-     is still shown, unlinked, rather than pointing somewhere invented.
+     from a configured template. Without one the number is still shown,
+     unlinked, rather than pointing somewhere invented.
 
-  A number is deliberately **never** inferred from the run id: ids also embed
-  timestamps and revision counters (`heart-hud-beat-139-1787422828`), so that
-  would risk linking to the wrong issue. Measured over the published history,
-  tiers 2 and 3 cover 154/182 runs and never disagree with each other.
+  Two things are deliberately **never** inferred. The issue number is not taken
+  from the run id — ids also embed timestamps and revision counters
+  (`heart-hud-beat-139-1787422828`), so that would risk linking to the wrong
+  issue. And the project is not taken from workspace paths or the `Project:`
+  line: those name the local runner workspace, and measurably disagree with the
+  repository on 12 published runs (they say `godot-td` where the issue lives in
+  `poke-defense-godot`).
+
+  Measured over the published history, tiers 2 and 3 cover 154/182 runs and
+  never disagree with each other.
 - **liveness** — a run still marked `running` shows as *possibly stale* after
   2 minutes without a heartbeat and *abandoned* after 10. Derived on read, so
   there is no cron job to keep alive.

@@ -75,10 +75,13 @@ def runs_list(
     request: Request,
     status: str = "",
     q: str = "",
+    project: str = "",
     pg: int = 1,
     repository: Repository = Depends(get_repository),
 ) -> HTMLResponse:
-    result = repository.query_runs(status=status, search=q, page=pg, per_page=RUNS_PER_PAGE)
+    result = repository.query_runs(
+        status=status, search=q, project=project, page=pg, per_page=RUNS_PER_PAGE
+    )
 
     active = []
     for run in repository.active_runs(ACTIVE_CARD_LIMIT):
@@ -89,10 +92,12 @@ def runs_list(
         request,
         "list.html",
         {
-            "filters": {"status": status, "q": q},
+            "filters": {"status": status, "q": q, "project": project},
             "result": result,
             "summary": repository.summary(),
             "active": active,
+            # Only worth showing once runs come from more than one project.
+            "projects": repository.projects(),
         },
     )
 

@@ -12,7 +12,9 @@
 <header class="page-head run-head" data-live="head">
   <div class="run-title">
     <div>
-      <p class="eyebrow">Feature check run</p>
+      <p class="eyebrow">
+        Feature check run{% if run.project %} · <a href="{{ list_url(project=run.project) }}">{{ run.project }}</a>{% endif %}
+      </p>
       <h1>{{ run.feature or run.run_id }}</h1>
       <p class="run-id-row">
         <code>{{ run.run_id }}</code>
