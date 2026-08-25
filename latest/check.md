@@ -1,100 +1,85 @@
-# Check report: water-conductive-flood-wet-splash (issue #45) — revision-check-2
+# Check report — issue-130 middle-mouse pan flip (revision-check-2)
 
-classification: pass
+classification: fixable
 
 ## Verdict
 
-The scenario files lost in the iteration-3 checker incident have been recreated by
-the code role, and all 12 acceptance criteria are re-proven green on the current
-tree with fresh runner evidence this iteration. No quality violations in the
-feature diff. The full-suite command still cannot complete inside the runner's
-420s ceiling (pre-existing worker-capacity limitation, documented in quality-notes;
-earlier complete sharded run showed all failures pre-existing on clean HEAD) — it
-does not gate any plan criterion, which names the focused scenarios and the
-editor/import gate as the verification contract.
+All 11 acceptance criteria remain implemented and pass fresh, non-vacuous
+verification via `run_project_cmd` (project `godot-td`, workspace
+`poke-defense-godot/issue-130`). Typecheck/build gate passes. The
+`carve_camera_drag_spin` scenario now drives the real `rotate_camera` harness
+action type with genuinely changing camera probes — the previously open
+quality note (`carve-drag-spin-vacuous-rotate-shortcut`) is confirmed FIXED.
+The sole remaining gap is unchanged from r4/r5: the required windowed 30fps
+GIF under Xvfb :77 (carve arm → small middle-drag, path L unrotated) does not
+exist — `.gen/screenshots/` holds only the Aug 22 PNGs, no `.gen/**/*.gif`.
+That artifact belongs to the manual-tester profile (`manual_testing:
+required`), so the issue cannot be declared done → `fixable`.
 
-## Verification commands (all via run_project_cmd, project godot-td,
-workspace godot-td/issue-water-conductive-flood-wet-splash — no host Godot)
+## Verification commands (fresh, this run, all via run_project_cmd)
 
-- Preflight `["godot","--version"]` — exit 0, Godot 4.4.1.stable.
-- Editor/import gate `["godot","--headless","--path",".","--editor","--quit-after","300"]`
-  — exit 0 (9.2s). Only pre-existing HudTheme.tres invalid-UID warnings; no script
-  errors. PASS.
-- Focused `["python3","tests/run_all_shard.py","0","1","water_conductive_flood"]`
-  — exit 0; `PASS water_conductive_flood_aoe`, `PASS water_conductive_flood_progression`.
-- Full suite `["python3","tests/run_all_shard.py","0","1"]` — runner timed out at
-  420s (worker capacity, pre-existing; advisory in quality-notes). Not a criterion
-  gate.
+| Command | Exit | Result |
+|---|---|---|
+| `["godot","--version"]` | 0 | 4.4.1.stable.official.49a5bc7b6 — runner reachable |
+| Typecheck `["godot","--headless","--path",".","--editor","--quit-after","3"]` | 0 | clean editor import/parse |
+| Focused `carve_pan_no_flip.json` harness | 0 | result.json status=pass; expectations `carve_pan_translated_only==true`, `carve_pan_yaw_delta 0.0 < 0.01`; log shows `[CARVE_CAMERA] top-down applied (pre yaw=0.000000 pitch=0.588003)` then `[CARVE_CAMERA] pan complete (pre yaw=0.000000 post yaw=0.000000)` ×9 through real `_input` middle press/motion/release, then real cancel restore |
+| Focused `carve_camera_drag_spin.json` harness | 0 | result.json status=pass; expectation `carve_drag_spin_no_flip==true`; non-vacuous: scenario now uses `{"type":"rotate_camera"}` actions (dx/dy), no String→Object conversion errors; HarnessValues asserts genuine rotation (>0.01 pitch change), pitch inside ~0.05–1.55 clamp, yaw stable on vertical drag, pitch kept on horizontal drag |
+| Focused `carve_camera_topdown.json` harness | 0 | status=pass; all 8 expectations pass including basis restored after plain cancel, player angle kept after rotation cancel, dig-hole top-down |
 
-Fresh harness artifacts:
-- `.gen/harness/water_conductive_flood_progression/result.json` — status=pass,
-  18/18 actions ok, expectations pass true / false-failures 0. Covers default
-  disabled + radius 0, level 0→1 after apply, enabled=true radius=1.5>0,
-  re-apply does not stack (eligible false), save/reload keeps level 1 enabled,
-  reset_for_new_game returns disabled/radius 0.
-- `.gen/harness/water_conductive_flood_aoe/result.json` — status=pass, 20/20
-  actions ok, zero failed expectations. A/B on map_7 wave-2 with three Green
-  Spiky Blobs through the production Projectile `_resolve_hit` path
-  (`simulate_projectile: true`): control arm `wet_count == 1` (direct target only,
-  out-of-radius enemy excluded); perk arm `wet_count == 2` (in-radius multi-Wet).
-- Engine logs `.gen/harness/_logs/water_conductive_flood_*.out.log` contain both
-  `[WATER-FLOOD] water_conductive_flood applied -> radius=1.50` and
-  `[WATER-FLOOD] hit target @Node3D@1131 -> 1 enemies Wetted in 1.50m radius`.
+Full suite not re-run: `bash` is off the runner allowlist; r4 ran the python3
+port (legacy-domain reds) which request.md redo notes r4/r5 item 2 declare
+known pre-existing and non-blocking. No camera-domain scenario is red.
 
-## Criterion evidence map
+## Criterion evidence
 
-1. Perk data entry / eligibility path — `scripts/progression/water_tower.json`
-   adds `water_conductive_flood` Unique (maxLevels 0, value 1.5);
-   `WaterTowerProgressionManager.can_handle` accepts it alongside deep_soak /
-   water_pressure; progression harness actions 4–7 prove application through the
-   shared path. DONE.
-2. Default disabled / level 1 + positive radius — progression result.json
-   actions 1–2 (disabled, level 0) vs 6–7 (enabled, radius 1.5). DONE.
-3. No stacking beyond single level; reset clears — progression actions 8–9
-   (second apply → eligible false) and 14–16 (reset → level 0, disabled). DONE.
-4. Multi-enemy Wet within radius via production hit — AoE perk arm wet_count==2
-   through real `_resolve_hit`; source `Projectile._apply_flood_wet`. DONE.
-5. Out-of-radius enemy not Wetted — AoE perk arm third blob uncounted
-   (wet_count==2 of 3 enemies). DONE.
-6. Pre-perk behavior unchanged — AoE control arm wet_count==1 with perk disabled;
-   `_apply_flood_wet` early-returns when config disabled. DONE.
-7. Splash visual covers radius — `Projectile._create_water_splash` extends
-   splash_radius to max(0.5, flood radius) and doubles droplet count when enabled,
-   same small-radius splash approach as existing effects. Verified in diff +
-   simulated-hit path exercised in scenario; visual readability remains a
-   manual-testing item (plan declares manual_testing: required). DONE per
-   automated evidence; windowed screenshot evidence is the leader's manual pass.
-8. Wet via existing EnemyHealthBar icons, no new asset — `EnemyHealthBar.gd`
-   already renders `icon_water` from `wet_time_left` (line ~394); no new asset in
-   diff (`git ls-files --others` shows only the two scenario JSONs). DONE.
-9. `[WATER-FLOOD]` log lines for both events — present in fresh engine logs for
-   perk apply and flood hit; debug-build gated in source. DONE.
-10–12. Focused scenarios pass headlessly with the marker asserted — fresh exits 0
-   and status=pass this iteration. DONE.
+1–4 (pan stability small/large/non-armed-topdown/zoom): `carve_pan_no_flip`
+passes with basis-based probes (`carve_pan_yaw_delta` from camera `basis.x`
+heading, not position atan2); pan/zoom paths skip degenerate `look_at(...,UP)`
+when carve-armed or near-vertical (Game.gd guards).
+5–6 (right-drag orbit + clamp, right-click cancel): `carve_camera_drag_spin`
+non-vacuously exercises real `_rotate_camera`; vertical drag rotates within
+clamp band without yaw change; `carve_camera_topdown` covers plain-cancel
+restore vs keep-player-angle.
+7 ([CARVE_CAMERA] pan log): observed live nine times in the fresh pan run.
+8 (basis-derived harness value): HarnessValues.gd computes yaw delta from
+camera basis; asserted `< 0.01`.
+9 (real `_input` middle-drag): mouse press/motion/release driven through
+viewport input in the scenario; translation-only confirmed.
+10 (drag_spin non-vacuous): scenario switched to `rotate_camera` action type;
+fresh probes show genuine rotation; no conversion errors in log.
+11 (topdown lifecycle unchanged): fresh pass, all 8 expectations green.
 
-## Changed-file quality findings
+Test overlap: the three scenarios assert distinct behaviors on shared camera
+code; no duplicate coverage found.
 
-Feature diff (7 tracked files + 2 new scenario JSONs) inspected against
-/opt/data/coding_rules.md and CLAUDE.md:
-- New GDScript follows existing file idioms (has_method guards, `as Dictionary`
-  casts match adjacent electric/fire config accessors), minimal scope, no dead
-  code, no speculative abstraction. No violations.
-- `tests/run_all_shard.py` change is surgical (log redirect to satisfy the
-  harness's materialize_engine_out_log contract). No violations.
-- Test overlap: `wet_count`/`wet` harness values are new fields; the two focused
-  scenarios are new and assert criteria no existing test covered (checked against
-  water_deep_soak / water_pressure / water_electric_hit_path scenarios — different
-  behavior paths). No duplication.
-- Scope creep: none. `logs/balance/map_difficulty.csv` had drifted back into the
-  diff again; checker restored it to HEAD this iteration and verified a clean
-  tree (only feature files + scenario JSONs remain). quality-notes entry resolved.
+## Changed-file quality
 
-## Blockers
+Diff vs HEAD: `scripts/testing/HarnessValues.gd`,
+`tests/scenarios/carve_camera_drag_spin.json`. New code is surgical, typed,
+with clear comments explaining clamp-band semantics; no coding-rules
+violations. `logs/balance/map_difficulty.csv` churn is test-run artifact,
+kept uncommitted per request.md.
 
-None infrastructural. Runner healthy throughout (all commands exit-reported).
+## Quality notes re-check
 
-## Unverified items
+Open entry `carve-drag-spin-vacuous-rotate-shortcut` was already marked FIXED
+(revision-code-3); this run's fresh non-vacuous drag_spin execution confirms
+it — no new entry appended. No new cross-cutting issues introduced by the
+feature diff.
 
-- Windowed screenshot evidence of the splash covering nearby enemies and overall
-  UI sanity — owned by manual testing (manual_testing: required in request.md),
-  outside automated checker scope.
+## Known pre-existing full-suite red (not blocking)
+
+Legacy-domain failures/timeouts plus headless-failing screenshot scenarios are
+recorded as pre-existing in quality-notes and declared non-blocking by
+request.md r4/r5.
+
+## Blockers / unverified
+
+- Required windowed 30fps GIF under Xvfb :77 (directly, not xvfb-run),
+  screenshot key `name`: carve arm → small middle-drag, path L screen
+  orientation unchanged — owned by the manual-tester profile. Sole reason the
+  verdict is not `pass`.
+- If the tester answers `ui_feels_broken: yes`, manual testing fails regardless
+  of automated results.
+- Stale `check.md.stale-blocked-aug22` / `status.md.stale-blocked-aug22` kept
+  for provenance only; ignored as evidence per request.md.

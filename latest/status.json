@@ -1,80 +1,22 @@
 {
-  "run_id": "issue45-water-flood-r1",
-  "feature": "Water Tower: Conductive Flood (Wet splash radius)",
+  "run_id": "issue-suite-red-cleanup-r1",
+  "feature": "fix suite red scenarios",
   "status": "running",
-  "started_at": "2026-08-25T16:10:08.483Z",
+  "started_at": "2026-08-25T16:10:04.156Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
-  "heartbeat_at": "2026-08-25T17:30:59.463Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-25T17:30:59.463Z",
-  "process_id": 714601,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-suite-red-cleanup-r1/",
+  "heartbeat_at": "2026-08-25T17:40:21.016Z",
+  "last_node": "code",
+  "active_node": null,
+  "last_event_at": "2026-08-25T17:40:21.016Z",
+  "process_id": 714523,
   "host": "f1a4230ec90b",
-  "phase": "manual-tester",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T17:31:03.861296+00:00",
-    "last_success_at": "2026-08-25T17:31:03.859753+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T17:40:21.019849+00:00",
+    "last_success_at": "2026-08-25T16:10:09.382073+00:00",
+    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 137745,
-        "output_tokens": 5757
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 68516,
-        "output_tokens": 7992
-      },
-      {
-        "task_id": "revision-code-2",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 134103,
-        "output_tokens": 6434
-      },
-      {
-        "task_id": "revision-check-2",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 98596,
-        "output_tokens": 6893
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 41288,
-        "output_tokens": 454
-      }
-    ]
-  }
+  "metrics": {}
 }
