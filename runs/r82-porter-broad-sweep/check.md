@@ -1,88 +1,80 @@
-# Check report: porter-broad-sweep (issue #82)
+# Check report: porter-broad-sweep (iteration 1)
 
 classification: fixable
 
 ## Verdict
 
-All 9 acceptance criteria verified Done against fresh runner execution. Focused
-harness passes cleanly with log-level evidence for every criterion. Editor/typecheck
-gate passes (exit 0; only pre-existing HudTheme/UI.tres invalid-UID warnings).
-Full suite could NOT be completed end-to-end inside the runner's 420s tool window:
-a quarter-shard (`python3 tests/run_all_shard.py 0 4`, 45 scenarios) was killed with
-exit 137 (OOM) partway; 3 of the 15 completed scenarios FAIL consistently even when
-re-run individually — but all three were proven PRE-EXISTING by stashing the entire
-feature diff and reproducing identical timeouts/failures on the baseline.
-Classification is fixable only because the full-suite gate remains red for reasons
-outside this feature's diff; the feature work itself needs no revision.
+All 9 criteria are moved to Pending solely because the full-suite gate
+(`python3 tests/run_all_shard.py 0 1`) cannot complete in this worker: it was
+killed with exit code 137 (OOM) after ~4 scenarios, and the finer `0 8` shard
+exceeds the runner's 420s tool window. The feature implementation itself is
+verified green by a fresh focused harness run, the editor/import gate, and a
+completed 16th-shard slice; there are no quality violations in the feature
+diff.
 
 ## Verification commands (all via run_project_cmd, project=poke-defense-godot,
 workspace=poke-defense-godot/issue-porter-broad-sweep)
 
-- `git status --short` — exit 0 (probe)
-- `godot --headless --path . --editor --quit-after 300` — exit 0, ~13s, parse/import clean
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/porter_broad_sweep.json`
-  — exit 0, `[Harness] status=pass`; result `.gen/harness/porter_broad_sweep/result.json`;
-  rerun again after stash-pop to confirm restoration — still pass
-- `python3 tests/run_all_shard.py 0 1 cannon_bunker_buster` — FAIL (timeout, individually reproducible)
-- `python3 tests/run_all_shard.py 0 1 cave_discovery_pending_placement` — PASS
-- `python3 tests/run_all_shard.py 0 1 fire_flashover_spread` — FAIL (timeout)
-- `python3 tests/run_all_shard.py 0 1 fire_wildfire_spread_runtime` — FAIL (timeout)
-- `python3 tests/run_all_shard.py 0 4` — exit 137 (killed/OOM) after 15 results;
-  FAILs: cannon_bunker_buster, cave_discovery_pending_placement (passes alone),
-  fire_flashover_spread, fire_wildfire_spread_runtime
-- Baseline (feature stashed): direct harness runs of cannon_bunker_buster /
-  fire_flashover_spread / fire_wildfire_spread_runtime — identical timeout failures
-  → pre-existing, not regressions
+- `["godot","--version"]` — exit 0 (runner reachability probe).
+- `["godot","--headless","--path",".","--editor","--quit-after","300"]` — exit 0.
+  Import/parse gate clean; only pre-existing invalid-UID warnings
+  (HudTheme.tres / UI.tscn), unchanged from baseline.
+- `["godot","--headless","--path",".","res://scenes/Main.tscn","--","--harness=res://tests/scenarios/porter_broad_sweep.json"]`
+  — exit 0, `[Harness] status=pass`, 30/30 actions ok. Fresh result:
+  `.gen/harness/porter_broad_sweep/result.json`. Log evidence observed directly:
+  chest pool 35 → 36 (after `[PORTER_MASS_TRANSIT] owned`, with
+  porter_broad_sweep drawn) → 35 at L3; `[PORTER_BROAD_SWEEP] apply L1/L2/L3
+  sweep_radius_multiplier=x1.50/x1.80/x2.00`.
+- `["python3","tests/run_all_shard.py","0","1"]` — exit 137 (SIGKILL/OOM) after
+  PASS×3 + FAIL burn_status_refresh_pending_damage (~4 scenarios). Full-suite
+  gate FAILED → all Done items demoted to Pending per build/test gate.
+- `["python3","tests/run_all_shard.py","0","8"]` — timed out at the 420s tool
+  window (no completion recorded).
+- `["python3","tests/run_all_shard.py","0","16"]` — exit 0 for its slice; 7/12
+  PASS, FAIL: fire_wildfire_spread_runtime, issue_35_timed_hazards_map_change,
+  porter_boss_runner, projectiles_10x_beam_cone.
+- `porter_boss_runner` rerun individually — exit 1, status=timeout at action 75
+  (`log contains [PORTER_BOSS_RUNNER] miss`). Baseline attribution: with the
+  entire feature diff stashed (`git stash push -u` Hermes-side), the identical
+  individual rerun reproduced the same timeout at the same action; diff
+  restored afterwards (`git stash pop`). Pre-existing flake, not caused by this
+  issue. Log shows wave 7 Ninja_boss spawns but the Porter never reaches
+  charge-complete in that segment — consistent with the scenario's own note
+  that "Porter outcomes are not byte-reproducible".
 
-## Acceptance criteria evidence (all Done)
+## Per-criterion evidence
 
-1. Perk definition exists, Common, 3 levels L1/L2/L3, porter pattern —
-   `scripts/progression/porter_tower.json` diff; harness asserts
-   `progression.porter_broad_sweep.type == Common`.
-2. `"needs": ["porter_mass_transit"]` — present in JSON; enforced by generic
-   ProgressionManager eligibility/draw gating (no manager-side change needed).
-3. Ineligible & absent from chest pool before Mass Transit owned — harness
-   wait_for_condition is_eligible==false, draw !contains; log shows pool 35 without it
-   and `skip incompatible chest reward: porter_mass_transit`.
-4. After Mass Transit owned: eligible, in pool, applies at L1/L2/L3 — pool 35→36→35,
-   `[PORTER_MASS_TRANSIT] owned`, apply calls return success, levels reach 1/2/3.
-5. Base sweep radius with Mass Transit only — multiplier asserted == 1.0 pre-application.
-6. Multipliers ×1.5 / ×1.8 / ×2.0 — `get_porter_sweep_radius_multiplier()` asserted
-   1.5/1.8/2.0 after each level; absolute-ratio design makes replay idempotent.
-7. Targeting range unchanged — `get_porter_range(6.5) == 6.5` asserted after every
-   application; `_range_multiplier` untouched by `_apply_broad_sweep`.
-8. Reset clears Broad Sweep and returns multiplier to base — `reset_for_new_game`,
-   then level==0 and multiplier==1.0 asserted.
-9. Debug-build `[PORTER_BROAD_SWEEP]` log per application with level and multiplier —
-   stdout captured live: `[PORTER_BROAD_SWEEP] apply L1 sweep_radius_multiplier=x1.50`,
-   `L2 x1.80`, `L3 x2.00`.
+Every criterion's implementing behavior is asserted by the focused scenario
+`tests/scenarios/porter_broad_sweep.json`, which passed freshly this iteration
+(30/30 actions). The only reason they are Pending is the failed full-suite
+gate, which blocks keeping any item Done.
 
-## Changed-file quality findings
+## Changed-file quality review
 
-- Diff is surgical (4 modified files + 1 new scenario); follows existing
-  porter_wide_gate/mass_transit patterns; no casts-as-strings, no speculative code.
-- New scenario asserts inline with deterministic draw counts (100 > pool size); no
-  overlap found with any existing scenario covering porter perks.
-- Minor style observation (advisory, not a violation): `PorterTower.gd`
-  `_mass_transit_sweep_radius()` reaches ProgressionManager via
-  `tree.get_root().get_node_or_null("ProgressionManager")` while `_mass_transit_owned()`
-  nearby uses a different lookup path — consistent enough with file-local conventions.
+Diff (`git diff HEAD`, 4 files + new scenario): typed GDScript throughout,
+guard-clause style, no nesting >2, debug-only `[PORTER_BROAD_SWEEP]` print per
+CLAUDE.md logging rule, absolute-ratio application is idempotent on reload and
+matches the porter_wide_gate pattern. No violations found; no scope creep;
+no test overlap (new scenario asserts new behavior only).
 
-## Blockers / limitations
+## Quality notes status
 
-- Full 179-scenario shard cannot finish inside the 420s runner tool window; quarter
-  shards OOM (exit 137). Full-suite green therefore remains unproven end-to-end;
-  remaining ~130 scenarios unverified this iteration (infrastructure limitation,
-  not a feature defect). Pre-existing failures needing separate fixes:
-  cannon_bunker_buster, fire_flashover_spread, fire_wildfire_spread_runtime.
+- `full-suite-shard-oom` — still OPEN, confirmed this iteration: `0 1` exit
+  137 OOM, `0 8` exceeds 420s tool window. Required change stands: split
+  shards ≥ `0 16` (that slice completed within budget) or raise worker
+  memory/timeout.
+- `pre-existing-harness-failures` — still OPEN, extended: cannon_bunker_buster,
+  fire_flashover_spread, fire_wildfire_spread_runtime plus now also observed
+  issue_35_timed_hazards_map_change, projectiles_10x_beam_cone, and
+  porter_boss_runner (baseline-reproduced with the feature diff stashed).
+
+## Blockers
+
+None infra-level: run_project_cmd works. The full-suite gate failure is a
+worker resource limitation (OOM/timeout), classified fixable.
 
 ## Unverified items
 
-- ~130 of 179 full-suite scenarios not executed in this iteration due to runner
-  time/memory limits; no porter-related scenario among them is expected to regress
-  (porter_broad_sweep, porter_wide_gate_progression, progression_pick, porter paths
-  all pass or unaffected).
-
-manual_testing: optional (per plan) — perk card appears in picker UI; no visual capture
-taken this iteration; sweep radius itself is invisible and teleport feedback is covered
-by Mass Transit.
+- Complete single-pass full-suite result (`run_all_shard.py 0 1`) — blocked by
+  worker OOM; needs finer sharding or more worker memory before any criterion
+  can be restored to Done.

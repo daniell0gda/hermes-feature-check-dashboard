@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-25T12:27:38.560Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 5296292,
+    "summary": "Check complete. Artifacts written to /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep/.gen/check.md and .gen/status.md; worktree restored intact (feature diff + new scenario present after the baseline stash probe).\n\nVer\u2026",
+    "error": null
+  }
+]

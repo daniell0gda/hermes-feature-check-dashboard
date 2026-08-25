@@ -1,11 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-25T12:16:51.440Z",
-    "node": "code",
+    "timestamp": "2026-08-25T12:27:38.560Z",
+    "node": "check",
     "status": "completed",
-    "duration_ms": 4586512,
-    "summary": "All artifacts written. Final summary:\n\n## Revision 1 (code) \u2014 summary\n\n**Blockers from iteration 1, resolved:**\n1. `progression_chest_pool` + `progression_pick` \u2014 the new Common perk legitimately joins the eligible normal chest pool and re-\u2026",
+    "duration_ms": 5296292,
+    "summary": "Check complete. Artifacts written to /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep/.gen/check.md and .gen/status.md; worktree restored intact (feature diff + new scenario present after the baseline stash probe).\n\nVer\u2026",
     "error": null
   }
 ]
