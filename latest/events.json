@@ -1,29 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-25T15:42:14.958Z",
-    "node": "code",
-    "status": "completed",
-    "duration_ms": 280757,
-    "summary": "Summary (revision-code-1, cluster: implementation):\n\nThe feature was already fully implemented and committed in prior iterations \u2014 commit 0362ebe (Water Riptide perk + hit-path slow) and 515049a (brittle chest-draw scenario fix). This revis\u2026",
-    "error": null
-  },
-  {
-    "sequence": 2,
-    "timestamp": "2026-08-25T16:51:07.632Z",
-    "node": "check",
-    "status": "completed",
-    "duration_ms": 4128125,
-    "summary": "Check complete. Artifacts written to .gen/check.md, .gen/status.md, and .gen/quality-notes.md.\n\nVerified done: 8. Pending: 0. Impossible: 0. Quality notes: appended (2 resolutions for iteration-1 entries: chest-draw brittleness fixed by com\u2026",
-    "error": null
-  },
-  {
-    "sequence": 3,
-    "timestamp": "2026-08-25T16:52:04.642Z",
-    "node": "team-leader",
-    "status": "completed",
-    "duration_ms": 52302,
-    "summary": "Manual testing gate complete.\n\n- Check passed (iteration 2, classification: pass) with all 8 acceptance criteria verified by fresh automated evidence.\n- Decision: manual_testing: required \u2014 the feature adds a new player-visible story: the e\u2026",
-    "error": null
+    "timestamp": "2026-08-25T16:57:27.985Z",
+    "node": "manual-tester",
+    "status": "failed",
+    "duration_ms": 3867414,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'manual-tester', '-z', 'You are the manual-tester worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-traps-pit-of-spikes-first-h\u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'manual-tester', '-z', 'You are the manual-tester worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-traps-pit-of-spikes-first-h\u2026"
   }
 ]

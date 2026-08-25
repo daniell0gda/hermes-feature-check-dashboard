@@ -2,8 +2,8 @@
 
 - **Result:** failed
 - **Classification:** unknown
-- **Feature:** Water Tower Riptide - light Slow alongside Wet
-- **Run:** r47-1
+- **Feature:** traps-pit-of-spikes-first-hit-stuns-turn
+- **Run:** traps-pit-of-spikes-42-r1
 - **Lifecycle:** dashboard publish only; project commit/push/close not implied
 
 ## Status

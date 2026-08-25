@@ -1,58 +1,22 @@
 {
-  "run_id": "r47-2",
-  "feature": "Water Tower Riptide - light Slow alongside Wet",
+  "run_id": "traps-pit-of-spikes-42-r1",
+  "feature": "traps-pit-of-spikes-first-hit-stuns-turn",
   "status": "running",
-  "started_at": "2026-08-25T15:37:29.194Z",
+  "started_at": "2026-08-25T15:52:55.467Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
-  "heartbeat_at": "2026-08-25T16:52:04.642Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-25T16:52:04.642Z",
-  "process_id": 694779,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/traps-pit-of-spikes-42-r1/",
+  "heartbeat_at": "2026-08-25T16:57:27.985Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-25T16:57:27.985Z",
+  "process_id": 702753,
   "host": "f1a4230ec90b",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T16:52:09.403404+00:00",
-    "last_success_at": "2026-08-25T16:52:09.402304+00:00",
+    "last_attempt_at": "2026-08-25T16:57:27.987584+00:00",
+    "last_success_at": "2026-08-25T15:53:05.178125+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 16200,
-        "output_tokens": 2010
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 65427,
-        "output_tokens": 5937
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 5404,
-        "output_tokens": 509
-      }
-    ]
-  }
+  "metrics": {}
 }

@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-25T16:57:27.985Z",
+    "node": "manual-tester",
+    "status": "failed",
+    "duration_ms": 3867414,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'manual-tester', '-z', 'You are the manual-tester worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-traps-pit-of-spikes-first-h\u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'manual-tester', '-z', 'You are the manual-tester worker in a team-work run.\\\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-traps-pit-of-spikes-first-h\u2026"
+  }
+]
