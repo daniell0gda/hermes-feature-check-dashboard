@@ -1,12 +1,12 @@
 {
   "run_id": "issue-suite-red-cleanup-r1",
   "feature": "fix suite red scenarios",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-25T16:10:04.156Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-25T17:40:26.606Z",
+  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/poke-defense-godot.\\nThe durable evidence directory is /workspace/poke-defense-godot/.g\u2026",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-suite-red-cleanup-r1/",
-  "heartbeat_at": "2026-08-25T17:40:21.016Z",
+  "heartbeat_at": "2026-08-25T17:40:26.606Z",
   "last_node": "code",
   "active_node": null,
   "last_event_at": "2026-08-25T17:40:21.016Z",
@@ -14,9 +14,9 @@
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T17:40:21.019849+00:00",
-    "last_success_at": "2026-08-25T16:10:09.382073+00:00",
-    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'push', 'origin', 'HEAD:gh-pages']' returned non-zero exit status 1."
+    "last_attempt_at": "2026-08-25T17:40:26.606601+00:00",
+    "last_success_at": "2026-08-25T17:40:26.605047+00:00",
+    "last_error": null
   },
   "metrics": {}
 }
