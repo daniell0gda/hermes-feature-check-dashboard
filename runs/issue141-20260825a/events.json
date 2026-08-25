@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-25T19:31:12.291Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 239669,
+    "summary": "Plan written: /workspace/git-workspaces/godot-td/issue-press-button-subwindow/.gen/plan.md\n",
+    "error": null
+  }
+]
