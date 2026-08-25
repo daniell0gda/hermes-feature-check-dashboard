@@ -1,12 +1,12 @@
 {
   "run_id": "r82-porter-broad-sweep",
   "feature": "porter broad sweep follow-on perk",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-25T17:03:37.175Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-25T18:33:58.265Z",
+  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-porter-broad-sweep.\\nThe durable evidence direc\u2026",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r82-porter-broad-sweep/",
-  "heartbeat_at": "2026-08-25T18:33:53.482Z",
+  "heartbeat_at": "2026-08-25T18:33:58.265Z",
   "last_node": "code",
   "active_node": null,
   "last_event_at": "2026-08-25T18:33:53.482Z",
@@ -14,8 +14,8 @@
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T18:33:53.485970+00:00",
-    "last_success_at": "2026-08-25T17:03:47.150751+00:00",
+    "last_attempt_at": "2026-08-25T18:33:58.265856+00:00",
+    "last_success_at": "2026-08-25T18:33:58.264328+00:00",
     "last_error": null
   },
   "metrics": {}
