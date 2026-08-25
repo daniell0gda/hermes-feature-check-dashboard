@@ -1,35 +1,46 @@
-# Acceptance Plan: fix-cave-harness-scenario-determinism
+# Acceptance Plan: traps_grave_robber economy perk (issue #80)
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/cave_decline_seals_reveal_unseals.json"]`
-- Full test: `["bash", ".gen/run_full_suite.sh"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--path", ".", "--quit-after", "3"]`
+- Focused test: `run_project_cmd ["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/traps_grave_robber_progression.json"]`
+- Full test: `run_project_cmd ["python3", "tests/run_all_shard.py", "0", "1"]`
+- Typecheck/build: `run_project_cmd ["godot", "--headless", "--path", ".", "--import"]`
+
+manual_testing: optional
+
+Rationale: this is a pure numeric/economy perk (per project CLAUDE.md such perks need no new VFX). All behaviour is assertable headlessly through the harness (money deltas via `_set_money`/`GameState.money`, config via `progression_call`). A manual screenshot is optional proof only (HUD gold counter rising after an underground trap kill) — see `.gen/ui_scenario.md`.
 
 ## Clusters
 
-1. cave-scenario-determinism — files: `scripts/game/CaveSystem.gd`, `tests/scenarios/cave_decline_seals_reveal_unseals.json`, `tests/scenarios/cave_pending_seals_entrance_instantly.json` — depends on: none
-- A fresh run of the `cave_decline_seals_reveal_unseals` harness scenario completes every timeline step and reports status pass with exit code 0.
-- A fresh run of the `cave_pending_seals_entrance_instantly` harness scenario completes every timeline step and reports status pass with exit code 0.
-- After loading map_9, adding one hole and one exit inside the underground grid bounds, and carving a straight corridor between them, the scenario's wait for `underground.has_route_from <hole> == true` succeeds — random cave discovery during the carve no longer seals the corridor (random discovery disabled via harness before carving).
-- Both updated scenarios still exercise the fixture cave's decline/pending seal and reveal/unseal behaviour exactly as before (the fix does not weaken what the scenarios were written to prove); each scenario's notes[] documents why random discovery is disabled.
-- The diagnostic leftover `tests/scenarios/zz_probe_plain_corridor.json` is removed from the repository.
-- The root-cause change that made a straight carved corridor unroutable on map_9 (instant sealing of a randomly discovered cave during the scenario's own carve) is documented in `.gen/changes.md`, stating whether it is intended gameplay behaviour or a bug fixed in game code.
-- Debug-build [CAVE] log line per harness-driven disable of random cave discovery, naming the event and the resulting effective discovery chance so determinism of a run is confirmable from the log.
-2. cave-regression-suite — files: none — depends on: 1
-- The ten companion scenarios (`cave_spawn_within_grid`, `cave_discovery_chance`, `cave_discovery_long_carve`, `cave_discovery_pending_placement`, `cave_reveal_only_unseals_carved_blocks`, `carve_stops_at_discovered_cave`, `declined_cave_torches_extinguish`, `underground_grid_from_map`, `underground_map_cost_override`, `smoke_placement`) all report status pass with exit code 0 on a fresh run after the fix.
-- A fresh focused-run runner stdout/stderr contains no new Godot parse/script errors compared to the pre-existing baseline noise (known pre-existing HudTheme texture-load noise excluded).
+1. perk-data-and-economy-manager — files: `scripts/progression/global.json`, `scripts/progression/managers/EconomyProgressionManager.gd` — depends on: none
+- With no perk owned, `ProgressionManager.get_bounty_config()` is unchanged from today's shape and carries no grave-robber bonus.
+- Owning `traps_grave_robber` at L1/L2/L3 exposes a bonus-gold configuration through the existing bounty path (`get_bounty_config()`) equivalent to +10%/+15%/+25% of the enemy's base reward on qualifying kills.
+- Re-applying a level or replaying levels 1..N of `traps_grave_robber` (save/load) sets the bonus to that level's exact percentage rather than compounding or collapsing.
+- Resetting progression (new run / `reset`) clears the grave-robber bonus so no bonus applies afterwards.
+- Debug-build `[EconomyProgression]` log line per grave-robber level change naming the perk name, new level, and resulting bonus percentage.
 
-manual_testing: none
+2. trap-kill-bonus-application — files: `scripts/game/actors/Trap.gd`, `scripts/game/actors/enemy/parts/EnemyHealthController.gd` — depends on: 1
+- When an enemy dies to a trap-sourced killing blow while underground and `traps_grave_robber` L1 is owned, the gold awarded for that kill equals base reward plus 10% of base reward (exact integer gold delta asserted).
+- At L2 and L3 the same setup awards exactly +15% and +25% of base reward respectively over the base reward.
+- A trap killing blow on an above-ground (surface) enemy awards exactly the base reward — no bonus.
+- An underground enemy killed by a non-trap source (tower/projectile) while the perk is owned awards exactly what the existing bounty rules give — no grave-robber bonus.
+- The bonus rides the existing bounty/economy payout path: with the perk owned, an ordinary qualifying kill's total gold still reflects any concurrently-owned `gold_on_kill`/`curse_blood_money` amounts unchanged (no cross-perk interference either direction).
+- Debug-build `[GRAVE_ROBBER]` log line per qualifying bonus payout naming the enemy id and the bonus gold amount.
+
+3. harness-scenario — files: `tests/scenarios/traps_grave_robber_progression.json` — depends on: 1, 2
+- Focused harness scenario `traps_grave_robber_progression.json` runs headless to `[Harness] status=pass` with exit code 0, asserting inline (wait_for_condition) each of: L1/L2/L3 bonus config values, exact gold delta on underground trap kill, zero delta on surface trap kill, and zero delta on non-trap underground kill.
 
 ## Criteria
 
-- A fresh run of the `cave_decline_seals_reveal_unseals` harness scenario completes every timeline step and reports status pass with exit code 0.
-- A fresh run of the `cave_pending_seals_entrance_instantly` harness scenario completes every timeline step and reports status pass with exit code 0.
-- After loading map_9, adding one hole and one exit inside the underground grid bounds, and carving a straight corridor between them, the scenario's wait for `underground.has_route_from <hole> == true` succeeds — random cave discovery during the carve no longer seals the corridor (random discovery disabled via harness before carving).
-- Both updated scenarios still exercise the fixture cave's decline/pending seal and reveal/unseal behaviour exactly as before (the fix does not weaken what the scenarios were written to prove); each scenario's notes[] documents why random discovery is disabled.
-- The diagnostic leftover `tests/scenarios/zz_probe_plain_corridor.json` is removed from the repository.
-- The root-cause change that made a straight carved corridor unroutable on map_9 (instant sealing of a randomly discovered cave during the scenario's own carve) is documented in `.gen/changes.md`, stating whether it is intended gameplay behaviour or a bug fixed in game code.
-- Debug-build [CAVE] log line per harness-driven disable of random cave discovery, naming the event and the resulting effective discovery chance so determinism of a run is confirmable from the log.
-- The ten companion scenarios (`cave_spawn_within_grid`, `cave_discovery_chance`, `cave_discovery_long_carve`, `cave_discovery_pending_placement`, `cave_reveal_only_unseals_carved_blocks`, `carve_stops_at_discovered_cave`, `declined_cave_torches_extinguish`, `underground_grid_from_map`, `underground_map_cost_override`, `smoke_placement`) all report status pass with exit code 0 on a fresh run after the fix.
-- A fresh focused-run runner stdout/stderr contains no new Godot parse/script errors compared to the pre-existing baseline noise (known pre-existing HudTheme texture-load noise excluded).
+- With no perk owned, `ProgressionManager.get_bounty_config()` is unchanged from today's shape and carries no grave-robber bonus.
+- Owning `traps_grave_robber` at L1/L2/L3 exposes a bonus-gold configuration through the existing bounty path (`get_bounty_config()`) equivalent to +10%/+15%/+25% of the enemy's base reward on qualifying kills.
+- Re-applying a level or replaying levels 1..N of `traps_grave_robber` (save/load) sets the bonus to that level's exact percentage rather than compounding or collapsing.
+- Resetting progression (new run / `reset`) clears the grave-robber bonus so no bonus applies afterwards.
+- Debug-build `[EconomyProgression]` log line per grave-robber level change naming the perk name, new level, and resulting bonus percentage.
+- When an enemy dies to a trap-sourced killing blow while underground and `traps_grave_robber` L1 is owned, the gold awarded for that kill equals base reward plus 10% of base reward (exact integer gold delta asserted).
+- At L2 and L3 the same setup awards exactly +15% and +25% of base reward respectively over the base reward.
+- A trap killing blow on an above-ground (surface) enemy awards exactly the base reward — no bonus.
+- An underground enemy killed by a non-trap source (tower/projectile) while the perk is owned awards exactly what the existing bounty rules give — no grave-robber bonus.
+- The bonus rides the existing bounty/economy payout path: with the perk owned, an ordinary qualifying kill's total gold still reflects any concurrently-owned `gold_on_kill`/`curse_blood_money` amounts unchanged (no cross-perk interference either direction).
+- Debug-build `[GRAVE_ROBBER]` log line per qualifying bonus payout naming the enemy id and the bonus gold amount.
+- Focused harness scenario `traps_grave_robber_progression.json` runs headless to `[Harness] status=pass` with exit code 0, asserting inline (wait_for_condition) each of: L1/L2/L3 bonus config values, exact gold delta on underground trap kill, zero delta on surface trap kill, and zero delta on non-trap underground kill.
