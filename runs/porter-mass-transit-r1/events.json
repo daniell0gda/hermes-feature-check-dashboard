@@ -43,5 +43,14 @@
     "duration_ms": 31544,
     "summary": "Gate decision written to /workspace/git-workspaces/poke-defense-godot/issue-porter-mass-transit/.gen/manual_testing.md.\n\nSummary:\n- check.md verdict: pass (all 10 criteria verified, iteration 2; tween fix confirmed resolved).\n- manual_testi\u2026",
     "error": null
+  },
+  {
+    "sequence": 6,
+    "timestamp": "2026-08-25T04:50:25.222Z",
+    "node": "manual-tester",
+    "status": "completed",
+    "duration_ms": 487957,
+    "summary": "Manual test complete \u2014 PASSED.\n\nWhat I did:\n- Read ui_scenario.md, plan.md, changes.md, manual_testing.md; created a windowed manual variant of the focused scenario (`tests/scenarios/porter_mass_transit_manual.json`) adding a slow-motion `r\u2026",
+    "error": null
   }
 ]
