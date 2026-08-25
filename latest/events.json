@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-25T14:33:17.808Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 1446105,
+    "summary": "The `release_project_worker` tool referenced by the project-runner skill isn't exposed by the installed plugin (it only registers `run_project_cmd`), so I can't explicitly release the worker; the disposable worker is managed by the runner i\u2026",
+    "error": null
+  },
+  {
+    "sequence": 2,
+    "timestamp": "2026-08-25T15:53:10.980Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 4788378,
+    "summary": "Release isn't exposed through this tool schema, so worker lifecycle release is left to the leader.\n\nRevision-check-1 complete. Artifacts written:\n- /workspace/git-workspaces/godot-td/issue-traps-grave-robber/.gen/check.md\n- /workspace/git-w\u2026",
+    "error": null
+  }
+]

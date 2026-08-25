@@ -1,13 +1,19 @@
 ## ✅ Done
-- While the Pit of Spikes perk (`traps_pit_of_spikes`) is unowned, a trap hit does not change the target's stun state (`stun_time_left` stays 0).
-- The first trap hit against a given enemy while Pit of Spikes is owned applies a stun of approximately 0.4 seconds through the enemy's existing `EffectsManager.apply_stun` path (enemy `stun_time_left` becomes > 0 immediately after the hit).
-- A second trap hit on the same enemy while that first stun is active or has expired does not re-apply the stun (`stun_time_left` remains 0 after it expires from the first application; no new stun is granted by later hits). — revision 1 fixed the scenario determinism: each arm drains stale enemies (`defeat_all` optional + `enemies.total == 0`) and waits for exactly one underground enemy before any hit, and no placed trap exists to poll autonomously; fresh run asserts post-expiry second hit leaves `stun_time_left == 0` and `stunned_count == 0` (actions 38–42 all ok)
-- Stun tracking is per enemy: a first trap hit on a different enemy stuns that enemy even after another enemy was already stunned once. — with deterministic single-enemy-per-arm targeting restored (revision 1), the mark lives on the enemy (`enemy.has_meta("pit_of_spikes_stunned")`, Trap.gd:124) not on the trap; arm 2's single fresh fixture instance proves the per-enemy path and cross-arm eligibility (arm 1 unowned → 0 stuns, arm 2 owned → stun applies to its own fresh instance); guard code has no trap-side or global state that could leak across enemies
-- Replaying progression levels on save load does not compound or reset the per-enemy "already stunned" state incorrectly: re-applying the same Pit of Spikes level is idempotent and does not itself trigger any stun.
-- Debug-build `[PIT-OF-SPIKES]` log line per stun event: when a trap hit applies the first-hit stun, a filterable log line names the enemy id, trap id, and applied stun duration; subsequent non-stunning hits do not emit it. — fresh run engine out.log contains exactly ONE `[PIT-OF-SPIKES] stun enemy=Cactoro trap=trap_01 duration=0.4` line (.gen/harness/_logs/traps_pit_of_spikes_first_hit_stun.out.log line 641) and scenario action 49 asserts `regex_count == 1` over the whole-run log via the new HarnessValues `regex_count` op
-- The focused headless harness scenario passes with all expectations green: it grants Pit of Spikes, drives a trap hit onto an underground enemy, asserts the enemy is stunned, asserts a second hit does not refresh/re-grant the stun, and asserts the `[PIT-OF-SPIKES]` log line appears exactly once. — result.json status=pass exit=0, 50 actions, only 2 optional-only `defeat_all` no-op failures, both expectations pass
+- With no perk owned, `ProgressionManager.get_bounty_config()` is unchanged from today's shape and carries no grave-robber bonus.
+- Owning `traps_grave_robber` at L1/L2/L3 exposes a bonus-gold configuration through the existing bounty path (`get_bounty_config()`) equivalent to +10%/+15%/+25% of the enemy's base reward on qualifying kills.
+- Re-applying a level or replaying levels 1..N of `traps_grave_robber` (save/load) sets the bonus to that level's exact percentage rather than compounding or collapsing.
+- Resetting progression (new run / `reset`) clears the grave-robber bonus so no bonus applies afterwards.
+- Debug-build `[EconomyProgression]` log line per grave-robber level change naming the perk name, new level, and resulting bonus percentage.
+- When an enemy dies to a trap-sourced killing blow while underground and `traps_grave_robber` L1 is owned, the gold awarded for that kill equals base reward plus 10% of base reward (exact integer gold delta asserted).
+- At L2 and L3 the same setup awards exactly +15% and +25% of base reward respectively over the base reward.
+- A trap killing blow on an above-ground (surface) enemy awards exactly the base reward — no bonus.
+- An underground enemy killed by a non-trap source (tower/projectile) while the perk is owned awards exactly what the existing bounty rules give — no grave-robber bonus.
+- The bonus rides the existing bounty/economy payout path: with the perk owned, an ordinary qualifying kill's total gold still reflects any concurrently-owned `gold_on_kill`/`curse_blood_money` amounts unchanged (no cross-perk interference either direction).
+- Debug-build `[GRAVE_ROBBER]` log line per qualifying bonus payout naming the enemy id and the bonus gold amount.
+- Focused harness scenario `traps_grave_robber_progression.json` runs headless to `[Harness] status=pass` with exit code 0, asserting inline (wait_for_condition) each of: L1/L2/L3 bonus config values, exact gold delta on underground trap kill, zero delta on surface trap kill, and zero delta on non-trap underground kill.
 
 ## ⬜ Pending
-- With the game windowed, after a trap's first hit the stun status icon is visible on that enemy's health bar (driven by `stun_time_left` via the existing health-bar icon path) and disappears once the stun expires.
+(none)
 
 ## ❌ Impossible
+(none)
