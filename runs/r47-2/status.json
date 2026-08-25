@@ -1,12 +1,12 @@
 {
   "run_id": "r47-2",
   "feature": "Water Tower Riptide - light Slow alongside Wet",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-24T23:37:31.928Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-25T01:09:22.733Z",
+  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-water-tower-riptide-light-slow-alongside.\\nThe \u2026",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
-  "heartbeat_at": "2026-08-25T01:09:17.943Z",
+  "heartbeat_at": "2026-08-25T01:09:22.733Z",
   "last_node": "code",
   "active_node": null,
   "last_event_at": "2026-08-25T01:09:17.943Z",
@@ -14,8 +14,8 @@
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T01:09:17.946421+00:00",
-    "last_success_at": "2026-08-24T23:39:11.599704+00:00",
+    "last_attempt_at": "2026-08-25T01:09:22.733613+00:00",
+    "last_success_at": "2026-08-25T01:09:22.732061+00:00",
     "last_error": null
   },
   "metrics": {}
