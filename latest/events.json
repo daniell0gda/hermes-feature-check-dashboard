@@ -1,11 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-25T08:04:57.909Z",
+    "timestamp": "2026-08-25T08:06:18.256Z",
     "node": "code",
     "status": "completed",
-    "duration_ms": 257960,
-    "summary": "Done. Summary:\n\n**Task revision-code-1** \u2014 redo the two Pending criteria from check r6.\n\nState found: the fix diff (`Game.gd` `_saved_map_id_for_log()` / `_save_data_is_restorable()`, corrupt-save driving test, tightened `continue_from_menu\u2026",
+    "duration_ms": 932034,
+    "summary": "Worker release isn't exposed as a callable tool here, so I'm leaving the disposable worker for the orchestrator to release.\n\nSummary:\n\n- porter_broad_sweep perk definition \u2014 implemented in porter_tower.json (Common, maxLevels 3, `\"needs\": [\u2026",
     "error": null
   }
 ]
