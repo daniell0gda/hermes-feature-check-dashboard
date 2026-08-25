@@ -1,69 +1,20 @@
 {
-  "run_id": "traps-pit-of-spikes-42-r1",
-  "feature": "traps-pit-of-spikes-first-hit-stuns-turn",
+  "run_id": "r82-porter-broad-sweep",
+  "feature": "porter-broad-sweep",
   "status": "running",
-  "started_at": "2026-08-25T12:27:54.579Z",
+  "started_at": "2026-08-25T13:37:02.547Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/traps-pit-of-spikes-42-r1/",
-  "heartbeat_at": "2026-08-25T13:25:36.235Z",
-  "last_node": "team-leader",
-  "active_node": "manual-tester",
-  "last_event_at": "2026-08-25T13:25:36.235Z",
-  "process_id": 654623,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r82-porter-broad-sweep/",
+  "heartbeat_at": "2026-08-25T13:37:02.547Z",
+  "last_node": null,
+  "active_node": null,
+  "last_event_at": null,
+  "process_id": 665796,
   "host": "f1a4230ec90b",
-  "phase": "manual-tester",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T13:25:41.102759+00:00",
-    "last_success_at": "2026-08-25T13:25:41.101142+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T13:37:02.547619+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 101221,
-        "output_tokens": 24831
-      },
-      {
-        "task_id": "revision-code-1",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 115537,
-        "output_tokens": 20626
-      },
-      {
-        "task_id": "revision-check-1",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 138750,
-        "output_tokens": 7238
-      },
-      {
-        "task_id": "manual-testing-gate",
-        "cluster_id": null,
-        "role": "team-leader",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 43200,
-        "output_tokens": 611
-      }
-    ]
-  }
+  "metrics": {}
 }
