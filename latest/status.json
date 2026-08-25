@@ -1,22 +1,20 @@
 {
-  "run_id": "r47-2",
-  "feature": "Water Tower Riptide - light Slow alongside Wet",
+  "run_id": "issue45-water-flood-r1",
+  "feature": "water-conductive-flood-wet-splash",
   "status": "running",
-  "started_at": "2026-08-25T06:33:32.073Z",
+  "started_at": "2026-08-25T06:34:54.663Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
-  "heartbeat_at": "2026-08-25T06:33:32.074Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
+  "heartbeat_at": "2026-08-25T06:34:54.663Z",
   "last_node": null,
-  "active_node": "code",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 584141,
+  "process_id": 584915,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T06:33:37.313106+00:00",
-    "last_success_at": "2026-08-25T06:33:36.768387+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T06:34:54.663321+00:00"
   },
   "metrics": {}
 }

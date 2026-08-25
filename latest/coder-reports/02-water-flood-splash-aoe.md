@@ -1,21 +1,4 @@
-# Coder report: 01-water-flood-perk-definition\n\n# Coder report: 01-water-flood-perk-definition
-
-## Changed files
-- `scripts/progression/water_tower.json` — new `water_conductive_flood` Unique entry (maxLevels 0, value 1.5 radius, water-only compatibility); indentation normalized to match sibling entries
-- `scripts/progression/managers/WaterTowerProgressionManager.gd` — handles the perk in `can_handle`/`apply_level`, stores `_flood_enabled`/`_flood_radius`, new `get_flood_config()` accessor; reset clears both
-- `autoload/ProgressionManager.gd` — new `get_water_flood_config()` passthrough (cluster-2 consumer surface)
-
-## Criteria
-- Perk exists as Unique and is eligible like other Water Uniques — Done
-- Applying raises level to 1; accessor exposes enabled=true and radius>0 — Done
-
-## Commands and results
-- `python3 tests/run_all_shard.py 0 1 water_conductive_flood` — exit 0; PASS water_conductive_flood_progression, PASS water_conductive_flood_aoe
-- `godot --headless --path . --import --quit-after 5` — exit 0 (pre-existing HudTheme UID warnings only)
-
-## Notes
-- Scenario `tests/scenarios/water_conductive_flood_progression.json` asserts level 0 -> eligible -> apply -> level 1 + enabled + radius 1.5, save/reload persistence, then reset to level 0.
-\n\n# Coder report: 02-water-flood-splash-aoe\n\n# Coder report: 02-water-flood-splash-aoe
+# Coder report: 02-water-flood-splash-aoe
 
 ## Changed files
 - `scripts/game/actors/Projectile.gd` — water hit path calls `_apply_flood_wet()` after `_apply_wet_status()`: with the perk owned, every other alive above-ground enemy within the configured radius of the hit target gets Wet via its EffectsManager; `_create_water_splash()` extends splash radius/count to cover the perk radius. Debug-build `[WATER-FLOOD] hit target <name> -> N enemies Wetted in Rm radius` log per multi-enemy event.
@@ -38,4 +21,3 @@
 
 ## Notes
 - map_7 wave 2 bed: same-type GSB spacing is 0.95 units (< 1.5 radius for neighbours) while next-nearest is 1.9 (> radius), so wet_count proves both multi-enemy application and radius exclusion with one number.
-\n
