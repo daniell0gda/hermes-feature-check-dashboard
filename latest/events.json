@@ -1,11 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-25T19:31:12.291Z",
-    "node": "plan",
+    "timestamp": "2026-08-25T20:31:50.042Z",
+    "node": "manual-tester",
     "status": "completed",
-    "duration_ms": 239669,
-    "summary": "Plan written: /workspace/git-workspaces/godot-td/issue-press-button-subwindow/.gen/plan.md\n",
+    "duration_ms": 5257233,
+    "summary": "Manual-test result: PASSED. Scenario: .gen/ui_scenario.md (walked via water_conductive_flood_manual_visual). Report: /workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash/.gen/manual-report.md. Escalation: no.\n\nSummary:\u2026",
     "error": null
   }
 ]

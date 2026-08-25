@@ -1,36 +1,22 @@
 {
-  "run_id": "issue141-20260825a",
-  "feature": "harness press_button subwindow delivery",
+  "run_id": "issue45-water-flood-r1",
+  "feature": "water-conductive-flood-wet-splash",
   "status": "running",
-  "started_at": "2026-08-25T19:25:37.473Z",
+  "started_at": "2026-08-25T19:04:07.246Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue141-20260825a/",
-  "heartbeat_at": "2026-08-25T19:31:12.291Z",
-  "last_node": "plan",
-  "active_node": "code",
-  "last_event_at": "2026-08-25T19:31:12.291Z",
-  "process_id": 789024,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
+  "heartbeat_at": "2026-08-25T20:31:50.042Z",
+  "last_node": "manual-tester",
+  "active_node": null,
+  "last_event_at": "2026-08-25T20:31:50.042Z",
+  "process_id": 783186,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T19:31:17.587772+00:00",
-    "last_success_at": "2026-08-25T19:31:17.066740+00:00",
+    "last_attempt_at": "2026-08-25T20:31:50.043541+00:00",
+    "last_success_at": "2026-08-25T19:04:17.335370+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 38680,
-        "output_tokens": 3196
-      }
-    ]
-  }
+  "metrics": {}
 }
