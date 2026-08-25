@@ -1,36 +1,22 @@
 {
-  "run_id": "issue116-game-ready-blocks-map-load-r6",
-  "feature": "game-ready-blocks-map-load",
+  "run_id": "r1-traps-grave-robber",
+  "feature": "traps-grave-robber",
   "status": "running",
-  "started_at": "2026-08-25T06:45:24.094Z",
+  "started_at": "2026-08-25T05:32:58.507Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r6/",
-  "heartbeat_at": "2026-08-25T06:59:51.859Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r1-traps-grave-robber/",
+  "heartbeat_at": "2026-08-25T07:03:15.581Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-25T06:59:51.859Z",
-  "process_id": 589503,
+  "active_node": null,
+  "last_event_at": "2026-08-25T07:03:15.581Z",
+  "process_id": 575299,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T06:59:56.706441+00:00",
-    "last_success_at": "2026-08-25T06:59:56.705484+00:00",
+    "last_attempt_at": "2026-08-25T07:03:15.582717+00:00",
+    "last_success_at": "2026-08-25T05:33:09.273909+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 166010,
-        "output_tokens": 19134
-      }
-    ]
-  }
+  "metrics": {}
 }
