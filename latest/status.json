@@ -1,20 +1,20 @@
 {
-  "run_id": "issue-suite-red-cleanup-r1",
-  "feature": "fix suite red scenarios",
+  "run_id": "issue45-water-flood-r1",
+  "feature": "Water Tower: Conductive Flood (Wet splash radius)",
   "status": "running",
-  "started_at": "2026-08-25T16:10:04.156Z",
+  "started_at": "2026-08-25T16:10:08.483Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-suite-red-cleanup-r1/",
-  "heartbeat_at": "2026-08-25T16:10:04.156Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
+  "heartbeat_at": "2026-08-25T16:10:08.483Z",
   "last_node": null,
   "active_node": null,
   "last_event_at": null,
-  "process_id": 714523,
+  "process_id": 714601,
   "host": "f1a4230ec90b",
   "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T16:10:04.156345+00:00"
+    "last_attempt_at": "2026-08-25T16:10:08.483325+00:00"
   },
   "metrics": {}
 }

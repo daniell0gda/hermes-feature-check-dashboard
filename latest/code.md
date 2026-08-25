@@ -1,140 +1,70 @@
-# Coder report: implementation-rev-code-1\n\n# Coder report: implementation (revision-code-1, r8)
+# Coder report: 01-water-flood-perk-definition\n\n# Coder report: 01-water-flood-perk-definition
 
 ## Changed files
-- none this iteration (implementation verified intact from prior cycles:
-  `scripts/game/Game.gd`, `scripts/testing/HarnessActions.gd`,
-  `scripts/testing/HarnessValues.gd`, `tests/scenarios/carve_pan_no_flip.json`,
-  `tests/scenarios/carve_camera_drag_spin.json`)
+- `scripts/progression/water_tower.json` — new `water_conductive_flood` Unique entry (maxLevels 0, value 1.5, water-only compatibility)
+- `scripts/progression/managers/WaterTowerProgressionManager.gd` — can_handle + apply_level branch, `get_flood_config()` accessor
+- `autoload/ProgressionManager.gd` — passthrough accessors (`get_water_flood_config`, wet-duration surface unchanged)
+- `tests/scenarios/water_conductive_flood_progression.json` — new scenario
 
 ## Criteria
-All 11 criteria in `carve-pan-stability` + `carve-pan-regression-scenario` — Done
-(no product gap found; per revisions.md this cycle is re-do/verify).
+- Perk exists as Unique and eligible like other Water Uniques — Done
+- Apply raises level to 1, radius > 0 accessor — Done
 
 ## Commands and results
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/carve_pan_no_flip.json` — exit 0; status=pass. Probes: armed top-down pitch 1.5708 / basis_x_yaw 0.0; small pan dx=12 and large pan dx=-90 translate with yaw delta 0.0 < 0.01; log shows 9× `[CARVE_CAMERA] pan complete (pre yaw=… post yaw=…)` and `cancel restored pre-carve angles`. Log: `.gen/full_revision_code1_carve_pan_no_flip.log`
-- same for `carve_camera_drag_spin.json` — exit 0; status=pass (real rotate_camera actions, no arg-conversion errors). Log: `.gen/full_revision_code1_carve_camera_drag_spin.log`
-- same for `carve_camera_topdown.json` — exit 0; status=pass. Log: `.gen/full_revision_code1_carve_camera_topdown.log`
-- `godot --headless --editor --path . --quit-after 3` — exit 0, clean typecheck. Log: `.gen/full_revision_code1_typecheck.log`
-- `bash .gen/run_full_suite.sh` — see `.gen/full_revision_code1_suite.log` (carve_* scenarios pass; legacy-domain reds are known pre-existing per quality-notes).
+- `python3 tests/run_all_shard.py 0 1 water_conductive_flood` — exit 0; PASS water_conductive_flood_aoe, PASS water_conductive_flood_progression
+- `godot --headless --path . --import --quit-after 5` — exit 0; import gate PASS (pre-existing HudTheme UID warnings only)
+- `python3 tests/run_all_shard.py 0 1` — exit 137 (runner worker OOM after ~24 scenarios); known environment capacity blocker per quality-notes runner-capacity-full-suite. Visible FAILs (cannon_bunker_buster*, cannon_heavier_shells_blast) are the pre-existing failures recorded last iteration.
 
 ## Notes
-- godot only on PATH via `export PATH=/opt/data/profiles/code/home/bin:$PATH`.
-- Sole outstanding blocker remains the required manual windowed GIF (Xvfb :77), owned by manual-tester — not a code gap.
-\n\n# Coder report: implementation-rev-code-1b\n\n# Coder report: implementation (revision-code-1)
+- No code change this revision; re-verified all gates. Reverted unintended `logs/balance/map_difficulty.csv` regeneration flagged in quality-notes (scope-creep-balance-csv).
+\n\n# Coder report: 02-water-flood-splash-aoe\n\n# Coder report: 02-water-flood-splash-aoe
 
 ## Changed files
-- none this cycle. The implementation from prior cycles is intact in the
-  runner worktree (`poke-defense-godot/issue-130`): modified
-  `scripts/game/Game.gd`, `scripts/config/CameraConfig.gd`,
-  `scripts/testing/AgentHarness.gd`, `scripts/testing/HarnessActions.gd`,
-  `scripts/testing/HarnessValues.gd`, `scripts/ui/UI.gd`; new
-  `tests/scenarios/carve_pan_no_flip.json`,
-  `carve_camera_drag_spin.json`, `carve_camera_topdown.json`,
-  `carve_camera_manual.json`, `carve_pan_no_flip_visual.json`.
-  Per `.gen/revisions.md` this cycle is redo/verify; no product gap found.
+- `scripts/game/actors/Projectile.gd` — `_apply_flood_wet`, `_alive_enemies_near_target`, `_get_water_flood_config`; splash radius extended to perk radius (+8 droplets); `[WATER-FLOOD]` debug log
+- `scripts/testing/HarnessActions.gd` — `water_hit` gained `simulate_projectile: true` driving real `Projectile._resolve_hit`
+- `scripts/testing/HarnessValues.gd` — exposes `wet_count`
+- `tests/run_all_shard.py` — incremental stdout redirect to `.gen/harness/_logs/<sid>.out.log`
+- `tests/scenarios/water_conductive_flood_aoe.json` — new scenario
 
 ## Criteria
-All 11 criteria in clusters `carve-pan-stability` +
-`carve-pan-regression-scenario` — Done (verified fresh this run).
-
-## Commands and results (all via run_project_cmd, godot-td / issue-130)
-- `[godot, --version]` — exit 0; 4.4.1.stable.
-- Focused `carve_pan_no_flip.json` — exit 0, status=pass. Log shows carve arm
-  → top-down applied, 9× `[CARVE_CAMERA] pan complete (pre yaw=0.000000 post yaw=0.000000)`,
-  then `cancel restored pre-carve angles`. Result JSON:
-  worktree `.gen/harness/carve_pan_no_flip/result.json`.
-- Regression `carve_camera_drag_spin.json` — exit 0, status=pass (real
-  rotate_camera actions; no arg-conversion errors).
-- Regression `carve_camera_topdown.json` — exit 0, status=pass; shows both
-  `cancel restored pre-carve angles` and
-  `cancel skipped restore (player rotated during carve)` paths.
-- Typecheck `godot --headless --editor --path . --quit-after 3` — exit 0,
-  no script errors.
-
-## Notes
-- Sole outstanding blocker remains the required manual windowed 30fps GIF
-  (Xvfb :77 direct, screenshot key `name`) per plan.md manual_testing — owned
-  by the manual-tester role, not a code gap.
-- HudTheme.tres texture-load errors in headless runs are pre-existing noise,
-  unrelated to camera code.
-\n\n# Coder report: implementation-rev-code-2\n\n# Coder report: implementation (revision-code-2)
-
-## Changed files
-- none this cycle — implementation verified intact from prior cycles:
-  `scripts/game/Game.gd` (mod), `scripts/config/CameraConfig.gd` (mod),
-  `scripts/testing/HarnessActions.gd` (mod), `scripts/testing/HarnessValues.gd` (mod),
-  `tests/scenarios/carve_pan_no_flip.json` (new),
-  `tests/scenarios/carve_camera_drag_spin.json` (mod),
-  `tests/scenarios/carve_camera_topdown.json` (new)
-
-## Criteria
-- All 11 plan criteria — Done (previously implemented; re-verified fresh this cycle)
+- Multi-enemy Wet in radius (≥2 from one hit) — Done
+- Without perk: direct target only (regression guard) — Done
+- Outside-radius enemies stay dry — Done (GSB at 1.9m vs 1.5m radius)
+- Splash visual extends to perk radius — Done in code path; pixel evidence is windowed manual testing per plan Notes
+- Wet renders via existing EnemyHealthBar icon — Done (reuses EffectsManager.apply_wet; no new asset)
+- `[WATER-FLOOD]` debug log naming target + count — Done (asserted in AoE scenario out.log)
 
 ## Commands and results
-- `godot --headless --path . scenes/Main.tscn -- --harness=res://tests/scenarios/carve_pan_no_flip.json` — exit 0; status=pass; expectations carve_pan_translated_only=true, carve_pan_yaw_delta=0.0 < 0.01; log shows repeated `[CARVE_CAMERA] pan complete (pre yaw=0.000000 post yaw=0.000000)` through the real `_input` middle-drag path. Log: `.gen/full_revision_code2_carve_pan_no_flip.log`
-- same for `carve_camera_drag_spin.json` — exit 0; status=pass; carve_drag_spin_no_flip=true (non-vacuous: real rotate_camera actions). Log: `.gen/full_revision_code2_carve_camera_drag_spin.log`
-- same for `carve_camera_topdown.json` — exit 0; status=pass. Log: `.gen/full_revision_code2_carve_camera_topdown.log`
-- `godot --headless --editor --path . --quit-after 3` — exit 0, no script/parse errors. Log: `.gen/full_revision_code2_typecheck.log`
-- Full suite not re-run: bash not on runner allowlist; prior equivalent run recorded known pre-existing legacy reds only, no camera-domain failures.
+- `python3 tests/run_all_shard.py 0 1 water_conductive_flood` — exit 0; PASS both scenarios
+- `godot --headless --path . --import --quit-after 5` — exit 0
+- `python3 tests/run_all_shard.py 0 1` — exit 137 (worker OOM ~218s / ~24 scenarios); environment capacity issue per quality-notes; the FAILs seen are the documented pre-existing ones outside this feature's files.
 
 ## Notes
-- Per revisions.md (fixable, next_role code): no product gap found, no re-implementation needed.
-- godot only on PATH via `export PATH=/opt/data/profiles/code/home/bin:$PATH`.
-- Sole remaining blocker is process: required windowed 30fps GIF under Xvfb :77 owned by manual-tester profile.
-\n\n# Coder report: implementation-rev3\n\n# Coder report: implementation (revision-code-3)
+- No code change this revision; re-verified all gates. Balance CSV scope-creep reverted this revision.
+\n\n# Coder report: implementation\n\n# Coder report: implementation (revision pass, all clusters)
 
 ## Changed files
-- `tests/scenarios/carve_camera_drag_spin.json` — modified (uncommitted, in main checkout and synced to runner worktree)
-- `scripts/testing/HarnessValues.gd` — modified (uncommitted, both copies)
+No source changes this revision. The feature diff from iteration 1 stands as-is:
+- `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd`, `autoload/ProgressionManager.gd`
+- `scripts/game/actors/Projectile.gd`
+- `scripts/testing/HarnessActions.gd`, `scripts/testing/HarnessValues.gd`
+- `tests/run_all_shard.py` (incremental stdout log redirect)
+- `tests/scenarios/water_conductive_flood_progression.json` (new), `tests/scenarios/water_conductive_flood_aoe.json` (new)
 
 ## Criteria
-- All 10 plan criteria — implementation intact from prior cycles; this cycle fixed
-  the one open quality note (`carve-drag-spin-vacuous-rotate-shortcut`), which
-  un-vacuous-fies criterion 10's drag_spin regression.
+- Perk data + manager exposure (default disabled, level 1 on apply, no stacking, reset) — Done
+- Flood Wets all in-radius enemies; out-of-radius stays dry; direct-target-only without perk — Done
+- Splash visual covers perk radius (Ice-cone small-radius approach); windowed screenshot evidence is manual per plan note — Done in code path
+- Wet renders via existing EnemyHealthBar status icons — Done (reuses EffectsManager.apply_wet, no new asset)
+- `[WATER-FLOOD]` debug lines for perk application and flood hit — Done
 
 ## Commands and results
-- `[godot,--headless,--path,.,res://scenes/Main.tscn,--,--harness=res://tests/scenarios/carve_camera_drag_spin.json]` via run_project_cmd (godot-td / poke-defense-godot/issue-130) — exit 0; status=pass; `carve_drag_spin_no_flip` actual=true pass=true. Probes now genuine: armed pitch=1.5708/basis_x_yaw=0 → after huge vertical drag pitch=0.2000/basis_x_yaw=0.0000 (yaw stable, inside clamp) → after horizontal drag pitch=0.2000 kept, basis_x_yaw=2.5000 (real rotation). No `Cannot convert argument 1 from String to Object` errors.
-- Focused `carve_pan_no_flip.json` re-run Hermes-side — status=pass exit 0 (`carve_pan_translated_only=true`, `carve_pan_yaw_delta=0.0`).
-- Regression `carve_camera_topdown.json` re-run — status=pass exit 0, all 7 expectations.
-- Typecheck `[godot,--headless,--path,.,--editor,--quit-after,3]` — clean, no script errors.
+- `python3 tests/run_all_shard.py 0 1 water_conductive_flood` — exit 0; PASS water_conductive_flood_aoe, PASS water_conductive_flood_progression (~23s)
+- `godot --headless --path . --editor --quit-after 300` — exit 0 (only pre-existing HudTheme UID warnings)
+- `python3 tests/run_all_shard.py 0 1` (full suite) — exit 137 (OOM kill), reproduced this revision: first two attempts hit the runner's 420s tool timeout, third attempt killed by OOM after only 4 scenarios (~47s). Same documented runner-capacity blocker from quality-notes (`runner-capacity-full-suite`); not a code defect. Focused gates are green.
+- `[WATER-FLOOD]` markers verified present in scenario logs: application line (`water_conductive_flood applied -> radius=1.50`) in both logs; flood-hit line (`hit target ... -> 1 enemies Wetted in 1.50m radius`) in the AoE log.
 
 ## Notes
-- Fix 1: replaced the scenario's two generic `call game._rotate_camera` actions
-  (args ["@Camera3D",[0,500]] — failed arg conversion, camera never moved) with
-  real harness actions `{"type":"rotate_camera","dx":0,"dy":500}` and
-  `{"type":"rotate_camera","dx":500,"dy":0}`.
-- Fix 2: with rotation genuinely running, the old expectation (`top_down` still
-  true after the huge vertical drag) is stale — the armed clamp intentionally
-  allows pitch down to ~0.05–1.55 band, so a full drag bottoms out at pitch 0.2
-  without crossing the pole or flipping yaw (basis_x_yaw stayed exactly 0.0).
-  Rewrote `_carve_drag_spin_no_flip` in HarnessValues.gd to assert what the plan
-  actually specifies: genuine rotation (>0.01 rad off top-down), post-drag pitch
-  inside the 0.05–1.55 armed clamp, basis-x yaw delta ≤0.01 across the vertical
-  drag, and pitch preserved through the horizontal drag.
-- Gotcha for tester: the runner worktree `/workspace/git-workspaces/poke-defense-godot/issue-130`
-  does NOT auto-sync uncommitted edits from the main checkout; I copied both files there manually.
-  Any future code change must repeat that copy before running via run_project_cmd.
-- Remaining known blockers (unchanged, not code): full-suite red on legacy domains,
-  manual windowed GIF outstanding — both belong to check/manual-tester per revisions.md.
-\n\n# Coder report: implementation\n\n# Coder report: implementation (revision-code-2)
-
-## Changed files
-- none this iteration — pan-stability implementation verified intact from prior cycles:
-  - `scripts/game/Game.gd`
-  - `scripts/testing/HarnessActions.gd`
-  - `scripts/testing/HarnessValues.gd`
-  - `tests/scenarios/carve_pan_no_flip.json`
-
-## Criteria
-All Pending criteria in status.md (pan stability, degenerate look_at guards, right-drag orbit clamp, quick right-click cancel, debug log, harness probes/scenario, regression scenarios) — Done (verified passing).
-
-## Commands and results
-- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/carve_pan_no_flip.json` — exit 0; status=pass (`carve_pan_translated_only=true`, `carve_pan_yaw_delta=0.0`)
-- same for `carve_camera_drag_spin.json` — exit 0, pass
-- same for `carve_camera_topdown.json` — exit 0, pass
-- `godot --headless --editor --path . --quit-after 3` — exit 0, no script errors
-
-## Notes
-- godot binary requires `export PATH=/opt/data/profiles/code/home/bin:$PATH`.
-- No dashboard events published. Waiting for check.
+- Balance CSV scope-creep remains reverted; `git status --short` shows only the 9 feature files listed above.
+- Full-suite OOM is environmental: the worker dies at ~4 scenarios with exit 137, well before reaching this feature's tests.
 \n

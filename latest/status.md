@@ -1,17 +1,19 @@
 ## ✅ Done
-- While carve bird view is armed, holding middle mouse and moving it a small amount translates the camera and its view target together without changing the camera's yaw or up direction: the camera's horizontal basis vector (`basis.x`) stays within a near-zero angular delta (< 0.05 rad) of its pre-drag value.
-- While carve bird view is armed, larger continued middle-mouse pans keep the camera orientation stable across every motion event — no event during the pan produces a yaw change of roughly 90° or 180°.
-- While the camera is nearly straight down even when carve mode is not armed, the same pan input does not rebuild the camera basis via a degenerate up-vector look-at that flips yaw.
-- Zooming from the nearly straight-down pose also preserves yaw instead of flipping it.
-- With carve bird view armed, holding the right mouse button and dragging still orbits the camera around the target, and the pitch stays inside the armed clamp (~0.05–1.55 rad) so no drag snaps across the pole.
-- A quick right-click while carve mode is active still cancels carve mode.
-- Debug-build [CARVE_CAMERA] log line per completed middle-mouse pan while bird view is armed, containing pre-pan and post-pan yaw.
-- A harness value source exposes the post-pan camera basis/yaw delta (from the camera basis, not position-offset atan2) so scenarios can assert that a scripted middle-drag changed translation only, not orientation.
-- The focused scenario arms carve mode on the underground layer, then drives a middle-button press followed by mouse motion events through the real `_input` path (not a rotate-camera shortcut) and asserts the camera position translated by the expected amount while the basis.x-yaw delta is below 0.05 rad.
-- The `carve_camera_drag_spin` scenario's rotate action actually invokes camera rotation (its harness call does not fail with an argument-conversion error) and still passes with yaw stable after a large vertical drag past the old clamp.
+- (none — full test suite gate not green; all criteria held Pending per build/test gate)
 
 ## ⬜ Pending
-(none)
+- The Water tower progression data defines a Unique perk entry with id `water_conductive_flood`, obtainable through the same eligibility and application path as other Water Uniques (`water_deep_soak`, `water_pressure`).
+- With no perks applied, the exposed water flood config reports disabled with a zero or non-positive radius; applying `water_conductive_flood` raises its progression level to 1 and the exposed config reports enabled with a small positive radius.
+- Applying `water_conductive_flood` again does not stack beyond its defined single level, and resetting for a new game returns the config to disabled with no radius.
+- With `water_conductive_flood` enabled, a Water projectile hit applies Wet to every enemy within the perk's small radius of the hit target, not only the direct target (at least two enemies Wet from one hit).
+- With `water_conductive_flood` enabled, an enemy outside the perk's small radius of the hit target is not Wetted by that hit.
+- Without `water_conductive_flood`, a Water projectile hit applies Wet only to the direct target and leaves nearby enemies un-Wetted (unchanged pre-perk behavior).
+- When `water_conductive_flood` is enabled, the hit's existing splash effect visually covers at least the perk's small radius on impact, using the same small-radius splash visual approach the Ice tower cone effects use; the effect reads clearly at normal game speed.
+- Wet applied by the flood renders per-enemy through the existing EnemyHealthBar status icons, so each affected enemy visibly shows its Wet status without any new asset.
+- Debug-build `[WATER-FLOOD]` log lines exist for both key events: perk application recording the configured radius, and a flood hit recording the hit target, the number of enemies Wetted, and the radius used.
+- The focused progression scenario passes headlessly, proving the perk's data-side contract: default-disabled config, level 0 before application, level 1 after, and a positive exposed radius.
+- The focused runtime A/B scenario passes headlessly, proving via the production projectile hit path that the perk arm Wets multiple in-radius enemies while the control arm Wets only the direct target and excludes an out-of-radius enemy.
+- The `[WATER-FLOOD]` hit log line is observable in the scenario's engine output log, matching the debug-build marker asserted by the runtime scenario.
 
 ## ❌ Impossible
-(none)
+- (none)
