@@ -1,21 +1,21 @@
 {
   "run_id": "r1-traps-grave-robber",
   "feature": "traps-grave-robber",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-08-25T14:09:03.070Z",
-  "ended_at": null,
+  "ended_at": "2026-08-25T15:54:06.835Z",
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r1-traps-grave-robber/",
-  "heartbeat_at": "2026-08-25T15:54:02.007Z",
+  "heartbeat_at": "2026-08-25T15:54:06.835Z",
   "last_node": "team-leader",
   "active_node": null,
   "last_event_at": "2026-08-25T15:54:02.007Z",
   "process_id": 671428,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T15:54:02.007923+00:00",
-    "last_success_at": "2026-08-25T15:53:19.819983+00:00",
+    "last_attempt_at": "2026-08-25T15:54:06.835145+00:00",
+    "last_success_at": "2026-08-25T15:54:06.833978+00:00",
     "last_error": null
   },
   "metrics": {
@@ -41,6 +41,17 @@
         "cost_status": "unknown",
         "input_tokens": 205812,
         "output_tokens": 6933
+      },
+      {
+        "task_id": "manual-testing-gate",
+        "cluster_id": null,
+        "role": "team-leader",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 42664,
+        "output_tokens": 451
       }
     ]
   }
