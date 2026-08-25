@@ -25,5 +25,14 @@
     "duration_ms": 812012,
     "summary": "Verification complete. All commands ran through `run_project_cmd` (project=poke-defense-godot).\n\n- Preflight `godot --version`: exit 0 (4.4.1 stable)\n- Editor/typecheck gate: exit 0, no script errors\n- Focused harness: exit 0, result.json `\u2026",
     "error": null
+  },
+  {
+    "sequence": 4,
+    "timestamp": "2026-08-25T13:25:36.235Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 37468,
+    "summary": "Gate decision complete.\n\n- Read request.md, plan.md, check.md, status.md and the manual-testing-gate skill.\n- Check is `pass` with one pending criterion: windowed stun-icon visibility (criterion 8). That is a new player-visible story (stun \u2026",
+    "error": null
   }
 ]
