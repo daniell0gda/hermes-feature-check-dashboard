@@ -8,15 +8,29 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r1-traps-grave-robber/",
   "heartbeat_at": "2026-08-25T12:16:51.440Z",
   "last_node": "code",
-  "active_node": null,
+  "active_node": "check",
   "last_event_at": "2026-08-25T12:16:51.440Z",
   "process_id": 643193,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T12:16:51.441873+00:00",
-    "last_success_at": "2026-08-25T11:00:24.135521+00:00",
-    "last_error": "Command '['git', '-C', '/tmp/team-work-dashboard', 'fetch', '--depth', '1', 'origin', 'gh-pages']' returned non-zero exit status 128."
+    "last_attempt_at": "2026-08-25T12:16:56.195254+00:00",
+    "last_success_at": "2026-08-25T12:16:56.194388+00:00",
+    "last_error": null
   },
-  "metrics": {}
+  "metrics": {
+    "invocations": [
+      {
+        "task_id": "revision-code-1",
+        "cluster_id": "implementation",
+        "role": "code",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 247593,
+        "output_tokens": 14717
+      }
+    ]
+  }
 }
