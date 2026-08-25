@@ -1,47 +1,20 @@
 {
   "run_id": "r1-traps-grave-robber",
   "feature": "traps-grave-robber",
-  "status": "failed",
-  "started_at": "2026-08-25T07:35:36.084Z",
-  "ended_at": "2026-08-25T10:44:32.072Z",
-  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/git-workspaces/godot-td/issue-traps-grave-robber.\\nThe durable evidence directory is /w\u2026",
+  "status": "running",
+  "started_at": "2026-08-25T11:00:19.693Z",
+  "ended_at": null,
+  "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r1-traps-grave-robber/",
-  "heartbeat_at": "2026-08-25T10:44:32.072Z",
-  "last_node": "code",
+  "heartbeat_at": "2026-08-25T11:00:19.693Z",
+  "last_node": null,
   "active_node": null,
-  "last_event_at": "2026-08-25T10:44:27.295Z",
-  "process_id": 603674,
+  "last_event_at": null,
+  "process_id": 643193,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T10:44:32.072659+00:00",
-    "last_success_at": "2026-08-25T10:44:32.071374+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T11:00:19.693620+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 64075,
-        "output_tokens": 5053
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 64089,
-        "output_tokens": 8294
-      }
-    ]
-  }
+  "metrics": {}
 }
