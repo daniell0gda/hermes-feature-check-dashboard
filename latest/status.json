@@ -1,12 +1,12 @@
 {
   "run_id": "issue45-water-flood-r2",
   "feature": "water-conductive-flood-wet-splash",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-25T10:00:31.932Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-25T11:37:10.188Z",
+  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash.\\nThe durable evidence \u2026",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r2/",
-  "heartbeat_at": "2026-08-25T11:37:05.525Z",
+  "heartbeat_at": "2026-08-25T11:37:10.188Z",
   "last_node": "code",
   "active_node": null,
   "last_event_at": "2026-08-25T11:37:05.525Z",
@@ -14,8 +14,8 @@
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T11:37:05.526346+00:00",
-    "last_success_at": "2026-08-25T10:06:59.176078+00:00",
+    "last_attempt_at": "2026-08-25T11:37:10.188470+00:00",
+    "last_success_at": "2026-08-25T11:37:10.187301+00:00",
     "last_error": null
   },
   "metrics": {
