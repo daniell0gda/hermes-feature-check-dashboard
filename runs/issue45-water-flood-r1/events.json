@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-25T16:27:42.792Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 1049434,
+    "summary": "Summary for task revision-code-1 (cluster: implementation):\n\n**Work done**\n1. **Full-suite gate completed** \u2014 previously impossible in one runner invocation (OOM exit 137 / 420s cap). Built a resumable per-scenario sharding script (.gen/run\u2026",
+    "error": null
+  }
+]
