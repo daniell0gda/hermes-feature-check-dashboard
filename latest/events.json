@@ -1,38 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-25T08:04:57.909Z",
+    "timestamp": "2026-08-25T08:24:27.789Z",
     "node": "code",
     "status": "completed",
-    "duration_ms": 257960,
-    "summary": "Done. Summary:\n\n**Task revision-code-1** \u2014 redo the two Pending criteria from check r6.\n\nState found: the fix diff (`Game.gd` `_saved_map_id_for_log()` / `_save_data_is_restorable()`, corrupt-save driving test, tightened `continue_from_menu\u2026",
-    "error": null
-  },
-  {
-    "sequence": 2,
-    "timestamp": "2026-08-25T08:11:53.035Z",
-    "node": "check",
-    "status": "completed",
-    "duration_ms": 410466,
-    "summary": "Check complete. Artifacts written:\n\n- /workspace/git-workspaces/poke-defense-godot/issue-game-ready-blocks-map-load/.gen/check.md\n- /workspace/git-workspaces/poke-defense-godot/issue-game-ready-blocks-map-load/.gen/status.md\n\nclassification\u2026",
-    "error": null
-  },
-  {
-    "sequence": 3,
-    "timestamp": "2026-08-25T08:14:03.189Z",
-    "node": "team-leader",
-    "status": "completed",
-    "duration_ms": 125335,
-    "summary": "Manual-testing gate complete.\n\n- Check report: classification pass \u2014 all 15 criteria verified fresh (import gate clean, driving test 16 ok/0 failed, Continue harness 7/7, map_build_phases 7/7, menu backdrop 4/4).\n- Decision: manual_testing:\u2026",
-    "error": null
-  },
-  {
-    "sequence": 4,
-    "timestamp": "2026-08-25T08:20:21.775Z",
-    "node": "manual-tester",
-    "status": "completed",
-    "duration_ms": 373926,
-    "summary": "Worker release tool isn't exposed to this session, so the worker is left as-is (commands all ran cleanly through run_project_cmd).\n\nDone. Summary of what was executed and produced:\n\n- Read plan.md, changes.md, manual_testing.md; ui_scenario\u2026",
+    "duration_ms": 2926272,
+    "summary": "Implementation complete. Summary:\n\nImplemented the `traps_grave_robber` (Grave Robber) Common perk per plan:\n- `scripts/progression/global.json`: 3-level perk with absolute values 0.1/0.15/0.25.\n- `EconomyProgressionManager.gd`: handles the\u2026",
     "error": null
   }
 ]

@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-25T08:24:27.789Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 2926272,
+    "summary": "Implementation complete. Summary:\n\nImplemented the `traps_grave_robber` (Grave Robber) Common perk per plan:\n- `scripts/progression/global.json`: 3-level perk with absolute values 0.1/0.15/0.25.\n- `EconomyProgressionManager.gd`: handles the\u2026",
+    "error": null
+  }
+]
