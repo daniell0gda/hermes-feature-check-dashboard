@@ -1,0 +1,102 @@
+{#
+  Shared markup. Tone maps live here so the list and run views can never drift
+  apart on what a status or a verdict looks like.
+#}
+{% set STATUS_TONE = {
+  'running': 'info', 'completed': 'ok', 'failed': 'err', 'abandoned': 'err',
+  'cancelled': 'warn', 'interrupted': 'warn', 'unknown': 'mute'
+} %}
+
+{# Verdicts observed across the published run history. #}
+{% set VERDICT_TONE = {
+  'pass': 'ok',
+  'fixable': 'warn', 'escalate': 'warn', 'escalated': 'warn',
+  'fail': 'err', 'blocked': 'err', 'design_failure': 'err',
+  'unknown': 'mute'
+} %}
+
+{% set STAGE_STATE_TEXT = {
+  'done': 'completed', 'active': 'in progress', 'failed': 'failed',
+  'pending': 'not started yet', 'skipped': 'never reached'
+} %}
+
+
+{% macro status_badge(run) %}
+{% set status = display_status(run) %}
+<span class="badge tone-{{ STATUS_TONE.get(status, 'mute') }}">
+  {% if status == 'running' %}<span class="pulse" aria-hidden="true"></span>{% endif %}
+  {{ status }}
+</span>
+{% endmacro %}
+
+
+{% macro verdict_badge(verdict) %}
+{% if verdict %}
+<span class="badge badge-soft tone-{{ VERDICT_TONE.get(verdict|lower, 'mute') }}">{{ verdict }}</span>
+{% else %}
+<span class="dim">{{ dash }}</span>
+{% endif %}
+{% endmacro %}
+
+
+{% macro health_notice(run) %}
+{% set health = health_of(run) %}
+{% if health and health.state != 'live' %}
+<p class="notice tone-{{ 'err' if health.state == 'abandoned' else 'warn' }}">{{ health.label }}</p>
+{% endif %}
+{% endmacro %}
+
+
+{% macro time_cell(value) %}
+{% if value %}
+<time datetime="{{ value | iso }}" title="{{ value | absolute }}">{{ value | relative }}</time>
+{% else %}
+<span class="dim">{{ dash }}</span>
+{% endif %}
+{% endmacro %}
+
+
+{% macro metric(label, value, modifier='') %}
+<div class="metric {{ modifier }}">
+  <dt>{{ label }}</dt>
+  <dd>{{ value }}</dd>
+</div>
+{% endmacro %}
+
+
+{% macro metric_time(label, value) %}
+<div class="metric">
+  <dt>{{ label }}</dt>
+  <dd>{{ time_cell(value) }}</dd>
+</div>
+{% endmacro %}
+
+
+{% macro progress_bar(percent, label) %}
+<div class="progress" role="progressbar" aria-valuenow="{{ percent }}"
+     aria-valuemin="0" aria-valuemax="100" aria-label="{{ label }}">
+  <div class="progress-fill" style="width: {{ percent }}%"></div>
+</div>
+{% endmacro %}
+
+
+{% macro stages(stage_list, compact=false) %}
+{% if stage_list %}
+<ol class="stages {{ 'stages-compact' if compact }}">
+  {% for stage in stage_list %}
+  <li class="stage is-{{ stage.state }}"
+      title="{{ stage.label }} — {{ STAGE_STATE_TEXT.get(stage.state, stage.state) }}{% if stage.passes > 1 %}, {{ stage.passes }} passes{% endif %}">
+    <span class="stage-dot" aria-hidden="true"></span>
+    <span class="stage-label">{{ stage.label }}</span>
+    {% if not compact and (stage.duration_ms is not none or stage.passes > 1) %}
+    <span class="stage-meta">
+      {%- if stage.duration_ms is not none %}{{ stage.duration_ms | duration }}{% endif -%}
+      {%- if stage.duration_ms is not none and stage.passes > 1 %} · {% endif -%}
+      {%- if stage.passes > 1 %}{{ stage.passes }}&times;{% endif -%}
+    </span>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ol>
+{% endif %}
+{% endmacro %}

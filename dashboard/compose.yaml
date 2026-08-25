@@ -1,0 +1,50 @@
+# TrueNAS SCALE -> Apps -> Discover Apps -> Custom App -> Install via YAML.
+#
+# Paste this, then change:
+#   1. image           -> where you pushed the build (see README)
+#   2. HFCD_API_KEY    -> a long random secret; the worker sends it as X-API-Key
+#   3. the volume path  -> a dataset on your pool
+#
+# The mounted /data holds the SQLite database AND every screenshot, so the
+# dashboard survives reinstalling, updating or deleting the container. Nothing
+# durable is written anywhere else.
+
+services:
+  dashboard:
+    # Pulled from a registry. A private GHCR package needs `docker login ghcr.io`
+    # on the NAS; a public one needs nothing. See the README.
+    image: ghcr.io/CHANGE-ME/hermes-dashboard:latest
+
+    # No registry at all: build the image on the NAS and use the local tag.
+    # pull_policy is required, or Docker goes looking for it upstream.
+    #   docker build -t hermes-dashboard:latest /mnt/tank/src/dashboard
+    # image: hermes-dashboard:latest
+    # pull_policy: never
+
+    container_name: hermes-dashboard
+    restart: unless-stopped
+
+    # Must match the owner of the dataset mounted at /data.
+    # On the host: chown -R 10001:10001 /mnt/tank/apps/hermes-dashboard/data
+    user: "10001:10001"
+
+    environment:
+      # Required for the worker to publish. Without it the dashboard starts
+      # read-only and every ingest route answers 503.
+      HFCD_API_KEY: "CHANGE-ME-to-a-long-random-secret"
+
+      HFCD_DATA_DIR: "/data"
+      HFCD_SITE_NAME: "Hermes"
+      HFCD_PORT: "8080"
+
+      # Only for absolute times in the UI; storage is always UTC.
+      TZ: "Europe/Warsaw"
+
+      # Set only when serving under a reverse-proxy subpath, e.g. "/dashboard".
+      # HFCD_ROOT_PATH: ""
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      - /mnt/tank/apps/hermes-dashboard/data:/data

@@ -1,0 +1,11 @@
+**/__pycache__/
+**/*.pyc
+.venv/
+venv/
+tests/
+clients/
+data/
+*.md
+compose.yaml
+requirements-dev.txt
+.pytest_cache/

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="color-scheme" content="light dark">
+  <title>{% block title %}{{ site_name }}{% endblock %} · Feature Check</title>
+  <link rel="stylesheet" href="{{ url_path('/static/dashboard.css') }}">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <a class="brand" href="{{ url_path('/') }}">
+    <span class="brand-mark" aria-hidden="true">FC</span>
+    <span class="brand-text">
+      <strong>Feature Check</strong>
+      <span>{{ site_name }}</span>
+    </span>
+  </a>
+  <nav class="topbar-nav">
+    <a href="{{ url_path('/') }}">All runs</a>
+    <a href="{{ url_path('/?status=running') }}">Running</a>
+    <a href="{{ url_path('/?status=failed') }}">Failed</a>
+  </nav>
+</header>
+
+<main id="main" class="shell">
+{% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <span>Rendered from the dashboard database</span>
+  <span class="footer-links">
+    <a href="{{ url_path('/api/runs') }}">Runs API</a>
+    <a href="{{ url_path('/api/summary') }}">Summary API</a>
+    <a href="{{ url_path('/api/docs') }}">API docs</a>
+  </span>
+</footer>
+
+<script src="{{ url_path('/static/dashboard.js') }}" defer></script>
+</body>
+</html>

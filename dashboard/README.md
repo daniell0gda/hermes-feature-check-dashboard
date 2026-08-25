@@ -1,0 +1,210 @@
+# Hermes feature-check dashboard
+
+A single-container dashboard for feature-check runs. The worker publishes
+**data** over an authenticated API; the app stores it in SQLite and renders the
+views itself, so changing the design never requires republishing a run.
+
+```
+worker ──► POST /api/runs                 status, events, graph, metrics, documents
+       └─► POST /api/runs/<id>/media      one screenshot per request, changed files only
+              │
+              ▼
+        /data/dashboard.sqlite3           runs · events · documents · artifacts
+        /data/media/<run_id>/             screenshots, GIFs, generated thumbnails
+              │
+              ▼
+        GET /                             all runs, live
+        GET /run/<run_id>                 one run
+```
+
+Everything durable lives under the mounted `/data`. Nothing persistent is
+written anywhere else, so reinstalling, updating or deleting the container loses
+nothing — and the app **refuses to start** if `/data` is not writable, rather
+than quietly filling the container's ephemeral layer.
+
+## Layout
+
+| Path | Purpose |
+|---|---|
+| `app/` | The application (FastAPI, Jinja2, SQLite, Pillow, markdown-it). |
+| `clients/publish_snapshot.py` | Publishes a snapshot directory. Drop-in for `GitDeployment`. |
+| `clients/status_http.py` | Status / heartbeat pings during a run. |
+| `tests/` | 151 tests, including end-to-end runs against the real published snapshots. |
+| `Dockerfile`, `compose.yaml` | Build and deploy. |
+
+## Getting the image onto the NAS
+
+A Custom App installs from a compose file, which names an image — it cannot
+build one for you. Pick one of these. The image installs no compiler and pulls
+five pinned wheels, so a build takes seconds either way.
+
+### Option A — build on the NAS (no registry, no login)
+
+TrueNAS SCALE's Apps are Docker-based, so the daemon is already there. Copy this
+directory to a dataset and build in place:
+
+```sh
+docker build -t hermes-dashboard:latest /mnt/tank/src/dashboard
+```
+
+Then in the compose file use the local tag and stop Docker looking upstream:
+
+```yaml
+image: hermes-dashboard:latest
+pull_policy: never
+```
+
+Without `pull_policy: never` the install tries to pull `hermes-dashboard:latest`
+from Docker Hub and fails. Rebuild and redeploy the app to update.
+
+### Option B — push to a registry
+
+```sh
+cd dashboard
+docker build -t ghcr.io/<you>/hermes-dashboard:latest .
+docker push ghcr.io/<you>/hermes-dashboard:latest
+```
+
+Pushing needs a GitHub personal access token (classic) with `write:packages`.
+
+**GHCR makes a newly pushed package private by default**, even if the source
+repository is public, so pulling then needs credentials:
+
+- **Make the package public** (GitHub → Packages → the package → settings →
+  change visibility) and the NAS pulls anonymously with no login. Nothing secret
+  is baked into the image — `.dockerignore` excludes the tests, clients, compose
+  file and data directory, and the API key arrives at runtime as an environment
+  variable — but the application source does become publicly downloadable.
+- **Keep it private** and run `docker login ghcr.io` on the NAS with a classic
+  PAT carrying `read:packages`. A compose file cannot carry registry
+  credentials, so this has to happen on the host; it is stored in
+  `/root/.docker/config.json`, which a major TrueNAS upgrade can clear (the
+  symptom is a pull failure on the next deploy). If your TrueNAS release has a
+  registry-credentials screen under Apps, prefer that — it survives upgrades.
+
+## Deploy on TrueNAS
+
+1. Create a dataset for the data, e.g. `/mnt/tank/apps/hermes-dashboard/data`.
+2. Give it to the container user: `chown -R 10001:10001 /mnt/tank/apps/hermes-dashboard/data`
+   (or set a matching `user:` in the compose file).
+3. **Apps → Discover Apps → Custom App → Install via YAML**, paste `compose.yaml`,
+   and change the image, the `HFCD_API_KEY` and the volume path.
+4. Open `http://<nas>:8080/`. `GET /api/healthz` is the health endpoint and is
+   already wired as the image's `HEALTHCHECK`.
+
+### Environment
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `HFCD_API_KEY` | *(unset)* | Required for publishing. Sent by the worker as `X-API-Key`. **While unset the dashboard is read-only and every ingest route answers 503** — it never accepts anonymous writes. |
+| `HFCD_DATA_DIR` | `/data` | Database + media root. Must be a mounted volume. |
+| `HFCD_SITE_NAME` | `Hermes` | Name shown in the header. |
+| `HFCD_PORT` / `HFCD_HOST` | `8080` / `0.0.0.0` | Listen address. |
+| `HFCD_ROOT_PATH` | *(empty)* | Set only when served under a reverse-proxy subpath, e.g. `/dashboard`. |
+| `TZ` | UTC | Timezone for displayed times. Storage is always UTC. |
+
+### Access model
+
+Reads are open to anyone who can reach the port; only writes need the key.
+Restrict exposure at the TrueNAS port / reverse proxy / firewall level, not in
+the app. Pages are served `noindex, nofollow`.
+
+## Wiring the worker
+
+```python
+from publish_snapshot import HttpDeployment
+
+deployment = HttpDeployment("http://truenas.lan:8080", api_key="...")
+deployment.publish(snapshot_dir)   # same call signature as GitDeployment
+```
+
+Or from the shell:
+
+```sh
+export HFCD_API_KEY=...
+python3 clients/publish_snapshot.py --base http://truenas.lan:8080 \
+    --source .gen/feature-check-dashboard
+```
+
+Between publishes, keep a run marked live without re-uploading anything:
+
+```sh
+python3 clients/status_http.py --base http://truenas.lan:8080 \
+    --run-id my-run --status running --phase code
+python3 clients/status_http.py --base http://truenas.lan:8080 --run-id my-run --heartbeat
+```
+
+`--dry-run` prints the run id, event count, every document with its size and
+every screenshot with its sha1, without contacting a server.
+
+## API
+
+Writes need `X-API-Key`; reads are open (CORS `*`).
+
+| Method | Route | Purpose |
+|---|---|---|
+| POST | `/api/runs` | Upsert a run. Idempotent — events and documents are replaced wholesale, in one transaction. |
+| POST | `/api/runs/<id>/media?path=screenshots/x.png` | Store one image. Raw bytes as the body, not base64. |
+| GET | `/api/runs/<id>/media` | `path → sha1` manifest, so a publisher uploads only what changed. |
+| POST | `/api/runs/<id>/status` | Patch `status`, `phase`, `active_node`, `last_node`, `error`; bumps the heartbeat. |
+| POST | `/api/runs/<id>/heartbeat` | Heartbeat only. |
+| DELETE | `/api/runs/<id>` | Remove a run, its timeline, documents and media files. |
+| GET | `/api/runs?status=&q=&page=&per_page=` | Run list, newest first. |
+| GET | `/api/runs/<id>` | One run with timeline, stages, document index and media index. |
+| GET | `/api/summary` | Aggregate counters. |
+| GET | `/api/healthz` | Liveness probe. |
+| GET | `/api/docs` | Generated OpenAPI docs. |
+
+## What the app derives
+
+The worker does not report these; they are computed once at publish time.
+
+- **duration** from `started_at`/`ended_at`; a live run shows elapsed time instead.
+- **worker time** as the sum of event durations — real compute, not wall clock.
+- **revisions** as the number of extra passes through the coding stage.
+- **verdict** parsed from `**Classification:**` in the team-leader report, falling
+  back to `classification:` in the check report. The real vocabulary is
+  `pass`, `fixable`, `blocked`, `unknown`, `design_failure` — each coloured
+  distinctly, not just pass/fail.
+- **token totals** summed from `metrics.json`'s `invocations` list, which the old
+  dashboard ignored (it reported "Unavailable"). Cost stays blank while every
+  invocation reports `cost_status: unknown`, because the `0.0` in that case is a
+  placeholder, not a real $0.00.
+- **liveness** — a run still marked `running` shows as *possibly stale* after
+  2 minutes without a heartbeat and *abandoned* after 10. Derived on read, so
+  there is no cron job to keep alive.
+- **stage pipeline** — `graph.json` names stages as gerunds (`implementing`)
+  while events use worker names (`code`); both fold onto one canonical stage so
+  the graph's shape can be filled in with real event data.
+
+## Storage notes
+
+- Timestamps are stored UTC and displayed in the container's timezone.
+- Screenshots are served as ordinary static files with normal caching; only
+  metadata is in the database.
+- Uploads are decoded with Pillow before being written and must match their
+  extension — an extension alone is not evidence, and the media directory is
+  public.
+- Animated GIFs are never resized (it would kill the animation); they are served
+  whole and flagged `GIF` in the gallery. Detection is Pillow's `is_animated`.
+- Markdown is stored raw and rendered by the app with raw HTML escaped, so a
+  report cannot inject markup. Image references resolve only against that run's
+  own artifacts; an unknown reference renders as its alt text.
+- SQLite runs in WAL mode, so a publish never blocks a reader.
+
+## Development
+
+```sh
+cd dashboard
+python -m venv .venv && . .venv/bin/activate      # Windows: .venv\Scripts\activate
+pip install -r requirements-dev.txt
+pytest
+
+HFCD_API_KEY=dev HFCD_DATA_DIR=./data python -m app
+```
+
+The suite includes `tests/test_real_snapshot.py`, which drives the real
+publisher client over the run snapshots in this repository — it verifies the
+derived metrics against the source JSON, the animated-GIF handling on a real
+worker-produced GIF, and that a payload can be built for every published run.
+Those tests skip automatically if the snapshots are not present.

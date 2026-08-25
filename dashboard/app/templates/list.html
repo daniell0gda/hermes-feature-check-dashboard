@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% import "_macros.html" as ui %}
+{% block title %}Run dashboard{% endblock %}
+
+{% set status_filters = [('', 'All'), ('running', 'Running'), ('completed', 'Completed'), ('failed', 'Failed'), ('other', 'Other')] %}
+
+{% block content %}
+<header class="page-head">
+  <p class="eyebrow">Hermes · Feature check</p>
+  <h1>Run dashboard</h1>
+  <p class="lede">
+    Every feature-check run the worker has published, newest first. Live runs update in place.
+  </p>
+</header>
+
+<dl class="metrics" data-live="summary">
+  {{ ui.metric('Runs', summary.total | count) }}
+  {{ ui.metric('Running now', summary.running | count, 'is-live' if summary.running else '') }}
+  {{ ui.metric('Passed gate', summary.passed | count) }}
+  {{ ui.metric('Failed', summary.failed | count) }}
+  {{ ui.metric('Avg duration', summary.avg_duration_ms | duration) }}
+  {{ ui.metric('Worker calls', summary.worker_calls | count) }}
+</dl>
+
+{% if summary.cost_usd is not none or summary.input_tokens is not none %}
+<dl class="metrics metrics-secondary">
+  {{ ui.metric('Total cost', summary.cost_usd | money) }}
+  {{ ui.metric('Input tokens', summary.input_tokens | tokens) }}
+  {{ ui.metric('Output tokens', summary.output_tokens | tokens) }}
+  {{ ui.metric('Revisions', summary.revisions | count) }}
+</dl>
+{% endif %}
+
+{% if active %}
+<section class="panel" data-live="active">
+  <div class="panel-head">
+    <h2>Running now</h2>
+    <span class="pill">{{ active | length }}</span>
+  </div>
+  <div class="active-grid">
+    {% for entry in active %}
+    {% set run = entry.run %}
+    <article class="active-card">
+      <div class="active-card-head">
+        <h3><a href="{{ url_path('/run/' ~ run.run_id) }}">{{ run.feature or run.run_id }}</a></h3>
+        {{ ui.status_badge(run) }}
+      </div>
+      <p class="run-id">{{ run.run_id }}</p>
+      {{ ui.progress_bar(stage_progress(entry.stages), 'Run progress') }}
+      {{ ui.stages(entry.stages) }}
+      {{ ui.health_notice(run) }}
+      <dl class="inline-facts">
+        <div><dt>Phase</dt><dd>{{ (run.active_node or run.phase) | label }}</dd></div>
+        <div><dt>Elapsed</dt><dd>{{ run_duration_ms(run) | duration }}</dd></div>
+        <div><dt>Heartbeat</dt><dd>{{ ui.time_cell(run.heartbeat_at) }}</dd></div>
+      </dl>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>All runs</h2>
+    <form class="search" method="get" action="{{ url_path('/') }}" role="search">
+      {% if filters.status %}<input type="hidden" name="status" value="{{ filters.status }}">{% endif %}
+      <input type="search" name="q" value="{{ filters.q }}"
+             placeholder="Filter by run id or feature" aria-label="Filter runs">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  <div class="chips">
+    {% for value, text in status_filters %}
+    <a class="chip {{ 'is-current' if filters.status == value }}"
+       {% if filters.status == value %}aria-current="page"{% endif %}
+       href="{{ list_url(status=value, q=filters.q) }}">{{ text }}</a>
+    {% endfor %}
+  </div>
+
+  <div data-live="runs">
+    {% if not result.rows %}
+    <p class="empty">
+      No runs match this view.
+      {% if filters.q or filters.status %}
+      <a href="{{ url_path('/') }}">Clear filters</a>
+      {% endif %}
+    </p>
+    {% else %}
+    <div class="table-scroll">
+      <table class="runs">
+        <thead>
+          <tr>
+            <th scope="col">Run</th>
+            <th scope="col">Status</th>
+            <th scope="col">Verdict</th>
+            <th scope="col">Phase</th>
+            <th scope="col" class="num">Duration</th>
+            <th scope="col" class="num">Events</th>
+            <th scope="col">Started</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for run in result.rows %}
+          <tr>
+            <td class="cell-run">
+              <a class="run-link" href="{{ url_path('/run/' ~ run.run_id) }}">{{ run.feature or run.run_id }}</a>
+              <span class="run-id">{{ run.run_id }}</span>
+              {% if run.revisions %}
+              <span class="tag" title="Extra passes through the coding stage">{{ run.revisions }} rev</span>
+              {% endif %}
+            </td>
+            <td>{{ ui.status_badge(run) }}</td>
+            <td>{{ ui.verdict_badge(run.classification) }}</td>
+            <td>{{ (run.last_node or run.phase) | label }}</td>
+            <td class="num">{{ run_duration_ms(run) | duration }}</td>
+            <td class="num">{{ run.event_count }}</td>
+            <td>{{ ui.time_cell(run.started_at or run.updated_at) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if result.pages > 1 %}
+    <nav class="pager" aria-label="Pagination">
+      {% if result.page > 1 %}
+      <a href="{{ list_url(status=filters.status, q=filters.q, pg=result.page - 1) }}">Newer</a>
+      {% else %}
+      <span class="disabled">Newer</span>
+      {% endif %}
+      <span class="pager-state">
+        Page {{ result.page }} of {{ result.pages }} · {{ result.total | count }} runs
+      </span>
+      {% if result.page < result.pages %}
+      <a href="{{ list_url(status=filters.status, q=filters.q, pg=result.page + 1) }}">Older</a>
+      {% else %}
+      <span class="disabled">Older</span>
+      {% endif %}
+    </nav>
+    {% endif %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

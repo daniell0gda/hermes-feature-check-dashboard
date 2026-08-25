@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+{% import "_macros.html" as ui %}
+{% block title %}{{ run.feature or run.run_id }}{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <a href="{{ url_path('/') }}">All runs</a>
+  <span aria-hidden="true">/</span>
+  <span>{{ run.feature or run.run_id }}</span>
+</nav>
+
+<header class="page-head run-head" data-live="head">
+  <div class="run-title">
+    <div>
+      <p class="eyebrow">Feature check run</p>
+      <h1>{{ run.feature or run.run_id }}</h1>
+      <p class="run-id-row">
+        <code>{{ run.run_id }}</code>
+        <button type="button" class="copy" data-copy="{{ run.run_id }}">Copy id</button>
+      </p>
+    </div>
+    <div class="run-badges">
+      {{ ui.status_badge(run) }}
+      {{ ui.verdict_badge(run.classification) }}
+    </div>
+  </div>
+  {{ ui.health_notice(run) }}
+  {% if run.error %}
+  <div class="notice tone-err">
+    <strong>Run error</strong>
+    <pre>{{ run.error }}</pre>
+  </div>
+  {% endif %}
+</header>
+
+<nav class="subnav" aria-label="Sections">
+  {% for anchor, text in sections.items() %}
+  <a href="#{{ anchor }}">{{ text }}</a>
+  {% endfor %}
+</nav>
+
+<section id="overview" class="panel">
+  <div class="panel-head"><h2>Overview</h2></div>
+  <dl class="metrics metrics-facts" data-live="facts">
+    {{ ui.metric('Phase', (run.active_node or run.phase) | label) }}
+    {{ ui.metric('Duration', run_duration_ms(run) | duration) }}
+    {{ ui.metric('Worker time', run.worker_ms | duration) }}
+    {{ ui.metric('Revisions', run.revisions) }}
+    {{ ui.metric('Worker calls', run.event_count) }}
+    {{ ui.metric_time('Started', run.started_at) }}
+    {{ ui.metric_time('Ended', run.ended_at) }}
+    {{ ui.metric_time('Heartbeat', run.heartbeat_at) }}
+  </dl>
+
+  {% if run.cost_usd is not none or run.input_tokens is not none or run.output_tokens is not none %}
+  <dl class="metrics metrics-secondary">
+    {{ ui.metric('Cost', run.cost_usd | money) }}
+    {{ ui.metric('Input tokens', run.input_tokens | tokens) }}
+    {{ ui.metric('Output tokens', run.output_tokens | tokens) }}
+  </dl>
+  {% else %}
+  <p class="hint">The worker did not report token usage for this run.</p>
+  {% endif %}
+
+  {% if invocations and run.cost_usd is none %}
+  <p class="hint">
+    Cost is unavailable: every worker call reported <code>cost_status: unknown</code>,
+    so no price was resolved for the model used.
+  </p>
+  {% endif %}
+
+  {% if run.host %}
+  <p class="hint">Executed on host <code>{{ run.host }}</code>.</p>
+  {% endif %}
+</section>
+
+<section id="workflow" class="panel" data-live="workflow">
+  <div class="panel-head">
+    <h2>Workflow</h2>
+    <span class="panel-meta">{{ stage_progress(stages) }}% settled</span>
+  </div>
+  {{ ui.progress_bar(stage_progress(stages), 'Run progress') }}
+  {{ ui.stages(stages) }}
+  <ul class="legend">
+    <li class="is-done">Done</li>
+    <li class="is-active">Active</li>
+    <li class="is-failed">Failed</li>
+    <li class="is-pending">Pending</li>
+    <li class="is-skipped">Not reached</li>
+  </ul>
+</section>
+
+<section id="timeline" class="panel" data-live="timeline">
+  <div class="panel-head">
+    <h2>Timeline</h2>
+    <span class="panel-meta">{{ events | length }} worker calls</span>
+  </div>
+  {% if not events %}
+  <p class="empty">No worker calls recorded yet.</p>
+  {% else %}
+  <div class="table-scroll">
+    <table class="timeline">
+      <thead>
+        <tr>
+          <th scope="col" class="num">#</th>
+          <th scope="col">Stage</th>
+          <th scope="col">Result</th>
+          <th scope="col" class="num">Duration</th>
+          <th scope="col">When</th>
+          <th scope="col">Summary</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for event in events %}
+        {% set failed = (event.status or '') | lower in ['failed', 'error'] %}
+        <tr>
+          <td class="num dim">{{ event.seq }}</td>
+          <td><strong>{{ event.node | label }}</strong></td>
+          <td>
+            <span class="badge badge-soft tone-{{ 'err' if failed else 'ok' }}">
+              {{ event.status or 'unknown' }}
+            </span>
+          </td>
+          <td class="num">{{ event.duration_ms | duration }}</td>
+          <td>{{ ui.time_cell(event.occurred_at) }}</td>
+          <td class="cell-summary">
+            {% if event.summary and event.summary.strip() %}
+            <details>
+              <summary>{{ event.summary | one_line }}</summary>
+              <div class="markdown">{{ render_markdown(event.summary, resolve_media) | safe }}</div>
+            </details>
+            {% else %}
+            <span class="dim">{{ dash }}</span>
+            {% endif %}
+            {% if event.error %}
+            <p class="inline-error">{{ event.error }}</p>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</section>
+
+{% if invocations %}
+<section id="usage" class="panel">
+  <div class="panel-head">
+    <h2>Usage</h2>
+    <span class="panel-meta">{{ invocations | length }} worker calls</span>
+  </div>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Task</th>
+          <th scope="col">Role</th>
+          <th scope="col">Model</th>
+          <th scope="col" class="num">Input</th>
+          <th scope="col" class="num">Output</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for invocation in invocations %}
+        <tr>
+          <td>{{ invocation.task_id or dash }}</td>
+          <td>{{ invocation.role | label }}</td>
+          <td class="dim">{{ invocation.model or dash }}</td>
+          <td class="num">{{ invocation.input_tokens | count }}</td>
+          <td class="num">{{ invocation.output_tokens | count }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th scope="row" colspan="3">Total</th>
+          <td class="num">{{ run.input_tokens | count }}</td>
+          <td class="num">{{ run.output_tokens | count }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</section>
+{% endif %}
+
+{% if media %}
+<section id="screenshots" class="panel">
+  <div class="panel-head">
+    <h2>Screenshots</h2>
+    <span class="panel-meta">{{ media | length }} files</span>
+  </div>
+  <div class="gallery">
+    {% for artifact in media %}
+    <figure class="shot">
+      <a href="{{ artifact.url }}" data-lightbox data-caption="{{ artifact.rel_path }}">
+        <img src="{{ artifact.thumb_url }}" alt="{{ artifact.file_name }}"
+             {% if artifact.width and artifact.height %}
+             width="{{ artifact.width }}" height="{{ artifact.height }}"
+             {% endif %}
+             loading="lazy" decoding="async">
+        {% if artifact.animated %}<span class="shot-flag">GIF</span>{% endif %}
+      </a>
+      <figcaption>
+        <span class="shot-name">{{ artifact.file_name }}</span>
+        <span class="shot-meta">
+          {% if artifact.width and artifact.height %}{{ artifact.width }}×{{ artifact.height }} · {% endif %}
+          {{ artifact.bytes | filesize }}
+        </span>
+      </figcaption>
+    </figure>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if documents.primary or documents.cluster or documents.coder %}
+<section id="reports" class="panel">
+  <div class="panel-head"><h2>Reports</h2></div>
+
+  {% if documents.primary %}
+  <div class="tabs" data-tabs>
+    <div class="tablist" role="tablist">
+      {% for document in documents.primary %}
+      <button type="button" role="tab" class="tab {{ 'is-current' if loop.first }}"
+              aria-selected="{{ 'true' if loop.first else 'false' }}"
+              aria-controls="doc-{{ loop.index }}">{{ document.title }}</button>
+      {% endfor %}
+    </div>
+    {% for document in documents.primary %}
+    <div class="tabpanel" role="tabpanel" id="doc-{{ loop.index }}" {{ '' if loop.first else 'hidden' }}>
+      <div class="markdown">{{ render_markdown(document.body, resolve_media) | safe }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% for kind, group_title in document_groups %}
+  {% set group = documents.get(kind) %}
+  {% if group %}
+  <div class="doc-group">
+    <h3>{{ group_title }} <span class="pill">{{ group | length }}</span></h3>
+    {% for document in group %}
+    <details class="doc">
+      <summary>{{ document.title }}</summary>
+      <div class="markdown">{{ render_markdown(document.body, resolve_media) | safe }}</div>
+    </details>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endfor %}
+</section>
+{% endif %}
+
+<p class="hint hint-end">
+  Raw data:
+  <a href="{{ url_path('/api/runs/' ~ run.run_id) }}">run JSON</a> ·
+  <a href="{{ url_path('/api/runs/' ~ run.run_id ~ '/media') }}">media manifest</a>
+</p>
+{% endblock %}
