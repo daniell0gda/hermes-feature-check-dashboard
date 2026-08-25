@@ -1,11 +1,11 @@
 [
   {
     "sequence": 1,
-    "timestamp": "2026-08-25T16:27:42.792Z",
+    "timestamp": "2026-08-25T16:37:07.082Z",
     "node": "code",
-    "status": "completed",
-    "duration_ms": 1049434,
-    "summary": "Summary for task revision-code-1 (cluster: implementation):\n\n**Work done**\n1. **Full-suite gate completed** \u2014 previously impossible in one runner invocation (OOM exit 137 / 420s cap). Built a resumable per-scenario sharding script (.gen/run\u2026",
-    "error": null
+    "status": "failed",
+    "duration_ms": 5410640,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash.\\\\nThe durable eviden\u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/git-workspaces/godot-td/issue-water-conductive-flood-wet-splash.\\\\nThe durable eviden\u2026"
   }
 ]
