@@ -1,4 +1,4 @@
-# Coder report: implementation\n\n# Coder report: implementation (revision 1)
+# Coder report: implementation (revision 1)
 
 ## Changed files
 - `tests/scenarios/progression_chest_pool.json` — re-measured seeded pins for the new Common perk in the chest pool (revision 1 notes were already staged; verified against real runs)
@@ -19,4 +19,3 @@
 - Root cause of the two iteration-1 failures (`progression_chest_pool`, `progression_pick`): the new Common perk joins the eligible normal chest pool and re-rolls the seeded `_rng` stream. Resolution: keep the perk chest-offered and update the scenarios' measured pins (already staged in revision-1 notes; confirmed green by real runs).
 - `progression_modal_close_resume` shard failures are a log-slicing flake, not a regression: the engine file log lost one stdout line to concurrent-write interleaving right where `[PROGRESSION_MODAL] close path=harness ...` lands (the corrupted region is visible in the stale `.out.log`; the modal-close action itself succeeded and modal.count/paused assertions passed). The direct rerun passes deterministically twice in a row with the identical seed. The visual variant (same verbs, no log expectations) passed throughout.
 - Full suite remains sliced per scenario group because one invocation of 177 scenarios exceeds the 420 s runner cap.
-\n
