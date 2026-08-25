@@ -1,47 +1,22 @@
 {
-  "run_id": "traps-pit-of-spikes-42-r1",
-  "feature": "traps-pit-of-spikes-first-hit-stuns-turn",
+  "run_id": "issue45-water-flood-r1",
+  "feature": "water-conductive-flood-wet-splash",
   "status": "running",
-  "started_at": "2026-08-25T08:31:25.328Z",
+  "started_at": "2026-08-25T08:50:51.619Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/traps-pit-of-spikes-42-r1/",
-  "heartbeat_at": "2026-08-25T09:32:59.528Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
+  "heartbeat_at": "2026-08-25T09:57:26.228Z",
   "last_node": "code",
-  "active_node": "check",
-  "last_event_at": "2026-08-25T09:32:59.528Z",
-  "process_id": 614333,
+  "active_node": null,
+  "last_event_at": "2026-08-25T09:57:26.228Z",
+  "process_id": 617489,
   "host": "f1a4230ec90b",
-  "phase": "check",
+  "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T09:33:03.945884+00:00",
-    "last_success_at": "2026-08-25T09:33:03.944872+00:00",
+    "last_attempt_at": "2026-08-25T09:57:26.229592+00:00",
+    "last_success_at": "2026-08-25T08:51:01.538140+00:00",
     "last_error": null
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 44632,
-        "output_tokens": 3898
-      },
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 103738,
-        "output_tokens": 12187
-      }
-    ]
-  }
+  "metrics": {}
 }

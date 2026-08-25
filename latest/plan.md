@@ -1,33 +1,38 @@
-# Acceptance Plan: traps-pit-of-spikes-first-hit-stuns-turn
-
-manual_testing: required
+# Acceptance Plan: water-conductive-flood-wet-splash
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/traps_pit_of_spikes_first_hit_stun.json"]`
+- Focused test: `["python3", "tests/run_all_shard.py", "0", "1", "water_conductive_flood"]`
 - Full test: `["python3", "tests/run_all_shard.py", "0", "1"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--quit-after", "3", "--path", "."]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--import", "--quit-after", "5"]`
 
 ## Clusters
 
-1. pit-of-spikes-perk-and-trap-stun — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `autoload/ProgressionManager.gd`, `scripts/game/actors/Trap.gd` — depends on: none
-- While the Pit of Spikes perk (`traps_pit_of_spikes`) is unowned, a trap hit does not change the target's stun state (`stun_time_left` stays 0).
-- The first trap hit against a given enemy while Pit of Spikes is owned applies a stun of approximately 0.4 seconds through the enemy's existing `EffectsManager.apply_stun` path (enemy `stun_time_left` becomes > 0 immediately after the hit).
-- A second trap hit on the same enemy while that first stun is active or has expired does not re-apply the stun (`stun_time_left` remains 0 after it expires from the first application; no new stun is granted by later hits).
-- Stun tracking is per enemy: a first trap hit on a different enemy stuns that enemy even after another enemy was already stunned once.
-- Replaying progression levels on save load does not compound or reset the per-enemy "already stunned" state incorrectly: re-applying the same Pit of Spikes level is idempotent and does not itself trigger any stun.
-- Debug-build `[PIT-OF-SPIKES]` log line per stun event: when a trap hit applies the first-hit stun, a filterable log line names the enemy id, trap id, and applied stun duration; subsequent non-stunning hits do not emit it.
-2. pit-of-spikes-harness-scenario — files: `tests/scenarios/traps_pit_of_spikes_first_hit_stun.json` — depends on: 1
-- The focused headless harness scenario passes with all expectations green: it grants Pit of Spikes, drives a trap hit onto an underground enemy, asserts the enemy is stunned, asserts a second hit does not refresh/re-grant the stun, and asserts the `[PIT-OF-SPIKES]` log line appears exactly once.
-- With the game windowed, after a trap's first hit the stun status icon is visible on that enemy's health bar (driven by `stun_time_left` via the existing health-bar icon path) and disappears once the stun expires.
+1. water-flood-perk-definition — files: `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd` — depends on: none
+- The perk definition `water_conductive_flood` exists in the Water tower progression data as a Unique and is reported eligible by progression lookup like other Water Uniques.
+- Applying the perk through progression raises its level to 1 and exposes its small-radius configuration (radius value greater than zero) via the Water progression manager's accessor surface.
+2. water-flood-splash-aoe — files: `scripts/game/actors/Projectile.gd`, `scripts/game/actors/effects/EffectsManager.gd` — depends on: 1
+- With `water_conductive_flood` applied, a Water projectile hit applies Wet to every alive enemy within the perk's configured radius of the hit target; a scenario proves at least two enemies Wet from one hit, not only the direct target.
+- Without the perk, a Water projectile hit applies Wet only to the direct target; nearby enemies within the would-be radius stay non-Wet (regression guard on existing behavior).
+- Enemies outside the configured radius are not made Wet by the hit even when the perk is applied.
+- On a Water hit with the perk applied, the spawned splash effect visually extends at least to the perk's configured radius so the covered area matches the Wet area (same small-radius visual approach the Ice cone uses).
+- Wet applied by the flood perk renders per-enemy through the existing EnemyHealthBar status icon for each affected enemy, with no new asset required.
+- Debug-build [WATER-FLOOD] log line per multi-enemy Wet application event, naming the hit target and the count of enemies Wetted in the radius.
 
 ## Criteria
 
-- While the Pit of Spikes perk (`traps_pit_of_spikes`) is unowned, a trap hit does not change the target's stun state (`stun_time_left` stays 0).
-- The first trap hit against a given enemy while Pit of Spikes is owned applies a stun of approximately 0.4 seconds through the enemy's existing `EffectsManager.apply_stun` path (enemy `stun_time_left` becomes > 0 immediately after the hit).
-- A second trap hit on the same enemy while that first stun is active or has expired does not re-apply the stun (`stun_time_left` remains 0 after it expires from the first application; no new stun is granted by later hits).
-- Stun tracking is per enemy: a first trap hit on a different enemy stuns that enemy even after another enemy was already stunned once.
-- Replaying progression levels on save load does not compound or reset the per-enemy "already stunned" state incorrectly: re-applying the same Pit of Spikes level is idempotent and does not itself trigger any stun.
-- Debug-build `[PIT-OF-SPIKES]` log line per stun event: when a trap hit applies the first-hit stun, a filterable log line names the enemy id, trap id, and applied stun duration; subsequent non-stunning hits do not emit it.
-- The focused headless harness scenario passes with all expectations green: it grants Pit of Spikes, drives a trap hit onto an underground enemy, asserts the enemy is stunned, asserts a second hit does not refresh/re-grant the stun, and asserts the `[PIT-OF-SPIKES]` log line appears exactly once.
-- With the game windowed, after a trap's first hit the stun status icon is visible on that enemy's health bar (driven by `stun_time_left` via the existing health-bar icon path) and disappears once the stun expires.
+- The perk definition `water_conductive_flood` exists in the Water tower progression data as a Unique and is reported eligible by progression lookup like other Water Uniques.
+- Applying the perk through progression raises its level to 1 and exposes its small-radius configuration (radius value greater than zero) via the Water progression manager's accessor surface.
+- With `water_conductive_flood` applied, a Water projectile hit applies Wet to every alive enemy within the perk's configured radius of the hit target; a scenario proves at least two enemies Wet from one hit, not only the direct target.
+- Without the perk, a Water projectile hit applies Wet only to the direct target; nearby enemies within the would-be radius stay non-Wet (regression guard on existing behavior).
+- Enemies outside the configured radius are not made Wet by the hit even when the perk is applied.
+- On a Water hit with the perk applied, the spawned splash effect visually extends at least to the perk's configured radius so the covered area matches the Wet area (same small-radius visual approach the Ice cone uses).
+- Wet applied by the flood perk renders per-enemy through the existing EnemyHealthBar status icon for each affected enemy, with no new asset required.
+- Debug-build [WATER-FLOOD] log line per multi-enemy Wet application event, naming the hit target and the count of enemies Wetted in the radius.
+
+manual_testing: required
+
+## Notes
+
+- Focused command assumes new scenario files named with substring `water_conductive_flood` under `tests/scenarios/` (e.g. an AoE-application scenario and a no-perk regression scenario); if the implementor names them differently, adjust the filter substring accordingly.
+- Windowed screenshot evidence of the splash radius covering nearby enemies is captured by manual testing per `.gen/ui_scenario.md`; headless cannot capture pixels.
