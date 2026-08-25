@@ -1,35 +1,46 @@
 {
-  "run_id": "issue141-20260825a",
-  "feature": "harness press_button subwindow delivery",
-  "status": "failed",
-  "started_at": "2026-08-25T19:25:37.473Z",
-  "ended_at": "2026-08-25T21:01:33.498Z",
-  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/git-workspaces/godot-td/issue-press-button-subwindow.\\nThe durable evidence directory i\u2026",
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue141-20260825a/",
-  "heartbeat_at": "2026-08-25T21:01:33.498Z",
+  "run_id": "issue-suite-red-cleanup-r1",
+  "feature": "fix suite red scenarios",
+  "status": "running",
+  "started_at": "2026-08-25T17:41:42.273Z",
+  "ended_at": null,
+  "error": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue-suite-red-cleanup-r1/",
+  "heartbeat_at": "2026-08-25T22:46:04.448Z",
   "last_node": "code",
   "active_node": null,
-  "last_event_at": "2026-08-25T21:01:28.737Z",
-  "process_id": 789024,
+  "last_event_at": "2026-08-25T22:46:04.448Z",
+  "process_id": 760918,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "check",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T21:01:33.498523+00:00",
-    "last_success_at": "2026-08-25T21:01:33.496119+00:00",
+    "last_attempt_at": "2026-08-25T22:46:04.459197+00:00",
+    "last_success_at": "2026-08-25T18:15:58.103873+00:00",
     "last_error": null
   },
   "metrics": {
     "invocations": [
       {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 38680,
-        "output_tokens": 3196
+        "input_tokens": 154725,
+        "output_tokens": 25868
+      },
+      {
+        "task_id": "check",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 115007,
+        "output_tokens": 6622
       }
     ]
   }

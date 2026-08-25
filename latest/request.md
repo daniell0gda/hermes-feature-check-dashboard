@@ -1,43 +1,51 @@
-# Feature: harness press_button reaches controls inside an embedded subwindow
+# Request: Fix the 25 genuinely failing harness scenarios (pre-existing reds)
 
-Issue: https://github.com/daniell0gda/poke-defense-godot/issues/141
-Project key for runner: `godot-td`
-Runner workspace: `godot-td/issue-press-button-subwindow`
-Branch: `issue/press-button-subwindow`
-Request ID: issue141-20260825a
+## Goal
+Bring the full AgentHarness suite green. Fresh one-at-a-time rerun (420s timeout each) of the
+previously-red set shows 25 scenarios still failing. All fail on a clean tree too (verified for
+hud_controls_state via git stash) — pre-existing regressions, NOT caused by the cave-scenario
+determinism fix already pushed (d223fb4). The cave/carve/underground suites are all green now.
 
-## Problem
+## Failing scenarios (fresh evidence in .gen/harness/<name>/result.json)
+Timeouts (condition never becomes true):
+- cannon_bunker_buster — waits stats.damage_by_type.cannon > 0.0, stays 0
+- cannon_bunker_buster_progression, cannon_heavier_shells_blast
+- curse_overheat_cycle — balista damage never lands
+- fire_flashover_spread, fire_oil_slick (Mushnub_boss.materials_clean never goes false),
+  fire_oil_slick_progression, fire_wildfire_spread_progression/runtime/visual
+- floodgate_cryobrine_progression
+- hud_controls_state — after `call ui _on_carve`, `ui_call.get_armed_mode_buttons` never == "carve"
+- issue_35_timed_hazards_map_change, issue_86_victory_underground_clear
+- porter_boss_runner, scifi_capacitor_bank, scifi_overclock / scifi_overclock_progression
+  (progression value 1.5 vs expected 1.4), scifi_piercing_beam_progression,
+  static_breach_isolation, tower_targeting_armor_priority, water_deep_soak_progression
+Hard fails:
+- cave_discovery_long_carve — carved_tiles 961 < expected >= 1000 (just misses threshold;
+  check whether map/grid sizing change reduced carveable area, or expectation needs adjusting
+  with justification — do not silently weaken)
+- ice_burn_material_restore_stuck
+- progression_chest_pool, progression_pick
+- projectiles_10x_ballistic, projectiles_10x_beam_cone, projectiles_2x_roster,
+  projectiles_5x_roster — damage/score expectations miss huge thresholds
+- smoke_tower_roster, underground_diversion_baseline
 
-`HarnessActions._press_button` reports `landed=true` but the Button never fires when the target lives
-inside a `Window` node (an embedded subwindow), so no scenario can click anything in
-`ProgressionModal` or `RewardsModal`.
+## Approach guidance
+1. Group by suspected root cause first (progression values off-by-tuning: scifi 1.5 vs 1.4;
+   cannon damage path dead; fire spread/burn material; UI armed-mode call path; projectile
+   damage thresholds). Fix game bugs in code where behavior is wrong; adjust scenario
+   expectations ONLY where the scenario encodes a stale tuning assumption, with notes[] justifying.
+2. Work on branch `fix/cave-scenario-determinism` is NOT this scope — cut a fresh branch from
+   current origin/master in a worktree for this cleanup.
+3. Do not touch the main checkout's uncommitted WIP (map_difficulty.csv, HarnessValues.gd,
+   carve_camera_drag_spin.json are dirty there).
 
-Measured evidence from `tests/scenarios/reward_panels_visual.json`:
-- `press_button` on `AcceptBtn2` (PerkCard Accept button, tree paused) logged `landed=true` but no
-  `[PROGRESSION_MODAL] close path=accept:*` line followed; `modal.count` stayed 1.
-- `press_button` on `UI/Root/RewardsModal/Center/Panel/CloseChip` (tree not paused) logged
-  `landed=true`, produced no `[REWARDS_MODAL] close trigger=corner_close`.
-- `hud_controls_state` presses `UpgradeBtn` in the root viewport and passes — the action itself works;
-  it is specifically the subwindow case that fails, pause is not the cause.
+## Verification per fixed group
+- Each fixed scenario fresh: godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json → status pass, exit 0
+- Re-run its neighboring scenarios in the same feature family to catch collateral changes.
+- No new parse/script errors in runner stdout/stderr.
 
-`landed=true` only asserts `not disabled and is_visible_in_tree()`. `_deliver_click` pushes into
-`button.get_viewport()` (the `Window`) with `push_input(event, true)` and
-`event.position = button.get_global_rect().get_center()`; something in that path drops the event.
+## Runner notes
+- Host-side Godot: PATH=/opt/data/profiles/code/home/bin:$PATH godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/<name>.json
+- Results: .gen/harness/<scenario>/result.json ; logs .gen/harness/_logs/
 
-## Done when
-
-1. `press_button` delivers a real press to a Button inside an embedded subwindow, or `landed`
-   reports false with a reason when it cannot.
-2. `reward_panels_visual.json` drives its Unique pick with `press_button` instead of
-   `progression_modal verb=choose_option`, and asserts the resulting
-   `[PROGRESSION_MODAL] close path=accept:upgrade` log line.
-3. `landed=true` means the press was actually delivered, or the field is renamed/documented so it
-   cannot be read as success.
-4. `hud_controls_state` still passes.
-
-## Redo notes
-
-- Workers must use runner project `godot-td` and workspace `godot-td/issue-press-button-subwindow`.
-- Godot windowed evidence: use `--rendering-method gl_compatibility --audio-driver Dummy` if Vulkan
-  fails; never headless-only for visual claims.
-- Manual testing gate applies per team-work skill.
+manual_testing: none

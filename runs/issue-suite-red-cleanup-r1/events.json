@@ -16,5 +16,14 @@
     "duration_ms": 456545,
     "summary": "Check complete. Artifacts written:\n\n- /workspace/poke-defense-godot/.gen/check.md\n- /workspace/poke-defense-godot/.gen/status.md\n\nVerified done: 3. Pending: 25 \u2014 0 due to build/test failures, 22 due to missing evidence (scenarios still red/\u2026",
     "error": null
+  },
+  {
+    "sequence": 3,
+    "timestamp": "2026-08-25T22:46:04.448Z",
+    "node": "code",
+    "status": "failed",
+    "duration_ms": 16211299,
+    "summary": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/poke-defense-godot.\\\\nThe durable evidence directory is /workspace/poke-defense-godot\u2026",
+    "error": "\"Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\\\nWork in /workspace/poke-defense-godot.\\\\nThe durable evidence directory is /workspace/poke-defense-godot\u2026"
   }
 ]
