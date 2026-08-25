@@ -1,20 +1,20 @@
 {
-  "run_id": "r1-traps-grave-robber",
-  "feature": "traps-grave-robber",
+  "run_id": "issue45-water-flood-r1",
+  "feature": "water-conductive-flood-wet-splash",
   "status": "running",
-  "started_at": "2026-08-25T11:00:19.693Z",
+  "started_at": "2026-08-25T11:07:21.697Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r1-traps-grave-robber/",
-  "heartbeat_at": "2026-08-25T11:00:19.693Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
+  "heartbeat_at": "2026-08-25T11:07:21.697Z",
   "last_node": null,
   "active_node": null,
   "last_event_at": null,
-  "process_id": 643193,
+  "process_id": 644625,
   "host": "f1a4230ec90b",
   "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T11:00:19.693620+00:00"
+    "last_attempt_at": "2026-08-25T11:07:21.697458+00:00"
   },
   "metrics": {}
 }

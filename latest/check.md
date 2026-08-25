@@ -1,69 +1,88 @@
-# Feature check: traps_grave_robber economy perk (issue #80) — iteration 1
+# Check report: water-conductive-flood-wet-splash (issue #45)
 
 classification: fixable
 
 ## Verdict
 
-Implementation of the Grave Robber perk is correct and its focused harness
-passes, but the full-suite regression gate fails: the newly added Common perk
-changes the seeded chest-pick pool, breaking two pre-existing scenarios
-(`progression_chest_pool`, `progression_pick`). The plan's full-test criterion
-is therefore not green.
+Implementation is complete and the focused harness is green, but the full test
+suite does not pass end-to-end in this environment (runner OOM kill at exit 137
+plus pre-existing scenario timeouts/failures unrelated to this feature). Per the
+build-and-test gate, Done items cannot be confirmed while the full suite is not
+green; criteria move to Pending with evidence recorded.
 
-## Commands run (all via run_project_cmd, project=godot-td,
-workspace=godot-td/issue-traps-grave-robber)
+## Verification commands (all via run_project_cmd, project=godot-td,
+workspace=godot-td/issue-water-conductive-flood-wet-splash)
 
 | Command | Exit | Result |
 |---|---|---|
-| `git status --short` (preflight probe) | 0 | runner reachable |
-| `godot --headless --path . --import` (typecheck/build gate) | 0 | pass; only pre-existing HudTheme.tres invalid-UID warnings |
-| `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/traps_grave_robber_progression.json` | 0 | `[Harness] status=pass exit=0`; all 117 actions ok; result `.gen/harness/traps_grave_robber_progression/result.json`; observed `[EconomyProgression] traps_grave_robber L1/L2/L3 -> +10/+15/+25%` and `[GRAVE_ROBBER] bonus enemy=Mushnub base=8 bonus=2`, `enemy=Alien base=10 bonus=1`; money deltas asserted in-scenario: 210 (non-trap underground, base only), 310 (L3 underground trap kill = 300+floor(8*0.25)=302→ asserted 310 per scenario staging), 408 (surface trap kill, base only), 711 (L1 underground trap kill after reset = 700+1) |
-| `python3 tests/run_all_shard.py 0 1` (full test command as planned) | — | timed out at runner 420 s cap (177 sequential scenarios × ~40 s); same timeout hit by implementor twice |
-| `python3 tests/run_all_shard.py 0 1 traps_` | 0 | PASS frostbite_fangs_progression, FAIL grave_robber_progression (rerun alone: PASS), PASS serrated_edges_panel/progression, PASS venom_barbs_progression, FAIL venom_barbs_trap_poison_visual (rerun alone: PASS → load-order flakes) |
-| `python3 tests/run_all_shard.py 0 1 progression_` | 0 | FAIL progression_chest_pool (reproduced alone), FAIL progression_pick (reproduced alone), others PASS |
+| `git status --short` | 0 | 8 modified + 2 new scenario files |
+| `godot --headless --path . --import --quit-after 5` | 0 | import gate PASS (pre-existing HudTheme UID warnings only) |
+| `python3 tests/run_all_shard.py 0 1 water_conductive_flood` | 0 | PASS water_conductive_flood_aoe, PASS water_conductive_flood_progression |
+| `python3 tests/run_all_shard.py 0 1` (full suite) | 137 | runner worker OOM-killed after ~41s / 4 scenarios; retried twice more: two 420s tool-timeouts with no output, then shard re-slices also exit 137 |
 
-## Acceptance criteria evidence
+Full-suite evidence from fresh per-scenario logs (.gen/harness/_logs/*.out.log,
+written incrementally by the modified run_all_shard.py): of ~100 scenarios that
+produced logs across attempts, both new scenarios pass; 16 scenarios show
+status=timeout or fail (cannon_bunker_buster, cannon_bunker_buster_progression,
+cannon_heavier_shells_blast, cave_decline_seals_reveal_unseals,
+cave_discovery_long_carve, cave_pending_seals_entrance_instantly,
+curse_overheat_cycle, fire_oil_slick*, fire_wildfire_spread_*,
+floodgate_corrosive_soak*, floodgate_cryobrine_progression, issue_35,
+issue_86, projectiles_2x_roster, scifi_overclock_progression) — all outside this
+feature's changed files. The implementor reported these fail identically on a
+clean stash; I did not independently reproduce the clean-stash comparison
+(worktree has no feature commit to diff against), so pre-existing status is
+reported, not proven by me.
 
-Cluster 1 (perk data + EconomyProgressionManager) — verified:
-- No-perk config unchanged: `get_bounty_config()` returns `{"enabled": false}` when no bounty and ratio == 0 (`EconomyProgressionManager.gd` diff); asserted via progression_call expectations in scenario.
-- L1/L2/L3 ratios: harness log lines `[EconomyProgression] traps_grave_robber L1 -> +10%...L3 -> +25%` plus wait_for_condition `progression_call.grave_robber_ratio == 0.1 / 0.15 / 0.25` all ok. Absolute per-level values (no compounding) — reset/replay arm asserted (700→711 at L1 after L3).
-- Reset clears bonus: scenario resets progression then re-applies L1; ratio returns to exactly 0.1.
-- `[EconomyProgression]` debug line per level change: present and asserted via log expectation.
+## Criteria evidence
 
-Cluster 2 (trap-kill bonus application) — verified:
-- Underground trap kill pays exact integer delta (base + floor(ratio*base)): asserted money waits (300→310 L3 staged base 8 → +2; 700→711 L1 base 10 → +1).
-- Surface trap kill: base only (asserted 400→408).
-- Non-trap underground kill: base only (asserted 200→210).
-- Rides existing bounty path, additive in `_compute_kill_reward` (`adjusted + add_per_kill + _grave_robber_bonus(base_reward)`); gold_on_kill/blood_money amounts untouched.
-- `[GRAVE_ROBBER] bonus enemy=... base=... bonus=...` debug line per payout: present, gated on `OS.is_debug_build()`, asserted via log expectation.
+1. Perk exists as Unique and eligible like other Water Uniques — implementation
+   present (`scripts/progression/water_tower.json`, WaterTowerProgressionManager);
+   scenario water_conductive_flood_progression passes (level 0 -> apply -> 1,
+   save/reload persistence). Status moved to Pending only because the full-suite
+   gate failed.
+2. Apply raises level to 1, radius > 0 accessor — same scenario asserts enabled
+   and radius == 1.5 via get_flood_config passthrough. Pending per gate.
+3. Multi-enemy Wet in radius — water_conductive_flood_aoe passes: control arm
+   wet_count == 1, perk arm wet_count == 2 via real Projectile._resolve_hit
+   (HarnessActions simulate_projectile path). Pending per gate.
+4. Without perk single-target only — control arm of same scenario. Pending per gate.
+5. Outside-radius enemies stay dry — third GSB at 1.9m stays non-Wet while two at
+   <=1.5m are Wet. Pending per gate.
+6. Splash visual extends to radius — `_create_water_splash` raises splash_radius
+   to perk radius and +8 droplets; asserted indirectly via code path exercised in
+   the AoE scenario (visual pixel coverage itself requires windowed manual
+   testing per plan Notes). Pending per gate.
+7. Wet renders via existing EnemyHealthBar icon — reuses EffectsManager.apply_wet;
+   no dedicated assertion beyond existing wet rendering tests; acceptable reuse.
+   Pending per gate.
+8. [WATER-FLOOD] debug log naming target and count — expectation "out.log
+   contains [WATER-FLOOD]" passes in the AoE scenario result.json. Pending per
+   gate.
 
-Cluster 3 (focused harness) — verified: headless run status=pass, exit 0, all inline assertions ok.
+## Changed-file quality findings
 
-## Failed criteria
+No rule violations found in the diff:
+- Typed variables throughout; guard clauses keep nesting shallow; functions small
+  and single-purpose (_apply_flood_wet, _alive_enemies_near_target).
+- Debug logging follows OS.is_debug_build() + [WATER-FLOOD] tag per CLAUDE.md.
+- Surgical changes: HarnessActions/HarnessValues additions are minimal and serve
+  testing the feature; run_all_shard.py change fixes log materialization for
+  value sources (test-infra, justified).
+- Scope creep note (advisory): `logs/balance/map_difficulty.csv` was regenerated
+  (map_1/5/6 rows changed). This looks like a side effect of running balance
+  tooling during development rather than a requested change; recommend reverting
+  it before commit unless intended.
 
-Full-suite regression (build/test gate): `progression_chest_pool` and
-`progression_pick` fail reproducibly with the feature applied.
-- `progression_chest_pool`: seeded `draw_choices_for_chest(2)` no longer contains `curse_blood_money` (draw now yields chest_duplication + sundering_bolts) and `tower_dmg.level` ends 0 instead of 1. Cause: the new Common perk `traps_grave_robber` joins the eligible normal chest pool, changing the seeded weighted pick that these deterministic scenarios rely on.
-- `progression_pick`: auto-answer picks leave `venom_miasma_bloom.level == 0` and `get_venom_miasma_config().enabled == false` — same pool-composition root cause shifting the seeded choice sequence.
-These are regressions caused by this feature's data addition, not infra failures.
+## Blockers
 
-Also noted (non-blocking): `traps_grave_robber_progression` and
-`traps_venom_barbs_trap_poison_visual` FAIL when run inside a multi-scenario
-shard slice but PASS standalone — likely shared-state/load-order flakiness;
-retest after fixing the two real failures.
-
-## Quality findings (changed files)
-
-- `EnemyHealthController.gd`: `_grave_robber_bonus` re-resolves ProgressionManager via `get_node_or_null` although `_compute_kill_reward` already holds the identical lookup (`pm_bounty`) — minor duplication, acceptable pattern-consistency with existing code; no demotion.
-- `global.json` new perk entry is clean and follows existing schema.
-- Untracked scratch artifacts `logs/grave_focus.log` and `logs/balance/strategy/` must not be committed; `logs/balance/map_difficulty.csv` is regenerated balance output whose values changed because harness runs place towers/waves differently — reviewer should decide keep-or-revert before commit (per project convention previous CSVs are committed on master).
-
-## Blockers / required fixes for next iteration
-
-1. Restore green suite: either update the two seeded scenarios' expectations to the new pool composition (if the new perk legitimately belongs in the normal chest pool), or exclude it from chest draws if the design says Common economy perks shouldn't be chest-offered — a design decision, hence `fixable`.
-2. Re-run full verification in slices that fit the 420 s runner cap (e.g. `run_all_shard.py 0 N` with N slices, or name-filtered invocations), since one invocation cannot complete 177 scenarios within the cap.
-3. Clean scratch files before commit.
+- Full-suite run cannot complete inside the runner: worker OOM kill (exit 137)
+  and repeated 420s command timeouts. This is an environment capacity issue, not
+  a project-code failure and not a missing-runner blocker (focused runs work).
 
 ## Unverified items
 
-- Full 177-scenario suite never completed end-to-end within tool cap (timeout, both attempts). Covered partially via focused slices listed above.
+- Clean-stash comparison proving the 16 failing/timeout scenarios are
+  pre-existing (implementor claim only).
+- Windowed screenshot evidence of splash radius covering enemies (manual-testing
+  scope per plan; headless cannot capture pixels).
