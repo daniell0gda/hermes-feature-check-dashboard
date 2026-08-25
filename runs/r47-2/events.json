@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-25T14:56:39.611Z",
+    "node": "check",
+    "status": "completed",
+    "duration_ms": 1151996,
+    "summary": "Check complete. Artifacts written to .gen/check.md and .gen/status.md in the worktree.\n\nVerified done: 8. Pending: 0 \u2014 0 due to build/test failures, 0 due to missing evidence, 0 due to quality violations. Impossible: 0. Quality notes: appen\u2026",
+    "error": null
+  }
+]

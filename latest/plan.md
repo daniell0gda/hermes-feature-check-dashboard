@@ -1,33 +1,34 @@
-# Acceptance Plan: traps-pit-of-spikes-first-hit-stuns-turn
+# Acceptance Plan: Water Tower: Riptide — light Slow alongside Wet (water_riptide)
 
 manual_testing: required
 
 ## Verification
 
-- Focused test: `["godot", "--headless", "--path", ".", "res://scenes/Main.tscn", "--", "--harness=res://tests/scenarios/traps_pit_of_spikes_first_hit_stun.json"]`
+- Focused test: `["python3", "tests/run_all_shard.py", "0", "1", "water_riptide"]`
 - Full test: `["python3", "tests/run_all_shard.py", "0", "1"]`
-- Typecheck/build: `["godot", "--headless", "--editor", "--quit-after", "3", "--path", "."]`
+- Typecheck/build: `["godot", "--headless", "--path", ".", "--editor", "--quit-after", "120"]`
 
 ## Clusters
 
-1. pit-of-spikes-perk-and-trap-stun — files: `scripts/progression/trap.json`, `scripts/progression/managers/TrapProgressionManager.gd`, `autoload/ProgressionManager.gd`, `scripts/game/actors/Trap.gd` — depends on: none
-- While the Pit of Spikes perk (`traps_pit_of_spikes`) is unowned, a trap hit does not change the target's stun state (`stun_time_left` stays 0).
-- The first trap hit against a given enemy while Pit of Spikes is owned applies a stun of approximately 0.4 seconds through the enemy's existing `EffectsManager.apply_stun` path (enemy `stun_time_left` becomes > 0 immediately after the hit).
-- A second trap hit on the same enemy while that first stun is active or has expired does not re-apply the stun (`stun_time_left` remains 0 after it expires from the first application; no new stun is granted by later hits).
-- Stun tracking is per enemy: a first trap hit on a different enemy stuns that enemy even after another enemy was already stunned once.
-- Replaying progression levels on save load does not compound or reset the per-enemy "already stunned" state incorrectly: re-applying the same Pit of Spikes level is idempotent and does not itself trigger any stun.
-- Debug-build `[PIT-OF-SPIKES]` log line per stun event: when a trap hit applies the first-hit stun, a filterable log line names the enemy id, trap id, and applied stun duration; subsequent non-stunning hits do not emit it.
-2. pit-of-spikes-harness-scenario — files: `tests/scenarios/traps_pit_of_spikes_first_hit_stun.json` — depends on: 1
-- The focused headless harness scenario passes with all expectations green: it grants Pit of Spikes, drives a trap hit onto an underground enemy, asserts the enemy is stunned, asserts a second hit does not refresh/re-grant the stun, and asserts the `[PIT-OF-SPIKES]` log line appears exactly once.
-- With the game windowed, after a trap's first hit the stun status icon is visible on that enemy's health bar (driven by `stun_time_left` via the existing health-bar icon path) and disappears once the stun expires.
+1. riptide-progression-definition — files: `scripts/progression/water_tower.json`, `scripts/progression/managers/WaterTowerProgressionManager.gd` — depends on: none
+- The new Unique perk `water_riptide` is defined in the Water tower progression file as a single-level Unique compatible with the water tower, and is grantable through the normal progression flow (`apply_progression` raises its level from 0 to 1, and further grants are refused once owned).
+- After `reset_for_new_game`, `water_riptide` is unowned again and has no gameplay effect until re-granted.
+2. riptide-water-hit-slow — files: `scripts/game/actors/Projectile.gd`, `scripts/game/actors/effects/EffectsManager.gd`, `scripts/game/actors/enemy/parts/EnemyStatusController.gd` — depends on: 1
+- With `water_riptide` owned, a Water tower projectile hit on an enemy applies a Slow of 20% magnitude lasting 1.5 seconds, observable as reduced enemy movement speed for that window while the Wet status continues as before.
+- Without `water_riptide` owned, Water hits apply no slow; enemy movement speed and existing Wet behaviour are unchanged from before this feature.
+- While an enemy's slow is owned by another tower instance (e.g. Ice), a Water hit does not overwrite or steal the active slow; when Water itself owns the active slow, subsequent Water hits refresh it to 20% / 1.5s rather than stacking.
+- Debug-build `[RIPTIDE]` log line per water-triggered slow application, naming the enemy id, slow magnitude, duration, and owning tower instance id.
+3. riptide-cue-and-regressions — files: `scripts/game/actors/effects/EffectsManager.gd`, `scripts/game/actors/enemy/parts/EnemyStatusController.gd` — depends on: 2
+- When a Water hit triggers the Riptide slow, the enemy shows the existing Chilled visual cue (IceSlowFX snowflake particles plus ice-tint overlay) driven by the existing status-controller visuals, with no new VFX asset added; the cue clears when the slow expires.
+- The existing shared hit-path scenario (`water_electric_hit_path`) still passes: Water and Electric hits continue to land damage and apply their existing effects alongside the new optional slow.
 
 ## Criteria
 
-- While the Pit of Spikes perk (`traps_pit_of_spikes`) is unowned, a trap hit does not change the target's stun state (`stun_time_left` stays 0).
-- The first trap hit against a given enemy while Pit of Spikes is owned applies a stun of approximately 0.4 seconds through the enemy's existing `EffectsManager.apply_stun` path (enemy `stun_time_left` becomes > 0 immediately after the hit).
-- A second trap hit on the same enemy while that first stun is active or has expired does not re-apply the stun (`stun_time_left` remains 0 after it expires from the first application; no new stun is granted by later hits).
-- Stun tracking is per enemy: a first trap hit on a different enemy stuns that enemy even after another enemy was already stunned once.
-- Replaying progression levels on save load does not compound or reset the per-enemy "already stunned" state incorrectly: re-applying the same Pit of Spikes level is idempotent and does not itself trigger any stun.
-- Debug-build `[PIT-OF-SPIKES]` log line per stun event: when a trap hit applies the first-hit stun, a filterable log line names the enemy id, trap id, and applied stun duration; subsequent non-stunning hits do not emit it.
-- The focused headless harness scenario passes with all expectations green: it grants Pit of Spikes, drives a trap hit onto an underground enemy, asserts the enemy is stunned, asserts a second hit does not refresh/re-grant the stun, and asserts the `[PIT-OF-SPIKES]` log line appears exactly once.
-- With the game windowed, after a trap's first hit the stun status icon is visible on that enemy's health bar (driven by `stun_time_left` via the existing health-bar icon path) and disappears once the stun expires.
+- The new Unique perk `water_riptide` is defined in the Water tower progression file as a single-level Unique compatible with the water tower, and is grantable through the normal progression flow (`apply_progression` raises its level from 0 to 1, and further grants are refused once owned).
+- After `reset_for_new_game`, `water_riptide` is unowned again and has no gameplay effect until re-granted.
+- With `water_riptide` owned, a Water tower projectile hit on an enemy applies a Slow of 20% magnitude lasting 1.5 seconds, observable as reduced enemy movement speed for that window while the Wet status continues as before.
+- Without `water_riptide` owned, Water hits apply no slow; enemy movement speed and existing Wet behaviour are unchanged from before this feature.
+- While an enemy's slow is owned by another tower instance (e.g. Ice), a Water hit does not overwrite or steal the active slow; when Water itself owns the active slow, subsequent Water hits refresh it to 20% / 1.5s rather than stacking.
+- Debug-build `[RIPTIDE]` log line per water-triggered slow application, naming the enemy id, slow magnitude, duration, and owning tower instance id.
+- When a Water hit triggers the Riptide slow, the enemy shows the existing Chilled visual cue (IceSlowFX snowflake particles plus ice-tint overlay) driven by the existing status-controller visuals, with no new VFX asset added; the cue clears when the slow expires.
+- The existing shared hit-path scenario (`water_electric_hit_path`) still passes: Water and Electric hits continue to land damage and apply their existing effects alongside the new optional slow.
