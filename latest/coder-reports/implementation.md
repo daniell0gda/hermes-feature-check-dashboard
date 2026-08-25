@@ -1,25 +1,33 @@
-# Coder report: implementation (all clusters, final verification pass)
+# Coder report: implementation
 
 ## Changed files
-- `scripts/progression/water_tower.json` — mod: new single-level Unique `water_riptide` (compat towers ["water"], slow 20% / 1.5s) (commit 0362ebe)
-- `scripts/progression/managers/WaterTowerProgressionManager.gd` — mod: ownership flag + getters, reset() clears
-- `autoload/ProgressionManager.gd` — mod: `is_water_riptide_owned()` / `get_water_riptide_slow_{magnitude,duration}()`
-- `scripts/game/actors/Projectile.gd` — mod: water impact delegates to EffectsManager.apply_riptide_if_owned(tower_instance_id)
-- `scripts/game/actors/effects/EffectsManager.gd` — mod: apply_riptide_slow / apply_riptide_if_owned, `[RIPTIDE]` debug log, reuses IceSlowFX Chilled cue
-- `scripts/testing/HarnessActions.gd` — mod: water_hit action opt-in `"riptide": true`
-- `tests/scenarios/water_riptide_progression.json`, `water_riptide_slow.json` — new
-- `tests/scenarios/water_deep_soak_progression.json` — mod: assert eligibility instead of exact seeded chest draw
+- `scripts/progression/trap.json` — new `traps_pit_of_spikes` Unique perk (maxLevels 1, value 0.4)
+- `scripts/progression/managers/TrapProgressionManager.gd` — `PIT_OF_SPIKES_NAME`, `_pit_stun_duration`, absolute-value `apply_level` branch (idempotent on replay), `get_pit_of_spikes_stun_duration()`
+- `autoload/ProgressionManager.gd` — `get_trap_pit_stun_duration()` passthrough (0.0 while unowned)
+- `scripts/game/actors/Trap.gd` — `_apply_pit_of_spikes_stun()` called from `perform_hit`; per-enemy `pit_of_spikes_stunned` meta guard; routes through enemy `EffectsManager.apply_stun`; debug-build `[PIT-OF-SPIKES] stun enemy=<id> trap=<id> duration=0.4` line emitted only on the stunning hit
+- `scripts/testing/HarnessValues.gd` — harness seams: per-enemy `stun_time_left` live field, `stunned_count` in the enemies report, `pit_of_spikes_stunned` meta exposure
+- `scripts/testing/AgentHarness.gd` — FIX: `materialize_engine_out_log()` now re-slices this run's engine log on every resolution instead of short-circuiting when the destination already contained the activation marker (a one-time snapshot froze mid-run and hid log lines printed after the first `log` assertion)
+- `tests/scenarios/traps_pit_of_spikes_first_hit_stun.json` — new focused scenario (two-arm: unowned control + owned first-hit/no-restun/idempotence/log)
 
 ## Criteria
-- All 8 plan criteria — Done (see per-cluster reports for the TDD trail; this session is a post-timeout verification pass)
+- Unowned trap hit leaves stun at 0 — Done (scenario arm 1 asserts `stun_time_left == 0`, `stunned_count == 0`, log `!contains [PIT-OF-SPIKES]`)
+- First hit while owned stuns ~0.4s via EffectsManager.apply_stun — Done (arm 2 asserts `stun_time_left > 0` immediately after `trap_hit`)
+- Second hit never re-stuns — Done (after expiry, second hit asserted `stun_time_left == 0`; meta guard marks before applying so same-frame re-entry can't double-stun)
+- Per-enemy tracking — Done (meta lives on the enemy node; a fresh enemy is stun-eligible; log shows a second distinct enemy `Alien` stunned after `Cactoro` was already marked)
+- Save-load replay idempotence, level apply alone never stuns — Done (`save_now` + `_load_state_and_apply` + re-apply keeps `get_trap_pit_stun_duration == 0.4`, perk ineligible, no new stun; levels carry absolute value so replay lands on N without compounding)
+- `[PIT-OF-SPIKES]` debug line once, only on the stunning hit — Done (regex asserted through engine out.log; unowned arm asserts absence)
+- Focused headless scenario passes all green — Done (`[Harness] status=pass exit=0`)
+- Windowed stun icon on health bar — NOT RUN HERE: manual/windowed evidence is the tester's UI-sanity pass; icon path untouched (`EnemyHealthBar.gd icon_stun` already driven off `stun_time_left`), and the scenario proves `stun_time_left` transitions 0 -> 0.4 -> 0 which drives that exact path
 
-## Commands and results (this pass, run_project_cmd)
-- `python3 tests/run_all_shard.py 0 1 water_riptide` — exit 0; PASS water_riptide_progression, PASS water_riptide_slow
-- `python3 tests/run_all_shard.py 0 1 water_electric` — exit 0; PASS water_electric_hit_path
-- `python3 tests/run_all_shard.py 0 1 water` — exit 0; PASS all 7
-- `godot --headless --path . --editor --quit-after 120` — exit 0 (pre-existing HudTheme UID warnings only)
-- Broad `progression` batch: 25/33 PASS; 8 FAILs pre-existing/environmental (missing GLB imports stall scenarios past the 280s cap: cannon_bunker_buster(_progression), ice_burn_material_restore_stuck; seeded chest-draw shifts: progression_pick, progression_chest_pool, fire_oil_slick, fire_wildfire_spread, floodgate_cryobrine, scifi_overclock, scifi_piercing_beam). None touch riptide code.
-- Full-suite single invocation (`0 1`) exceeds the runner's 420s tool cap at 178 scenarios; covered by filtered batches above instead.
+## Commands and results
+- `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/traps_pit_of_spikes_first_hit_stun.json` — exit 0, `[Harness] status=pass exit=0` (run 2: action 44 log regex failed pre-fix; run 3 after AgentHarness fix: pass)
+- `python3 tests/run_all_shard.py 0 1 traps_` — exit 0, PASS x7 (frostbite/pit/serrated x2/venom x3)
+- `python3 tests/run_all_shard.py 0 1 enemy_armor_trap` / `... trap_stats_attribution` — exit 0, PASS
+- `python3 tests/run_all_shard.py 0 1 undermining` — exit 0, PASS
+- `godot --headless --editor --quit-after 3 --path .` — exit 0, no script errors
+- Full shard `python3 tests/run_all_shard.py 0 1` — could not complete inside runner timeouts (181 scenarios x up to 280s each; two attempts killed at 420s tool cap, one by the worker's own OOM-kill exit 137 after 4 scenarios). All trap-cluster scenarios plus neighbors were verified individually instead; full-suite sweep left for the checker with sharding or a longer budget.
 
 ## Notes
-- logs/balance/map_difficulty.csv is regenerated by test runs and was restored to HEAD.
+- The real bug found this iteration was test-infrastructure: `materialize_engine_out_log` treated "destination contains activation marker" as done, so the first mid-timeline `log` resolution wrote an early slice and every later `log` condition read that stale text. Now always re-slices while `user://logs/godot.log` is readable, falling back to the wrapper-written destination only when Godot's file log is unavailable. This affects any future multi-arm scenario asserting log lines across arms.
+- Gotcha for testers: Godot's file engine log flushes lazily (~1s granularity); the scenario's waits comfortably exceed it, but very tight log assertions right after a print may need one extra frame.
+- Pre-existing noise, unrelated: missing GLB/TGA resources and invalid UID warnings in headless runs appear on master too.
