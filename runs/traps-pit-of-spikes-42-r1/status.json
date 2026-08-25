@@ -1,12 +1,12 @@
 {
   "run_id": "traps-pit-of-spikes-42-r1",
   "feature": "traps-pit-of-spikes-first-hit-stuns-turn",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-25T14:57:06.068Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-25T15:50:32.349Z",
+  "error": "manual-tester worker returned no reply (empty model or exhausted API retries)",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/traps-pit-of-spikes-42-r1/",
-  "heartbeat_at": "2026-08-25T15:50:27.580Z",
+  "heartbeat_at": "2026-08-25T15:50:32.349Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-25T15:50:27.580Z",
@@ -14,8 +14,8 @@
   "host": "f1a4230ec90b",
   "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T15:50:27.582160+00:00",
-    "last_success_at": "2026-08-25T14:57:15.808220+00:00",
+    "last_attempt_at": "2026-08-25T15:50:32.349365+00:00",
+    "last_success_at": "2026-08-25T15:50:32.348267+00:00",
     "last_error": null
   },
   "metrics": {}
