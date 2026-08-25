@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-25T14:38:02.453Z",
+    "node": "plan",
+    "status": "completed",
+    "duration_ms": 413284,
+    "summary": "All three verification commands are runnable against the repo (the focused run reproduces the current `status=timeout` red on a clean tree, confirming the plan targets the right scenario). Artifacts written:\n\n- /workspace/poke-defense-godot\u2026",
+    "error": null
+  }
+]
