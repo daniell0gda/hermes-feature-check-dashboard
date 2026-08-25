@@ -2,46 +2,19 @@
   "run_id": "issue116-game-ready-blocks-map-load-r6",
   "feature": "game-ready-blocks-map-load",
   "status": "running",
-  "started_at": "2026-08-25T06:45:24.094Z",
+  "started_at": "2026-08-25T07:30:23.749Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r6/",
-  "heartbeat_at": "2026-08-25T07:16:28.485Z",
-  "last_node": "check",
-  "active_node": "code",
-  "last_event_at": "2026-08-25T07:16:28.485Z",
-  "process_id": 589503,
+  "heartbeat_at": "2026-08-25T07:30:23.749Z",
+  "last_node": null,
+  "active_node": null,
+  "last_event_at": null,
+  "process_id": 603120,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T07:16:33.105800+00:00",
-    "last_success_at": "2026-08-25T07:16:33.104701+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T07:30:23.749910+00:00"
   },
-  "metrics": {
-    "invocations": [
-      {
-        "task_id": "code",
-        "cluster_id": "implementation",
-        "role": "code",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 166010,
-        "output_tokens": 19134
-      },
-      {
-        "task_id": "check",
-        "cluster_id": null,
-        "role": "check",
-        "model": "stealth/ox-alpha",
-        "model_tier": null,
-        "cost_usd": 0.0,
-        "cost_status": "unknown",
-        "input_tokens": 105467,
-        "output_tokens": 11150
-      }
-    ]
-  }
+  "metrics": {}
 }
