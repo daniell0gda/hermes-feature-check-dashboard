@@ -1,21 +1,21 @@
 {
   "run_id": "traps-pit-of-spikes-42-r1",
   "feature": "traps-pit-of-spikes-first-hit-stuns-turn",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-08-25T12:27:54.579Z",
-  "ended_at": null,
-  "error": null,
+  "ended_at": "2026-08-25T14:55:57.158Z",
+  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'manual-tester', '-z', 'You are the manual-tester worker in a team-work run.\\nWork in /workspace/git-workspaces/poke-defense-godot/issue-traps-pit-of-spikes-first-hit\u2026",
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/traps-pit-of-spikes-42-r1/",
-  "heartbeat_at": "2026-08-25T14:55:51.890Z",
+  "heartbeat_at": "2026-08-25T14:55:57.158Z",
   "last_node": "manual-tester",
   "active_node": null,
   "last_event_at": "2026-08-25T14:55:51.890Z",
   "process_id": 654623,
   "host": "f1a4230ec90b",
-  "phase": "team-leader",
+  "phase": "manual-tester",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T14:55:51.893258+00:00",
-    "last_success_at": "2026-08-25T13:25:45.533058+00:00",
+    "last_attempt_at": "2026-08-25T14:55:57.158079+00:00",
+    "last_success_at": "2026-08-25T14:55:57.156540+00:00",
     "last_error": null
   },
   "metrics": {
