@@ -8,14 +8,14 @@
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue116-game-ready-blocks-map-load-r6/",
   "heartbeat_at": "2026-08-25T08:11:53.035Z",
   "last_node": "check",
-  "active_node": null,
+  "active_node": "team-leader",
   "last_event_at": "2026-08-25T08:11:53.035Z",
   "process_id": 607924,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "team-leader",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T08:11:53.036287+00:00",
-    "last_success_at": "2026-08-25T08:05:07.411171+00:00",
+    "last_attempt_at": "2026-08-25T08:11:57.854714+00:00",
+    "last_success_at": "2026-08-25T08:11:57.853289+00:00",
     "last_error": null
   },
   "metrics": {
@@ -30,6 +30,17 @@
         "cost_status": "unknown",
         "input_tokens": 73300,
         "output_tokens": 3909
+      },
+      {
+        "task_id": "revision-check-1",
+        "cluster_id": null,
+        "role": "check",
+        "model": "stealth/ox-alpha",
+        "model_tier": null,
+        "cost_usd": 0.0,
+        "cost_status": "unknown",
+        "input_tokens": 87980,
+        "output_tokens": 5436
       }
     ]
   }
