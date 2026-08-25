@@ -34,5 +34,14 @@
     "duration_ms": 603090,
     "summary": "Check complete for revision-check-1 (iteration 2).\n\nVerified done: 10. Pending: 0. Impossible: 0. Quality notes: no new entries; the open `porter-burst-emission-tween` note was confirmed RESOLVED by fresh evidence (the coder's 2-line `emiss\u2026",
     "error": null
+  },
+  {
+    "sequence": 5,
+    "timestamp": "2026-08-25T04:42:13.104Z",
+    "node": "team-leader",
+    "status": "completed",
+    "duration_ms": 31544,
+    "summary": "Gate decision written to /workspace/git-workspaces/poke-defense-godot/issue-porter-mass-transit/.gen/manual_testing.md.\n\nSummary:\n- check.md verdict: pass (all 10 criteria verified, iteration 2; tween fix confirmed resolved).\n- manual_testi\u2026",
+    "error": null
   }
 ]
