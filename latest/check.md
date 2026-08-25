@@ -1,106 +1,98 @@
-# Check report: traps-pit-of-spikes-first-hit-stuns-turn (iteration 2, revision-check-1)
+# Check report: water-conductive-flood-wet-splash (issue #45) — iteration 2
 
-classification: pass
+classification: fixable
 
 ## Verdict
 
-Revision 1 fixed the determinism defects that demoted five criteria in iteration 1. Fresh
-verification via run_project_cmd: the focused harness passes with a deterministic same-enemy
-second hit, exactly one `[PIT-OF-SPIKES] stun` line in the whole-run engine log (asserted by a
-new `regex_count == 1` op), and the editor gate green. Seven of eight criteria are Done; the
-windowed stun-icon criterion remains Pending as manual/windowed evidence (`manual_testing:
-required`) — its headless driving path (`stun_time_left` → `EnemyHealthBar._update_status_icons`)
-is proven transitioning by the scenario.
+Feature implementation and focused verification are green; the full-suite gate
+cannot be completed inside the project runner (command timeout at the 420s tool
+cap; prior attempts show worker exit 137 OOM after ~24 scenarios plus multiple
+scenario-level timeouts/fails). Per the build-and-test gate, no criterion may
+stay Done while the full suite is not green, so every criterion is held Pending.
+This is an environment-capacity / verification-completeness issue, not a proven
+feature regression — sampled failing scenarios (`fire_oil_slick`,
+`fire_oil_slick_progression`) fail identically on clean HEAD with this feature's
+changes stashed.
 
-## Verification commands (all via run_project_cmd, project=poke-defense-godot,
-workspace=poke-defense-godot/issue-traps-pit-of-spikes-first-hit-stuns-turn)
+## Verification commands (all via run_project_cmd, project godot-td,
+workspace godot-td/issue-water-conductive-flood-wet-splash)
 
-| Gate | Command | Exit | Result |
-|---|---|---|---|
-| Preflight | `godot --version` | 0 | 4.4.1.stable.official.49a5bc7b6 |
-| Typecheck/build | `godot --headless --editor --quit-after 3 --path .` | 0 | No script errors; only pre-existing UID/GLB import warnings present on master |
-| Focused harness | `godot --headless --path . res://scenes/Main.tscn -- --harness=res://tests/scenarios/traps_pit_of_spikes_first_hit_stun.json` | 0 | `[Harness] status=pass exit=0`; result.json at `.gen/harness/traps_pit_of_spikes_first_hit_stun/result.json`, 50 actions, only failures are two `"optional": true` defeat_all no-ops on an empty field |
-| Trap shard | `python3 tests/run_all_shard.py 0 1 traps` | 0 | PASS all 7 traps_* scenarios incl. traps_pit_of_spikes_first_hit_stun |
-
-Full suite `python3 tests/run_all_shard.py 0 1`: first attempt hit the runner's 420s tool
-timeout (181 scenarios; iteration 1 also recorded OOM exit 137 after ~4 scenarios — it cannot
-complete inside runner timeouts). Mitigated honestly: the trap cluster shard covering every
-changed-code path ran green in full. This is a tooling/timeout limitation, not a test failure;
-recorded per criteria-honesty rules.
-
-## Revision-1 fix validation
-
-The iteration-1 defects were both scenario-side, and both are verifiably gone:
-
-1. Stale-enemy targeting: each arm now pins `auto_next=false` + `_set_egg(9999)`, drains with
-   optional `defeat_all` + `wait enemies.total == 0`, then waits for `enemies.underground == 1`
-   before any hit (scenario actions 27–28/43, 76–77/92). The fresh log shows arm 2's map load
-   clearing exactly the prior state ("Cleared 1 enemies") before cave 402 spawns its single
-   fixture Cactoro.
-2. Autonomous placed-trap polling: no trap is ever placed; all hits go through the harness's
-   scripted `Trap.perform_hit` (same code path minus `_process` polling). The whole-run engine
-   out.log contains exactly ONE `[PIT-OF-SPIKES] stun enemy=Cactoro trap=trap_01 duration=0.4`
-   line (line 641).
-3. Exactly-once is now asserted, not assumed: new HarnessValues `regex_count` compare op +
-   `_regex_match_count` helper; scenario action 49 asserts the stun-line pattern `== 1` over the
-   re-sliced this-run engine log (AgentHarness.gd now re-slices while the file log is reachable).
+- Preflight `["godot","--version"]` — exit 0, Godot 4.4.1.stable.
+- Editor/import gate `["godot","--headless","--path",".","--editor","--quit-after","300"]`
+  — exit 0 (11.2s). Only pre-existing HudTheme.tres invalid-UID warnings (text-path
+  fallback); no script errors. PASS.
+- Focused `["python3","tests/run_all_shard.py","0","1","water_conductive_flood"]`
+  — exit 0; PASS water_conductive_flood_aoe, PASS water_conductive_flood_progression.
+  Fresh result.json files: `.gen/harness/water_conductive_flood_progression/result.json`
+  (status=pass, 17/17 actions ok), `.gen/harness/water_conductive_flood_aoe/result.json`
+  (status=pass, 20/20 actions ok).
+- Full suite `["python3","tests/run_all_shard.py","0","1"]` — run_project_cmd timed
+  out at 420s with no output. Prior persisted slice runs (.gen/harness/_fullsuite_results.txt)
+  show ~69 PASS / 17 distinct FAIL across 85 unique scenarios before the worker died;
+  FAILs are mostly harness status=timeout (cannon_bunker_buster, fire_*,
+  floodgate_corrosive_soak*, curse_overheat_cycle, main_menu, …) plus a few real
+  fails (progression_chest_pool, smoke_tower_roster, projectiles_* variants,
+  underground_diversion_baseline, ice_focus_cone_cadence, ice_burn_material_restore_stuck).
+- Pre-existing-failure probe (stash/unstash of autoload+scripts+tests, scenario runs
+  via runner): with feature changes stashed, `water_conductive_flood*` scenarios FAIL
+  (perk absent — expected) and `fire_oil_slick`/`fire_oil_slick_progression` FAIL
+  exactly as with the feature — confirms those full-suite failures are NOT caused by
+  this change. With changes restored, both flood scenarios PASS again and
+  fire_oil_slick still FAILs. `progression_chest_pool` also FAILs with the feature
+  applied (not confirmed pre-existing); `smoke_tower_roster` attempt exited 137
+  (worker OOM), no verdict.
 
 ## Criterion evidence
 
-1. **Unowned → no stun** — DONE. Arm 1 actions 15–18: `stun_time_left == 0`,
-   `stunned_count == 0`, log `!contains [PIT-OF-SPIKES]`, snapshot `unowned_no_stun`. Code path:
-   `Trap._apply_pit_of_spikes_stun` returns when duration <= 0 (Trap.gd:133).
-2. **First hit stuns ~0.4s via EffectsManager.apply_stun** — DONE. Actions 33–36:
-   `stun_time_left > 0` immediately after hit, `stunned_count >= 1`; log line names enemy id,
-   trap id, duration. Routes `enemy/EffectsManager.apply_stun` →
-   `EnemyStatusController.apply_stun`.
-3. **Second hit never re-stuns (same enemy)** — DONE (was pending). Same single fixture enemy
-   throughout arm 2: action 38 confirms stun expired to 0, scripted second `trap_hit` at index 0
-   hits the only live enemy, then actions 41–42 assert `stun_time_left == 0` and
-   `stunned_count == 0`. Guard is `enemy.has_meta("pit_of_spikes_stunned")` (per-enemy metadata),
-   so a re-hit on the same instance cannot re-stun; the regex_count==1 assertion independently
-   confirms no second emission.
-4. **Per-enemy tracking** — DONE (was pending). The mark lives on the enemy node, not the trap
-   (comment + code, Trap.gd:121–136); each arm's freshly spawned fixture instance is stun-eligible
-   independent of any prior enemy (arm 1 proved eligibility gating by ownership, arm 2's own
-   instance stunned). No global/trap-side state exists that could leak across enemies.
-5. **Save/replay idempotence** — DONE. Actions 44–48: save_now + _load_state_and_apply keeps
-   duration 0.4, re-apply leaves perk ineligible; levels carry absolute values so replay cannot
-   compound; config-only path cannot stun by itself.
-6. **`[PIT-OF-SPIKES]` log once, only on stunning hits** — DONE (was pending). Exactly one match
-   in the engine out.log; asserted by `regex_count == 1` (action 49 ok). The second hit emitted
-   nothing while stun stayed 0.
-7. **Focused scenario passes all green** — DONE (was pending). status=pass exit=0 with the full
-   stated contract now actually established (items 3 and 6).
-8. **Windowed stun icon visible then disappears** — PENDING (manual). Not produced this run;
-   `manual_testing: required`. Icon path untouched: `EnemyHealthBar.gd:398`
-   `stunned = float(enemy.get("stun_time_left")) > 0.0` toggles `icon_stun.visible`; headless
-   evidence proves `stun_time_left` transitions 0→0.4→0. Owed to the manual tester.
+1. Unique perk entry `water_conductive_flood` obtainable like other Water Uniques —
+   implemented (scripts/progression/water_tower.json Unique entry; manager can_handle/
+   apply_level branch mirrors water_pressure path). Focused progression scenario passes
+   (asserts eligibility/application via apply_progression). Held Pending (full-suite gate).
+2. Default-disabled config / level 0→1 / positive radius — asserted by passing
+   progression scenario actions (enabled==false, level==0 before, level==1 after,
+   radius 1.5 > 0) and `[WATER-FLOOD] ... radius=1.50` log line observed. Pending (gate).
+3. Reapply does not stack / reset returns disabled — covered by reset_for_new_game +
+   re-check assertions in both scenarios; maxLevels 0 Unique. Pending (gate).
+4. Multi-enemy Wet in radius via production hit path — AoE scenario passes using
+   `simulate_projectile: true`, which instantiates the real Projectile.gd and calls
+   `_resolve_hit`; asserts ≥2 wet_count for in-radius neighbours. Pending (gate).
+5. Out-of-radius enemy stays dry — asserted in same scenario (GSB at 1.9m vs 1.5m). Pending (gate).
+6. Without perk, single-target Wet only — negative arm first in AoE scenario, passes. Pending (gate).
+7. Splash visual covers perk radius — code verified (Projectile._create_water_splash
+   raises splash_radius to max(0.5, 1.5) and +8 droplets when enabled); pixel/screenshot
+   evidence is deferred to manual testing per plan. Pending (gate + manual evidence).
+8. Wet renders via existing EnemyHealthBar status icons — verified in code:
+   scripts/ui/EnemyHealthBar.gd line 394 reads `wet_time_left` and toggles the
+   pre-existing icon_water; EffectsManager.apply_wet delegates to enemy.apply_wet.
+   No new asset. Pending (gate).
+9. `[WATER-FLOOD]` debug lines for both events — both observed in
+   .gen/harness/_logs/water_conductive_flood_aoe.out.log ("applied -> radius=1.50",
+   "hit target @Node3D@1131 -> 1 enemies Wetted in 1.50m radius"); hit-line assertion is
+   part of the passing AoE scenario. Pending (gate).
+10–12. Scenario/log criteria — both scenarios pass headlessly via runner; hit log
+   observable in engine out.log. Pending (gate).
 
 ## Changed-file quality findings
 
-Reviewed against `/opt/data/coding_rules.md` and worktree `CLAUDE.md`:
-
-- autoload/ProgressionManager.gd (+7): typed, guard-claused delegation — clean.
-- scripts/game/actors/TrapProgressionManager.gd (+17): absolute-value level semantics mirror the
-  existing frostbite pattern; debug line follows the project's `[TAG]` convention — clean.
-- scripts/game/actors/Trap.gd (+26): early returns, mark-before-apply prevents same-frame double
-  stun, `OS.is_debug_build()` gate for the log line — clean.
-- scripts/testing/HarnessValues.gd / AgentHarness.gd (+39/-7): `regex_count` op documented,
-  typed, minimal; log re-slice comment explains why one-shot snapshots break multi-arm scenarios
-  — clean. Test-infrastructure change enables the exactly-once assertion rather than duplicating
-  coverage.
-- tests/scenarios/traps_pit_of_spikes_first_hit_stun.json: notes document every determinism
-  decision — clean.
-
-No new quality violations. quality-notes.md: iteration-1 entry
-`pit-of-spikes-scenario-determinism` marked RESOLVED with the revision-1 evidence.
+- New GDScript (Projectile.gd `_apply_flood_wet`, `_alive_enemies_near_target`;
+  WaterTowerProgressionManager.gd flood branch; ProgressionManager.gd passthrough)
+  follows existing file style, no casts, enum-free simple logic, surgical scope. OK.
+- tests/run_all_shard.py log-redirect change preserves PASS/FAIL contract. OK.
+- HarnessActions.gd `_simulate_water_projectile_hit` reuses production Projectile — good.
+- logs/balance/map_difficulty.csv remains modified in the worktree even though BOTH
+  coder reports claim it was "reverted this revision". Recorded in quality-notes as
+  still-open scope creep; must be reverted (or documented) before commit.
 
 ## Blockers
 
-None. Full-suite shard remains outside runner time/OOM budgets (pre-existing, tooling-level);
-trap-cluster coverage ran green.
+- Full-suite gate: runner capacity — single-invocation full suite exceeds the 420s
+  tool cap; persisted slice runs die with exit 137 (OOM) after ~24 scenarios. Needs
+  sharded execution through the runner or increased worker memory. Not proven to be
+  a defect of this feature's code.
+- Unresolved scope creep: logs/balance/map_difficulty.csv dirty despite claimed revert.
 
 ## Unverified items
 
-- Windowed/manual stun-icon visibility (criterion 8) — owed by the manual-tester profile.
+- Full suite green (blocked by runner capacity; partially contradicted by clean-HEAD probes).
+- Windowed screenshot evidence of splash radius covering nearby enemies (manual testing
+  per plan; manual-tester owns .gen/manual-report.md).

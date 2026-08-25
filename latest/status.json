@@ -1,22 +1,20 @@
 {
-  "run_id": "traps-pit-of-spikes-42-r1",
-  "feature": "traps-pit-of-spikes-first-hit-stuns-turn",
+  "run_id": "issue45-water-flood-r1",
+  "feature": "water-conductive-flood-wet-splash",
   "status": "running",
-  "started_at": "2026-08-25T14:57:06.068Z",
+  "started_at": "2026-08-25T15:06:50.799Z",
   "ended_at": null,
   "error": null,
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/traps-pit-of-spikes-42-r1/",
-  "heartbeat_at": "2026-08-25T14:57:06.068Z",
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
+  "heartbeat_at": "2026-08-25T15:06:50.799Z",
   "last_node": null,
-  "active_node": "manual-tester",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 682810,
+  "process_id": 685515,
   "host": "f1a4230ec90b",
-  "phase": "manual-tester",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T14:57:11.469782+00:00",
-    "last_success_at": "2026-08-25T14:57:10.895583+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T15:06:50.799861+00:00"
   },
   "metrics": {}
 }
