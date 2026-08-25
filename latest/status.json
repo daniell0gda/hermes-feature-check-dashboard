@@ -1,35 +1,35 @@
 {
-  "run_id": "r1-traps-grave-robber",
-  "feature": "traps-grave-robber",
-  "status": "failed",
-  "started_at": "2026-08-24T23:55:40.300Z",
-  "ended_at": "2026-08-25T01:36:24.030Z",
-  "error": "Command '['/opt/hermes/.venv/bin/python3', '-m', 'hermes_cli.main', '-p', 'code', '-z', 'You are the code worker in a team-work run.\\nWork in /workspace/git-workspaces/godot-td/issue-traps-grave-robber.\\nThe durable evidence directory is /w\u2026",
-  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r1-traps-grave-robber/",
-  "heartbeat_at": "2026-08-25T01:36:24.030Z",
-  "last_node": "code",
+  "run_id": "issue45-water-flood-r1",
+  "feature": "water-conductive-flood-wet-splash",
+  "status": "running",
+  "started_at": "2026-08-24T23:33:10.025Z",
+  "ended_at": null,
+  "error": null,
+  "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/issue45-water-flood-r1/",
+  "heartbeat_at": "2026-08-25T01:37:53.541Z",
+  "last_node": "check",
   "active_node": null,
-  "last_event_at": "2026-08-25T01:36:19.448Z",
-  "process_id": 520852,
+  "last_event_at": "2026-08-25T01:37:53.541Z",
+  "process_id": 516346,
   "host": "f1a4230ec90b",
   "phase": "code",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T01:36:24.030266+00:00",
-    "last_success_at": "2026-08-25T01:36:24.028443+00:00",
+    "last_attempt_at": "2026-08-25T01:37:53.541821+00:00",
+    "last_success_at": "2026-08-25T00:47:05.353565+00:00",
     "last_error": null
   },
   "metrics": {
     "invocations": [
       {
-        "task_id": "plan",
-        "cluster_id": null,
-        "role": "plan",
+        "task_id": "code",
+        "cluster_id": "implementation",
+        "role": "code",
         "model": "stealth/ox-alpha",
         "model_tier": null,
         "cost_usd": 0.0,
         "cost_status": "unknown",
-        "input_tokens": 111538,
-        "output_tokens": 7219
+        "input_tokens": 74158,
+        "output_tokens": 10001
       }
     ]
   }
