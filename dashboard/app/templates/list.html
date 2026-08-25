@@ -45,7 +45,7 @@
         <h3><a href="{{ url_path('/run/' ~ run.run_id) }}">{{ run.feature or run.run_id }}</a></h3>
         {{ ui.status_badge(run) }}
       </div>
-      <p class="run-id">{{ run.run_id }}</p>
+      <p class="run-id">{{ run.run_id }} {{ ui.issue_link(run, compact=true) }}</p>
       {{ ui.progress_bar(stage_progress(entry.stages), 'Run progress') }}
       {{ ui.stages(entry.stages) }}
       {{ ui.health_notice(run) }}
@@ -106,6 +106,7 @@
           <tr>
             <td class="cell-run">
               <a class="run-link" href="{{ url_path('/run/' ~ run.run_id) }}">{{ run.feature or run.run_id }}</a>
+              {{ ui.issue_link(run, compact=true) }}
               <span class="run-id">{{ run.run_id }}</span>
               {% if run.revisions %}
               <span class="tag" title="Extra passes through the coding stage">{{ run.revisions }} rev</span>

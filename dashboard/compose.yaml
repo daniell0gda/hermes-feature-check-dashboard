@@ -40,6 +40,12 @@ services:
       # Only for absolute times in the UI; storage is always UTC.
       TZ: "Europe/Warsaw"
 
+      # Optional. Runs whose request document carries a full issue URL are
+      # linked without this. It is only used for the minority of runs that
+      # state a bare issue number ("# Request: #116 ..."), to turn that number
+      # into a link. Must contain {number}.
+      HFCD_ISSUE_URL_TEMPLATE: "https://github.com/daniell0gda/poke-defense-godot/issues/{number}"
+
       # Set only when serving under a reverse-proxy subpath, e.g. "/dashboard".
       # HFCD_ROOT_PATH: ""
 

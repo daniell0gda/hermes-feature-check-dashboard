@@ -10,9 +10,9 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
-_SCHEMA = """
+_SCHEMA_V1 = """
 CREATE TABLE runs (
     run_id         TEXT PRIMARY KEY,
     feature        TEXT,
@@ -86,6 +86,15 @@ CREATE TABLE artifacts (
 CREATE INDEX idx_artifacts_order ON artifacts(run_id, sort_order);
 """
 
+# Link back to the issue the run came from.
+_SCHEMA_V2 = """
+ALTER TABLE runs ADD COLUMN issue_url TEXT;
+ALTER TABLE runs ADD COLUMN issue_number INTEGER;
+"""
+
+# Index i brings the database from version i to version i + 1.
+_MIGRATIONS: tuple[str, ...] = (_SCHEMA_V1, _SCHEMA_V2)
+
 
 def connect(database_path: Path) -> sqlite3.Connection:
     database_path.parent.mkdir(parents=True, exist_ok=True)
@@ -109,14 +118,20 @@ def connect(database_path: Path) -> sqlite3.Connection:
 
 
 def migrate(connection: sqlite3.Connection) -> None:
+    """Apply every migration the database has not seen yet.
+
+    A fresh file runs them all in order; an existing one picks up where its
+    user_version left off.
+    """
     version = connection.execute("PRAGMA user_version").fetchone()[0]
     if version >= SCHEMA_VERSION:
         return
 
-    with connection:
-        if version == 0:
-            connection.executescript(_SCHEMA)
-        connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
+    for target, script in enumerate(_MIGRATIONS, start=1):
+        if version < target:
+            connection.executescript(script)
+
+    connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
 
 
 def initialise(database_path: Path) -> sqlite3.Connection:

@@ -50,6 +50,16 @@ _TEAM_LEADER_VERDICT = re.compile(
 )
 _CHECK_VERDICT = re.compile(r"^\s*classification:\s*([A-Za-z_-]+)", re.MULTILINE | re.IGNORECASE)
 
+# Any forge's issue URL: GitHub and Gitea use /issues/<n>, GitLab /-/issues/<n>,
+# and both end the same way.
+_ISSUE_URL = re.compile(r"https?://[^\s)\]<>\"'`]+?/issues/(\d+)\b", re.IGNORECASE)
+
+# The request document opens with e.g. "# Request: #116 game-ready-blocks (r6)"
+# or "# Request: issue #110 — ...".
+_REQUEST_ISSUE_NUMBER = re.compile(r"^#\s*Request:.*?#(\d{1,5})\b", re.MULTILINE | re.IGNORECASE)
+
+MAX_ISSUE_URL_LENGTH = 500
+
 _UNSAFE_ID = re.compile(r"[^A-Za-z0-9._-]")
 
 
@@ -79,7 +89,12 @@ def sanitize_slug(value: Any) -> str:
     return "/".join(segments[:2])[:191]
 
 
-def publish(repository: Repository, run_id: str, payload: Mapping[str, Any]) -> dict[str, Any]:
+def publish(
+    repository: Repository,
+    run_id: str,
+    payload: Mapping[str, Any],
+    issue_url_template: str | None = None,
+) -> dict[str, Any]:
     status = payload.get("status") if isinstance(payload.get("status"), dict) else {}
     raw_events = payload.get("events") if isinstance(payload.get("events"), list) else []
     raw_documents = payload.get("documents") if isinstance(payload.get("documents"), list) else []
@@ -94,7 +109,10 @@ def publish(repository: Repository, run_id: str, payload: Mapping[str, Any]) -> 
     events = _event_rows(raw_events)
     documents = _document_rows(raw_documents)
 
-    repository.save_run(run_id, _run_fields(status, events, documents, metrics, payload))
+    fields = _run_fields(status, events, documents, metrics, payload)
+    fields.update(_issue(payload, documents, issue_url_template))
+
+    repository.save_run(run_id, fields)
     repository.replace_events(run_id, events)
     repository.replace_documents(run_id, documents)
 
@@ -247,6 +265,59 @@ def _last_event_node(events: Sequence[Mapping[str, Any]]) -> str | None:
             return str(event["node"])
 
     return None
+
+
+def _issue(
+    payload: Mapping[str, Any],
+    documents: Sequence[Mapping[str, Any]],
+    template: str | None,
+) -> dict[str, Any]:
+    """Resolve the issue this run came from, best evidence first.
+
+    1. What the worker states outright in the payload.
+    2. A real issue URL inside the run's own documents - the request document
+       carries one on most runs, and it is authoritative.
+    3. The number stated in the request heading, turned into a URL only when an
+       issue URL template is configured. Without one the number is still shown,
+       unlinked, rather than guessed at.
+
+    A number is never inferred from the run id: run ids also embed timestamps
+    and revision counters, so that would risk pointing at the wrong issue.
+    """
+    bodies = {document["slug"]: document["body"] or "" for document in documents}
+    stated_number = _integer(payload.get("issue_number"))
+
+    explicit = _safe_url(payload.get("issue_url"))
+    if explicit:
+        match = _ISSUE_URL.search(explicit)
+        return {
+            "issue_url": explicit,
+            "issue_number": stated_number or (int(match.group(1)) if match else None),
+        }
+
+    request_first = ["request", *(slug for slug in bodies if slug != "request")]
+    for slug in request_first:
+        match = _ISSUE_URL.search(bodies.get(slug, ""))
+        if match:
+            return {"issue_url": match.group(0)[:MAX_ISSUE_URL_LENGTH], "issue_number": int(match.group(1))}
+
+    heading = _REQUEST_ISSUE_NUMBER.search(bodies.get("request", ""))
+    number = stated_number or (int(heading.group(1)) if heading else None)
+    if number is None:
+        return {"issue_url": None, "issue_number": None}
+
+    built = template.replace("{number}", str(number)) if template else None
+
+    return {"issue_url": _safe_url(built), "issue_number": number}
+
+
+def _safe_url(value: Any) -> str | None:
+    """Only http(s) URLs are stored; these end up in an href."""
+    text = _text(value, MAX_ISSUE_URL_LENGTH)
+    if not text or not text.lower().startswith(("http://", "https://")):
+        return None
+
+    return text
 
 
 def _classification(documents: Sequence[Mapping[str, Any]]) -> str | None:

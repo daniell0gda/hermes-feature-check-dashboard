@@ -17,6 +17,7 @@
       <p class="run-id-row">
         <code>{{ run.run_id }}</code>
         <button type="button" class="copy" data-copy="{{ run.run_id }}">Copy id</button>
+        {{ ui.issue_link(run) }}
       </p>
     </div>
     <div class="run-badges">

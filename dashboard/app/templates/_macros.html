@@ -39,6 +39,24 @@
 {% endmacro %}
 
 
+{#
+  Link back to the originating issue. Shows the number unlinked when a run
+  states one but published no URL, rather than guessing at a link.
+#}
+{% macro issue_link(run, compact=false) %}
+{% if run.issue_number or run.issue_url %}
+{% set label = ('#' ~ run.issue_number) if run.issue_number else 'issue' %}
+{% set text = label if compact else ('Issue ' ~ label if run.issue_number else 'Issue') %}
+{% if run.issue_url %}
+<a class="issue-link" href="{{ run.issue_url }}" target="_blank" rel="noopener noreferrer"
+   title="Open {{ run.issue_url }}">{{ text }}<span aria-hidden="true">&nearr;</span></a>
+{% else %}
+<span class="issue-link is-plain" title="No issue URL was published for this run">{{ text }}</span>
+{% endif %}
+{% endif %}
+{% endmacro %}
+
+
 {% macro health_notice(run) %}
 {% set health = health_of(run) %}
 {% if health and health.state != 'live' %}

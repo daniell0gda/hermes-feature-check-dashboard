@@ -135,6 +135,16 @@ class TestCompletedRun:
         code = next(stage for stage in stages if stage["key"] == "code")
         assert code["passes"] == 2
 
+    def test_issue_link_comes_from_the_real_request_document(
+        self, client: TestClient, auth: dict, publisher
+    ) -> None:
+        publish_real_run(client, auth, publisher, COMPLETED_RUN)
+        run = client.get(f"/api/runs/{COMPLETED_RUN}").json()
+
+        assert run["issue_number"] == 110
+        assert run["issue_url"] == "https://github.com/daniell0gda/poke-defense-godot/issues/110"
+        assert f'href="{run["issue_url"]}"' in client.get(f"/run/{COMPLETED_RUN}").text
+
     def test_run_page_renders(self, client: TestClient, auth: dict, publisher) -> None:
         publish_real_run(client, auth, publisher, COMPLETED_RUN)
         page = client.get(f"/run/{COMPLETED_RUN}")
@@ -207,6 +217,25 @@ class TestInFlightRun:
         slugs = [document["slug"] for document in publisher.collect_documents(candidates[0])]
 
         assert "report" not in slugs
+
+    def test_issue_is_resolved_for_most_published_runs(
+        self, client: TestClient, auth: dict, publisher
+    ) -> None:
+        """Coverage guard: the request documents carry an issue URL on the large
+        majority of runs, so a regression in the parser shows up as a drop."""
+        resolved = 0
+        total = 0
+        for run_dir in sorted(path for path in RUNS_DIR.iterdir() if path.is_dir()):
+            payload = publisher.build_payload(run_dir, run_dir.name)
+            response = client.post("/api/runs", json=payload, headers=auth)
+            if response.status_code != 200:
+                continue
+            total += 1
+            if client.get(f"/api/runs/{run_dir.name}").json()["issue_number"]:
+                resolved += 1
+
+        assert total > 100
+        assert resolved / total > 0.8, f"only {resolved}/{total} runs resolved an issue"
 
     def test_every_snapshot_run_builds_a_valid_payload(self, publisher) -> None:
         """Guards against a run shape the publisher cannot handle."""

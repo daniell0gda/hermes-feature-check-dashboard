@@ -189,6 +189,23 @@ code, pre, .run-id, .mono { font-family: var(--mono); }
     color: var(--text-2);
 }
 
+.issue-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 9px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 650;
+    white-space: nowrap;
+}
+.issue-link:hover { border-color: var(--accent); text-decoration: none; }
+.issue-link.is-plain { background: var(--panel-alt); color: var(--text-3); }
+.cell-run .issue-link, .run-id .issue-link { padding: 1px 7px; font-size: 11px; }
+
 .copy, .button {
     border: 1px solid var(--border-strong);
     background: var(--panel);

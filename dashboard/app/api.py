@@ -35,6 +35,8 @@ def _shape_run(run: dict[str, Any]) -> dict[str, Any]:
         "display_status": formatting.display_status(run),
         "health": formatting.health(run),
         "classification": run["classification"],
+        "issue_url": run["issue_url"],
+        "issue_number": run["issue_number"],
         "phase": run["phase"],
         "active_node": run["active_node"],
         "last_node": run["last_node"],
@@ -88,11 +90,12 @@ def _shape_artifact(artifact: dict[str, Any]) -> dict[str, Any]:
 def publish_run(
     payload: dict[str, Any] = Body(...),
     repository: Repository = Depends(get_repository),
+    settings: Settings = Depends(get_settings),
 ) -> dict[str, Any]:
     run_id = _run_id(payload.get("run_id") or (payload.get("status") or {}).get("run_id", ""))
 
     with repository.transaction():
-        result = ingest.publish(repository, run_id, payload)
+        result = ingest.publish(repository, run_id, payload, settings.issue_url_template)
 
     return {"ok": True, **result}
 

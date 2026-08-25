@@ -101,6 +101,7 @@ repository is public, so pulling then needs credentials:
 | `HFCD_SITE_NAME` | `Hermes` | Name shown in the header. |
 | `HFCD_PORT` / `HFCD_HOST` | `8080` / `0.0.0.0` | Listen address. |
 | `HFCD_ROOT_PATH` | *(empty)* | Set only when served under a reverse-proxy subpath, e.g. `/dashboard`. |
+| `HFCD_ISSUE_URL_TEMPLATE` | *(unset)* | Last-resort pattern for linking an issue, e.g. `https://github.com/owner/repo/issues/{number}`. Only used when a run states a bare issue number instead of a URL. Must contain `{number}`; a malformed value is rejected at startup. |
 | `TZ` | UTC | Timezone for displayed times. Storage is always UTC. |
 
 ### Access model
@@ -170,6 +171,19 @@ The worker does not report these; they are computed once at publish time.
   dashboard ignored (it reported "Unavailable"). Cost stays blank while every
   invocation reports `cost_status: unknown`, because the `0.0` in that case is a
   placeholder, not a real $0.00.
+- **the originating issue**, resolved best-evidence-first:
+  1. an `issue_url` / `issue_number` stated outright in the publish payload;
+  2. a real issue URL inside the run's own documents — the request document
+     carries one on **147 of the 182** published runs, and it is authoritative
+     (GitHub, Gitea and GitLab URL shapes are all recognised);
+  3. the number in the request heading (`# Request: #116 …`), turned into a link
+     only when `HFCD_ISSUE_URL_TEMPLATE` is set. Without the template the number
+     is still shown, unlinked, rather than pointing somewhere invented.
+
+  A number is deliberately **never** inferred from the run id: ids also embed
+  timestamps and revision counters (`heart-hud-beat-139-1787422828`), so that
+  would risk linking to the wrong issue. Measured over the published history,
+  tiers 2 and 3 cover 154/182 runs and never disagree with each other.
 - **liveness** — a run still marked `running` shows as *possibly stale* after
   2 minutes without a heartbeat and *abandoned* after 10. Derived on read, so
   there is no cron job to keep alive.

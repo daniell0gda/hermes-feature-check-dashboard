@@ -37,6 +37,8 @@ RUN_COLUMNS = frozenset(
         "error",
         "graph",
         "metrics",
+        "issue_url",
+        "issue_number",
     }
 )
 

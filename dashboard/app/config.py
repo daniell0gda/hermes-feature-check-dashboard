@@ -24,6 +24,9 @@ class ConfigError(RuntimeError):
     """Raised when the environment cannot support a working dashboard."""
 
 
+ISSUE_NUMBER_PLACEHOLDER = "{number}"
+
+
 @dataclass(frozen=True)
 class Settings:
     data_dir: Path
@@ -32,6 +35,7 @@ class Settings:
     host: str
     port: int
     root_path: str
+    issue_url_template: str | None = None
 
     @property
     def database_path(self) -> Path:
@@ -67,7 +71,31 @@ def load_settings(environ: Mapping[str, str] | None = None) -> Settings:
         host=(env.get("HFCD_HOST") or "0.0.0.0").strip(),
         port=int(port_text),
         root_path=root_path,
+        issue_url_template=_issue_url_template(env.get("HFCD_ISSUE_URL_TEMPLATE")),
     )
+
+
+def _issue_url_template(value: str | None) -> str | None:
+    """Only used when a run states an issue number but no full URL.
+
+    Rejected outright when malformed: a template without the placeholder would
+    silently produce the same wrong link on every run.
+    """
+    template = (value or "").strip()
+    if not template:
+        return None
+
+    if ISSUE_NUMBER_PLACEHOLDER not in template:
+        raise ConfigError(
+            f"HFCD_ISSUE_URL_TEMPLATE must contain {ISSUE_NUMBER_PLACEHOLDER}, got {template!r}. "
+            f"Example: https://github.com/owner/repo/issues/{ISSUE_NUMBER_PLACEHOLDER}"
+        )
+    if not template.startswith(("http://", "https://")):
+        raise ConfigError(
+            f"HFCD_ISSUE_URL_TEMPLATE must be an http(s) URL, got {template!r}"
+        )
+
+    return template
 
 
 def prepare_data_dir(settings: Settings) -> None:
