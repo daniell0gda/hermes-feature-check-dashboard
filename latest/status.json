@@ -2,21 +2,19 @@
   "run_id": "r47-2",
   "feature": "Water Tower Riptide - light Slow alongside Wet",
   "status": "running",
-  "started_at": "2026-08-25T06:32:15.686Z",
+  "started_at": "2026-08-25T06:33:32.073Z",
   "ended_at": null,
   "error": null,
   "url": "https://daniell0gda.github.io/hermes-feature-check-dashboard/runs/r47-2/",
-  "heartbeat_at": "2026-08-25T06:32:15.686Z",
+  "heartbeat_at": "2026-08-25T06:33:32.074Z",
   "last_node": null,
-  "active_node": "code",
+  "active_node": null,
   "last_event_at": null,
-  "process_id": 583405,
+  "process_id": 584141,
   "host": "f1a4230ec90b",
-  "phase": "code",
+  "phase": "starting",
   "dashboard_publish": {
-    "last_attempt_at": "2026-08-25T06:32:20.879381+00:00",
-    "last_success_at": "2026-08-25T06:32:20.313936+00:00",
-    "last_error": null
+    "last_attempt_at": "2026-08-25T06:33:32.074074+00:00"
   },
   "metrics": {}
 }
