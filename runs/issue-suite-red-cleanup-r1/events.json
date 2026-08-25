@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "sequence": 1,
+    "timestamp": "2026-08-25T18:08:05.435Z",
+    "node": "code",
+    "status": "completed",
+    "duration_ms": 1577405,
+    "summary": "Work done. Summary:\n\n## What I did\nSpent this cycle on evidence-gathering across all 32 plan scenarios (fresh focused rerun of `cannon_bunker_buster` plus a full audit of every `.gen/harness/<name>/result.json`). No product code was changed\u2026",
+    "error": null
+  }
+]
