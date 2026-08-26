@@ -127,15 +127,32 @@
       title="{{ stage.label }} — {{ STAGE_STATE_TEXT.get(stage.state, stage.state) }}{% if stage.passes > 1 %}, {{ stage.passes }} passes{% endif %}">
     <span class="stage-dot" aria-hidden="true"></span>
     <span class="stage-label">{{ stage.label }}</span>
-    {% if not compact and (stage.duration_ms is not none or stage.passes > 1) %}
-    <span class="stage-meta">
-      {%- if stage.duration_ms is not none %}{{ stage.duration_ms | duration }}{% endif -%}
-      {%- if stage.duration_ms is not none and stage.passes > 1 %} · {% endif -%}
-      {%- if stage.passes > 1 %}{{ stage.passes }}&times;{% endif -%}
-    </span>
-    {% endif %}
+    {% if not compact %}{{ stage_meta(stage) }}{% endif %}
   </li>
   {% endfor %}
 </ol>
+{% endif %}
+{% endmacro %}
+
+
+{#
+  What the badge says to the right of a stage's name. An active stage reports how
+  long the pass now running has been going - a clock the browser keeps ticking -
+  in place of the total of the passes it already finished, which the timeline
+  lists anyway. One duration per badge, so neither number can be mistaken for
+  the other.
+#}
+{% macro stage_meta(stage) %}
+{% set since = stage.since if stage.state == 'active' else none %}
+{% if since or stage.duration_ms is not none or stage.passes > 1 %}
+<span class="stage-meta">
+  {%- if since -%}
+  <time class="stage-now" data-elapsed datetime="{{ since | iso }}"
+        title="Running since {{ since | absolute }}">{{ since | elapsed_ms | duration }}</time>
+  {%- elif stage.duration_ms is not none -%}
+  {{ stage.duration_ms | duration }}
+  {%- endif -%}
+  {%- if stage.passes > 1 %} · {{ stage.passes }}&times;{% endif -%}
+</span>
 {% endif %}
 {% endmacro %}

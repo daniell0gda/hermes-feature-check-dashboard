@@ -238,6 +238,7 @@ def filesize(value: Any) -> str:
 
 JINJA_FILTERS = {
     "duration": duration,
+    "elapsed_ms": elapsed_ms,
     "relative": relative,
     "absolute": absolute,
     "iso": iso,

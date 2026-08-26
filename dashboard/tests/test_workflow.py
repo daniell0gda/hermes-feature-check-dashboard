@@ -114,6 +114,55 @@ class TestStages:
         assert stage_map(workflow.stages(run, []))["code"] == workflow.ACTIVE
 
 
+class TestActiveSince:
+    def test_active_stage_starts_when_the_last_call_finished(self) -> None:
+        run = {
+            "status": "running",
+            "active_node": "check",
+            "started_at": "2026-08-25 10:00:00",
+            "graph": GRAPH,
+        }
+        events = [
+            {"node": "plan", "status": "completed", "occurred_at": "2026-08-25 10:05:00"},
+            {"node": "code", "status": "completed", "occurred_at": "2026-08-25 10:20:00"},
+        ]
+
+        stages = {stage["key"]: stage["since"] for stage in workflow.stages(run, events)}
+
+        assert stages["check"] == "2026-08-25 10:20:00"
+
+    def test_before_the_first_call_the_run_start_is_used(self) -> None:
+        run = {
+            "status": "running",
+            "active_node": "plan",
+            "started_at": "2026-08-25 10:00:00",
+            "graph": GRAPH,
+        }
+
+        stages = {stage["key"]: stage["since"] for stage in workflow.stages(run, [])}
+
+        assert stages["plan"] == "2026-08-25 10:00:00"
+
+    def test_only_the_active_stage_carries_a_clock(self) -> None:
+        run = {
+            "status": "running",
+            "active_node": "code",
+            "started_at": "2026-08-25 10:00:00",
+            "graph": GRAPH,
+        }
+        events = [{"node": "plan", "status": "completed", "occurred_at": "2026-08-25 10:05:00"}]
+
+        timed = [stage["key"] for stage in workflow.stages(run, events) if stage["since"]]
+
+        assert timed == ["code"]
+
+    def test_a_finished_run_has_no_clock_anywhere(self) -> None:
+        run = {"status": "completed", "started_at": "2026-08-25 10:00:00", "graph": GRAPH}
+        events = [{"node": "plan", "status": "completed", "occurred_at": "2026-08-25 10:05:00"}]
+
+        assert not [stage for stage in workflow.stages(run, events) if stage["since"]]
+
+
 class TestProgress:
     def test_counts_settled_stages(self) -> None:
         stages = [

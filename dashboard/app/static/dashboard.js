@@ -9,6 +9,7 @@
     'use strict';
 
     var POLL_MS = 15000;
+    var TICK_MS = 1000;
 
     document.addEventListener('click', function (event) {
         var copyButton = event.target.closest('.copy');
@@ -145,7 +146,46 @@
         refresh();
     }
 
+    /* -------------------------------------------------------------- clocks */
+
+    function pad(value) {
+        return (value < 10 ? '0' : '') + value;
+    }
+
+    /**
+     * Mirrors formatting.duration on the server, so a clock the browser is
+     * ticking never disagrees in wording with the one the server rendered.
+     */
+    function durationText(milliseconds) {
+        var seconds = Math.round(milliseconds / 1000);
+        if (seconds < 60) {
+            return seconds + 's';
+        }
+        if (seconds < 3600) {
+            return Math.floor(seconds / 60) + 'm ' + pad(seconds % 60) + 's';
+        }
+
+        return Math.floor(seconds / 3600) + 'h ' + pad(Math.floor((seconds % 3600) / 60)) + 'm';
+    }
+
+    /** Counts up every [data-elapsed] clock from the moment it states. */
+    function tickClocks() {
+        var now = Date.now();
+        Array.prototype.forEach.call(document.querySelectorAll('time[data-elapsed]'), function (clock) {
+            var since = Date.parse(clock.getAttribute('datetime'));
+            if (!isNaN(since)) {
+                // Max: a worker clock running ahead reads as zero, never negative.
+                clock.textContent = durationText(Math.max(0, now - since));
+            }
+        });
+    }
+
     if (document.querySelector('[data-live]')) {
         window.setInterval(tick, POLL_MS);
+        window.setInterval(function () {
+            if (!document.hidden) {
+                tickClocks();
+            }
+        }, TICK_MS);
     }
 }());

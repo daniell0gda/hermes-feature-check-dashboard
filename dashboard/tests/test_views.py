@@ -206,6 +206,21 @@ class TestRunDetail:
 
         assert "abandoned" not in client.get("/run/fresh-run").text.lower()
 
+    def test_active_stage_carries_a_clock_from_the_last_call(
+        self, client: TestClient, auth: dict
+    ) -> None:
+        publish(client, auth, live_payload(run_id="fresh-run"))
+
+        body = client.get("/run/fresh-run").text
+
+        # The last event landed at 10:19, so that is when the active pass began.
+        assert 'class="stage-now" data-elapsed datetime="2026-08-25T10:19:00+00:00"' in body
+
+    def test_finished_run_has_no_clock(self, client: TestClient, auth: dict) -> None:
+        publish(client, auth)
+
+        assert "data-elapsed" not in client.get(f"/run/{RUN_ID}").text
+
     def test_unknown_run_renders_a_404_page(self, client: TestClient) -> None:
         response = client.get("/run/never-published")
 

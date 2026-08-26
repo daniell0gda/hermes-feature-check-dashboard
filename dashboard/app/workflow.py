@@ -79,17 +79,20 @@ def stages(run: Mapping[str, Any], events: Sequence[Mapping[str, Any]]) -> list[
     skeleton = _skeleton(run, grouped)
     active = canonical(run.get("active_node") or run.get("phase"))
     running = run.get("status") == "running"
+    since = _active_since(run, events)
 
     result = []
     for key, text in skeleton.items():
         stage_events = grouped.get(key, [])
+        state = _state(key, stage_events, active, running, run)
         result.append(
             {
                 "key": key,
                 "label": text,
-                "state": _state(key, stage_events, active, running, run),
+                "state": state,
                 "passes": len(stage_events),
                 "duration_ms": _total_duration(stage_events),
+                "since": since if state == ACTIVE else None,
             }
         )
 
@@ -175,6 +178,18 @@ def _state(
         return DONE
 
     return PENDING if running else SKIPPED
+
+
+def _active_since(run: Mapping[str, Any], events: Sequence[Mapping[str, Any]]) -> str | None:
+    """When the pass now running started.
+
+    An event's timestamp is the moment its worker call finished, so the latest
+    one dates the start of whatever the run moved on to. Until the first call
+    lands, the run's own start is the best answer there is.
+    """
+    stamps = [event["occurred_at"] for event in events if event.get("occurred_at")]
+
+    return max(stamps) if stamps else run.get("started_at")
 
 
 def _total_duration(stage_events: Sequence[Mapping[str, Any]]) -> int | None:
