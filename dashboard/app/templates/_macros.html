@@ -15,6 +15,9 @@
   'unknown': 'mute'
 } %}
 
+{# Forge states for the issue a run came from. A done issue is always 'ok'. #}
+{% set ISSUE_STATE_TONE = {'open': 'info', 'reopened': 'warn'} %}
+
 {% set STAGE_STATE_TEXT = {
   'done': 'completed', 'active': 'in progress', 'failed': 'failed',
   'pending': 'not started yet', 'skipped': 'never reached'
@@ -53,6 +56,24 @@
 {% else %}
 <span class="issue-link is-plain" title="No issue URL was published for this run">{{ text }}</span>
 {% endif %}
+{% endif %}
+{% endmacro %}
+
+
+{#
+  How the run's issue stands on the forge. Renders nothing but a dash until
+  somebody reports a state, so a run predating the integration says so rather
+  than claiming its issue is open.
+#}
+{% macro issue_state_badge(run, compact=false) %}
+{% if run.gh_status %}
+{% set tone = 'ok' if run.done else ISSUE_STATE_TONE.get(run.gh_status | lower, 'mute') %}
+<span class="badge badge-soft issue-state tone-{{ tone }}"
+      title="Issue {{ run.gh_status }}{{ ' — counted as done' if run.done else '' }}">
+  {{ run.gh_status if compact else 'Issue ' ~ run.gh_status }}
+</span>
+{% elif compact %}
+<span class="dim">{{ dash }}</span>
 {% endif %}
 {% endmacro %}
 

@@ -29,7 +29,7 @@ than quietly filling the container's ephemeral layer.
 | `app/` | The application (FastAPI, Jinja2, SQLite, Pillow, markdown-it). |
 | `clients/publish_snapshot.py` | Publishes a snapshot directory. Drop-in for `GitDeployment`. |
 | `clients/status_http.py` | Status / heartbeat pings during a run. |
-| `tests/` | 151 tests, including end-to-end runs against the real published snapshots. |
+| `tests/` | 245 tests, including end-to-end runs against the real published snapshots. |
 | `Dockerfile`, `compose.yaml` | Build and deploy. |
 
 ## Getting the image onto the NAS
@@ -167,6 +167,25 @@ python3 clients/status_http.py --base http://truenas.lan:8080 --run-id my-run --
 `--dry-run` prints the run id, event count, every document with its size and
 every screenshot with its sha1, without contacting a server.
 
+## Did the issue actually get closed?
+
+A run's verdict says the gate passed; it does not say the issue was resolved.
+Report the forge's own answer and the dashboard shows it as a column in the run
+list, a tag on the run page, an *Issues closed* tile and a Done / Not done
+filter:
+
+```sh
+curl -X POST -H "X-API-Key: $HFCD_API_KEY" -H 'Content-Type: application/json' \
+    -d '{"gh_status": "closed"}' \
+    http://truenas.lan:8080/api/runs/corrosive-soak-90-r1/issue
+```
+
+Anything the forge calls it is accepted as `gh_status`; `closed` and `merged`
+are the two that mean done. Nothing polls GitHub from inside the container —
+whatever already knows the issue state (the worker after it closes the issue, or
+a cron job over `gh issue view`) posts it. Until something does, the column and
+the filter are not rendered at all, so the view stays exactly as it was.
+
 ## Repeat runs for one job
 
 The run id is the only key the dashboard has. It comes from the snapshot's
@@ -217,9 +236,10 @@ Writes need `X-API-Key`; reads are open (CORS `*`).
 | POST | `/api/runs/<id>/media?path=screenshots/x.png` | Store one image. Raw bytes as the body, not base64. |
 | GET | `/api/runs/<id>/media` | `path → sha1` manifest, so a publisher uploads only what changed. |
 | POST | `/api/runs/<id>/status` | Patch `status`, `phase`, `active_node`, `last_node`, `error`; bumps the heartbeat. |
+| POST | `/api/runs/<id>/issue` | Set `gh_status` — how the run's issue stands on the forge. `done` is derived, not accepted. Does **not** bump the heartbeat. |
 | POST | `/api/runs/<id>/heartbeat` | Heartbeat only. |
 | DELETE | `/api/runs/<id>` | Remove a run, its timeline, documents and media files. |
-| GET | `/api/runs?status=&feature=&project=&q=&page=&per_page=` | Run list, newest first. `status` also takes the derived `abandoned`, and `other` for everything outside running/completed/failed. |
+| GET | `/api/runs?status=&feature=&project=&done=&q=&page=&per_page=` | Run list, newest first. `status` also takes the derived `abandoned`, and `other` for everything outside running/completed/failed. `done` takes `yes` / `no`. |
 | GET | `/api/runs/<id>` | One run with timeline, stages, document index and media index. |
 | GET | `/api/summary` | Aggregate counters. |
 | GET | `/api/healthz` | Liveness probe. |
@@ -262,6 +282,13 @@ The worker does not report these; they are computed once at publish time.
 
   Measured over the published history, tiers 2 and 3 cover 154/182 runs and
   never disagree with each other.
+- **done**, from the `gh_status` last reported for the run's issue: `closed` and
+  `merged` count as done, everything else — `open`, `reopened`, a project column
+  name — does not. The flag is derived rather than accepted, so it can never
+  contradict the state it summarises. A run nobody has reported a state for is
+  not done, but it is not *open* either: the issue column shows a dash and the
+  run page grows no tag, so a run predating the integration says nothing rather
+  than claiming its issue is still open.
 - **liveness** — a run still marked `running` shows as *possibly stale* after
   2 minutes without a heartbeat and *abandoned* after 10. Derived on read, so
   there is no cron job to keep alive. Abandoned is a filter of its own

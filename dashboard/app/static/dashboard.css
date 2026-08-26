@@ -397,7 +397,7 @@ code, pre, .run-id, .mono { font-family: var(--mono); }
 /* ---------- filters ---------- */
 
 .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
-.chips-project { margin-top: -6px; }
+.chips-project, .chips-done { margin-top: -6px; }
 .chips-project .chip { font-family: var(--mono); font-size: 12px; }
 .chip {
     padding: 5px 12px;

@@ -49,8 +49,17 @@ RUN_COLUMNS = frozenset(
         "issue_url",
         "issue_number",
         "project",
+        "gh_status",
+        "done",
     }
 )
+
+# A done filter value to its SQL. Anything else filters nothing, matching how
+# an unrecognised status filter behaves.
+DONE_FILTERS = {"yes": "done = 1", "no": "done = 0"}
+
+# A run nobody has reported an issue state for is neither open nor closed.
+ISSUE_REPORTED_SQL = "gh_status IS NOT NULL AND gh_status != ''"
 
 
 def _rows(cursor: sqlite3.Cursor) -> list[dict[str, Any]]:
@@ -156,6 +165,7 @@ class Repository:
         page: int = 1,
         per_page: int = PER_PAGE_DEFAULT,
         project: str = "",
+        done: str = "",
     ) -> dict[str, Any]:
         per_page = min(PER_PAGE_MAX, max(1, int(per_page)))
         page = max(1, int(page))
@@ -175,6 +185,9 @@ class Repository:
         if project:
             clauses.append("project = ?")
             params.append(project)
+
+        if done in DONE_FILTERS:
+            clauses.append(DONE_FILTERS[done])
 
         if search.strip():
             like = f"%{search.strip()}%"
@@ -234,6 +247,8 @@ class Repository:
                    SUM(status = 'completed')         AS completed,
                    SUM(status = 'failed')            AS failed,
                    SUM(classification = 'pass')      AS passed,
+                   SUM(done)                         AS done,
+                   SUM({ISSUE_REPORTED_SQL})         AS issue_reported,
                    SUM(revisions)                    AS revisions,
                    SUM(event_count)                  AS worker_calls,
                    AVG(NULLIF(duration_ms, 0))       AS avg_duration_ms,
@@ -258,6 +273,8 @@ class Repository:
             "completed": integer("completed"),
             "failed": integer("failed"),
             "passed": integer("passed"),
+            "done": integer("done"),
+            "issue_reported": integer("issue_reported"),
             "revisions": integer("revisions"),
             "worker_calls": integer("worker_calls"),
             "avg_duration_ms": None if row["avg_duration_ms"] is None else round(row["avg_duration_ms"]),

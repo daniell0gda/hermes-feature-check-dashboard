@@ -38,6 +38,8 @@ def _shape_run(run: dict[str, Any]) -> dict[str, Any]:
         "project": run["project"],
         "issue_url": run["issue_url"],
         "issue_number": run["issue_number"],
+        "gh_status": run["gh_status"],
+        "done": bool(run["done"]),
         "phase": run["phase"],
         "active_node": run["active_node"],
         "last_node": run["last_node"],
@@ -117,6 +119,30 @@ def patch_status(
     return {"ok": True, "run_id": identifier, "status": run["status"], "phase": run["phase"]}
 
 
+@router.post("/runs/{run_id}/issue", dependencies=[Depends(require_api_key)])
+def patch_issue_state(
+    run_id: str,
+    payload: dict[str, Any] = Body(default_factory=dict),
+    repository: Repository = Depends(get_repository),
+) -> dict[str, Any]:
+    """Record how the run's issue stands on the forge. ``done`` is derived."""
+    identifier = _run_id(run_id)
+    try:
+        with repository.transaction():
+            run = ingest.set_issue_state(repository, identifier, payload)
+    except LookupError as error:
+        raise HTTPException(status_code=404, detail=f"Unknown run id: {identifier}") from error
+    except ingest.IngestError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+
+    return {
+        "ok": True,
+        "run_id": identifier,
+        "gh_status": run["gh_status"],
+        "done": bool(run["done"]),
+    }
+
+
 @router.post("/runs/{run_id}/heartbeat", dependencies=[Depends(require_api_key)])
 def heartbeat(
     run_id: str,
@@ -184,6 +210,7 @@ def list_runs(
     status: str = "",
     feature: str = "",
     project: str = "",
+    done: str = "",
     q: str = "",
     page: int = 1,
     per_page: int = PER_PAGE_DEFAULT,
@@ -191,7 +218,13 @@ def list_runs(
 ) -> dict[str, Any]:
     response.headers["Access-Control-Allow-Origin"] = "*"
     result = repository.query_runs(
-        status=status, feature=feature, project=project, search=q, page=page, per_page=per_page
+        status=status,
+        feature=feature,
+        project=project,
+        done=done,
+        search=q,
+        page=page,
+        per_page=per_page,
     )
 
     return {

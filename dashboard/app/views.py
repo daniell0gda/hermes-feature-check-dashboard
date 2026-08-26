@@ -76,11 +76,12 @@ def runs_list(
     status: str = "",
     q: str = "",
     project: str = "",
+    done: str = "",
     pg: int = 1,
     repository: Repository = Depends(get_repository),
 ) -> HTMLResponse:
     result = repository.query_runs(
-        status=status, search=q, project=project, page=pg, per_page=RUNS_PER_PAGE
+        status=status, search=q, project=project, done=done, page=pg, per_page=RUNS_PER_PAGE
     )
 
     active = []
@@ -92,7 +93,7 @@ def runs_list(
         request,
         "list.html",
         {
-            "filters": {"status": status, "q": q, "project": project},
+            "filters": {"status": status, "q": q, "project": project, "done": done},
             "result": result,
             "summary": repository.summary(),
             "active": active,

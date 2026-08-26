@@ -20,6 +20,12 @@ MAX_RUN_ID_LENGTH = 128
 
 PATCHABLE_FIELDS = ("status", "phase", "active_node", "last_node", "error", "ended_at")
 
+MAX_GH_STATUS_LENGTH = 32
+
+# Forge states that mean the issue is resolved. Everything else - open,
+# reopened, a project column name - is work still outstanding.
+GH_DONE_STATUSES = frozenset({"closed", "merged"})
+
 KIND_PRIMARY = "primary"
 KIND_CLUSTER = "cluster"
 KIND_CODER = "coder"
@@ -142,6 +148,31 @@ def patch(repository: Repository, run_id: str, changes: Mapping[str, Any]) -> di
         fields["duration_ms"] = duration
 
     repository.save_run(run_id, fields)
+
+    return repository.find_run(run_id) or existing
+
+
+def set_issue_state(
+    repository: Repository, run_id: str, changes: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Record the forge's state for the issue this run came from.
+
+    ``done`` is derived rather than accepted, so the flag can never contradict
+    the state it summarises. The heartbeat is deliberately left alone: polling
+    the forge says nothing about whether the worker is still alive.
+    """
+    existing = repository.find_run(run_id)
+    if existing is None:
+        raise LookupError(run_id)
+
+    gh_status = _text(changes.get("gh_status"), MAX_GH_STATUS_LENGTH)
+    if not gh_status:
+        raise IngestError("gh_status is required, e.g. 'open' or 'closed'")
+
+    repository.save_run(
+        run_id,
+        {"gh_status": gh_status, "done": int(gh_status.lower() in GH_DONE_STATUSES)},
+    )
 
     return repository.find_run(run_id) or existing
 

@@ -25,6 +25,7 @@
     <div class="run-badges">
       {{ ui.status_badge(run) }}
       {{ ui.verdict_badge(run.classification) }}
+      {{ ui.issue_state_badge(run) }}
     </div>
   </div>
   {{ ui.health_notice(run) }}
