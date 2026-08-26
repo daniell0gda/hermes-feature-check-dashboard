@@ -53,6 +53,7 @@ def _shape_run(run: dict[str, Any]) -> dict[str, Any]:
         "worker_ms": run["worker_ms"],
         "event_count": run["event_count"],
         "revisions": run["revisions"],
+        "attempts": run.get("attempts", 1) if isinstance(run, dict) else 1,
         "cost_usd": run["cost_usd"],
         "input_tokens": run["input_tokens"],
         "output_tokens": run["output_tokens"],

@@ -51,6 +51,7 @@ RUN_COLUMNS = frozenset(
         "project",
         "gh_status",
         "done",
+        "attempts",
     }
 )
 
@@ -284,6 +285,20 @@ class Repository:
         }
 
     # -------------------------------------------------------------- events
+
+    def append_events(self, run_id: str, rows: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
+        """Additive variant used by new-attempt publishes (seq already offset)."""
+        written: list[dict[str, Any]] = []
+        for row in rows:
+            record = {"run_id": run_id, **row}
+            self._connection.execute(
+                "INSERT INTO events (run_id, seq, node, status, duration_ms, occurred_at, summary, error) "
+                "VALUES (:run_id, :seq, :node, :status, :duration_ms, :occurred_at, :summary, :error)",
+                record,
+            )
+            written.append(record)
+
+        return written
 
     def replace_events(self, run_id: str, rows: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
         """The worker republishes the whole timeline, so replace it wholesale."""

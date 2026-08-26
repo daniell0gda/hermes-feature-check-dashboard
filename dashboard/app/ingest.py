@@ -104,9 +104,20 @@ def publish(
     payload: Mapping[str, Any],
     issue_linking: IssueLinking | None = None,
 ) -> dict[str, Any]:
+    """Upsert a run snapshot.
+
+    By default this replaces any previous state for ``run_id`` wholesale. With
+    ``payload["new_attempt"]`` truthy (or ``status.new_attempt``), a restart of
+    the same job lands on the same row instead of fragmenting one job across
+    synthetic ``-rN`` ids: the incoming timeline is appended after the stored
+    one (seq renumbered to continue it), the attempts counter increments, and
+    started_at stays anchored to the first attempt.
+    """
     status = payload.get("status") if isinstance(payload.get("status"), dict) else {}
     raw_events = payload.get("events") if isinstance(payload.get("events"), list) else []
     raw_documents = payload.get("documents") if isinstance(payload.get("documents"), list) else []
+
+    new_attempt = bool(payload.get("new_attempt") or status.get("new_attempt"))
 
     metrics = payload.get("metrics") if isinstance(payload.get("metrics"), dict) else {}
     if not metrics and isinstance(status.get("metrics"), dict):
@@ -117,6 +128,32 @@ def publish(
     # can reference it.
     events = _event_rows(raw_events)
     documents = _document_rows(raw_documents)
+
+    existing = repository.find_run(run_id)
+    if new_attempt and existing is not None:
+        previous_events = repository.events_for(run_id)
+        offset = previous_events[-1]["seq"] if previous_events else 0
+        events = [{**event, "seq": offset + index + 1} for index, event in enumerate(events)]
+        fields = _run_fields(status, events, documents, metrics, payload)
+        fields.update(_issue(payload, documents, issue_linking or IssueLinking()))
+        # Attempt bookkeeping overrides the per-attempt derivations.
+        started = existing["started_at"] or fields["started_at"]
+        fields.update(
+            {
+                "started_at": started,
+                "duration_ms": _elapsed_ms(started, fields.get("ended_at")),
+                "attempts": int(existing["attempts"] or 1) + 1,
+            }
+        )
+        repository.save_run(run_id, fields)
+        repository.append_events(run_id, events)
+        repository.replace_documents(run_id, documents)
+        return {
+            "run_id": run_id,
+            "attempt": fields["attempts"],
+            "events": len(events),
+            "documents": len(documents),
+        }
 
     fields = _run_fields(status, events, documents, metrics, payload)
     fields.update(_issue(payload, documents, issue_linking or IssueLinking()))

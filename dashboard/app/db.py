@@ -10,7 +10,7 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 
 _SCHEMA_V1 = """
 CREATE TABLE runs (
@@ -105,8 +105,14 @@ ALTER TABLE runs ADD COLUMN done INTEGER NOT NULL DEFAULT 0;
 CREATE INDEX idx_runs_done ON runs(done);
 """
 
+# Reruns of one job can land on a single run_id: the attempts counter tracks
+# how many times the leader restarted and the event log grows additively.
+_SCHEMA_V5 = """
+ALTER TABLE runs ADD COLUMN attempts INTEGER NOT NULL DEFAULT 1;
+"""
+
 # Index i brings the database from version i to version i + 1.
-_MIGRATIONS: tuple[str, ...] = (_SCHEMA_V1, _SCHEMA_V2, _SCHEMA_V3, _SCHEMA_V4)
+_MIGRATIONS: tuple[str, ...] = (_SCHEMA_V1, _SCHEMA_V2, _SCHEMA_V3, _SCHEMA_V4, _SCHEMA_V5)
 
 
 def connect(database_path: Path) -> sqlite3.Connection:
